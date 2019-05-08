@@ -1,0 +1,51 @@
+<template>
+  <el-dialog :visible.sync="dialogVisible" @close="cancel">
+    <span slot="title">{{dialogPara.title}}</span>
+    <div class="dialog_content" v-html="dialogPara.content"></div>
+    <div slot="footer" class="dialog-footer">
+      <el-button size="small" @click="cancel">取 消</el-button>
+      <el-button size="small" type="primary" @click="makesure">确 定</el-button>
+    </div>
+  </el-dialog>
+</template>
+<script>
+import { mapState, mapMutations } from 'vuex'
+
+export default {
+  name: 'vDialog',
+  data() {
+    return {}
+  },
+  props: {
+    dialogPara: {
+      type: Object,
+      default: {
+        title: '标题',
+        content: ''
+      }
+    }
+  },
+  mounted() {
+
+  },
+  computed: {
+    ...mapState({
+      dialogVisible: 'dialogVisible',
+    })
+  },
+  methods: {
+    ...mapMutations([
+      'SET_DIALOGVISIBLE'
+    ]),
+    cancel() {
+      this.SET_DIALOGVISIBLE({dialogVisible: false})
+    },
+    makesure() {
+      this.SET_DIALOGVISIBLE({dialogVisible: false})
+    }
+  }
+}
+
+</script>
+<style lang="scss">
+</style>
