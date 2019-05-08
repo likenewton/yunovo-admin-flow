@@ -1,7 +1,28 @@
 <template>
   <div>
     <el-card class="reset-card" shadow="never">
-      <el-tabs>
+      <el-row class="common-display" :gutter="40">
+        <el-col :span="6">
+          <span>ICCID：89860918700307506235</span>
+        </el-col>
+        <el-col :span="3">
+          <span>累计用量：<span v-html="formatFlowUnit(6806)"></span></span>
+        </el-col>
+        <el-col :span="3">
+          <span>当月用量：<span v-html="formatFlowUnit(20.5)"></span></span>
+        </el-col>
+        <el-col :span="3">
+          <span>累记充值量：<span v-html="formatFlowUnit(0)"></span></span>
+        </el-col>
+        <el-col :span="3">
+          <span>剩余流量：<span v-html="formatFlowUnit(1223.1)"></span></span>
+        </el-col>
+        <el-col :span="6">
+          <span>设备更新时间：2019-05-06 09:51:57</span>
+        </el-col>
+      </el-row>
+      <el-tabs @tab-click="changeTab">
+        <!-- 充值详情列表 -->
         <el-tab-pane>
           <span slot="label"></i>充值详情列表</span>
           <el-form class="search-form" :inline="true" :model="searchForm" size="small">
@@ -30,43 +51,76 @@
               <el-button size="small" type="primary">查询</el-button>
             </el-form-item>
           </el-form>
-          <el-table ref="multipleTable" :data="curTableData" border :default-sort="{prop: 'ex_time', order: 'descending'}" size="mini">
-            <el-table-column fixed="left" show-overflow-tooltip label="卡ICCID" min-width="170">
+          <el-table :data="curTableData" border :default-sort="{prop: 'pay_time', order: 'descending'}" size="mini">
+            <el-table-column show-overflow-tooltip label="分配总流量" min-width="100">
               <template slot-scope="scope">
-                <el-button type="text">{{scope.row.iccid}}</el-button>
+                <div v-html="formatFlowUnit(scope.row.total_flow)"></div>
               </template>
             </el-table-column>
-            <el-table-column show-overflow-tooltip prop="jg_name" label="机构名称" min-width="140"></el-table-column>
-            <el-table-column show-overflow-tooltip label="套餐流量" show-overflow-tooltip min-width="95" sortable>
+            <el-table-column show-overflow-tooltip prop="flow_price" label="流量价格" min-width="85"></el-table-column>
+            <el-table-column show-overflow-tooltip prop="pay_way" label="付款方式" show-overflow-tooltip min-width="95" sortable></el-table-column>
+            <el-table-column show-overflow-tooltip prop="pay_status" label="支付状态" show-overflow-tooltip min-width="95" sortable></el-table-column>
+            <el-table-column show-overflow-tooltip prop="pay_code" label="支付流水号" show-overflow-tooltip min-width="110"></el-table-column>
+            <el-table-column show-overflow-tooltip prop="recharge_remark" label="充值备注" show-overflow-tooltip min-width="150"></el-table-column>
+            <el-table-column show-overflow-tooltip prop="recharge_time" label="充值时间" show-overflow-tooltip min-width="145" sortable></el-table-column>
+            <el-table-column show-overflow-tooltip prop="pay_time" label="付款时间" show-overflow-tooltip min-width="145" sortable></el-table-column>
+            <el-table-column show-overflow-tooltip label="过期时间" show-overflow-tooltip min-width="205">
+              <template slot-scope="scope">
+                <div v-html="calcLeftTime(scope.row.ex_time)"></div>
+              </template>
+            </el-table-column>
+            <el-table-column show-overflow-tooltip prop="order_resource" label="订单来源" show-overflow-tooltip min-width="100"></el-table-column>
+          </el-table>
+          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage_0" :page-sizes="[1, 2, 3, 4]" :page-size="pagesize_0" layout="total, sizes, prev, pager, next, jumper" :total="tableData_0.length">
+          </el-pagination>
+        </el-tab-pane>
+        <!-- 流量分配详情 -->
+        <el-tab-pane>
+          <span slot="label">流量分配详情</span>
+          <el-table :data="curTableData" border :default-sort="{prop: 'fp_time', order: 'descending'}" size="mini">
+            <el-table-column show-overflow-tooltip prop="month" label="月份" min-width="85"></el-table-column>
+            <el-table-column show-overflow-tooltip label="套餐流量" min-width="95">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.tc_flow)"></div>
               </template>
             </el-table-column>
-            <el-table-column show-overflow-tooltip prop="fp_month" label="分配月数" show-overflow-tooltip min-width="95" sortable></el-table-column>
-            <el-table-column show-overflow-tooltip label="月均流量" show-overflow-tooltip min-width="95" sortable>
+            <el-table-column show-overflow-tooltip label="设备剩余流量" min-width="120">
               <template slot-scope="scope">
-                <div v-html="formatFlowUnit(scope.row.tc_flow/scope.row.fp_month)"></div>
+                <div v-html="formatFlowUnit(scope.row.eqleft_flow)"></div>
               </template>
             </el-table-column>
-            <el-table-column show-overflow-tooltip prop="is_clear" label="是否清零" show-overflow-tooltip min-width="80"></el-table-column>
-            <el-table-column show-overflow-tooltip prop="eff_pri" label="有效周期" show-overflow-tooltip min-width="80"></el-table-column>
-            <el-table-column show-overflow-tooltip prop="donator_remark" label="赠者&备注" show-overflow-tooltip min-width="120"></el-table-column>
-            <el-table-column show-overflow-tooltip prop="op_p" label="操作者" show-overflow-tooltip min-width="100"></el-table-column>
-            <el-table-column show-overflow-tooltip prop="add_time" label="添加时间" show-overflow-tooltip min-width="155" sortable></el-table-column>
-            <el-table-column show-overflow-tooltip prop="ex_time" label="过期时间" show-overflow-tooltip min-width="155" sortable></el-table-column>
+            <el-table-column show-overflow-tooltip label="联通剩余流量" min-width="120">
+              <template slot-scope="scope">
+                <div v-html="formatFlowUnit(scope.row.ltleft_flow)"></div>
+              </template>
+            </el-table-column>
+            <el-table-column show-overflow-tooltip prop="tc_type" label="套餐类型" min-width="85"></el-table-column>
+            <el-table-column show-overflow-tooltip prop="is_clear" label="是否清零" min-width="85"></el-table-column>
+            <el-table-column show-overflow-tooltip prop="fp_month" label="分配月数" min-width="85"></el-table-column>
+            <el-table-column show-overflow-tooltip label="月均流量" min-width="95">
+              <template slot-scope="scope">
+                <div v-html="formatFlowUnit(scope.row.month_flow)"></div>
+              </template>
+            </el-table-column>
+            <el-table-column show-overflow-tooltip prop="fp_time" label="分配时间" show-overflow-tooltip min-width="145" sortable></el-table-column>
+            <el-table-column show-overflow-tooltip label="过期时间" show-overflow-tooltip min-width="180">
+              <template slot-scope="scope">
+                <div v-html="calcLeftTime(scope.row.ex_time)"></div>
+              </template>
+            </el-table-column>
           </el-table>
-          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 20, 30, 40]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="tableData.length">
+          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage_1" :page-sizes="[1, 2, 3, 4]" :page-size="pagesize_1" layout="total, sizes, prev, pager, next, jumper" :total="tableData_1.length">
           </el-pagination>
         </el-tab-pane>
-        <el-tab-pane>
-          <span slot="label">流量分配详情</span>
-        </el-tab-pane>
+        <!-- 生命周期日志 -->
         <el-tab-pane>
           <span slot="label">生命周期日志</span>
         </el-tab-pane>
+        <!-- 日使用情况 -->
         <el-tab-pane>
           <span slot="label">日使用情况</span>
         </el-tab-pane>
+        <!-- 月使用情况 -->
         <el-tab-pane>
           <span slot="label">月使用情况</span>
         </el-tab-pane>
@@ -80,49 +134,104 @@ import Api from 'assets/js/api.js'
 export default {
   data() {
     return {
-      routeName: this.$route.name,
-      currentDate: new Date(),
-      tableData: [{
+      tableData_0: [{
         id: 0,
-        iccid: '8986011670901045280',
-        jg_name: '卡仕特-西格玛',
-        tc_flow: 65421,
-        fp_month: 12,
-        month_flow: 0,
-        is_clear: 1,
-        eff_pri: '1个月',
-        donator_remark: 'Newton',
-        op_p: 'Lucy',
-        add_time: '2019-02-03 21:01:03',
-        ex_time: '2019-01-21 09:58:45'
+        total_flow: 30,
+        flow_price: '￥0.01',
+        pay_way: '系统赠送',
+        pay_status: '已付款',
+        pay_code: ' system-give',
+        recharge_remark: '系统赠送',
+        recharge_time: '2019-01-21 09:58:45',
+        pay_time: '2019-01-21 09:58:45',
+        ex_time: '2020-01-21 09:58:45',
+        order_resource: '未知来源'
+      }, {
+        id: 1,
+        total_flow: 300,
+        flow_price: '￥0.01',
+        pay_way: '系统赠送',
+        pay_status: '已付款',
+        pay_code: ' system-give',
+        recharge_remark: '系统赠送',
+        recharge_time: '2019-01-21 09:58:45',
+        pay_time: '2019-01-21 09:58:45',
+        ex_time: '2020-11-21 09:58:45',
+        order_resource: '未知来源'
       }],
-      pagesize: 20,
-      currentPage: 1,
+      tableData_1: [{
+        id: 0,
+        month: '2019-05',
+        tc_flow: 200,
+        eqleft_flow: 90,
+        ltleft_flow: 120,
+        tc_type: '固定套餐',
+        is_clear: 0,
+        fp_month: 12,
+        month_flow: 30,
+        fp_time: '20219-11-21 09:58:45',
+        ex_time: '2020-11-21 09:58:45'
+      }, {
+        id: 1,
+        month: '2019-06',
+        tc_flow: 300,
+        eqleft_flow: 80,
+        ltleft_flow: 130,
+        tc_type: '固定套餐',
+        is_clear: 0,
+        fp_month: 12,
+        month_flow: 30,
+        fp_time: '20219-10-21 09:58:45',
+        ex_time: '2020-11-21 09:58:45'
+      }],
+      tabIndex: '0', // 当前激活的tab的下标值
+      pagesize_0: 1,
+      pagesize_1: 1,
+      pagesize_2: 1,
+      pagesize_3: 1,
+      pagesize_4: 1,
+      currentPage_0: 1,
+      currentPage_1: 1,
+      currentPage_2: 1,
+      currentPage_3: 1,
+      currentPage_4: 1,
+      // 查询表单数据
       searchForm: {}
     }
   },
-  mounted() {
-
-  },
+  mounted() {},
   methods: {
+    changeTab(para) {
+      this.tabIndex = para.index
+    },
+    // 处理多个pagination的情况
     handleSizeChange(val) {
-      this.pagesize = val
+      this[`pagesize_${this.tabIndex}`] = val
     },
     handleCurrentChange(val) {
-      this.currentPage = val
+      this[`currentPage_${this.tabIndex}`] = val
     },
-    formatFlowUnit: Api.UNITS.formatFlowUnit,
-    limitNumber: Api.UNITS.limitNumber,
+    formatFlowUnit: Api.UNITS.formatFlowUnit, // 格式化流量单位
+    limitNumber: Api.UNITS.limitNumber, // 限制数字类型位数
+    calcLeftTime: Api.UNITS.calcLeftTime // 计算剩余时间
   },
   computed: {
     curTableData() {
-      return this.tableData.slice((this.currentPage - 1) * this.pagesize, this.currentPage * this.pagesize)
+      const tableData = this[`tableData_${this.tabIndex}`]
+      const currentPage = this[`currentPage_${this.tabIndex}`]
+      const pagesize = this[`pagesize_${this.tabIndex}`]
+      return tableData.slice((currentPage - 1) * pagesize, currentPage * pagesize)
     }
   }
 }
 
 </script>
 <style lang="scss">
+.common-display {
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
 .el-pagination {
   float: right;
   margin: 25px 40px 0 0;
