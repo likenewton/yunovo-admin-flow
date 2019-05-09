@@ -13,10 +13,14 @@ const Cardreset = r => require.ensure([], () => r(require('@/components/manage/c
 const Cardbatch = r => require.ensure([], () => r(require('@/components/manage/cardbatch.vue')), 'chunk2') // 出货批次
 const Cardcombo = r => require.ensure([], () => r(require('@/components/manage/cardcombo.vue')), 'chunk2') // 充值套餐
 const Flowgift = r => require.ensure([], () => r(require('@/components/manage/flowgift.vue')), 'chunk2') // 流量赠送
+const Flowmigration = r => require.ensure([], () => r(require('@/components/manage/flowmigration.vue')), 'chunk2') // 流量迁移
+const Flowwarning = r => require.ensure([], () => r(require('@/components/manage/flowwarning.vue')), 'chunk2') // 流量预警
+const Cardauth = r => require.ensure([], () => r(require('@/components/manage/cardauth.vue')), 'chunk2') // 流量预警
 
 // chunk3(一般是表单增删改查页面)
 const Batchcreate = r => require.ensure([], () => r(require('@/components/forms/batchcreate.vue')), 'chunk3')
 const Rechargecomboset = r => require.ensure([], () => r(require('@/components/forms/rechargecomboset.vue')), 'chunk3')
+const Flowwarningset = r => require.ensure([], () => r(require('@/components/forms/flowwarningset.vue')), 'chunk3')
 
 // 存展示列表
 const RechargeDetail = r => require.ensure([], () => r(require('@/components/list/rechargeDetail.vue')), 'chunk4')
@@ -54,6 +58,18 @@ let router = new VueRouter({
         path: 'flowgift',
         name: 'flowgift',
         component: Flowgift
+      }, {
+        path: 'flowmigration',
+        name: 'flowmigration',
+        component: Flowmigration
+      }, {
+        path: 'flowwarning',
+        name: 'flowwarning',
+        component: Flowwarning
+      }, {
+        path: 'cardauth',
+        name: 'cardauth',
+        component: Cardauth
       }]
     }]
   }, {
@@ -69,6 +85,10 @@ let router = new VueRouter({
       path: 'rechargecomboset',
       name: 'rechargecomboset',
       component: Rechargecomboset
+    }, {
+      path: 'flowwarningset',
+      name: 'flowwarningset',
+      component: Flowwarningset
     }]
   }, {
     // 展示列表

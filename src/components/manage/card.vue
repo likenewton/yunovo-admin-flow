@@ -47,7 +47,7 @@
         <el-button size="mini" type="primary">导入</el-button>
         <el-button size="mini" type="primary">导出</el-button>
       </el-button-group>
-      <el-table ref="multipleTable" :data="curTableData" border :default-sort="{prop: 'exceed_time', order: 'descending'}" size="mini">
+      <el-table v-loading="loadData" ref="multipleTable" :data="curTableData" border :default-sort="{prop: 'exceed_time', order: 'descending'}" size="mini">
         <el-table-column fixed="left" show-overflow-tooltip label="卡ICCID" min-width="170">
           <template slot-scope="scope">
             <el-button type="text">{{scope.row.iccid}}</el-button>
@@ -88,7 +88,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 20, 30, 40]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="tableData.length" class="clearfix">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="tableData.length" class="clearfix">
       </el-pagination>
     </el-card>
     <v-dialog :dialogPara="dialogPara"></v-dialog>
@@ -99,44 +99,18 @@ import Api from 'assets/js/api.js'
 import { mapState, mapMutations } from 'vuex'
 
 export default {
-  name: 'Home',
   data() {
     return {
       routeName: this.$route.name,
-      pagesize: 20,
       currentPage: 1,
-      tableData: [{
-        id: 0,
-        iccid: '8986011670901045280',
-        ks_name: '智网吉林11位卡',
-        jg_name: '卡仕特-西格玛',
-        m_use: 564,
-        total_use: 6462,
-        left_use: -1,
-        excard_time: '2019-04-15 12:54:14',
-        active_time: '2019-04-15 12:54:14',
-        eq_time: '2019-04-15 12:54:14',
-        exceed_time: '2020-04-15 12:54:14',
-        op_status: 1,
-        active_status: 0
-      }, {
-        id: 1,
-        iccid: '8986011670901045281',
-        ks_name: '智网吉林11位卡',
-        jg_name: '卡仕特-西格玛',
-        m_use: 30.354,
-        total_use: 6462,
-        left_use: 1241,
-        excard_time: '2018-04-15 12:54:14',
-        active_time: '2018-04-15 12:54:14',
-        eq_time: '2018-04-15 12:54:14',
-        exceed_time: '2018-04-15 12:54:14',
-        op_status: 0,
-        active_status: 1
-      }],
+      pageSizes: Api.STATIC.pageSizes,
+      pagesize: Api.STATIC.pageSizes[1],
+      loadData: true,
+      tableData: [],
       formInline: {},
       // 要展开的对话框的参数
       dialogPara: {
+        loadDialog: true,
         title: '机构流量ICCID卡统计图表',
         content: '<div id="myChart" style="width:100%; height:300px"></div>'
       },
@@ -190,6 +164,14 @@ export default {
       }
     }
   },
+  mounted() {
+    // 进入页面的时候请求数据
+    if (this.tableData.length === 0) {
+      this.getData()
+    } else {
+      this.loadData = false
+    }
+  },
   methods: {
     ...mapMutations([
       'SET_DIALOGVISIBLE'
@@ -203,9 +185,54 @@ export default {
     showEcharts() {
       this.SET_DIALOGVISIBLE({ dialogVisible: true })
       setTimeout(() => {
+        // myChart因为是要放在dialog中所以必须要等到dialog展示之后才能展示
         this.myChart = this.$echarts.init(document.getElementById('myChart'))
-        this.myChart.setOption(this.options)
+        this.getEchartsData()
       }, 0)
+    },
+    // 获取列表数据
+    getData() {
+      setTimeout(() => {
+        // 数据请求成功
+        this.tableData = [{
+          id: 0,
+          iccid: '8986011670901045280',
+          ks_name: '智网吉林11位卡',
+          jg_name: '卡仕特-西格玛',
+          m_use: 564,
+          total_use: 6462,
+          left_use: -1,
+          excard_time: '2019-04-15 12:54:14',
+          active_time: '2019-04-15 12:54:14',
+          eq_time: '2019-04-15 12:54:14',
+          exceed_time: '2020-04-15 12:54:14',
+          op_status: 1,
+          active_status: 0
+        }, {
+          id: 1,
+          iccid: '8986011670901045281',
+          ks_name: '智网吉林11位卡',
+          jg_name: '卡仕特-西格玛',
+          m_use: 30.354,
+          total_use: 6462,
+          left_use: 1241,
+          excard_time: '2018-04-15 12:54:14',
+          active_time: '2018-04-15 12:54:14',
+          eq_time: '2018-04-15 12:54:14',
+          exceed_time: '2018-04-15 12:54:14',
+          op_status: 0,
+          active_status: 1
+        }]
+        this.loadData = false
+      }, 1000)
+    },
+    // 获取图标数据
+    getEchartsData() {
+      setTimeout(() => {
+        this.dialogPara.loadDialog = false
+        // 这里拿到数据后要将数据保存到options中在调用setOption
+        this.myChart.setOption(this.options)
+      }, 1000)
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,
     calcLeftTime: Api.UNITS.calcLeftTime

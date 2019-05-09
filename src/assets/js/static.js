@@ -8,7 +8,7 @@ module.exports = {
       title: '流量卡',
       name: 'card'
     }, {
-      title: '流量卡重置',
+      title: '卡重置',
       name: 'cardreset'
     }, {
       title: '出货批次',
@@ -19,6 +19,15 @@ module.exports = {
     }, {
       title: '流量赠送',
       name: 'flowgift'
+    }, {
+      title: '流量迁移',
+      name: 'flowmigration'
+    }, {
+      title: '流量预警',
+      name: 'flowwarning'
+    }, {
+      title: '卡实名制',
+      name: 'cardauth'
     }]
   }],
   // 必须、误删
@@ -37,7 +46,11 @@ module.exports = {
     },
     name: 'rechargecomboset'
   }, {
+    title: '流量预警设置',
+    name: 'flowwarningset'
+  }, {
     title: '充值详情列表',
     name: 'rechargeDetail'
-  }]
+  }],
+  pageSizes: [10, 20, 30, 40]
 }

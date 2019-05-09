@@ -19,7 +19,7 @@
       <el-button-group style="margin-bottom: 10px">
         <el-button size="mini" type="primary" @click="createRechargeComboSet">新增</el-button>
       </el-button-group>
-      <el-table ref="multipleTable" :data="curTableData" border :default-sort="{prop: 'exceed_time', order: 'descending'}" size="mini">
+      <el-table v-loading="loadData" ref="multipleTable" :data="curTableData" border :default-sort="{prop: 'exceed_time', order: 'descending'}" size="mini">
         <el-table-column show-overflow-tooltip prop="jg_name" label="机构名称" min-width="140"></el-table-column>
         <el-table-column show-overflow-tooltip label="套餐流量" show-overflow-tooltip min-width="95" sortable>
           <template slot-scope="scope">
@@ -54,7 +54,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 20, 30, 40]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="tableData.length" class="clearfix">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="tableData.length" class="clearfix">
       </el-pagination>
     </el-card>
   </div>
@@ -63,48 +63,24 @@
 import Api from 'assets/js/api.js'
 
 export default {
-  name: 'Home',
   data() {
     return {
       routeName: this.$route.name,
-      pagesize: 20,
       currentPage: 1,
-      tableData: [{
-        id: 0,
-        jg_name: '卡仕特-西格玛',
-        tc_flow: 564,
-        tc_price: '￥1.25',
-        fp_month: 12,
-        month_flow: 0, // tc_flow / fp_month
-        is_clear: 0,
-        eff_pri: 15,
-        tc_desc: '2G畅享月叠加包1个月有效，流量月结清零，可叠加购买，全国通用；流量卡只允许在指定的设备端使用。',
-        rebate_money: '￥0.00',
-        is_recommend: 0,
-        add_time: '2019-01-15 09:52:12',
-        change_time: '2020-04-15 12:54:14',
-        create_p: 'Newton',
-        chg_p: '樱木花道',
-        is_op: 0
-      }, {
-        id: 1,
-        jg_name: '卡仕特-西格玛',
-        tc_flow: 56454,
-        tc_price: '￥1.25',
-        fp_month: 36,
-        month_flow: 0, // tc_flow / fp_month
-        is_clear: 0,
-        eff_pri: 15,
-        tc_desc: '2G畅享月叠加包1个月有效，流量月结清零，可叠加购买，全国通用；流量卡只允许在指定的设备端使用。',
-        rebate_money: '￥0.00',
-        is_recommend: 1,
-        add_time: '2019-01-15 09:52:12',
-        change_time: '2020-04-15 12:54:14',
-        create_p: 'Newton',
-        chg_p: '樱木花道',
-        is_op: 1
-      }],
+      pageSizes: Api.STATIC.pageSizes,
+      pagesize: Api.STATIC.pageSizes[1],
+      loadData: true,
+      tabIndex: '0',
+      tableData: [],
       formInline: {}
+    }
+  },
+  mounted() {
+    // 进入页面的时候请求数据
+    if (this.tableData.length === 0) {
+      this.getData()
+    } else {
+      this.loadData = false
     }
   },
   methods: {
@@ -115,7 +91,49 @@ export default {
       this.currentPage = val
     },
     createRechargeComboSet() {
-      this.$router.push({name: 'rechargecomboset'})
+      this.$router.push({ name: 'rechargecomboset' })
+    },
+    // 获取列表数据
+    getData() {
+      setTimeout(() => {
+        // 数据请求成功
+        this.tableData = [{
+          id: 0,
+          jg_name: '卡仕特-西格玛',
+          tc_flow: 564,
+          tc_price: '￥1.25',
+          fp_month: 12,
+          month_flow: 0, // tc_flow / fp_month
+          is_clear: 0,
+          eff_pri: 15,
+          tc_desc: '2G畅享月叠加包1个月有效，流量月结清零，可叠加购买，全国通用；流量卡只允许在指定的设备端使用。',
+          rebate_money: '￥0.00',
+          is_recommend: 0,
+          add_time: '2019-01-15 09:52:12',
+          change_time: '2020-04-15 12:54:14',
+          create_p: 'Newton',
+          chg_p: '樱木花道',
+          is_op: 0
+        }, {
+          id: 1,
+          jg_name: '卡仕特-西格玛',
+          tc_flow: 56454,
+          tc_price: '￥1.25',
+          fp_month: 36,
+          month_flow: 0, // tc_flow / fp_month
+          is_clear: 0,
+          eff_pri: 15,
+          tc_desc: '2G畅享月叠加包1个月有效，流量月结清零，可叠加购买，全国通用；流量卡只允许在指定的设备端使用。',
+          rebate_money: '￥0.00',
+          is_recommend: 1,
+          add_time: '2019-01-15 09:52:12',
+          change_time: '2020-04-15 12:54:14',
+          create_p: 'Newton',
+          chg_p: '樱木花道',
+          is_op: 1
+        }]
+        this.loadData = false
+      }, 1000)
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,
     calcLeftTime: Api.UNITS.calcLeftTime

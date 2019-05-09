@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card class="reset-card" shadow="never">
-      <el-tabs>
+      <el-tabs @tab-click="changeTab">
         <el-tab-pane>
           <span slot="label">重置操作</span>
           <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="126px" class="demo-ruleForm" size="small">
@@ -10,6 +10,7 @@
               <el-input type="textarea" v-model="ruleForm.iccid" rows="8"></el-input>
             </el-form-item>
             <el-form-item>
+              <el-button type="primary">保存</el-button>
               <el-button type="warning">重置</el-button>
             </el-form-item>
           </el-form>
@@ -33,9 +34,10 @@
             </el-form-item>
             <el-form-item>
               <el-button size="small" type="primary">查询</el-button>
+              <el-button size="small" type="warning">重置</el-button>
             </el-form-item>
           </el-form>
-          <el-table ref="multipleTable" :data="curTableData" border :default-sort="{prop: 'ex_time', order: 'descending'}" size="mini">
+          <el-table v-loading="loadTab1Data" ref="multipleTable" :data="curTableData" border :default-sort="{prop: 'ex_time', order: 'descending'}" size="mini">
             <el-table-column fixed="left" show-overflow-tooltip label="卡ICCID" min-width="170">
               <template slot-scope="scope">
                 <el-button type="text">{{scope.row.iccid}}</el-button>
@@ -58,7 +60,7 @@
             <el-table-column show-overflow-tooltip prop="ex_time" label="出货时间" show-overflow-tooltip min-width="155" sortable></el-table-column>
             <el-table-column show-overflow-tooltip prop="reset_time" label="重置时间" show-overflow-tooltip min-width="155" sortable></el-table-column>
           </el-table>
-          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 20, 30, 40]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="tableData.length">
+          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="tableData.length">
           </el-pagination>
         </el-tab-pane>
       </el-tabs>
@@ -73,20 +75,12 @@ export default {
     return {
       routeName: this.$route.name,
       currentDate: new Date(),
-      tableData: [{
-        id: 0,
-        iccid: '8986011670901045280',
-        jg_name: '卡仕特-西格玛',
-        right_use: 214,
-        left_use: 6542,
-        card_status: 0,
-        real_ide: 1,
-        op_p: 'Newton',
-        ex_time: '2019-01-21 09:58:45',
-        reset_time: '2019-02-03 21:01:03'
-      }],
-      pagesize: 20,
+      tableData: [],
+      pageSizes: Api.STATIC.pageSizes,
+      pagesize: Api.STATIC.pageSizes[1],
       currentPage: 1,
+      loadTab1Data: true,
+      tabIndex: '0',
       formInline: {
         doi: '',
         status: ''
@@ -110,6 +104,35 @@ export default {
     },
     handleCurrentChange(val) {
       this.currentPage = val
+    },
+    changeTab(para) {
+      this.tabIndex = para.index
+      // 当切换tab栏到'1'的时候，要加载数据
+      if (this.tabIndex === '1') {
+        // 这里应当是ajax请求数据
+        if (this.tableData.length === 0) {
+          this.getTab1Data()
+        } else {
+          this.loadTab1Data = false
+        }
+      }
+    },
+    getTab1Data() {
+      setTimeout(() => {
+        this.tableData = [{
+          id: 0,
+          iccid: '8986011670901045280',
+          jg_name: '卡仕特-西格玛',
+          right_use: 214,
+          left_use: 6542,
+          card_status: 0,
+          real_ide: 1,
+          op_p: 'Newton',
+          ex_time: '2019-01-21 09:58:45',
+          reset_time: '2019-02-03 21:01:03'
+        }]
+        this.loadTab1Data = false
+      }, 1000)
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit
   },

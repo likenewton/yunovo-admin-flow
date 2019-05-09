@@ -1,7 +1,7 @@
 <template>
-  <el-dialog :visible.sync="dialogVisible" @close="cancel">
+  <el-dialog :visible="dialogVisible" @close="cancel">
     <span slot="title">{{dialogPara.title}}</span>
-    <div class="dialog_content" v-html="dialogPara.content"></div>
+    <div v-loading="dialogPara.loadDialog" class="dialog_content" v-html="dialogPara.content"></div>
     <div slot="footer" class="dialog-footer">
       <el-button size="small" @click="cancel">取 消</el-button>
       <el-button size="small" type="primary" @click="makesure">确 定</el-button>
@@ -20,6 +20,7 @@ export default {
     dialogPara: {
       type: Object,
       default: {
+        loadDialog: false, // 默认情况下不显示加载动画
         title: '标题',
         content: ''
       }
