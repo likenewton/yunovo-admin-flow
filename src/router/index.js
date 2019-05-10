@@ -8,6 +8,7 @@ const Logout = r => require.ensure([], () => r(require('@/components/logout.vue'
 // chunk2(侧边栏菜单动态路由)
 const Asidemenu = r => require.ensure([], () => r(require('@/components/aside/index.vue')), 'chunk2')
 const Blank = r => require.ensure([], () => r(require('@/components/aside/blank.vue')), 'chunk2')
+// 业务管理
 const Card = r => require.ensure([], () => r(require('@/components/manage/card.vue')), 'chunk2') // 流量卡
 const Cardreset = r => require.ensure([], () => r(require('@/components/manage/cardreset.vue')), 'chunk2') // 卡重置
 const Cardbatch = r => require.ensure([], () => r(require('@/components/manage/cardbatch.vue')), 'chunk2') // 出货批次
@@ -16,13 +17,15 @@ const Flowgift = r => require.ensure([], () => r(require('@/components/manage/fl
 const Flowmigration = r => require.ensure([], () => r(require('@/components/manage/flowmigration.vue')), 'chunk2') // 流量迁移
 const Flowwarning = r => require.ensure([], () => r(require('@/components/manage/flowwarning.vue')), 'chunk2') // 流量预警
 const Cardauth = r => require.ensure([], () => r(require('@/components/manage/cardauth.vue')), 'chunk2') // 流量预警
+// 统计分析
+const Monthuse = r => require.ensure([], () => r(require('@/components/statistics/monthuse.vue')), 'chunk2') // 流量预警
 
 // chunk3(一般是表单增删改查页面)
 const Batchcreate = r => require.ensure([], () => r(require('@/components/forms/batchcreate.vue')), 'chunk3')
 const Rechargecomboset = r => require.ensure([], () => r(require('@/components/forms/rechargecomboset.vue')), 'chunk3')
 const Flowwarningset = r => require.ensure([], () => r(require('@/components/forms/flowwarningset.vue')), 'chunk3')
 
-// 存展示列表
+// chunk4(展示列表)
 const RechargeDetail = r => require.ensure([], () => r(require('@/components/list/rechargeDetail.vue')), 'chunk4')
 
 let router = new VueRouter({
@@ -71,6 +74,16 @@ let router = new VueRouter({
         name: 'cardauth',
         component: Cardauth
       }]
+    }, {
+      path: 'statistics',
+      name: 'statistics',
+      component: Blank,
+      redirect: '/asidemenu/statistics/monthuse',
+      children: [{
+        path: 'monthuse',
+        name: 'monthuse',
+        component: Monthuse,
+      }]
     }]
   }, {
     // 表单文件
@@ -102,8 +115,12 @@ let router = new VueRouter({
     }]
   }, {
     path: '',
-    name: 'home',
-    component: Home
+    component: Asidemenu,
+    children: [{
+      path: '',
+      name: 'home',
+      component: Home
+    }]
   }, {
     path: '/login',
     name: 'login',
@@ -117,6 +134,13 @@ let router = new VueRouter({
     name: 'logout',
     component: Logout
   }]
+})
+
+router.beforeEach((to, from, next) => {
+  //会在任意路由跳转前执行, 检测当前是否还处于登录状态
+
+  // 测试， 永远处于登录状态
+  (true || to.path === '/login') ? next(): next('/login')
 })
 
 export default router

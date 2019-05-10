@@ -81,14 +81,15 @@ module.exports = {
   // 获取页面面包屑数组
   getBreadArr(name, asideData) {
     let breadArr = []
+    if(name === 'home') return breadArr
     asideData.forEach((v1) => {
       if (v1.name === name) {
-        breadArr.push(v1.title)
+        breadArr.push('首页', v1.title)
         return false
       }
       v1.children.forEach((v2) => {
         if (v2.name === name) {
-          breadArr.push(v1.title, v2.title)
+          breadArr.push('首页', v1.title, v2.title)
           return false
         }
       })
@@ -110,8 +111,10 @@ module.exports = {
       htmlStr = `<span style="color:#e92322;font-weight:bold">无限制</span>`
     } else if (count < 1024) {
       htmlStr = `<span>${count}</span><span style="color:#008000;font-weight:bold">&nbsp;M</span>`
-    } else {
+    } else if (count < 1024 * 1024) {
       htmlStr = `<span>${(count / 1024).toFixed(3)}</span><span style="color:#0000FF;font-weight:bold">&nbsp;G</span>`
+    } else {
+      htmlStr = `<span>${(count / 1024 / 1024).toFixed(3)}</span><span style="color:#e92322;font-weight:bold">&nbsp;T</span>`
     }
     return htmlStr
   },

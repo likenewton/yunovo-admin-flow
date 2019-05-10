@@ -29,6 +29,14 @@ module.exports = {
       title: '卡实名制',
       name: 'cardauth'
     }]
+  }, {
+    title: '统计分析',
+    icon: 'el-icon-fonttongjibaobiao',
+    name: 'statistics',
+    children: [{
+      title: '月度统计',
+      name: 'monthuse'
+    }]
   }],
   // 必须、误删
   operData: [{

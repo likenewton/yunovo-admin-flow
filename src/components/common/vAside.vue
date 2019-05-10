@@ -1,11 +1,11 @@
 <template>
   <el-aside style="width: auto">
-    <el-menu class="menu-container" :default-active="selectData[1]" :default-openeds="[selectData[0]]" :collapse="asideCollapse" :collapse-transition="true" unique-opened router>
+    <el-menu class="menu-container" :default-active="selectData[2]" :default-openeds="[selectData[1]]" :collapse="asideCollapse" :collapse-transition="true" unique-opened>
       <!-- 首页 -->
       <router-link :to="{name: 'home'}">
-        <el-menu-item class="no-submenu">
-            <i class="menu-icon el-icon-fontshouye"></i>
-            <span class="title-text">首页</span>
+        <el-menu-item class="no-submenu" :class="{'is-active': routeName === 'home'}">
+          <i class="menu-icon el-icon-fontshouye"></i>
+          <span class="title-text">首页</span>
         </el-menu-item>
       </router-link>
       <!-- 循环渲染的列表页 -->
@@ -69,13 +69,18 @@ export default {
   watch: {
     '$route': function(newVal, oldVal) {
       this.testFn()
+      // 因为目前还不知道el-aside 中如何移除is-active属性（在切换到首页的时候），先用jq暴力移除
+      this.$nextTick(() => {
+        if ($('.no-submenu').hasClass('is-active')) {
+          $('.el-submenu').removeClass('is-active')
+        }
+      })
     }
   }
 }
 
 </script>
 <style lang="scss">
-
 .el-menu-item-group__title {
   padding-top: 0;
   padding-bottom: 0;
@@ -83,15 +88,25 @@ export default {
 
 .no-submenu {
   padding-left: 20px;
+  background: $asideBackgroundColor !important;
+
   .menu-icon {
     font-size: 18px;
-    color: #0eb78a;
+    color: $iconNormalColor;
   }
+
   .title-text {
     font-size: 16px;
   }
+
+  &.is-active {
+    .menu-icon {
+      color: $iconActiveColor;
+    }
+  }
+
   &:hover {
-    background: #163447;
+    background: $asideBackgroundColor;
   }
 }
 
@@ -103,12 +118,12 @@ export default {
 
 .el-aside {
   padding-top: 30px;
-  background: #163447;
+  background: $asideBackgroundColor;
   color: #333;
   min-height: 100%;
 
   * {
-    background: #163447;
+    background: $asideBackgroundColor;
     color: #fff;
   }
 
@@ -132,11 +147,11 @@ export default {
     .el-submenu {
 
       .el-submenu__title {
-        background: #163447;
+        background: $asideBackgroundColor;
 
         i {
           font-size: 18px;
-          color: #396f8b;
+          color: $iconNormalColor;
           margin-top: -2px;
 
           &.el-submenu__icon-arrow {
@@ -150,9 +165,18 @@ export default {
         }
       }
 
-      &.is-opened {
+      &.is-active {
 
-        .el-submenu__title {}
+        .el-submenu__title {
+          i {
+            color: $iconActiveColor;
+
+            &.el-submenu__icon-arrow {
+              color: #fff;
+              margin-top: -9px;
+            }
+          }
+        }
       }
     }
 
@@ -176,10 +200,6 @@ export default {
 
       .title-text {
         display: none;
-      }
-
-      .submenu-icon {
-        // font-size: 26px;
       }
     }
 

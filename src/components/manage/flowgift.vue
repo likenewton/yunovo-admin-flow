@@ -3,11 +3,11 @@
     <el-card class="reset-card" shadow="never">
       <el-tabs @tab-click="changeTab">
         <el-tab-pane>
-          <span slot="label">重置操作</span>
+          <span slot="label">赠送流量</span>
           <el-form :model="formInline" :rules="rules" ref="ruleForm" label-width="126px" class="demo-ruleForm" size="small">
             <el-form-item prop="iccid">
               <span slot="label">卡ICCID列表：</span>
-              <el-input type="textarea" v-model="formInline.iccid" rows="8" placeholder="一行代表一个ICCID
+              <el-input type="textarea" v-model="formInline.iccid" rows="4" placeholder="一行代表一个ICCID
 多行代表多个ICCID
 建议不超过200个ICCID"></el-input>
             </el-form-item>
@@ -44,7 +44,7 @@
           </el-form>
         </el-tab-pane>
         <el-tab-pane>
-          <span slot="label"></i>重置历史</span>
+          <span slot="label"></i>历史赠送</span>
           <el-form class="search-form" :inline="true" :model="searchForm" size="small">
             <el-form-item label="卡ICCID">
               <el-input v-model="searchForm.iccid" placeholder="请输入"></el-input>
@@ -236,9 +236,6 @@ export default {
     font-size: 12px;
   }
 
-  .search-form {
-    margin-bottom: 30px;
-  }
 }
 
 </style>

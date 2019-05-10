@@ -159,9 +159,6 @@ export default {
     font-size: 12px;
   }
 
-  .search-form {
-    margin-bottom: 30px;
-  }
 }
 
 </style>

@@ -1,6 +1,5 @@
 <template>
-  <el-breadcrumb separator-class="el-icon-arrow-right">
-    <el-breadcrumb-item :to="{name: 'home'}">首页</el-breadcrumb-item>
+  <el-breadcrumb v-if="asideFlag.length > 0" separator-class="el-icon-arrow-right">
     <el-breadcrumb-item :to="{name: getBreadRouteName(item)}" v-for="item in asideFlag" :key="item">{{item}}</el-breadcrumb-item>
     <el-breadcrumb-item v-if="thirdTitle">{{thirdTitle}}</el-breadcrumb-item>
   </el-breadcrumb>
@@ -25,8 +24,6 @@ export default {
       } else {
         if (this.$route.query.type) {
           return data[this.$route.query.type]
-
-
         } else {
           return data['create']
         }
@@ -35,6 +32,8 @@ export default {
     // 获取跳转路由
     getBreadRouteName(title) {
       let routeName = ''
+      if (title === '首页') return 'home'
+      this.isShowBreadCrumb = true
       this.asideData.forEach((v1) => {
         if (v1.title === title) {
           routeName = v1.name
