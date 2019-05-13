@@ -16,9 +16,14 @@ const Cardcombo = r => require.ensure([], () => r(require('@/components/manage/c
 const Flowgift = r => require.ensure([], () => r(require('@/components/manage/flowgift.vue')), 'chunk2') // 流量赠送
 const Flowmigration = r => require.ensure([], () => r(require('@/components/manage/flowmigration.vue')), 'chunk2') // 流量迁移
 const Flowwarning = r => require.ensure([], () => r(require('@/components/manage/flowwarning.vue')), 'chunk2') // 流量预警
-const Cardauth = r => require.ensure([], () => r(require('@/components/manage/cardauth.vue')), 'chunk2') // 流量预警
+const Cardauth = r => require.ensure([], () => r(require('@/components/manage/cardauth.vue')), 'chunk2') // 卡实名制
 // 统计分析
-const Monthuse = r => require.ensure([], () => r(require('@/components/statistics/monthuse.vue')), 'chunk2') // 流量预警
+const Monthuse = r => require.ensure([], () => r(require('@/components/statistics/monthuse.vue')), 'chunk2') // 月度用量
+const Deadstatus = r => require.ensure([], () => r(require('@/components/statistics/deadstatus.vue')), 'chunk2') // 已停卡况
+const Stopcardlog = r => require.ensure([], () => r(require('@/components/statistics/stopcardlog.vue')), 'chunk2') // 停卡日志
+const Useanomaly = r => require.ensure([], () => r(require('@/components/statistics/useanomaly.vue')), 'chunk2') // 用量异常
+const Renewdata = r => require.ensure([], () => r(require('@/components/statistics/renewdata.vue')), 'chunk2') // 续费数据
+const Usedata = r => require.ensure([], () => r(require('@/components/statistics/usedata.vue')), 'chunk2') // 用量数据
 
 // chunk3(一般是表单增删改查页面)
 const Batchcreate = r => require.ensure([], () => r(require('@/components/forms/batchcreate.vue')), 'chunk3')
@@ -83,6 +88,26 @@ let router = new VueRouter({
         path: 'monthuse',
         name: 'monthuse',
         component: Monthuse,
+      }, {
+        path: 'deadstatus',
+        name: 'deadstatus',
+        component: Deadstatus,
+      }, {
+        path: 'stopcardlog',
+        name: 'stopcardlog',
+        component: Stopcardlog,
+      }, {
+        path: 'useanomaly',
+        name: 'useanomaly',
+        component: Useanomaly,
+      }, {
+        path: 'renewdata',
+        name: 'renewdata',
+        component: Renewdata,
+      }, {
+        path: 'usedata',
+        name: 'usedata',
+        component: Usedata,
       }]
     }]
   }, {

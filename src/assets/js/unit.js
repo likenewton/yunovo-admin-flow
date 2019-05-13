@@ -81,7 +81,7 @@ module.exports = {
   // 获取页面面包屑数组
   getBreadArr(name, asideData) {
     let breadArr = []
-    if(name === 'home') return breadArr
+    if (name === 'home') return breadArr
     asideData.forEach((v1) => {
       if (v1.name === name) {
         breadArr.push('首页', v1.title)
@@ -103,18 +103,28 @@ module.exports = {
     }
     return breadArr
   },
-  // 格式化 流量M / G
-  formatFlowUnit(count) {
+  // 格式化 流量M / G / T, 默认保留三位小数
+  formatFlowUnit(count, fix = 3, isHtmlStr = true) {
     count -= 0
     let htmlStr = ''
-    if (count < 0) {
-      htmlStr = `<span style="color:#e92322;font-weight:bold">无限制</span>`
-    } else if (count < 1024) {
-      htmlStr = `<span>${count}</span><span style="color:#008000;font-weight:bold">&nbsp;M</span>`
-    } else if (count < 1024 * 1024) {
-      htmlStr = `<span>${(count / 1024).toFixed(3)}</span><span style="color:#0000FF;font-weight:bold">&nbsp;G</span>`
+    if (isHtmlStr) {
+      if (isNaN(count)) {
+        htmlStr = `<span style="color:#e92322;font-weight:bold">无限制</span>`
+      } else if (Math.abs(count / 1024) < 1) {
+        htmlStr = `<span>${count}</span><span style="color:#008000;font-weight:bold">&nbsp;M</span>`
+      } else if (Math.abs(count / 1024 / 1024) < 1) {
+        htmlStr = `<span>${(count / 1024).toFixed(fix)}</span><span style="color:#0000FF;font-weight:bold">&nbsp;G</span>`
+      } else {
+        htmlStr = `<span>${(count / 1024 / 1024).toFixed(fix)}</span><span style="color:#e92322;font-weight:bold">&nbsp;T</span>`
+      }
     } else {
-      htmlStr = `<span>${(count / 1024 / 1024).toFixed(3)}</span><span style="color:#e92322;font-weight:bold">&nbsp;T</span>`
+      if (Math.abs(count / 1024) < 1) {
+        htmlStr = `${count} M`
+      } else if (Math.abs(count / 1024 / 1024) < 1) {
+        htmlStr = `${(count / 1024).toFixed(fix)} G`
+      } else {
+        htmlStr = `${(count / 1024 / 1024).toFixed(fix)} T`
+      }
     }
     return htmlStr
   },

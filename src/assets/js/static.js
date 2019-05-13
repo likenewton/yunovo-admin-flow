@@ -36,6 +36,21 @@ module.exports = {
     children: [{
       title: '月度统计',
       name: 'monthuse'
+    }, {
+      title: '已停卡况',
+      name: 'deadstatus'
+    }, {
+      title: '停卡日志',
+      name: 'stopcardlog'
+    }, {
+      title: '用量异常',
+      name: 'useanomaly'
+    }, {
+      title: '续费数据',
+      name: 'renewdata'
+    }, {
+      title: '用量数据',
+      name: 'usedata'
     }]
   }],
   // 必须、误删
