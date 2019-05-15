@@ -34,7 +34,7 @@
     </el-card>
     <el-card class="box-card clearfix" shadow="never">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="mini" type="primary">导出</el-button>
+        <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
       <el-table v-loading="loadData" ref="multipleTable" :data="curTableData" border :default-sort="{prop: 'eq_time', order: 'descending'}" size="mini">
         <el-table-column fixed="left" show-overflow-tooltip label="卡ICCID" width="180">

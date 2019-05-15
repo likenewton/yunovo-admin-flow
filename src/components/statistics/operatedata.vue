@@ -17,7 +17,7 @@
         <el-button size="mini" type="primary" @click="showEcharts('0')">支付图表</el-button>
         <el-button size="mini" type="primary" @click="showEcharts('1')">在线图表</el-button>
         <el-button size="mini" type="primary" @click="showEcharts('2')">激活图表</el-button>
-        <el-button size="mini" type="primary">导出</el-button>
+        <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
       <el-table v-loading="loadData" ref="multipleTable" :data="curTableData" border :default-sort="{prop: 'statistic_data', order: 'descending'}" size="mini">
         <el-table-column show-overflow-tooltip prop="statistic_data" label="统计日期" width="93" sortable></el-table-column>
@@ -76,8 +76,9 @@ export default {
       // 要展开的对话框的参数
       dialogPara: {
         loadDialog: true,
+        isShowCancelBtn: false,
         title: '',
-        content: '<div id="myChart" style="width:100%; height:300px"></div>'
+        content: '<div id="myChart" style="width:100%; height:350px"></div>'
       },
       // 图表实例
       myChart: null,
@@ -98,13 +99,10 @@ export default {
       },
       option: {
         tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'shadow'
-          }
+          trigger: 'axis'
         },
         legend: {
-          data: ['日冲次数', '日冲成数', '日冲败数']
+          data: []
         },
         grid: {
           left: '3%',
@@ -116,6 +114,9 @@ export default {
           show: true,
           right: 20,
           feature: {
+            dataZoom: {
+              yAxisIndex: 'none'
+            },
             dataView: {
               show: true,
               iconStyle: {
@@ -173,15 +174,19 @@ export default {
             }
           }
         },
+        dataZoom: [{
+          startValue: '2019-01-14'
+        }, {
+          type: 'inside'
+        }],
         yAxis: {
           type: 'value',
           splitLine: { show: false }
         },
         xAxis: {
           type: 'category',
-          data: ['1/25', '1/26', '1/27', '1/28'], //要设置的
+          data: [], //要设置的
           axisLabel: {
-            interval: 0,
             textStyle: {
               fontSize: 12
             }
@@ -190,13 +195,7 @@ export default {
         series: [{
           name: '日冲次数',
           type: 'line',
-          label: {
-            normal: {
-              show: true,
-              position: 'top'
-            }
-          },
-          data: [10, 8, 10, 7], //要设置的
+          data: [], //要设置的
           itemStyle: {
             normal: {
               color: '#3cb1ff',
@@ -205,13 +204,7 @@ export default {
         }, {
           name: '日冲成数',
           type: 'line',
-          label: {
-            normal: {
-              show: true,
-              position: 'top'
-            }
-          },
-          data: [4, 3, 4, 5], //要设置的
+          data: [], //要设置的
           itemStyle: {
             normal: {
               color: '#27da99'
@@ -220,13 +213,7 @@ export default {
         }, {
           name: '日冲败数',
           type: 'line',
-          label: {
-            normal: {
-              show: true,
-              position: 'top'
-            }
-          },
-          data: [6, 5, 6, 2], //要设置的
+          data: [], //要设置的
           itemStyle: {
             normal: {
               color: '#ff7477'
@@ -296,14 +283,17 @@ export default {
     },
     // 获取图标数据
     getEchartsData() {
+      // 该echart 中的数据似乎跟list没有关系
       const constData = this.chartConst[this.chartType]
       this.dialogPara.title = constData.title
       this.dialogPara.loadDialog = true
       setTimeout(() => {
         // 这里拿到数据后要将数据保存到options中在调用setOption
         this.option.legend.data = constData.legend
+        this.option.xAxis.data = Api.STATIC.echarts.legend[this.chartType]
         constData.legend.forEach((v, i) => {
           this.option.series[i].name = v
+          this.option.series[i].data = Api.STATIC.echarts.data[this.chartType][i]
         })
         this.myChart.setOption(this.option)
         this.dialogPara.loadDialog = false

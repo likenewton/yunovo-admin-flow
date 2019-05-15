@@ -21,7 +21,7 @@
     </el-card>
     <el-card class="box-card clearfix" style="margin-bottom: 20px" shadow="never">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="mini" type="primary">导出</el-button>
+        <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
       <el-table v-loading="loadData" ref="multipleTable" :data="curTableData" border :default-sort="{prop: 'sell_num', order: 'descending'}" size="mini">
         <el-table-column show-overflow-tooltip label="机构名称" min-width="125">

@@ -26,6 +26,9 @@ const Renewdata = r => require.ensure([], () => r(require('@/components/statisti
 const Usedata = r => require.ensure([], () => r(require('@/components/statistics/usedata.vue')), 'chunk2') // 用量数据
 const Unicomdata = r => require.ensure([], () => r(require('@/components/statistics/unicomdata.vue')), 'chunk2') // 联通情况
 const Operatedata = r => require.ensure([], () => r(require('@/components/statistics/operatedata.vue')), 'chunk2') // 运营数据
+const Informsource = r => require.ensure([], () => r(require('@/components/statistics/informsource.vue')), 'chunk2') // 充值通知与支付来源统计
+// 财务报表
+const Rechargesum = r => require.ensure([], () => r(require('@/components/financial/rechargesum.vue')), 'chunk2') // 流量卡充值总额
 
 // chunk3(一般是表单增删改查页面)
 const Batchcreate = r => require.ensure([], () => r(require('@/components/forms/batchcreate.vue')), 'chunk3')
@@ -118,6 +121,20 @@ let router = new VueRouter({
         path: 'operatedata',
         name: 'operatedata',
         component: Operatedata,
+      }, {
+        path: 'informsource',
+        name: 'informsource',
+        component: Informsource,
+      }]
+    }, {
+      path: 'financial',
+      name: 'financial',
+      component: Blank,
+      redirect: '/asidemenu/financial/rechargesum',
+      children: [{
+        path: 'rechargesum',
+        name: 'rechargesum',
+        component: Rechargesum,
       }]
     }]
   }, {

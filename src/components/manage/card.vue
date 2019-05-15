@@ -44,8 +44,8 @@
     <el-card class="box-card clearfix" shadow="never">
       <el-button-group style="margin-bottom: 10px">
         <el-button size="mini" type="primary" @click="showEcharts">图表</el-button>
-        <el-button size="mini" type="primary">导入</el-button>
-        <el-button size="mini" type="primary">导出</el-button>
+        <el-button size="mini" type="warning">导入</el-button>
+        <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
       <el-table v-loading="loadData" ref="multipleTable" :data="curTableData" border :default-sort="{prop: 'exceed_time', order: 'descending'}" size="mini">
         <el-table-column fixed="left" show-overflow-tooltip label="卡ICCID" min-width="170">
@@ -145,7 +145,7 @@ export default {
               },
               //每个柱子的颜色即为colorList数组里的每一项，如果柱子数目多于colorList的长度，则柱子颜色循环使用该数组
               color(params) {
-                const colorList = ['#e92322', 'rgb(42,170,227)', 'rgb(25,46,94)', 'rgb(195,229,235)', 'grey', 'pink', 'lightblue'];
+                const colorList = Api.STATIC.colorList
                 return colorList[params.dataIndex]
               }
             },

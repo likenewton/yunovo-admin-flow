@@ -1,12 +1,12 @@
 <template>
   <el-dialog :visible="dialogVisible" @close="cancel">
-    <span slot="title">{{dialogPara.title}}</span>
-    <div v-loading="dialogPara.loadDialog" class="dialog_content">
-      <div slot v-html="dialogPara.content"></div>
+    <span slot="title">{{config.title}}</span>
+    <div v-loading="config.loadDialog" class="dialog_content">
+      <div slot v-html="config.content"></div>
     </div>
     <div slot="footer" class="dialog-footer">
-      <el-button size="small" @click="cancel">取 消</el-button>
-      <el-button size="small" type="primary" @click="makesure">确 定</el-button>
+      <el-button size="small" v-if="config.isShowCancelBtn" @click="cancel">{{config.cancelText}}</el-button>
+      <el-button size="small" v-if="config.isShowOkBtn" type="primary" @click="makesure">{{config.okText}}</el-button>
     </div>
   </el-dialog>
 </template>
@@ -16,35 +16,46 @@ import { mapState, mapMutations } from 'vuex'
 export default {
   name: 'vDialog',
   data() {
-    return {}
+    return {
+      defaultPara: {
+        loadDialog: false, // 默认情况下不显示加载动画
+        title: '标题',
+        content: '',
+        cancelText: '取 消',
+        isShowCancelBtn: true,
+        okText: '确 定',
+        isShowOkBtn: true,
+        // 确定按钮回调
+        okCb: () => true
+      }
+    }
   },
   props: {
     dialogPara: {
       type: Object,
-      default: {
-        loadDialog: false, // 默认情况下不显示加载动画
-        title: '标题',
-        content: ''
-      }
+      default: {}
     }
   },
-  mounted() {
-
-  },
+  mounted() {},
   computed: {
     ...mapState({
       dialogVisible: 'dialogVisible',
-    })
+    }),
+    config() {
+      return Object.assign(this.defaultPara, this.dialogPara)
+    }
   },
   methods: {
     ...mapMutations([
       'SET_DIALOGVISIBLE'
     ]),
     cancel() {
-      this.SET_DIALOGVISIBLE({dialogVisible: false})
+      this.SET_DIALOGVISIBLE({ dialogVisible: false })
     },
     makesure() {
-      this.SET_DIALOGVISIBLE({dialogVisible: false})
+      if (this.config.okCb()) {
+        this.SET_DIALOGVISIBLE({ dialogVisible: false })
+      }
     }
   }
 }

@@ -34,7 +34,7 @@
     </el-card>
     <el-card class="box-card clearfix" shadow="never">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="mini" type="primary">导出</el-button>
+        <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
       <el-table v-loading="loadData" ref="multipleTable" :data="curTableData" border :default-sort="{prop: 'import_time', order: 'descending'}" size="mini">
         <el-table-column fixed="left" show-overflow-tooltip label="卡ICCID" width="180">
@@ -42,8 +42,8 @@
             <el-button type="text">{{scope.row.iccid}}</el-button>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="ks_name" label="卡商名称" min-width="140"></el-table-column>
-        <el-table-column show-overflow-tooltip label="所属机构" min-width="140">
+        <el-table-column show-overflow-tooltip prop="ks_name" label="卡商名称" min-width="130"></el-table-column>
+        <el-table-column show-overflow-tooltip label="所属机构" min-width="135">
           <template slot-scope="scope">
             <el-button type="text">{{scope.row.jg_name}}</el-button>
           </template>
@@ -67,7 +67,7 @@
         <el-table-column show-overflow-tooltip prop="active_time" label="激活时间" show-overflow-tooltip width="151" sortable></el-table-column>
         <el-table-column show-overflow-tooltip prop="eq_time" label="设备更新时间" show-overflow-tooltip width="151" sortable></el-table-column>
         <el-table-column show-overflow-tooltip prop="stop_time" label="上次停用时间" show-overflow-tooltip width="151" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip label="过期时间" show-overflow-tooltip width="210">
+        <el-table-column show-overflow-tooltip label="过期时间" show-overflow-tooltip width="205">
           <template slot-scope="scope">
             <div v-html="calcLeftTime(scope.row.ex_time)"></div>
           </template>
