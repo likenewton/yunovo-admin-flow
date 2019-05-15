@@ -1,14 +1,15 @@
 // 过滤器
-Vue.filter('formatFlowUnit', function(count) {
-	console.log(count)
-  count -= 0
-  let htmlStr = ''
-  if (count < 0) {
-    htmlStr = `<span style="color:#e92322;font-weight:bold">无限制</span>`
-  } else if (count < 1024) {
-    htmlStr = `<span>${count}</span><span style="color:#008000;font-weight:bold">&nbsp;M</span>`
-  } else {
-    htmlStr = `<span>${(count / 1024).toFixed(3)}</span><span style="color:#0000FF;font-weight:bold">&nbsp;G</span>`
+Vue.filter('formatMoney', function(value, type) {
+  if (!value) return '0.00'
+  value = value.toString().replace(/^(\d*)$/, "$1.")
+  value = (value + "00").replace(/(\d*\.\d\d)\d*/, "$1")
+  value = value.replace(".", ",")
+  var re = /(\d)(\d{3},)/
+  while (re.test(value))
+    value = value.replace(re, "$1,$2")
+  value = value.replace(/,(\d\d)$/, ".$1")
+  if (type === 0) {
+    value = value.split(".")[0]
   }
-  return htmlStr
+  return value
 })

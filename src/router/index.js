@@ -24,6 +24,8 @@ const Stopcardlog = r => require.ensure([], () => r(require('@/components/statis
 const Useanomaly = r => require.ensure([], () => r(require('@/components/statistics/useanomaly.vue')), 'chunk2') // 用量异常
 const Renewdata = r => require.ensure([], () => r(require('@/components/statistics/renewdata.vue')), 'chunk2') // 续费数据
 const Usedata = r => require.ensure([], () => r(require('@/components/statistics/usedata.vue')), 'chunk2') // 用量数据
+const Unicomdata = r => require.ensure([], () => r(require('@/components/statistics/unicomdata.vue')), 'chunk2') // 联通情况
+const Operatedata = r => require.ensure([], () => r(require('@/components/statistics/operatedata.vue')), 'chunk2') // 运营数据
 
 // chunk3(一般是表单增删改查页面)
 const Batchcreate = r => require.ensure([], () => r(require('@/components/forms/batchcreate.vue')), 'chunk3')
@@ -108,6 +110,14 @@ let router = new VueRouter({
         path: 'usedata',
         name: 'usedata',
         component: Usedata,
+      }, {
+        path: 'unicomdata',
+        name: 'unicomdata',
+        component: Unicomdata,
+      }, {
+        path: 'operatedata',
+        name: 'operatedata',
+        component: Operatedata,
       }]
     }]
   }, {

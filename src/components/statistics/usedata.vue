@@ -77,6 +77,7 @@ export default {
       loadData: true,
       tabIndex: '0',
       pageSizes: Api.STATIC.pageSizes,
+      // 列表数据
       list: {
         data: [],
         pagesize: Api.STATIC.pageSizes[0],
@@ -88,6 +89,9 @@ export default {
       myChart_1: null,
       // 激活-未激活柱状图数据
       option_0: {
+        title: {
+          text: '流量卡激活统计'
+        },
         tooltip: {
           trigger: 'axis',
           axisPointer: {
@@ -95,7 +99,7 @@ export default {
           }
         },
         legend: {
-          data: ['激活', '未激活']
+          data: ['已激活', '未激活']
         },
         grid: {
           left: '3%',
@@ -105,8 +109,61 @@ export default {
         },
         toolbox: {
           show: true,
+          right: 20,
           feature: {
-            saveAsImage: { show: true }
+            dataView: {
+              show: true,
+              iconStyle: {
+                borderColor: '#9a83da'
+              },
+              emphasis: {
+                iconStyle: {
+                  borderColor: '#9a8dda'
+                }
+              },
+              optionToContent(opt) {
+                let axisData = opt.xAxis[0].data
+                let series = opt.series
+                let table = `<table style="width:100%;text-align:center"><tbody><tr>
+                  <td>机构名称</td>
+                    <td>${series[0].name}</td>
+                    <td>${series[1].name}</td>
+                  </tr>`
+                for (let i = 0, l = axisData.length; i < l; i++) {
+                  table += `<tr>
+                    <td>${axisData[i]}</td>
+                    <td>${series[0].data[i]}</td>
+                    <td>${series[1].data[i]}</td>
+                    </tr>`
+                }
+                table += '</tbody></table>'
+                return table
+              },
+              // 调用optionToContent之后一定要配置此项
+              contentToOption() {}
+            },
+            restore: {
+              show: true,
+              iconStyle: {
+                borderColor: '#ffc367'
+              },
+              emphasis: {
+                iconStyle: {
+                  borderColor: '#ffcf85'
+                }
+              }
+            },
+            saveAsImage: {
+              show: true,
+              iconStyle: {
+                borderColor: '#3cb1ff'
+              },
+              emphasis: {
+                iconStyle: {
+                  borderColor: '#63c1ff'
+                }
+              }
+            }
           }
         },
         yAxis: {
@@ -124,31 +181,53 @@ export default {
           },
         },
         series: [{
-            name: '激活',
+            name: '已激活',
             type: 'bar',
             stack: '总量',
             label: {
               normal: {
-                show: true
+                show: true,
+                formatter: ''
               }
             },
-            data: [] //要设置的
+            data: [], //要设置的
+            itemStyle: {
+              normal: {
+                color: '#ff7477',
+              }
+            }
           },
           {
             name: '未激活',
             type: 'bar',
             stack: '总量',
+            barMaxWidth: 100,
             label: {
               normal: {
-                show: true
+                show: true,
+                position: 'top',
+                formatter: '',
+                rich: {
+                  b: {
+                    color: '#ff7477'
+                  }
+                }
               }
             },
-            data: [] //要设置的
+            data: [], //要设置的
+            itemStyle: {
+              normal: {
+                color: '#3cb1ff'
+              }
+            }
           }
         ]
       },
       // 使用流量-未使用流量柱状图数据
       option_1: {
+        title: {
+          text: '流量卡使用统计'
+        },
         tooltip: {
           trigger: 'axis',
           axisPointer: {
@@ -181,8 +260,61 @@ export default {
         },
         toolbox: {
           show: true,
+          right: 20,
           feature: {
-            saveAsImage: { show: true }
+            dataView: {
+              show: true,
+              iconStyle: {
+                borderColor: '#9a83da'
+              },
+              emphasis: {
+                iconStyle: {
+                  borderColor: '#9a8dda'
+                }
+              },
+              optionToContent(opt) {
+                let axisData = opt.xAxis[0].data
+                let series = opt.series
+                let table = `<table style="width:100%;text-align:center"><tbody><tr>
+                  <td>机构名称</td>
+                    <td>${series[0].name}</td>
+                    <td>${series[1].name}</td>
+                  </tr>`
+                for (let i = 0, l = axisData.length; i < l; i++) {
+                  table += `<tr>
+                    <td>${axisData[i]}</td>
+                    <td>${series[0].data[i]}</td>
+                    <td>${series[1].data[i]}</td>
+                    </tr>`
+                }
+                table += '</tbody></table>'
+                return table
+              },
+              // 调用optionToContent之后一定要配置此项
+              contentToOption() {}
+            },
+            restore: {
+              show: true,
+              iconStyle: {
+                borderColor: '#ffc367'
+              },
+              emphasis: {
+                iconStyle: {
+                  borderColor: '#ffcf85'
+                }
+              }
+            },
+            saveAsImage: {
+              show: true,
+              iconStyle: {
+                borderColor: '#3cb1ff'
+              },
+              emphasis: {
+                iconStyle: {
+                  borderColor: '#63c1ff'
+                }
+              }
+            }
           }
         },
         yAxis: {
@@ -211,7 +343,12 @@ export default {
                 }
               }
             },
-            data: [] //要设置的
+            data: [], //要设置的
+            itemStyle: {
+              normal: {
+                color: '#ff7477',
+              }
+            }
           },
           {
             name: '使用流量',
@@ -225,7 +362,12 @@ export default {
                 }
               }
             },
-            data: [] //要设置的
+            data: [], //要设置的
+            itemStyle: {
+              normal: {
+                color: '#3cb1ff'
+              }
+            }
           }
         ]
       }
@@ -406,6 +548,9 @@ export default {
         if (this.tabIndex === '0') {
           data1.push(v.active_num)
           data2.push(v.noactive_num)
+          option.series[1].label.normal.formatter = function(series) {
+            return `{b|已激活：${option.series[0].data[series.dataIndex]}}\n{a|未激活：${series.data}}`
+          }
         } else {
           data1.push(v.lefttotal_flow)
           data2.push(v.usetotal_flow)

@@ -32,7 +32,9 @@ export default {
     // 获取跳转路由
     getBreadRouteName(title) {
       let routeName = ''
-      if (title === '首页') return 'home'
+      if (title === '首页') {
+        return 'home'
+      }
       this.isShowBreadCrumb = true
       this.asideData.forEach((v1) => {
         if (v1.title === title) {

@@ -5,7 +5,7 @@ Vue.use(Vuex)
 
 const state = {
   asideCollapse: false,
-  asideFlag: {},
+  asideFlag: [],
   dialogVisible: false
 }
 

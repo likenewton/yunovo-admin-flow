@@ -88,7 +88,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="tableData.length" class="clearfix">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
     <v-dialog :dialogPara="dialogPara"></v-dialog>
@@ -101,12 +101,14 @@ import { mapState, mapMutations } from 'vuex'
 export default {
   data() {
     return {
-      routeName: this.$route.name,
-      currentPage: 1,
-      pageSizes: Api.STATIC.pageSizes,
-      pagesize: Api.STATIC.pageSizes[1],
       loadData: true,
-      tableData: [],
+      pageSizes: Api.STATIC.pageSizes,
+      list: {
+        data: [],
+        pagesize: Api.STATIC.pageSizes[1],
+        currentPage: 1,
+        total: 0,
+      },
       formInline: {},
       // 要展开的对话框的参数
       dialogPara: {
@@ -166,7 +168,7 @@ export default {
   },
   mounted() {
     // 进入页面的时候请求数据
-    if (this.tableData.length === 0) {
+    if (this.list.data.length === 0) {
       this.getData()
     } else {
       this.loadData = false
@@ -177,10 +179,12 @@ export default {
       'SET_DIALOGVISIBLE'
     ]),
     handleSizeChange(val) {
-      this.pagesize = val
+      this.list.pagesize = val
+      this.getData()
     },
     handleCurrentChange(val) {
-      this.currentPage = val
+      this.list.currentPage = val
+      this.getData()
     },
     showEcharts() {
       this.SET_DIALOGVISIBLE({ dialogVisible: true })
@@ -194,35 +198,22 @@ export default {
     getData() {
       setTimeout(() => {
         // 数据请求成功
-        this.tableData = [{
+        this.list.data = [{
           id: 0,
           iccid: '8986011670901045280',
           ks_name: '智网吉林11位卡',
           jg_name: '卡仕特-西格玛',
           m_use: 564,
           total_use: 6462,
-          left_use: -1,
+          left_use: NaN,
           excard_time: '2019-04-15 12:54:14',
           active_time: '2019-04-15 12:54:14',
           eq_time: '2019-04-15 12:54:14',
           exceed_time: '2020-04-15 12:54:14',
           op_status: 1,
           active_status: 0
-        }, {
-          id: 1,
-          iccid: '8986011670901045281',
-          ks_name: '智网吉林11位卡',
-          jg_name: '卡仕特-西格玛',
-          m_use: 30.354,
-          total_use: 6462,
-          left_use: 1241,
-          excard_time: '2018-04-15 12:54:14',
-          active_time: '2018-04-15 12:54:14',
-          eq_time: '2018-04-15 12:54:14',
-          exceed_time: '2018-04-15 12:54:14',
-          op_status: 0,
-          active_status: 1
         }]
+        this.list.total = this.list.data.length
         this.loadData = false
       }, 1000)
     },
@@ -242,7 +233,7 @@ export default {
       dialogVisible: 'dialogVisible',
     }),
     curTableData() {
-      return this.tableData.slice((this.currentPage - 1) * this.pagesize, this.currentPage * this.pagesize)
+      return this.list.data.slice((this.list.currentPage - 1) * this.list.pagesize, this.list.currentPage * this.list.pagesize)
     }
   }
 }

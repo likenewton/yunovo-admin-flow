@@ -3,7 +3,7 @@
     <el-menu class="menu-container" :default-active="selectData[2]" :default-openeds="[selectData[1]]" :collapse="asideCollapse" :collapse-transition="true" unique-opened>
       <!-- 首页 -->
       <router-link :to="{name: 'home'}">
-        <el-menu-item class="no-submenu" :class="{'is-active': routeName === 'home'}">
+        <el-menu-item class="no-submenu" index="首页">
           <i class="menu-icon el-icon-fontshouye"></i>
           <span class="title-text">首页</span>
         </el-menu-item>
@@ -63,18 +63,16 @@ export default {
       this.SET_ASIDECOLLAPSE({ asideCollapse: !this.asideCollapse })
     },
     testFn() {
-      this.SET_ASIDEFLAG({ asideFlag: this.selectData })
+      if (this.selectData[0]) {
+        this.SET_ASIDEFLAG({ asideFlag: this.selectData })
+      } else {
+        this.SET_ASIDEFLAG({ asideFlag: [] })
+      }
     }
   },
   watch: {
     '$route': function(newVal, oldVal) {
       this.testFn()
-      // 因为目前还不知道el-aside 中如何移除is-active属性（在切换到首页的时候），先用jq暴力移除
-      this.$nextTick(() => {
-        if ($('.no-submenu').hasClass('is-active')) {
-          $('.el-submenu').removeClass('is-active')
-        }
-      })
     }
   }
 }

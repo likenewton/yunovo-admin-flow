@@ -81,7 +81,7 @@ module.exports = {
   // 获取页面面包屑数组
   getBreadArr(name, asideData) {
     let breadArr = []
-    if (name === 'home') return breadArr
+    if (name === 'home') return [, , '首页']
     asideData.forEach((v1) => {
       if (v1.name === name) {
         breadArr.push('首页', v1.title)
