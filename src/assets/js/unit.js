@@ -151,5 +151,63 @@ module.exports = {
       htmlStr = `${time} <span style="display:inline-block;color:#008000;font-weight:bold"">(${Math.ceil((a - now) / 24 / 3600000)}天)</span>`
     }
     return htmlStr
+  },
+  getColorList(para, count) {
+    let colorList = ['#3cb1ff', '#ffc367', '#ff7477', '#27da99', '#3ecec9', '#9a83da']
+    let colorData = {
+      primary: '#3cb1ff',
+      warning: '#ffc367',
+      danger: '#ff7477',
+      success: '#27da99',
+      editor: '#3ecec9',
+      purple: '#9a83da'
+    }
+    if (!count) {
+      if (!para) return colorList
+      else if (typeof para === 'string') {
+        return colorData[para]
+      } else if (Array.isArray(para)) {
+        let arr = []
+        para.forEach((v) => {
+          arr.push(colorData[v])
+        })
+        return arr
+      }
+    } else {
+      if (typeof para === 'string') {
+        let arr = []
+        for (let i = 0; i < count; i++) {
+          arr.push(colorData[para])
+        }
+        return arr
+      }
+      if (Array.isArray(para)) {
+        if (para.length === 0) {
+          let arr = []
+          for (let i = 0; i < Math.ceil(count / 6); i++) {
+            arr = arr.concat(colorList)
+          }
+          return arr.slice(0, count)
+        } else {
+          let arr = []
+          for (let i = 0; i < Math.ceil(count / para.length); i++) {
+            arr = arr.concat(para)
+          }
+          return arr.slice(0, count)
+        }
+      }
+    }
+  },
+  // 验证邮箱地址
+  validatorEmall(value) {
+    return /^([0-9A-Za-z\-_\.]+)@([0-9a-z]+\.[a-z]{2,3}(\.[a-z]{2})?)$/.test(value)
+  },
+  // 验证电话号码
+  validatorPhoneNumber(value) {
+    return /^1[3|4|5|6|8|9][0-9]\d{8}$/.test(value)
+  },
+  // 验证密码格式
+  validatorPassword(value) {
+    return /^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&*]+$)(?![a-zA-z\d]+$)(?![a-zA-z!@#$%^&*]+$)(?![\d!@#$%^&*]+$)[a-zA-Z\d!@#$%^&*]+$/.test(value) && value.length >= 6
   }
 }

@@ -17,7 +17,7 @@
     </el-card>
     <el-card class="box-card clearfix" shadow="never">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="mini" type="primary" @click="newAdd">新增</el-button>
+        <el-button size="mini" type="success" @click="newAdd">新增</el-button>
       </el-button-group>
       <el-table v-loading="loadData" ref="multipleTable" :data="curTableData" border :default-sort="{prop: 'jg_name', order: 'descending'}" size="mini">
         <el-table-column show-overflow-tooltip prop="jg_name" label="机构名称" width="140"></el-table-column>

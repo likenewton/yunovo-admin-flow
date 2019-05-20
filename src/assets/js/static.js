@@ -68,6 +68,32 @@ module.exports = {
     children: [{
       title: '充值总额',
       name: 'rechargesum'
+    }, {
+      title: '月度充值',
+      name: 'rechargemonth'
+    }, {
+      title: '充值明细',
+      name: 'rechargeParticulars'
+    }, {
+      title: '机构充值',
+      name: 'jgrecharge'
+    }, {
+      title: '套餐充值',
+      name: 'comborecharge'
+    }]
+  }, {
+    title: '用户权限',
+    icon: 'el-icon-fontyonghu1',
+    name: 'userauth',
+    children: [{
+      title: '用户管理',
+      name: 'userManage'
+    }, {
+      title: '机构管理',
+      name: 'jgManage'
+    }, {
+      title: '权限设置',
+      name: 'authManage'
     }]
   }],
   // 必须、误删
@@ -86,11 +112,35 @@ module.exports = {
     },
     name: 'rechargecomboset'
   }, {
+    title: {
+      create: '新增用户',
+      update: '编辑用户',
+      check: '预览用户'
+    },
+    name: 'createuser'
+  }, {
+    title: {
+      create: '新增机构',
+      update: '编辑机构',
+      check: '预览机构'
+    },
+    name: 'createjg'
+  }, {
+    title: {
+      create: '新增权限',
+      update: '编辑机权限',
+      check: '预览权限'
+    },
+    name: 'createauth'
+  }, {
     title: '流量预警设置',
     name: 'flowwarningset'
   }, {
     title: '充值详情列表',
     name: 'rechargeDetail'
+  }, {
+    title: '充值总额统计',
+    name: 'iccidList'
   }],
   // 分页器公共配置项
   pageSizes: [10, 20, 30, 40],

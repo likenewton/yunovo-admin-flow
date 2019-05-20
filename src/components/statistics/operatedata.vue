@@ -61,6 +61,8 @@
 import Api from 'assets/js/api.js'
 import { mapState, mapMutations } from 'vuex'
 
+const _echart = new Api.ECHARTS()
+
 export default {
   data() {
     return {
@@ -96,131 +98,7 @@ export default {
           title: '流量卡运营激活统计图表',
           legend: ['激活总数', '非设备激活', '设备端激活']
         },
-      },
-      option: {
-        tooltip: {
-          trigger: 'axis'
-        },
-        legend: {
-          data: []
-        },
-        grid: {
-          left: '3%',
-          right: '4%',
-          bottom: '3%',
-          containLabel: true
-        },
-        toolbox: {
-          show: true,
-          right: 20,
-          feature: {
-            dataZoom: {
-              yAxisIndex: 'none'
-            },
-            dataView: {
-              show: true,
-              iconStyle: {
-                borderColor: '#9a83da'
-              },
-              emphasis: {
-                iconStyle: {
-                  borderColor: '#9a8dda'
-                }
-              },
-              optionToContent(opt) {
-                let axisData = opt.xAxis[0].data
-                let series = opt.series
-                let table = `<table style="width:100%;text-align:center"><tbody><tr>
-                  <td>时间</td>
-                    <td>${series[0].name}</td>
-                    <td>${series[1].name}</td>
-                    <td>${series[2].name}</td>
-                  </tr>`
-                for (let i = 0, l = axisData.length; i < l; i++) {
-                  table += `<tr>
-                    <td>${axisData[i]}</td>
-                    <td>${series[0].data[i]}</td>
-                    <td>${series[1].data[i]}</td>
-                    <td>${series[2].data[i]}</td>
-                    </tr>`
-                }
-                table += '</tbody></table>'
-                return table
-              },
-              // 调用optionToContent之后一定要配置此项
-              contentToOption() {}
-            },
-            restore: {
-              show: true,
-              iconStyle: {
-                borderColor: '#ffc367'
-              },
-              emphasis: {
-                iconStyle: {
-                  borderColor: '#ffcf85'
-                }
-              }
-            },
-            saveAsImage: {
-              show: true,
-              iconStyle: {
-                borderColor: '#3cb1ff'
-              },
-              emphasis: {
-                iconStyle: {
-                  borderColor: '#63c1ff'
-                }
-              }
-            }
-          }
-        },
-        dataZoom: [{
-          startValue: '2019-01-14'
-        }, {
-          type: 'inside'
-        }],
-        yAxis: {
-          type: 'value',
-          splitLine: { show: false }
-        },
-        xAxis: {
-          type: 'category',
-          data: [], //要设置的
-          axisLabel: {
-            textStyle: {
-              fontSize: 12
-            }
-          },
-        },
-        series: [{
-          name: '日冲次数',
-          type: 'line',
-          data: [], //要设置的
-          itemStyle: {
-            normal: {
-              color: '#3cb1ff',
-            }
-          }
-        }, {
-          name: '日冲成数',
-          type: 'line',
-          data: [], //要设置的
-          itemStyle: {
-            normal: {
-              color: '#27da99'
-            }
-          }
-        }, {
-          name: '日冲败数',
-          type: 'line',
-          data: [], //要设置的
-          itemStyle: {
-            normal: {
-              color: '#ff7477'
-            }
-          }
-        }]
-      },
+      }
     }
   },
   mounted() {
@@ -281,21 +159,22 @@ export default {
         this.loadData = false
       }, 1000)
     },
-    // 获取图标数据
+    // 获取图表数据
     getEchartsData() {
       // 该echart 中的数据似乎跟list没有关系
       const constData = this.chartConst[this.chartType]
       this.dialogPara.title = constData.title
       this.dialogPara.loadDialog = true
       setTimeout(() => {
-        // 这里拿到数据后要将数据保存到options中在调用setOption
-        this.option.legend.data = constData.legend
-        this.option.xAxis.data = Api.STATIC.echarts.legend[this.chartType]
-        constData.legend.forEach((v, i) => {
-          this.option.series[i].name = v
-          this.option.series[i].data = Api.STATIC.echarts.data[this.chartType][i]
+        _echart.setOption({
+          legend: constData.legend,
+          xAxis: { data: Api.STATIC.echarts.legend[this.chartType] },
+          series: [{ data: Api.STATIC.echarts.data[this.chartType][0] },
+            { data: Api.STATIC.echarts.data[this.chartType][1] },
+            { data: Api.STATIC.echarts.data[this.chartType][2] }
+          ]
         })
-        this.myChart.setOption(this.option)
+        this.myChart.setOption(_echart.getOption())
         this.dialogPara.loadDialog = false
       }, 1000)
     },

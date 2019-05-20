@@ -29,14 +29,26 @@ const Operatedata = r => require.ensure([], () => r(require('@/components/statis
 const Informsource = r => require.ensure([], () => r(require('@/components/statistics/informsource.vue')), 'chunk2') // 充值通知与支付来源统计
 // 财务报表
 const Rechargesum = r => require.ensure([], () => r(require('@/components/financial/rechargesum.vue')), 'chunk2') // 流量卡充值总额
+const Rechargemonth = r => require.ensure([], () => r(require('@/components/financial/rechargemonth.vue')), 'chunk2') // 充值月度统计
+const RechargeParticulars = r => require.ensure([], () => r(require('@/components/financial/rechargeParticulars.vue')), 'chunk2') // 充值月度统计
+const Jgrecharge = r => require.ensure([], () => r(require('@/components/financial/jgrecharge.vue')), 'chunk2') // 机构充值统计
+const Comborecharge = r => require.ensure([], () => r(require('@/components/financial/comborecharge.vue')), 'chunk2') // 套餐充值
+// 权限管理
+const UserManage = r => require.ensure([], () => r(require('@/components/userauth/userManage.vue')), 'chunk2') // 用户管理
+const JgManage = r => require.ensure([], () => r(require('@/components/userauth/jgManage.vue')), 'chunk2') // 机构管理
+const AuthManage = r => require.ensure([], () => r(require('@/components/userauth/authManage.vue')), 'chunk2') // 权限管理
 
 // chunk3(一般是表单增删改查页面)
 const Batchcreate = r => require.ensure([], () => r(require('@/components/forms/batchcreate.vue')), 'chunk3')
 const Rechargecomboset = r => require.ensure([], () => r(require('@/components/forms/rechargecomboset.vue')), 'chunk3')
 const Flowwarningset = r => require.ensure([], () => r(require('@/components/forms/flowwarningset.vue')), 'chunk3')
+const Createuser = r => require.ensure([], () => r(require('@/components/forms/createuser.vue')), 'chunk3')
+const Createjg = r => require.ensure([], () => r(require('@/components/forms/createjg.vue')), 'chunk3')
+const Createauth = r => require.ensure([], () => r(require('@/components/forms/createauth.vue')), 'chunk3')
 
 // chunk4(展示列表)
 const RechargeDetail = r => require.ensure([], () => r(require('@/components/list/rechargeDetail.vue')), 'chunk4')
+const IccidList = r => require.ensure([], () => r(require('@/components/list/iccidList.vue')), 'chunk4')
 
 let router = new VueRouter({
   // 路由第一大类必须是侧边栏对应路由，非侧边栏的路由从第二大类开始部署
@@ -92,39 +104,39 @@ let router = new VueRouter({
       children: [{
         path: 'monthuse',
         name: 'monthuse',
-        component: Monthuse,
+        component: Monthuse
       }, {
         path: 'deadstatus',
         name: 'deadstatus',
-        component: Deadstatus,
+        component: Deadstatus
       }, {
         path: 'stopcardlog',
         name: 'stopcardlog',
-        component: Stopcardlog,
+        component: Stopcardlog
       }, {
         path: 'useanomaly',
         name: 'useanomaly',
-        component: Useanomaly,
+        component: Useanomaly
       }, {
         path: 'renewdata',
         name: 'renewdata',
-        component: Renewdata,
+        component: Renewdata
       }, {
         path: 'usedata',
         name: 'usedata',
-        component: Usedata,
+        component: Usedata
       }, {
         path: 'unicomdata',
         name: 'unicomdata',
-        component: Unicomdata,
+        component: Unicomdata
       }, {
         path: 'operatedata',
         name: 'operatedata',
-        component: Operatedata,
+        component: Operatedata
       }, {
         path: 'informsource',
         name: 'informsource',
-        component: Informsource,
+        component: Informsource
       }]
     }, {
       path: 'financial',
@@ -134,7 +146,41 @@ let router = new VueRouter({
       children: [{
         path: 'rechargesum',
         name: 'rechargesum',
-        component: Rechargesum,
+        component: Rechargesum
+      }, {
+        path: 'rechargemonth',
+        name: 'rechargemonth',
+        component: Rechargemonth
+      }, {
+        path: 'rechargeParticulars',
+        name: 'rechargeParticulars',
+        component: RechargeParticulars
+      }, {
+        path: 'jgrecharge',
+        name: 'jgrecharge',
+        component: Jgrecharge
+      }, {
+        path: 'comborecharge',
+        name: 'comborecharge',
+        component: Comborecharge
+      }]
+    }, {
+      path: 'userauth',
+      name: 'userauth',
+      component: Blank,
+      redirect: '/asidemenu/userauth/userManage',
+      children: [{
+        path: 'userManage',
+        name: 'userManage',
+        component: UserManage
+      }, {
+        path: 'jgManage',
+        name: 'jgManage',
+        component: JgManage
+      }, {
+        path: 'authManage',
+        name: 'authManage',
+        component: AuthManage
       }]
     }]
   }, {
@@ -154,6 +200,18 @@ let router = new VueRouter({
       path: 'flowwarningset',
       name: 'flowwarningset',
       component: Flowwarningset
+    }, {
+      path: 'createuser',
+      name: 'createuser',
+      component: Createuser
+    }, {
+      path: 'createjg',
+      name: 'createjg',
+      component: Createjg
+    }, {
+      path: 'createauth',
+      name: 'createauth',
+      component: Createauth
     }]
   }, {
     // 展示列表
@@ -164,6 +222,10 @@ let router = new VueRouter({
       path: 'rechargeDetail',
       name: 'rechargeDetail',
       component: RechargeDetail
+    }, {
+      path: 'iccidList',
+      name: 'iccidList',
+      component: IccidList
     }]
   }, {
     path: '',

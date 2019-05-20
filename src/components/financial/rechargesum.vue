@@ -42,7 +42,7 @@
         </el-table-column>
         <el-table-column show-overflow-tooltip label="操作" show-overflow-tooltip min-width="80">
           <template slot-scope="scope">
-            <el-button type="text">详情</el-button>
+            <el-button type="text" @click="showDetail">详情</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -149,7 +149,8 @@ export default {
                 return table
               },
               // 调用optionToContent之后一定要配置此项
-              contentToOption() {}
+              contentToOption() {},
+              buttonColor: '#ff7477'
             },
             restore: {
               show: true,
@@ -241,6 +242,9 @@ export default {
     handleCurrentChange(val) {
       this.list.currentPage = val
       this.getData()
+    },
+    showDetail() {
+      this.$router.push({ name: 'iccidList' })
     },
     // 格式化option
     formatter(series) {

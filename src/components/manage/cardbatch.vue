@@ -24,7 +24,7 @@
     </el-card>
     <el-card class="box-card clearfix" shadow="never">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="mini" type="primary" @click="createBatch">新增</el-button>
+        <el-button size="mini" type="success" @click="createBatch">新增</el-button>
       </el-button-group>
       <el-table v-loading='loadData' ref="multipleTable" :data="curTableData" border :default-sort="{prop: 'exceed_time', order: 'descending'}" size="mini">
         <el-table-column show-overflow-tooltip prop="batch_code" label="批次编号" min-width="120"></el-table-column>

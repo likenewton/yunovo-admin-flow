@@ -8,24 +8,6 @@
         <span class="item">累记充值量：<span v-html="formatFlowUnit(0)"></span></span>
         <span class="item">剩余流量：<span v-html="formatFlowUnit(1223.1)"></span></span>
         <span class="item">设备更新时间：2019-05-06 09:51:57</span>
-       <!--  <el-col :span="6">
-          <span>ICCID：89860918700307506235</span>
-        </el-col>
-        <el-col :span="3">
-          <span>累计用量：<span v-html="formatFlowUnit(6806)"></span></span>
-        </el-col>
-        <el-col :span="3">
-          <span>当月用量：<span v-html="formatFlowUnit(20.5)"></span></span>
-        </el-col>
-        <el-col :span="3">
-          <span>累记充值量：<span v-html="formatFlowUnit(0)"></span></span>
-        </el-col>
-        <el-col :span="3">
-          <span>剩余流量：<span v-html="formatFlowUnit(1223.1)"></span></span>
-        </el-col>
-        <el-col :span="6">
-          <span>设备更新时间：2019-05-06 09:51:57</span>
-        </el-col> -->
       </el-row>
       <el-tabs @tab-click="changeTab">
         <!-- 充值详情列表 -->
@@ -58,19 +40,19 @@
             </el-form-item>
           </el-form>
           <el-table v-loading="loadData" :data="curTableData" border :default-sort="{prop: 'pay_time', order: 'descending'}" size="mini">
-            <el-table-column show-overflow-tooltip label="分配总流量" width="82">
+            <el-table-column show-overflow-tooltip label="分配总流量" min-width="95">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.total_flow)"></div>
               </template>
             </el-table-column>
-            <el-table-column show-overflow-tooltip prop="flow_price" label="流量价格" width="80"></el-table-column>
+            <el-table-column show-overflow-tooltip prop="flow_price" label="流量价格" min-width="95"></el-table-column>
             <el-table-column show-overflow-tooltip prop="pay_way" label="付款方式" show-overflow-tooltip min-width="94" sortable></el-table-column>
             <el-table-column show-overflow-tooltip prop="pay_status" label="支付状态" show-overflow-tooltip min-width="94" sortable></el-table-column>
             <el-table-column show-overflow-tooltip prop="pay_code" label="支付流水号" show-overflow-tooltip min-width="110"></el-table-column>
             <el-table-column show-overflow-tooltip prop="recharge_remark" label="充值备注" show-overflow-tooltip min-width="150"></el-table-column>
             <el-table-column show-overflow-tooltip prop="recharge_time" label="充值时间" show-overflow-tooltip width="140" sortable></el-table-column>
             <el-table-column show-overflow-tooltip prop="pay_time" label="付款时间" show-overflow-tooltip width="140" sortable></el-table-column>
-            <el-table-column show-overflow-tooltip label="过期时间" show-overflow-tooltip width="190">
+            <el-table-column show-overflow-tooltip label="过期时间" show-overflow-tooltip width="210">
               <template slot-scope="scope">
                 <div v-html="calcLeftTime(scope.row.ex_time)"></div>
               </template>
@@ -109,7 +91,7 @@
               </template>
             </el-table-column>
             <el-table-column show-overflow-tooltip prop="fp_time" label="分配时间" show-overflow-tooltip min-width="145" sortable></el-table-column>
-            <el-table-column show-overflow-tooltip label="过期时间" show-overflow-tooltip min-width="180">
+            <el-table-column show-overflow-tooltip label="过期时间" show-overflow-tooltip min-width="210">
               <template slot-scope="scope">
                 <div v-html="calcLeftTime(scope.row.ex_time)"></div>
               </template>

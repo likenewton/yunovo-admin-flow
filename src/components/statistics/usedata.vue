@@ -140,7 +140,8 @@ export default {
                 return table
               },
               // 调用optionToContent之后一定要配置此项
-              contentToOption() {}
+              contentToOption() {},
+              buttonColor: '#ff7477'
             },
             restore: {
               show: true,
@@ -291,7 +292,8 @@ export default {
                 return table
               },
               // 调用optionToContent之后一定要配置此项
-              contentToOption() {}
+              contentToOption() {},
+              buttonColor: '#ff7477'
             },
             restore: {
               show: true,

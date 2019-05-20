@@ -3,7 +3,7 @@
     <img class="logo" src="../../assets/images/LOGO-188X56.png">
     <i v-if="showMenu" class="el-icon-fontcaidan1 pointer menu-icon" @click="collapseAside"></i>
     <!-- <el-button class="fr exit-btn" size="mini" type="primary" icon="el-icon-circle-plus-outline">退出</el-button> -->
-    <el-tooltip v-if="showMenu" class="sysmenu fr pointer" effect="dark" content="回到系统菜单" placement="bottom-end">
+    <el-tooltip v-if="showMenu" class="sysmenu fr pointer" effect="dark" content="回到门户" placement="bottom-end">
       <i class="el-icon-fonttuichu1" style="color:#606266" @click="toSysmeum"></i>
     </el-tooltip>
     <el-dropdown trigger="click" class="pointer fr" @command="handleCommand">

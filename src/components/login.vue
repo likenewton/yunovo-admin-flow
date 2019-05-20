@@ -100,9 +100,9 @@ export default {
           message: '请输入验证码',
           trigger: 'blur'
         }, {
-          min: 4,
-          max: 4,
-          message: '验证码长度为4个字符',
+          min: 6,
+          max: 6,
+          message: '验证码长度为6个字符',
           trigger: 'blur'
         }]
       }
@@ -111,9 +111,7 @@ export default {
   mounted() {
     Api.UNITS.getSize()
   },
-  computed: {
-
-  },
+  computed: {},
   methods: {
     login(formName) {
       this.$refs[formName].validate((valid) => {

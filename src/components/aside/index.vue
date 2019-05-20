@@ -21,11 +21,8 @@
 </template>
 <script>
 export default {
-  name: 'OPERATIONPLATFORM',
   data() {
-    return {
-
-    }
+    return {}
   }
 }
 

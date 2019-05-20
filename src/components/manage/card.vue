@@ -97,6 +97,7 @@
 <script>
 import Api from 'assets/js/api.js'
 import { mapState, mapMutations } from 'vuex'
+const _echart = new Api.ECHARTS()
 
 export default {
   data() {
@@ -113,6 +114,7 @@ export default {
       // 要展开的对话框的参数
       dialogPara: {
         loadDialog: true,
+        isShowCancelBtn: false,
         title: '机构流量ICCID卡统计图表',
         content: '<div id="myChart" style="width:100%; height:300px"></div>'
       },
@@ -127,6 +129,12 @@ export default {
           type: 'value',
           splitLine: { show: false }
         },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
         tooltip: {
           trigger: 'axis',
           axisPointer: {
@@ -134,6 +142,7 @@ export default {
           },
         },
         series: [{
+          name: '机构流量ICCID卡',
           data: [120, 200, 150, 80, 70, 110, 130],
           type: 'bar',
           itemStyle: {
@@ -145,8 +154,7 @@ export default {
               },
               //每个柱子的颜色即为colorList数组里的每一项，如果柱子数目多于colorList的长度，则柱子颜色循环使用该数组
               color(params) {
-                const colorList = Api.STATIC.colorList
-                return colorList[params.dataIndex]
+                return Api.UNITS.getColorList([], 40)[params.dataIndex]
               }
             },
             //鼠标悬停时：
@@ -157,12 +165,7 @@ export default {
             }
           },
         }],
-        toolbox: { //可视化的工具箱
-          show: true,
-          feature: {
-            saveAsImage: { show: true }
-          }
-        },
+        toolbox: _echart.getOption().toolbox
       }
     }
   },
