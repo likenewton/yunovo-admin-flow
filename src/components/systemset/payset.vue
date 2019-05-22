@@ -2,20 +2,20 @@
   <div>
     <el-card class="box-card clearfix" shadow="never">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="mini" type="success" @click="createAuth">新增</el-button>
-        <el-button size="mini" type="danger" @click="deleteData">删除</el-button>
+        <el-button size="mini" type="danger" @click="deleteData">卸载</el-button>
       </el-button-group>
-      <el-table v-loading="loadData" ref="multipleTable" :data="curTableData" border @selection-change="handleSelectionChange" :default-sort="{prop: 'authgroup_name', order: 'descending'}" size="mini">
+      <el-table class="payset_page" v-loading="loadData" ref="multipleTable" :data="curTableData" border @selection-change="handleSelectionChange" :default-sort="{prop: 'pay_way', order: 'descending'}" size="mini">
         <el-table-column fixed="left" type="selection" min-width="60"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="authgroup_name" label="权限组名称" show-overflow-tooltip min-width="150" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="authgroup_desc" label="权限组描述" show-overflow-tooltip min-width="300"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="add_time" label="添加时间" show-overflow-tooltip min-width="150"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="update_time" label="更改时间" show-overflow-tooltip min-width="150"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="create_p" label="创建者" show-overflow-tooltip min-width="80"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="update_p" label="更改者" show-overflow-tooltip min-width="80"></el-table-column>
-        <el-table-column fixed="right" show-overflow-tooltip label="管理" min-width="60">
+        <el-table-column show-overflow-tooltip label="支付方式" show-overflow-tooltip min-width="150" sortable>
           <template slot-scope="scope">
-            <el-button type="text" @click="updateAuth">编辑</el-button>
+            <i :class="scope.row.icon" class="pay_icon"></i>
+            <span>{{scope.row.pay_way}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column fixed="right" show-overflow-tooltip label="管理" width="140">
+          <template slot-scope="scope">
+            <el-button type="text" @click="editor(scope.row.id)">编辑</el-button>
+            <el-button type="text" @click="deleteSingle(scope.row.id)">卸载</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -69,18 +69,18 @@ export default {
     handleSelectionChange(selectData) {
       this.selectData = selectData
     },
-    createAuth() {
-      this.$router.push({ name: 'createauth' })
+    editor(id) {
+      this.$router.push({ name: id })
     },
-    updateAuth() {
-      this.$router.push({ name: 'createauth', query: { type: 'update' } })
+    deleteSingle(id) {
+
     },
-    // 删除数据
+    // 批量卸载
     deleteData() {
       if (this.selectData.length === 0) {
-        this.$message.warning('请先勾选要删除的项')
+        this.$message.warning('请先勾选要卸载的项')
       } else {
-        this.$confirm(`您选中了${this.selectData.length}项，是否确认删除?`, '提示', {
+        this.$confirm(`您选中了${this.selectData.length}项，是否确认卸载?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -102,13 +102,13 @@ export default {
       setTimeout(() => {
         // 数据请求成功
         this.list.data = [{
-          id: 0,
-          authgroup_name: '管理员－超级组',
-          authgroup_desc: '拥有最高权限，主管生杀大权，至高权利！',
-          add_time: '2019-05-12 21:10:01',
-          update_time: '2019-05-12 21:10:01',
-          create_p: 'Newton',
-          update_p: 'Newton'
+          id: 'alipay',
+          pay_way: '支付宝支付',
+          icon: 'el-icon-fontalipay'
+        }, {
+          id: 'wechart',
+          pay_way: '微信支付',
+          icon: 'el-icon-fontweixinzhifu1'
         }]
         this.list.total = this.list.data.length
         this.loadData = false
@@ -131,8 +131,17 @@ export default {
   margin: 25px 40px 0 0;
 }
 
-.el-table {
-  .table-head {}
+.payset_page {
+  .pay_icon {
+    font-size: 22px;
+    vertical-align: middle;
+    &.el-icon-fontalipay {
+      color: #00aaee;
+    }
+    &.el-icon-fontweixinzhifu1 {
+      color: #09bb07;
+    }
+  }
 
   td {
     * {

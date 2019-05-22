@@ -16,19 +16,19 @@
         <span slot="label">可控机构：</span>
         <el-radio v-model="formInline.jg_name" :label="1">所有机构</el-radio>
         <el-radio v-model="formInline.jg_name" :label="2">选择机构</el-radio>
-        <el-button v-show="formInline.jg_name === 2" type="primary" @click="openChoiceJg">选择可控机构</el-button>
+        <el-button v-show="formInline.jg_name === 2" type="primary" @click="openChoice(0)">选择可控机构</el-button>
       </el-form-item>
       <el-form-item prop="authgroup_desc">
         <span slot="label">查看权限：</span>
         <el-radio v-model="formInline.read_auth" :label="1">所有权限</el-radio>
         <el-radio v-model="formInline.read_auth" :label="2">选择权限</el-radio>
-        <el-button v-show="formInline.read_auth === 2" type="primary" @click="openChoiceJg">选择查看权限</el-button>
+        <el-button v-show="formInline.read_auth === 2" type="primary" @click="openChoice(1)">选择查看权限</el-button>
       </el-form-item>
       <el-form-item prop="authgroup_desc">
         <span slot="label">更改权限：</span>
         <el-radio v-model="formInline.write_auth" :label="1">所有权限</el-radio>
         <el-radio v-model="formInline.write_auth" :label="2">选择权限</el-radio>
-        <el-button v-show="formInline.write_auth === 2" type="primary" @click="openChoiceJg">选择更改权限</el-button>
+        <el-button v-show="formInline.write_auth === 2" type="primary" @click="openChoice(2)">选择更改权限</el-button>
       </el-form-item>
       <el-form-item>
         <el-button @click="$router.back()">返回</el-button>
@@ -36,12 +36,12 @@
         <el-button type="warning" @click="resetForm('ruleForm')">重置</el-button>
       </el-form-item>
     </el-form>
-    <el-dialog :visible="dialogVisible" @close="cancelJgChoice">
-      <span slot="title">机构列表</span>
+    <el-dialog :visible="dialogVisible" @close="cancelChoice">
+      <span slot="title">{{list[choiceType].title}}</span>
       <div v-loading="loadDialog" class="dialog_content">
         <div slot>
-          <el-checkbox-group v-model="jgCheckedList" @change="handleJgChoiceChange" :style="{'maxHeight': winHeight/2 + 'px'}">
-            <el-checkbox v-for="item in jgList" :label="item.id" :key="item.id">{{item.text}}-{{item.id}}</el-checkbox>
+          <el-checkbox-group v-model="list[choiceType].checked" @change="handleChoiceChange" :style="{'maxHeight': winHeight/2 + 'px'}">
+            <el-checkbox v-for="item in list[choiceType].data" :label="item.id" :key="item.id">{{item.text}}-{{item.id}}</el-checkbox>
           </el-checkbox-group>
         </div>
       </div>
@@ -61,16 +61,33 @@ export default {
       dialogVisible: false,
       loadDialog: true,
       isLoadData: true,
-      formInline: {
-        jg_name: 2,
-        read_auth: 2,
-        write_auth: 2
+      choiceType: 0,
+      // 数据列表
+      list: {
+        '0': {
+          title: '机构列表',
+          data: [],
+          checked: [],
+          temp: []
+        },
+        '1': {
+          title: '可查看权限列表',
+          data: [],
+          checked: [],
+          temp: []
+        },
+        '2': {
+          title: '可更改权限列表',
+          data: [],
+          checked: [],
+          temp: []
+        }
       },
-      // 机构列表
-      jgList: [],
-      // 选中的机构列表
-      jgCheckedList: [],
-      tempCheckedList: [],
+      formInline: {
+        jg_name: 1,
+        read_auth: 1,
+        write_auth: 1
+      },
       rules: {
         authgroup_name: [{
           required: true,
@@ -84,20 +101,7 @@ export default {
   mounted() {
     let isUpdate = this.$route.query.type === 'update'
     if (isUpdate) {
-      // 如果是编辑就获取数据再展示
-      setTimeout(() => {
-        this.formInline = {
-          jg_name: '卡仕特-西格玛',
-          parent_jgname: 1,
-          acc_count: 4,
-          e_mail: '52875440@qq.com',
-          phone_number: '13286320200',
-          repay_rate: 0,
-          jg_desc: '深圳途乐车联网有限公司',
-          inform_addr: '深圳途乐车联网有限公司'
-        }
-        this.isLoadData = false
-      }, 1000)
+      this.getData()
     } else {
       // 如果是新增页面要加上密码验证（必须）
       this.isLoadData = false
@@ -105,46 +109,96 @@ export default {
   },
   methods: {
     // 打开选择机构弹框
-    openChoiceJg() {
+    openChoice(type) {
+      this.choiceType = type
       this.winHeight = $(window).height()
       this.dialogVisible = true
-      // jgCheckedList在弹框关闭的时候都会被清空，打开弹框的时候要从tempCheckedList获取选择的数据
-      this.jgCheckedList = this.tempCheckedList
-      if (this.jgList.length === 0) {
-        this.getJgData()
+      let list = this.list[this.choiceType]
+      // checked弹框关闭的时候都会被清空，打开弹框的时候要从temp获取选择的数据
+      list.checked = list.temp
+      if (list.data.length === 0) {
+        this.getCheckData()
       }
     },
-    // 弹框关闭的时清空jgCheckedList
-    cancelJgChoice() {
-      this.jgCheckedList = []
+    // 弹框关闭的时清空checked
+    cancelChoice() {
+      this.resetChoice()
       this.dialogVisible = false
     },
     resetChoice() {
-      this.jgCheckedList = []
+      this.list[this.choiceType].checked = []
     },
+    handleChoiceChange(para) {
+      this.list[this.choiceType].checked = para
+    },
+    // 保存选择
     makesureChoice() {
-      this.$message.success(`已选择 ${this.jgCheckedList.length} 项`)
-      this.tempCheckedList = this.jgCheckedList
+      let list = this.list[this.choiceType]
+      this.$message.success(`已选择 ${list.checked.length} 项`)
+      list.temp = list.checked
       this.dialogVisible = false
     },
-    getJgData() {
+    // 获取要选择的数据
+    getCheckData() {
       this.loadDialog = true
-      setTimeout(() => {
-        this.jgList = function(count) {
-          let arr = []
-          for (let i = 0; i < count; i++) {
-            arr.push({
-              id: i,
-              text: ' 系统设置-支付管理'
-            })
-          }
-          return arr
-        }(100)
-        this.loadDialog = false
-      }, 1000)
+      // 根据choiceType 来取数据
+      if (this.choiceType === 0) {
+        setTimeout(() => {
+          this.list[this.choiceType].data = function(count) {
+            let arr = []
+            for (let i = 0; i < count; i++) {
+              arr.push({
+                id: i,
+                text: '选择可控机构'
+              })
+            }
+            return arr
+          }(100)
+          this.loadDialog = false
+        }, 1000)
+      } else if (this.choiceType === 1) {
+        setTimeout(() => {
+          this.list[this.choiceType].data = function(count) {
+            let arr = []
+            for (let i = 0; i < count; i++) {
+              arr.push({
+                id: i,
+                text: '选择查看权限'
+              })
+            }
+            return arr
+          }(100)
+          this.loadDialog = false
+        }, 1000)
+      } else if (this.choiceType === 2) {
+        setTimeout(() => {
+          this.list[this.choiceType].data = function(count) {
+            let arr = []
+            for (let i = 0; i < count; i++) {
+              arr.push({
+                id: i,
+                text: '选择更改权限'
+              })
+            }
+            return arr
+          }(100)
+          this.loadDialog = false
+        }, 1000)
+      }
     },
-    handleJgChoiceChange(para) {
-      this.jgCheckedList = para
+    // 获取该页面的表单数据(type=update)
+    getData() {
+      // 如果是编辑就获取数据再展示
+      setTimeout(() => {
+        this.formInline = {
+          authgroup_name: '管理员－超级组',
+          authgroup_desc: '拥有最高权限，主管生杀大权，至高权利！',
+          jg_name: 1,
+          read_auth: 1,
+          write_auth: 1
+        }
+        this.isLoadData = false
+      }, 1000)
     },
     // 提交表单
     submitForm(formName) {

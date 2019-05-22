@@ -50,8 +50,8 @@
             <el-table-column show-overflow-tooltip prop="pay_status" label="支付状态" show-overflow-tooltip min-width="94" sortable></el-table-column>
             <el-table-column show-overflow-tooltip prop="pay_code" label="支付流水号" show-overflow-tooltip min-width="110"></el-table-column>
             <el-table-column show-overflow-tooltip prop="recharge_remark" label="充值备注" show-overflow-tooltip min-width="150"></el-table-column>
-            <el-table-column show-overflow-tooltip prop="recharge_time" label="充值时间" show-overflow-tooltip width="140" sortable></el-table-column>
-            <el-table-column show-overflow-tooltip prop="pay_time" label="付款时间" show-overflow-tooltip width="140" sortable></el-table-column>
+            <el-table-column show-overflow-tooltip prop="recharge_time" label="充值时间" show-overflow-tooltip width="153" sortable></el-table-column>
+            <el-table-column show-overflow-tooltip prop="pay_time" label="付款时间" show-overflow-tooltip width="153" sortable></el-table-column>
             <el-table-column show-overflow-tooltip label="过期时间" show-overflow-tooltip width="210">
               <template slot-scope="scope">
                 <div v-html="calcLeftTime(scope.row.ex_time)"></div>

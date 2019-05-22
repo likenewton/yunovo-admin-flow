@@ -95,6 +95,26 @@ module.exports = {
       title: '权限设置',
       name: 'authManage'
     }]
+  }, {
+    title: '系统设置',
+    icon: 'el-icon-fontxitongshezhi',
+    name: 'setting',
+    children: [{
+      title: '支付管理',
+      name: 'paySet'
+    }, {
+      title: '语言设置',
+      name: 'langset'
+    }, {
+      title: '货币设置',
+      name: 'currencyset'
+    }, {
+      title: '国家区域',
+      name: 'nationset'
+    }, {
+      title: '系统参数',
+      name: 'sysparaset'
+    }]
   }],
   // 必须、误删
   operData: [{
@@ -127,6 +147,27 @@ module.exports = {
     name: 'createjg'
   }, {
     title: {
+      create: '新增语言设置',
+      update: '编辑语言设置',
+      check: '预览语言设置'
+    },
+    name: 'createlang'
+  }, {
+    title: {
+      create: '新增货币设置',
+      update: '编辑货币设置',
+      check: '预览货币设置'
+    },
+    name: 'createcurrency'
+  }, {
+    title: {
+      create: '新增国家区域',
+      update: '编辑国家区域',
+      check: '预览国家区域'
+    },
+    name: 'createnation'
+  }, {
+    title: {
       create: '新增权限',
       update: '编辑机权限',
       check: '预览权限'
@@ -141,6 +182,12 @@ module.exports = {
   }, {
     title: '充值总额统计',
     name: 'iccidList'
+  }, {
+    title: '支付宝支付',
+    name: 'alipay'
+  }, {
+    title: '微信支付',
+    name: 'wechart'
   }],
   // 分页器公共配置项
   pageSizes: [10, 20, 30, 40],

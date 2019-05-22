@@ -34,7 +34,7 @@ export default {
     this.Timer = setInterval(() => {
       if (--this.time <= 0) {
         clearInterval(this.Timer)
-        this.gotologin()
+        // this.gotologin()
       }
     }, 1000)
   },
