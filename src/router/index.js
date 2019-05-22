@@ -43,6 +43,7 @@ const Langset = r => require.ensure([], () => r(require('@/components/systemset/
 const Currencyset = r => require.ensure([], () => r(require('@/components/systemset/currencyset.vue')), 'chunk2') // 货币设置
 const Nationset = r => require.ensure([], () => r(require('@/components/systemset/nationset.vue')), 'chunk2') // 国家区域
 const Sysparaset = r => require.ensure([], () => r(require('@/components/systemset/sysparaset.vue')), 'chunk2') // 系统参数
+const Datapreserve = r => require.ensure([], () => r(require('@/components/systemset/datapreserve.vue')), 'chunk2') // 数据维护
 
 // [chunk3](一般是表单增删改查页面)
 const Batchcreate = r => require.ensure([], () => r(require('@/components/forms/batchcreate.vue')), 'chunk3')
@@ -218,6 +219,10 @@ let router = new VueRouter({
         path: 'sysparaset',
         name: 'sysparaset',
         component: Sysparaset
+      }, {
+        path: 'datapreserve',
+        name: 'datapreserve',
+        component: Datapreserve
       }]
     }]
   }, {

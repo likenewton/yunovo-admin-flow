@@ -114,6 +114,9 @@ module.exports = {
     }, {
       title: '系统参数',
       name: 'sysparaset'
+    }, {
+      title: '数据维护',
+      name: 'datapreserve'
     }]
   }],
   // 必须、误删

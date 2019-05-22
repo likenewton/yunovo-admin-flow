@@ -44,9 +44,16 @@ module.exports = {
     }
   },
 
-  // 限制小数位数和整数位数
+  // 限制小数位数和整数位数 num1(整数)， num2(小数)
   limitNumber(val, num1 = 8, num2 = 3) {
-    let expStr = `^\\d{1,${num1}}(\\.\\d{0,${num2}})?`
+    let expStr = ''
+    if (num2 === 0) {
+      // 如果是整数
+      expStr = `^\\d{1,${num1}}`
+    } else {
+      // 如果是小数
+      expStr = `^\\d{1,${num1}}(\\.\\d{0,${num2}})?`
+    }
     return val.match(new RegExp(expStr)) && val.match(new RegExp(expStr))[0]
   },
 
@@ -55,7 +62,6 @@ module.exports = {
     if (typeof val === 'number') {
       console.log(1)
     }
-
   },
 
   // 加载动画
