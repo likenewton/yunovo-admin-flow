@@ -24,25 +24,25 @@
             <el-button type="text">{{scope.row.jg_name}}</el-button>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="month" label="月份" show-overflow-tooltip min-width="110" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="pay_count" label="已付款次数" show-overflow-tooltip min-width="110" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="nopay_count" label="未付款次数" show-overflow-tooltip min-width="110" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip label="分配总流量" show-overflow-tooltip min-width="110">
+        <el-table-column prop="month" label="月份" show-overflow-tooltip min-width="110" sortable></el-table-column>
+        <el-table-column prop="pay_count" label="已付款次数" show-overflow-tooltip min-width="110" sortable></el-table-column>
+        <el-table-column prop="nopay_count" label="未付款次数" show-overflow-tooltip min-width="110" sortable></el-table-column>
+        <el-table-column label="分配总流量" show-overflow-tooltip min-width="110">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.fptotal_flow)"></div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip label="充值总金额" show-overflow-tooltip min-width="110">
+        <el-table-column label="充值总金额" show-overflow-tooltip min-width="110">
           <template slot-scope="scope">
             <div>￥{{scope.row.recharge_total|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip label="返利总金额" show-overflow-tooltip min-width="110">
+        <el-table-column label="返利总金额" show-overflow-tooltip min-width="110">
           <template slot-scope="scope">
             <div>￥{{scope.row.repay_total|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip label="未付款金额" show-overflow-tooltip min-width="110">
+        <el-table-column label="未付款金额" show-overflow-tooltip min-width="110">
           <template slot-scope="scope">
             <div>￥{{scope.row.nopay_total|formatMoney}}</div>
           </template>

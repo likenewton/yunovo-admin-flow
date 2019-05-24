@@ -151,8 +151,11 @@ module.exports = {
   // 计算到期时间
   calcLeftTime(time) {
     let htmlStr = '<span style="color:#e92322;font-weight:bold">已过期</span>'
-    let now = new Date()
-    let a = new Date(time)
+    let now = new Date().getTime()
+    // ie 下兼容性问题
+    if (time) {
+      var a = new Date(time).getTime() || new Date(time.replace(/-/g,"/")).getTime()
+    }
     if (a - now > 0) {
       htmlStr = `${time} <span style="display:inline-block;color:#008000;font-weight:bold"">(${Math.ceil((a - now) / 24 / 3600000)}天)</span>`
     }

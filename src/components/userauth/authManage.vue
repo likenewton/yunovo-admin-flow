@@ -7,12 +7,12 @@
       </el-button-group>
       <el-table v-loading="loadData" ref="multipleTable" :data="curTableData" border @selection-change="handleSelectionChange" :default-sort="{prop: 'authgroup_name', order: 'descending'}" size="mini">
         <el-table-column fixed="left" type="selection" min-width="60"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="authgroup_name" label="权限组名称" show-overflow-tooltip min-width="150" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="authgroup_desc" label="权限组描述" show-overflow-tooltip min-width="300"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="add_time" label="添加时间" show-overflow-tooltip min-width="150"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="update_time" label="更改时间" show-overflow-tooltip min-width="150"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="create_p" label="创建者" show-overflow-tooltip min-width="80"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="update_p" label="更改者" show-overflow-tooltip min-width="80"></el-table-column>
+        <el-table-column prop="authgroup_name" label="权限组名称" show-overflow-tooltip min-width="150" sortable></el-table-column>
+        <el-table-column prop="authgroup_desc" label="权限组描述" show-overflow-tooltip min-width="300"></el-table-column>
+        <el-table-column prop="add_time" label="添加时间" show-overflow-tooltip min-width="150"></el-table-column>
+        <el-table-column prop="update_time" label="更改时间" show-overflow-tooltip min-width="150"></el-table-column>
+        <el-table-column prop="create_p" label="创建者" show-overflow-tooltip min-width="80"></el-table-column>
+        <el-table-column prop="update_p" label="更改者" show-overflow-tooltip min-width="80"></el-table-column>
         <el-table-column fixed="right" show-overflow-tooltip label="管理" min-width="60">
           <template slot-scope="scope">
             <el-button type="text" @click="updateAuth">编辑</el-button>

@@ -21,7 +21,7 @@
       </el-button-group>
       <el-table v-loading="loadData" ref="multipleTable" :data="curTableData" border :default-sort="{prop: 'jg_name', order: 'descending'}" size="mini">
         <el-table-column show-overflow-tooltip prop="jg_name" label="机构名称" width="140"></el-table-column>
-        <el-table-column show-overflow-tooltip label="预警流量" show-overflow-tooltip width="95" sortable>
+        <el-table-column show-overflow-tooltip label="预警流量" width="95" sortable>
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.warning_flow)"></div>
           </template>

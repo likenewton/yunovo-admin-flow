@@ -21,20 +21,20 @@
       </el-button-group>
       <el-table v-loading="loadData" ref="multipleTable" :data="curTableData" border :default-sort="{prop: 'exceed_time', order: 'descending'}" size="mini">
         <el-table-column show-overflow-tooltip prop="jg_name" label="机构名称" min-width="140"></el-table-column>
-        <el-table-column show-overflow-tooltip label="套餐流量" show-overflow-tooltip min-width="95" sortable>
+        <el-table-column show-overflow-tooltip label="套餐流量" min-width="95" sortable>
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.tc_flow)"></div>
           </template>
         </el-table-column>
         <el-table-column show-overflow-tooltip prop="tc_price" label="套餐价格" min-width="75"></el-table-column>
         <el-table-column show-overflow-tooltip prop="fp_month" label="分配月数" min-width="75"></el-table-column>
-        <el-table-column show-overflow-tooltip label="月均流量" show-overflow-tooltip min-width="95" sortable>
+        <el-table-column label="月均流量" show-overflow-tooltip min-width="95" sortable>
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.tc_flow/scope.row.fp_month)"></div>
           </template>
         </el-table-column>
         <el-table-column show-overflow-tooltip prop="is_clear" label="是否清零" min-width="75"></el-table-column>
-        <el-table-column show-overflow-tooltip label="有效周期" show-overflow-tooltip min-width="95" sortable>
+        <el-table-column label="有效周期" show-overflow-tooltip min-width="95" sortable>
           <template slot-scope="scope">
             <div>{{scope.row.eff_pri}}</div>
           </template>

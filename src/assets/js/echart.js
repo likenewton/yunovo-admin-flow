@@ -93,10 +93,19 @@ class Echarts {
           }
         }
       },
-      yAxis: {
+      yAxis: [{
         type: 'value',
         splitLine: { show: false }
-      },
+      }, {
+        type: 'value',
+        show: false,
+        axisLabel: {
+          formatter: function(value) {
+            return value + '%'
+          }
+        },
+        splitLine: { show: false }
+      }],
       xAxis: {
         type: 'category',
         data: [], //要设置的
@@ -132,18 +141,25 @@ class Echarts {
     this.data.series.forEach((v, i) => {
       this.option.series.push({
         name: this.data.legend[i],
-        type: this.data.type,
+        type: v.type || this.data.type,
         data: v.data,
+        stack: v.stack,
+        barMaxWidth: 100,
+        yAxisIndex: v.yAxisIndex || 0,
         itemStyle: {
           normal: {
             color: this.data.colorList[i],
           }
         }
       })
+      if (v.yAxisIndex === 1) {
+        this.option.yAxis[1].show = true
+      }
     })
   }
 
   getOption() {
+    console.log(this.option)
     return this.option
   }
 
@@ -153,3 +169,13 @@ class Echarts {
 }
 
 export default Echarts
+
+// _echart = new Api.ECHARTS()
+// _echart.setOption({
+//   title: '订单趋势',
+//   legend: ['订单数'],
+//   xAxis: { data: ['2019-05-20', '2019-05-21', '2019-05-22', '2019-05-23', '2019-05-24'] },
+//   series: [{
+//     data: [21, 52, 54, 32, 80]
+//   }]
+// this.myEchart.setOption(_echart.getOption())

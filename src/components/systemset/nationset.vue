@@ -12,7 +12,7 @@
       </el-button-group>
       <el-table class="payset_page" v-loading="loadData" ref="multipleTable" :data="curTableData" border @selection-change="handleSelectionChange" size="mini">
         <el-table-column fixed="left" type="selection" min-width="60"></el-table-column>
-        <el-table-column show-overflow-tooltip label="区域名称" show-overflow-tooltip min-width="150" sortable>
+        <el-table-column show-overflow-tooltip label="区域名称" min-width="150" sortable>
           <template slot-scope="scope">
             <el-button type="text">{{scope.row.area_name}}</el-button>
           </template>

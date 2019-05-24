@@ -72,23 +72,23 @@
               </template>
             </el-table-column>
             <el-table-column show-overflow-tooltip prop="jg_name" label="机构名称" min-width="140"></el-table-column>
-            <el-table-column show-overflow-tooltip label="套餐流量" show-overflow-tooltip min-width="95" sortable>
+            <el-table-column show-overflow-tooltip label="套餐流量" min-width="95" sortable>
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.tc_flow)"></div>
               </template>
             </el-table-column>
-            <el-table-column show-overflow-tooltip prop="fp_month" label="分配月数" show-overflow-tooltip min-width="95" sortable></el-table-column>
-            <el-table-column show-overflow-tooltip label="月均流量" show-overflow-tooltip min-width="95" sortable>
+            <el-table-column show-overflow-tooltip prop="fp_month" label="分配月数" min-width="95" sortable></el-table-column>
+            <el-table-column show-overflow-tooltip label="月均流量" min-width="95" sortable>
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.tc_flow/scope.row.fp_month)"></div>
               </template>
             </el-table-column>
-            <el-table-column show-overflow-tooltip prop="is_clear" label="是否清零" show-overflow-tooltip min-width="80"></el-table-column>
-            <el-table-column show-overflow-tooltip prop="eff_pri" label="有效周期" show-overflow-tooltip min-width="80"></el-table-column>
-            <el-table-column show-overflow-tooltip prop="donator_remark" label="赠者&备注" show-overflow-tooltip min-width="120"></el-table-column>
-            <el-table-column show-overflow-tooltip prop="op_p" label="操作者" show-overflow-tooltip min-width="120" sortable></el-table-column>
-            <el-table-column show-overflow-tooltip prop="add_time" label="添加时间" show-overflow-tooltip min-width="155" sortable></el-table-column>
-            <el-table-column show-overflow-tooltip prop="ex_time" label="过期时间" show-overflow-tooltip min-width="155" sortable></el-table-column>
+            <el-table-column prop="is_clear" label="是否清零" show-overflow-tooltip min-width="80"></el-table-column>
+            <el-table-column prop="eff_pri" label="有效周期" show-overflow-tooltip min-width="80"></el-table-column>
+            <el-table-column prop="donator_remark" label="赠者&备注" show-overflow-tooltip min-width="120"></el-table-column>
+            <el-table-column prop="op_p" label="操作者" show-overflow-tooltip min-width="120" sortable></el-table-column>
+            <el-table-column prop="add_time" label="添加时间" show-overflow-tooltip min-width="155" sortable></el-table-column>
+            <el-table-column prop="ex_time" label="过期时间" show-overflow-tooltip min-width="155" sortable></el-table-column>
           </el-table>
           <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="tableData.length">
           </el-pagination>

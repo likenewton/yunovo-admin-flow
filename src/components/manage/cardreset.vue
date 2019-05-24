@@ -44,21 +44,21 @@
               </template>
             </el-table-column>
             <el-table-column show-overflow-tooltip prop="jg_name" label="机构名称" min-width="140"></el-table-column>
-            <el-table-column show-overflow-tooltip label="已用流量" show-overflow-tooltip min-width="95" sortable>
+            <el-table-column label="已用流量" show-overflow-tooltip min-width="95" sortable>
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.right_use)"></div>
               </template>
             </el-table-column>
-            <el-table-column show-overflow-tooltip label="剩余流量" show-overflow-tooltip min-width="95" sortable>
+            <el-table-column label="剩余流量" show-overflow-tooltip min-width="95" sortable>
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.left_use)"></div>
               </template>
             </el-table-column>
-            <el-table-column show-overflow-tooltip prop="card_status" label="卡状态" show-overflow-tooltip min-width="95" sortable></el-table-column>
-            <el-table-column show-overflow-tooltip prop="real_ide" label="实名认证" show-overflow-tooltip min-width="95" sortable></el-table-column>
-            <el-table-column show-overflow-tooltip prop="op_p" label="操作者" show-overflow-tooltip min-width="120" sortable></el-table-column>
-            <el-table-column show-overflow-tooltip prop="ex_time" label="出货时间" show-overflow-tooltip min-width="155" sortable></el-table-column>
-            <el-table-column show-overflow-tooltip prop="reset_time" label="重置时间" show-overflow-tooltip min-width="155" sortable></el-table-column>
+            <el-table-column prop="card_status" label="卡状态" show-overflow-tooltip min-width="95" sortable></el-table-column>
+            <el-table-column prop="real_ide" label="实名认证" show-overflow-tooltip min-width="95" sortable></el-table-column>
+            <el-table-column prop="op_p" label="操作者" show-overflow-tooltip min-width="120" sortable></el-table-column>
+            <el-table-column prop="ex_time" label="出货时间" show-overflow-tooltip min-width="155" sortable></el-table-column>
+            <el-table-column prop="reset_time" label="重置时间" show-overflow-tooltip min-width="155" sortable></el-table-column>
           </el-table>
           <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="tableData.length">
           </el-pagination>

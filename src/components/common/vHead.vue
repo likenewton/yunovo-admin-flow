@@ -2,14 +2,11 @@
   <div class="inner-head">
     <img class="logo" src="../../assets/images/LOGO-188X56.png">
     <i v-if="showMenu" class="el-icon-fontcaidan1 pointer menu-icon" @click="collapseAside"></i>
-    <!-- <el-button class="fr exit-btn" size="mini" type="primary" icon="el-icon-circle-plus-outline">退出</el-button> -->
     <el-tooltip v-if="showMenu" class="sysmenu fr pointer" effect="dark" content="回到门户" placement="bottom-end">
       <i class="el-icon-fonttuichu1" style="color:#606266" @click="toSysmeum"></i>
     </el-tooltip>
     <el-dropdown trigger="click" class="pointer fr" @command="handleCommand">
-      <span class="el-dropdown-link">
-        Newton<i class="el-icon-caret-bottom el-icon--right"></i>
-      </span>
+      <span class="el-dropdown-link">Newton<i class="el-icon-caret-bottom el-icon--right"></i></span>
       <el-dropdown-menu slot="dropdown" style="">
         <el-dropdown-item command="modify" icon="el-icon-fontxiugaimima1">修改密码</el-dropdown-item>
         <el-dropdown-item command="quit" icon="el-icon-fonticon-tuichu">退出</el-dropdown-item>
@@ -50,10 +47,11 @@ export default {
     ]),
     handleCommand(command) {
       if (command === 'modify') {
-        console.log('修改密码')
+        // 这里进行修改密码的操作
+
       } else if (command === 'quit') {
         // 这里做一些退出的操作然后跳转注销页面
-        this.$router.push({ name: 'logout' })
+
       }
     },
     toSysmeum() {

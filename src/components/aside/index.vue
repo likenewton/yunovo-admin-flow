@@ -28,6 +28,7 @@ export default {
 
 </script>
 <style lang="scss">
+
 .el-main {
   position: relative;
   padding: 20px 20px 0 !important;

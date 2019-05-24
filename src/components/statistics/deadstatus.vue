@@ -37,37 +37,37 @@
         <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
       <el-table v-loading="loadData" ref="multipleTable" :data="curTableData" border :default-sort="{prop: 'import_time', order: 'descending'}" size="mini">
-        <el-table-column fixed="left" show-overflow-tooltip label="卡ICCID" width="180">
+        <el-table-column fixed="left" label="卡ICCID" width="180">
           <template slot-scope="scope">
             <el-button type="text">{{scope.row.iccid}}</el-button>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="ks_name" label="卡商名称" min-width="130"></el-table-column>
-        <el-table-column show-overflow-tooltip label="所属机构" min-width="135">
-          <template slot-scope="scope">
+        <el-table-column prop="ks_name" label="卡商名称" show-overflow-tooltip min-width="130"></el-table-column>
+        <el-table-column label="所属机构" show-overflow-tooltip min-width="135">
+          <template slot-scope="scope" show-overflow-tooltip>
             <el-button type="text">{{scope.row.jg_name}}</el-button>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip label="当月用量" show-overflow-tooltip width="95">
+        <el-table-column label="当月用量" show-overflow-tooltip width="95">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.month_flow)"></div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip label="累计用量" show-overflow-tooltip width="95">
+        <el-table-column label="累计用量" show-overflow-tooltip width="95">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.total_flow)"></div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip label="剩余用量" show-overflow-tooltip width="95">
+        <el-table-column label="剩余用量" show-overflow-tooltip width="95">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.left_flow)"></div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="import_time" label="导卡时间" show-overflow-tooltip width="151" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="active_time" label="激活时间" show-overflow-tooltip width="151" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="eq_time" label="设备更新时间" show-overflow-tooltip width="151" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="stop_time" label="上次停用时间" show-overflow-tooltip width="151" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip label="过期时间" show-overflow-tooltip width="205">
+        <el-table-column prop="import_time" label="导卡时间" show-overflow-tooltip width="151" sortable></el-table-column>
+        <el-table-column prop="active_time" label="激活时间" show-overflow-tooltip width="151" sortable></el-table-column>
+        <el-table-column prop="eq_time" label="设备更新时间" show-overflow-tooltip width="151" sortable></el-table-column>
+        <el-table-column prop="stop_time" label="上次停用时间" show-overflow-tooltip width="151" sortable></el-table-column>
+        <el-table-column label="过期时间" show-overflow-tooltip width="205">
           <template slot-scope="scope">
             <div v-html="calcLeftTime(scope.row.ex_time)"></div>
           </template>

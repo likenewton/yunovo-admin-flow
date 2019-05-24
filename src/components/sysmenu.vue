@@ -49,7 +49,7 @@ export default {
   },
   methods: {
     enterSystem() {
-      this.$router.push({ name: 'menu' })
+      this.$router.push({ name: 'home' })
     }
   }
 }

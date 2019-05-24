@@ -19,21 +19,21 @@
         </el-form-item>
       </el-form>
       <el-table v-loading="loadData" ref="multipleTable" :data="curTableData" border :default-sort="{prop: 'statistics_data', order: 'descending'}" size="mini">
-        <el-table-column show-overflow-tooltip prop="statistics_data" label="统计日期" show-overflow-tooltip min-width="100" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="inform_source" label="通知或来源" show-overflow-tooltip min-width="150"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="imform_suc_count" label="通知成功数" show-overflow-tooltip min-width="110" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="imform_fail_count" label="通知失败数" show-overflow-tooltip min-width="110" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="imform_time" label="通知时长" show-overflow-tooltip min-width="80"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="order_suc_count" label="下单成功数" show-overflow-tooltip min-width="105" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="order_fail_count" label="下单失败数" show-overflow-tooltip min-width="105" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="order_suc_rate" label="下单成功比率" show-overflow-tooltip min-width="110"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="order_fail_rate" label="下单失败比率" show-overflow-tooltip min-width="110"></el-table-column>
-        <el-table-column show-overflow-tooltip label="已付金额" show-overflow-tooltip min-width="110">
+        <el-table-column prop="statistics_data" label="统计日期" show-overflow-tooltip min-width="100" sortable></el-table-column>
+        <el-table-column prop="inform_source" label="通知或来源" show-overflow-tooltip min-width="150"></el-table-column>
+        <el-table-column prop="imform_suc_count" label="通知成功数" show-overflow-tooltip min-width="110" sortable></el-table-column>
+        <el-table-column prop="imform_fail_count" label="通知失败数" show-overflow-tooltip min-width="110" sortable></el-table-column>
+        <el-table-column prop="imform_time" label="通知时长" show-overflow-tooltip min-width="80"></el-table-column>
+        <el-table-column prop="order_suc_count" label="下单成功数" show-overflow-tooltip min-width="105" sortable></el-table-column>
+        <el-table-column prop="order_fail_count" label="下单失败数" show-overflow-tooltip min-width="105" sortable></el-table-column>
+        <el-table-column prop="order_suc_rate" label="下单成功比率" show-overflow-tooltip min-width="110"></el-table-column>
+        <el-table-column prop="order_fail_rate" label="下单失败比率" show-overflow-tooltip min-width="110"></el-table-column>
+        <el-table-column label="已付金额" show-overflow-tooltip min-width="110">
           <template slot-scope="scope">
             <div>￥{{scope.row.pay_money|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip label="未付金额" show-overflow-tooltip min-width="110">
+        <el-table-column label="未付金额" show-overflow-tooltip min-width="110">
           <template slot-scope="scope">
             <div>￥{{scope.row.abpay_money|formatMoney}}</div>
           </template>

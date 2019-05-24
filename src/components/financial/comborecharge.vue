@@ -31,30 +31,30 @@
             <el-button type="text">{{scope.row.jg_name}}</el-button>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip label="套餐流量" show-overflow-tooltip min-width="110">
+        <el-table-column label="套餐流量" show-overflow-tooltip min-width="110">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.combo_flow)"></div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip label="套餐金额" show-overflow-tooltip min-width="110">
+        <el-table-column label="套餐金额" show-overflow-tooltip min-width="110">
           <template slot-scope="scope">
             <div>￥{{scope.row.combo_money|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="pay_count" label="已付次数" show-overflow-tooltip min-width="95"></el-table-column>
-        <el-table-column show-overflow-tooltip label="已付金额" show-overflow-tooltip min-width="110">
+        <el-table-column prop="pay_count" label="已付次数" show-overflow-tooltip min-width="95"></el-table-column>
+        <el-table-column label="已付金额" show-overflow-tooltip min-width="110">
           <template slot-scope="scope">
             <div>￥{{scope.row.pay_money|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="pay_rate" label="已付款率" show-overflow-tooltip min-width="95"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="nopay_count" label="未付次数" show-overflow-tooltip min-width="95"></el-table-column>
-        <el-table-column show-overflow-tooltip label="未付金额" show-overflow-tooltip min-width="110">
+        <el-table-column prop="pay_rate" label="已付款率" show-overflow-tooltip min-width="95"></el-table-column>
+        <el-table-column prop="nopay_count" label="未付次数" show-overflow-tooltip min-width="95"></el-table-column>
+        <el-table-column label="未付金额" show-overflow-tooltip min-width="110">
           <template slot-scope="scope">
             <div>￥{{scope.row.nopay_money|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="nopay_rate" label="未付款率" show-overflow-tooltip min-width="95"></el-table-column>
+        <el-table-column prop="nopay_rate" label="未付款率" show-overflow-tooltip min-width="95"></el-table-column>
       </el-table>
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>

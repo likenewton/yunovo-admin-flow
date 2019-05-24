@@ -26,15 +26,15 @@
             <el-button type="text">{{scope.row.jg_name}}</el-button>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="coop_code" label="合作编号" show-overflow-tooltip min-width="125"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="coop_key" label="合作秘钥" show-overflow-tooltip min-width="300"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="acc_count" label="可开账号数量" show-overflow-tooltip width="95"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="e_mail" label="负责人邮箱" show-overflow-tooltip min-width="140"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="phone_number" label="负责人手机" show-overflow-tooltip width="110"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="repay_rate" label="返利比率" show-overflow-tooltip width="70"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="jg_desc" label="机构描述" show-overflow-tooltip min-width="160"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="create_p" label="创建者" show-overflow-tooltip min-width="80"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="update_p" label="更改者" show-overflow-tooltip min-width="80"></el-table-column>
+        <el-table-column prop="coop_code" label="合作编号" show-overflow-tooltip min-width="125"></el-table-column>
+        <el-table-column prop="coop_key" label="合作秘钥" show-overflow-tooltip min-width="300"></el-table-column>
+        <el-table-column prop="acc_count" label="可开账号数量" show-overflow-tooltip width="95"></el-table-column>
+        <el-table-column prop="e_mail" label="负责人邮箱" show-overflow-tooltip min-width="140"></el-table-column>
+        <el-table-column prop="phone_number" label="负责人手机" show-overflow-tooltip width="110"></el-table-column>
+        <el-table-column prop="repay_rate" label="返利比率" show-overflow-tooltip width="70"></el-table-column>
+        <el-table-column prop="jg_desc" label="机构描述" show-overflow-tooltip min-width="160"></el-table-column>
+        <el-table-column prop="create_p" label="创建者" show-overflow-tooltip min-width="80"></el-table-column>
+        <el-table-column prop="update_p" label="更改者" show-overflow-tooltip min-width="80"></el-table-column>
         <el-table-column fixed="right" show-overflow-tooltip label="管理" min-width="60">
           <template slot-scope="scope">
             <el-button type="text" @click="updateJg">编辑</el-button>

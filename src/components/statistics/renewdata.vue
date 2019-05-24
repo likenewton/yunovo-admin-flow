@@ -29,10 +29,10 @@
             <el-button type="text">{{scope.row.jg_name}}</el-button>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="sell_num" label="售卡数量" show-overflow-tooltip min-width="110" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="active_num" label="激活卡数" show-overflow-tooltip min-width="110" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="renew_num" label="续费卡数" show-overflow-tooltip min-width="110" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="renew_rate" label="续费比率" show-overflow-tooltip min-width="110" sortable></el-table-column>
+        <el-table-column prop="sell_num" label="售卡数量" show-overflow-tooltip min-width="110" sortable></el-table-column>
+        <el-table-column prop="active_num" label="激活卡数" show-overflow-tooltip min-width="110" sortable></el-table-column>
+        <el-table-column prop="renew_num" label="续费卡数" show-overflow-tooltip min-width="110" sortable></el-table-column>
+        <el-table-column prop="renew_rate" label="续费比率" show-overflow-tooltip min-width="110" sortable></el-table-column>
       </el-table>
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>

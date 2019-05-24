@@ -48,9 +48,9 @@
             <el-button type="text">{{scope.row.jg_name}}</el-button>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="active_time" label="卡激活时间" show-overflow-tooltip width="158" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="month" label="月份" show-overflow-tooltip width="100"></el-table-column>
-        <el-table-column show-overflow-tooltip label="月使用流量" show-overflow-tooltip width="110">
+        <el-table-column prop="active_time" label="卡激活时间" show-overflow-tooltip width="158" sortable></el-table-column>
+        <el-table-column prop="month" label="月份" show-overflow-tooltip width="100"></el-table-column>
+        <el-table-column label="月使用流量" show-overflow-tooltip width="110">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.month_use)"></div>
           </template>

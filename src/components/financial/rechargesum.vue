@@ -24,23 +24,23 @@
             <el-button type="text">{{scope.row.jg_name}}</el-button>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="recharge_count" label="充值次数" show-overflow-tooltip min-width="110" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip label="分配总流量" show-overflow-tooltip min-width="110">
+        <el-table-column prop="recharge_count" label="充值次数" show-overflow-tooltip min-width="110" sortable></el-table-column>
+        <el-table-column label="分配总流量" show-overflow-tooltip min-width="110">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.fptotal_flow)"></div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip label="充值总金额" show-overflow-tooltip min-width="110">
+        <el-table-column label="充值总金额" show-overflow-tooltip min-width="110">
           <template slot-scope="scope">
             <div>￥{{scope.row.recharge_total|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip label="返利总金额" show-overflow-tooltip min-width="110">
+        <el-table-column label="返利总金额" show-overflow-tooltip min-width="110">
           <template slot-scope="scope">
             <div>￥{{scope.row.repay_total|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip label="操作" show-overflow-tooltip min-width="80">
+        <el-table-column label="操作" show-overflow-tooltip min-width="80">
           <template slot-scope="scope">
             <el-button type="text" @click="showDetail">详情</el-button>
           </template>

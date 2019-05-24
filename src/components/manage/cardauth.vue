@@ -43,12 +43,12 @@
         <el-table-column show-overflow-tooltip prop="name" label="姓名" width="100"></el-table-column>
         <el-table-column show-overflow-tooltip prop="sex" label="姓别" width="70"></el-table-column>
         <el-table-column show-overflow-tooltip prop="identity_card" label="身份证编号" width="175"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="last_time" label="最后上报时间" show-overflow-tooltip min-width="151" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="active_time" label="卡激活时间" show-overflow-tooltip min-width="151" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="audit_time" label="审核时间" show-overflow-tooltip min-width="151" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="apply_time" label="申请时间" show-overflow-tooltip min-width="151" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="apply_status" label="审核状态" show-overflow-tooltip min-width="100" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="applyer" label="审核者" show-overflow-tooltip min-width="100"></el-table-column>
+        <el-table-column prop="last_time" label="最后上报时间" show-overflow-tooltip min-width="151" sortable></el-table-column>
+        <el-table-column prop="active_time" label="卡激活时间" show-overflow-tooltip min-width="151" sortable></el-table-column>
+        <el-table-column prop="audit_time" label="审核时间" show-overflow-tooltip min-width="151" sortable></el-table-column>
+        <el-table-column prop="apply_time" label="申请时间" show-overflow-tooltip min-width="151" sortable></el-table-column>
+        <el-table-column prop="apply_status" label="审核状态" show-overflow-tooltip min-width="100" sortable></el-table-column>
+        <el-table-column prop="applyer" label="审核者" show-overflow-tooltip min-width="100"></el-table-column>
         <el-table-column fixed="right" label="操作" width="115">
           <template slot-scope="scope">
             <el-button type="text" @click="showDialog">审核实名证件</el-button>

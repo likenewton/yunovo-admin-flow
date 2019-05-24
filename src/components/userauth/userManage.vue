@@ -32,17 +32,17 @@
       </el-button-group>
       <el-table v-loading="loadData" ref="multipleTable" :data="curTableData" border @selection-change="handleSelectionChange" :default-sort="{prop: 'user_name', order: 'descending'}" size="mini">
         <el-table-column fixed="left" type="selection" min-width="60"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="user_name" label="用户名" show-overflow-tooltip min-width="90" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="real_name" label="真实姓名" show-overflow-tooltip min-width="90"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="belong_group" label="所属群组" show-overflow-tooltip min-width="120"></el-table-column>
-        <el-table-column show-overflow-tooltip label="所属机构" min-width="140" sortable>
+        <el-table-column prop="user_name" label="用户名" show-overflow-tooltip min-width="90" sortable></el-table-column>
+        <el-table-column prop="real_name" label="真实姓名" show-overflow-tooltip min-width="90"></el-table-column>
+        <el-table-column prop="belong_group" label="所属群组" show-overflow-tooltip min-width="120"></el-table-column>
+        <el-table-column label="所属机构" min-width="140" sortable>
           <template slot-scope="scope">
             <el-button type="text">{{scope.row.jg_name}}</el-button>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="create_time" label="创建时间" show-overflow-tooltip min-width="153"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="update_time" label="更新时间" show-overflow-tooltip min-width="153"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="login_ip" label="最后登录IP" show-overflow-tooltip min-width="250"></el-table-column>
+        <el-table-column prop="create_time" label="创建时间" show-overflow-tooltip min-width="153"></el-table-column>
+        <el-table-column prop="update_time" label="更新时间" show-overflow-tooltip min-width="153"></el-table-column>
+        <el-table-column prop="login_ip" label="最后登录IP" show-overflow-tooltip min-width="250"></el-table-column>
         <el-table-column fixed="right" show-overflow-tooltip label="管理" min-width="100">
           <template slot-scope="scope">
             <el-button type="text" @click="updateUser">编辑</el-button>

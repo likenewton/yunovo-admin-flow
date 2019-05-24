@@ -46,18 +46,18 @@
               </template>
             </el-table-column>
             <el-table-column show-overflow-tooltip prop="flow_price" label="流量价格" min-width="95"></el-table-column>
-            <el-table-column show-overflow-tooltip prop="pay_way" label="付款方式" show-overflow-tooltip min-width="94" sortable></el-table-column>
-            <el-table-column show-overflow-tooltip prop="pay_status" label="支付状态" show-overflow-tooltip min-width="94" sortable></el-table-column>
-            <el-table-column show-overflow-tooltip prop="pay_code" label="支付流水号" show-overflow-tooltip min-width="110"></el-table-column>
-            <el-table-column show-overflow-tooltip prop="recharge_remark" label="充值备注" show-overflow-tooltip min-width="150"></el-table-column>
-            <el-table-column show-overflow-tooltip prop="recharge_time" label="充值时间" show-overflow-tooltip width="153" sortable></el-table-column>
-            <el-table-column show-overflow-tooltip prop="pay_time" label="付款时间" show-overflow-tooltip width="153" sortable></el-table-column>
-            <el-table-column show-overflow-tooltip label="过期时间" show-overflow-tooltip width="210">
+            <el-table-column show-overflow-tooltip prop="pay_way" label="付款方式" min-width="94" sortable></el-table-column>
+            <el-table-column show-overflow-tooltip prop="pay_status" label="支付状态" min-width="94" sortable></el-table-column>
+            <el-table-column show-overflow-tooltip prop="pay_code" label="支付流水号" min-width="110"></el-table-column>
+            <el-table-column show-overflow-tooltip prop="recharge_remark" label="充值备注" min-width="150"></el-table-column>
+            <el-table-column show-overflow-tooltip prop="recharge_time" label="充值时间" width="153" sortable></el-table-column>
+            <el-table-column show-overflow-tooltip prop="pay_time" label="付款时间" width="153" sortable></el-table-column>
+            <el-table-column show-overflow-tooltip label="过期时间" width="210">
               <template slot-scope="scope">
                 <div v-html="calcLeftTime(scope.row.ex_time)"></div>
               </template>
             </el-table-column>
-            <el-table-column show-overflow-tooltip prop="order_resource" label="订单来源" show-overflow-tooltip min-width="100"></el-table-column>
+            <el-table-column show-overflow-tooltip prop="order_resource" label="订单来源" min-width="100"></el-table-column>
           </el-table>
           <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list_0.currentPage" :page-sizes="pageSizes" :page-size="list_0.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list_0.total">
           </el-pagination>
@@ -90,8 +90,8 @@
                 <div v-html="formatFlowUnit(scope.row.month_flow)"></div>
               </template>
             </el-table-column>
-            <el-table-column show-overflow-tooltip prop="fp_time" label="分配时间" show-overflow-tooltip min-width="145" sortable></el-table-column>
-            <el-table-column show-overflow-tooltip label="过期时间" show-overflow-tooltip min-width="210">
+            <el-table-column show-overflow-tooltip prop="fp_time" label="分配时间" min-width="145" sortable></el-table-column>
+            <el-table-column show-overflow-tooltip label="过期时间" min-width="210">
               <template slot-scope="scope">
                 <div v-html="calcLeftTime(scope.row.ex_time)"></div>
               </template>
@@ -241,7 +241,6 @@ export default {
       // 根据 tabIndex, pagesize, currentpage来请求数据
       let tabIndex = this.tabIndex
       let list = this[`list_${tabIndex}`]
-      console.log(list)
       // 一下针对不同的列表请求不同的资源
       if (tabIndex === '0') {
         setTimeout(() => {

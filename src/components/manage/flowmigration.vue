@@ -62,8 +62,8 @@
             </el-table-column>
             <el-table-column show-overflow-tooltip prop="newjg_name" label="新卡机构名称" min-width="160"></el-table-column>
             <el-table-column show-overflow-tooltip prop="migration_remark" label="迁移备注" min-width="160"></el-table-column>
-            <el-table-column show-overflow-tooltip prop="op_p" label="操作者" show-overflow-tooltip min-width="80"></el-table-column>
-            <el-table-column show-overflow-tooltip prop="migration_time" label="迁移时间" show-overflow-tooltip min-width="155" sortable></el-table-column>
+            <el-table-column show-overflow-tooltip prop="op_p" label="操作者" min-width="80"></el-table-column>
+            <el-table-column show-overflow-tooltip prop="migration_time" label="迁移时间" min-width="155" sortable></el-table-column>
           </el-table>
           <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="tableData.length">
           </el-pagination>

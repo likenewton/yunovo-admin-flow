@@ -48,27 +48,27 @@
             <el-button type="text">{{scope.row.jg_name}}</el-button>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip label="日差异流量" show-overflow-tooltip width="95">
+        <el-table-column label="日差异流量" show-overflow-tooltip min-width="95">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.daydif_flow)"></div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip label="剩余用量" show-overflow-tooltip width="95">
+        <el-table-column label="剩余用量" show-overflow-tooltip min-width="95">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.left_flow)"></div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip label="平台使用总流量" show-overflow-tooltip width="110">
+        <el-table-column label="平台使用总流量" show-overflow-tooltip min-width="110">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.plattotal_flow)"></div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip label="联通使用总流量" show-overflow-tooltip width="110">
+        <el-table-column label="联通使用总流量" show-overflow-tooltip min-width="110">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.unicomtotal_flow)"></div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="eq_time" label="设备更新时间" show-overflow-tooltip width="151" sortable></el-table-column>
+        <el-table-column prop="eq_time" label="设备更新时间" show-overflow-tooltip min-width="155" sortable></el-table-column>
         <el-table-column fixed="right" label="操作" width="95">
           <template slot-scope="scope">
             <el-button type="text">套餐</el-button>

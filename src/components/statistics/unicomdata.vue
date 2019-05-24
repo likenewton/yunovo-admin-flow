@@ -33,17 +33,17 @@
             <el-button type="text">{{scope.row.jg_name}}</el-button>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="sell_num" label="售卡数量" show-overflow-tooltip min-width="93" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="noactive_num" label="未激活数" show-overflow-tooltip min-width="93" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="noactive_rate" label="未激活率" show-overflow-tooltip min-width="93" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="active_num" label="已激活数" show-overflow-tooltip min-width="93" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="active_rate" label="已激活率" show-overflow-tooltip min-width="93" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip label="使用总流量" show-overflow-tooltip min-width="93">
+        <el-table-column prop="sell_num" label="售卡数量" show-overflow-tooltip min-width="93" sortable></el-table-column>
+        <el-table-column prop="noactive_num" label="未激活数" show-overflow-tooltip min-width="93" sortable></el-table-column>
+        <el-table-column prop="noactive_rate" label="未激活率" show-overflow-tooltip min-width="93" sortable></el-table-column>
+        <el-table-column prop="active_num" label="已激活数" show-overflow-tooltip min-width="93" sortable></el-table-column>
+        <el-table-column prop="active_rate" label="已激活率" show-overflow-tooltip min-width="93" sortable></el-table-column>
+        <el-table-column label="使用总流量" show-overflow-tooltip min-width="93">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.usetotal_flow)"></div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip label="当月使用流量" show-overflow-tooltip min-width="93">
+        <el-table-column label="当月使用流量" show-overflow-tooltip min-width="93">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.usemonth_flow)"></div>
           </template>

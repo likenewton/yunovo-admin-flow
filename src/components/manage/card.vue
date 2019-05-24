@@ -55,31 +55,31 @@
         </el-table-column>
         <el-table-column show-overflow-tooltip prop="ks_name" label="卡商名称" min-width="120"></el-table-column>
         <el-table-column show-overflow-tooltip prop="jg_name" label="机构名称" min-width="120"></el-table-column>
-        <el-table-column show-overflow-tooltip label="当月用量" show-overflow-tooltip min-width="93" sortable>
+        <el-table-column label="当月用量" show-overflow-tooltip min-width="93" sortable>
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.m_use)"></div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip label="累计用量" show-overflow-tooltip min-width="93" sortable>
+        <el-table-column label="累计用量" show-overflow-tooltip min-width="93" sortable>
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.total_use)"></div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip label="剩余用量" show-overflow-tooltip min-width="93" sortable>
+        <el-table-column label="剩余用量" show-overflow-tooltip min-width="93" sortable>
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.left_use)"></div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="excard_time" label="导卡时间" show-overflow-tooltip min-width="151" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="active_time" label="激活时间" show-overflow-tooltip min-width="151" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="eq_time" label="设备更新时间" show-overflow-tooltip min-width="151" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip label="过期时间" show-overflow-tooltip min-width="215" sortable>
+        <el-table-column prop="excard_time" label="导卡时间" show-overflow-tooltip min-width="151" sortable></el-table-column>
+        <el-table-column prop="active_time" label="激活时间" show-overflow-tooltip min-width="151" sortable></el-table-column>
+        <el-table-column prop="eq_time" label="设备更新时间" show-overflow-tooltip min-width="151" sortable></el-table-column>
+        <el-table-column label="过期时间" show-overflow-tooltip min-width="215" sortable>
           <template slot-scope="scope">
             <div v-html="calcLeftTime(scope.row.exceed_time)"></div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="op_status" label="运行状态" show-overflow-tooltip min-width="70"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="active_status" label="激活状态" show-overflow-tooltip min-width="70"></el-table-column>
+        <el-table-column prop="op_status" label="运行状态" show-overflow-tooltip min-width="70"></el-table-column>
+        <el-table-column prop="active_status" label="激活状态" show-overflow-tooltip min-width="70"></el-table-column>
         <el-table-column fixed="right" label="操作" min-width="140">
           <template slot-scope="scope">
             <el-button type="text">同步</el-button>

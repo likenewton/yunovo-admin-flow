@@ -30,12 +30,12 @@
         <el-table-column show-overflow-tooltip prop="batch_code" label="批次编号" min-width="120"></el-table-column>
         <el-table-column show-overflow-tooltip prop="batch_name" label="批次名称" min-width="120"></el-table-column>
         <el-table-column show-overflow-tooltip prop="jg_name" label="机构名称" min-width="140"></el-table-column>
-        <el-table-column show-overflow-tooltip label="套餐流量" show-overflow-tooltip min-width="95" sortable>
+        <el-table-column label="套餐流量" show-overflow-tooltip min-width="95" sortable>
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.tc_flow)"></div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip label="有效周期" show-overflow-tooltip min-width="95" sortable>
+        <el-table-column show-overflow-tooltip label="有效周期" min-width="95" sortable>
           <template slot-scope="scope">
             <div>{{scope.row.eff_pri}}</div>
           </template>

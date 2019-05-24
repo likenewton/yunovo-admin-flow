@@ -29,27 +29,27 @@
             <el-button type="text">{{scope.row.jg_name}}</el-button>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="sell_num" label="售卡数量" show-overflow-tooltip min-width="95" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="noactive_num" label="未激活数" show-overflow-tooltip min-width="95" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="noactive_rate" label="未激活率" show-overflow-tooltip min-width="95" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="active_num" label="已激活数" show-overflow-tooltip min-width="95" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="active_rate" label="已激活率" show-overflow-tooltip min-width="95" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip label="分配总流量" show-overflow-tooltip min-width="95">
+        <el-table-column prop="sell_num" label="售卡数量" show-overflow-tooltip min-width="95" sortable></el-table-column>
+        <el-table-column prop="noactive_num" label="未激活数" show-overflow-tooltip min-width="95" sortable></el-table-column>
+        <el-table-column prop="noactive_rate" label="未激活率" show-overflow-tooltip min-width="95" sortable></el-table-column>
+        <el-table-column prop="active_num" label="已激活数" show-overflow-tooltip min-width="95" sortable></el-table-column>
+        <el-table-column prop="active_rate" label="已激活率" show-overflow-tooltip min-width="95" sortable></el-table-column>
+        <el-table-column label="分配总流量" show-overflow-tooltip min-width="95">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.fptotal_flow)"></div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip label="使用流量" show-overflow-tooltip min-width="95">
+        <el-table-column label="使用流量" show-overflow-tooltip min-width="95">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.usetotal_flow)"></div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip label="剩余流量" show-overflow-tooltip min-width="95">
+        <el-table-column label="剩余流量" show-overflow-tooltip min-width="95">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.lefttotal_flow)"></div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="useflow_rate" label="使用流量率" show-overflow-tooltip min-width="108" sortable></el-table-column>
+        <el-table-column prop="useflow_rate" label="使用流量率" show-overflow-tooltip min-width="108" sortable></el-table-column>
       </el-table>
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>

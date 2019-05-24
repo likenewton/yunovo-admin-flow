@@ -109,6 +109,8 @@ export default {
 }
 
 .el-aside.el-collapse--none {
+  overflow: hidden;
+
   .el-menu--collapse {
     width: 0 !important;
   }

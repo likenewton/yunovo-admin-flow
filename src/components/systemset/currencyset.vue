@@ -7,7 +7,7 @@
       </el-button-group>
       <el-table class="payset_page" v-loading="loadData" ref="multipleTable" :data="curTableData" border @selection-change="handleSelectionChange" :default-sort="{prop: 'rate', order: 'descending'}" size="mini">
         <el-table-column fixed="left" type="selection" min-width="60"></el-table-column>
-        <el-table-column show-overflow-tooltip label="货币名称" show-overflow-tooltip min-width="150">
+        <el-table-column show-overflow-tooltip label="货币名称" min-width="150">
           <template slot-scope="scope">
             <span>{{scope.row.currency_name}}</span>
             <span v-if="scope.row.isDefault" style="font-weight:bold">(默认)</span>

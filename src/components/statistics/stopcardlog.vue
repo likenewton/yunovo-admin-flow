@@ -41,16 +41,16 @@
             <el-button type="text">{{scope.row.jg_name}}</el-button>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="recharge_count" label="充值次数" show-overflow-tooltip width="110" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="stopcard_count" label="停卡次数" show-overflow-tooltip width="110" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip label="上次停卡流量" show-overflow-tooltip width="105">
+        <el-table-column prop="recharge_count" label="充值次数" show-overflow-tooltip min-width="110" sortable></el-table-column>
+        <el-table-column prop="stopcard_count" label="停卡次数" show-overflow-tooltip min-width="110" sortable></el-table-column>
+        <el-table-column label="上次停卡流量" show-overflow-tooltip width="105">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.stopcard_flow)"></div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="recharge_time" label="上次充值时间" show-overflow-tooltip width="151" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="stopcard_time" label="上次停卡时间" show-overflow-tooltip width="151" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="last_time" label="最后更新时间" show-overflow-tooltip width="151" sortable></el-table-column>
+        <el-table-column prop="recharge_time" label="上次充值时间" show-overflow-tooltip min-width="151" sortable></el-table-column>
+        <el-table-column prop="stopcard_time" label="上次停卡时间" show-overflow-tooltip min-width="151" sortable></el-table-column>
+        <el-table-column prop="last_time" label="最后更新时间" show-overflow-tooltip min-width="151" sortable></el-table-column>
         <el-table-column fixed="right" label="操作" width="110">
           <template slot-scope="scope">
             <el-button type="text" @click="showStopCardDetail(scope.row.iccid)">详情</el-button>
@@ -69,14 +69,14 @@
               <el-button type="text" @click="checkRechargeDetail(scope.row.iccid)">{{scope.row.iccid}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column show-overflow-tooltip label="剩余流量" show-overflow-tooltip width="105">
+          <el-table-column label="剩余流量" show-overflow-tooltip width="105">
             <template slot-scope="scope">
               <div v-html="formatFlowUnit(scope.row.left_flow)"></div>
             </template>
           </el-table-column>
-          <el-table-column show-overflow-tooltip prop="op_declare" label="操作说明" show-overflow-tooltip min-width="200"></el-table-column>
-          <el-table-column show-overflow-tooltip prop="stopcard_time" label="停卡时间" show-overflow-tooltip width="151"></el-table-column>
-          <el-table-column show-overflow-tooltip prop="result_status" label="执行结果" show-overflow-tooltip width="100"></el-table-column>
+          <el-table-column prop="op_declare" label="操作说明" show-overflow-tooltip min-width="200"></el-table-column>
+          <el-table-column prop="stopcard_time" label="停卡时间" show-overflow-tooltip width="151"></el-table-column>
+          <el-table-column prop="result_status" label="执行结果" show-overflow-tooltip width="100"></el-table-column>
         </el-table>
         <el-pagination @size-change="handleSizeChangeDetail" @current-change="handleCurrentChangeDetail" :current-page="currentPage" :page-sizes="pageSizes" :page-size="dialogList.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="dialogList.total" class="clearfix">
         </el-pagination>
