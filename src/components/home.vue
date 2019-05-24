@@ -194,7 +194,7 @@
                   <el-row class="title">机构续费排名</el-row>
                   <el-row v-for="(item, index) in rankData" :key="index" class="rank-item" :gutter="5">
                     <el-col :class="'a_' + index" :span="3">{{index + 1}}</el-col>
-                    <el-col :span="13">{{item.name}}</el-col>
+                    <el-col :span="12">{{item.name}}</el-col>
                     <el-col :span="8">￥{{formatMoney(item.value)}}</el-col>
                   </el-row>
                 </el-col>
@@ -283,8 +283,8 @@ export default {
         card_num: 521
       }],
       rankData: [{
-        name: '云智易联',
-        value: 36525.35
+        name: '云智易联-测试环境',
+        value: 365225.35
       }, {
         name: '云智易联',
         value: 36525.35
@@ -717,7 +717,7 @@ export default {
             background: $borderColor;
             line-height: 6px;
             font-size: 12px;
-            margin: 8px 25px 0 0;
+            margin: 8px 20px 0 0;
           }
 
           &.a_0 {
