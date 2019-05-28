@@ -71,6 +71,7 @@
 </template>
 <script>
 import Api from 'assets/js/api.js'
+import { mapMutations, mapState } from 'vuex'
 const _echart = new Api.ECHARTS()
 
 export default {
@@ -126,6 +127,7 @@ export default {
       this.tabIndex = para.index
       setTimeout(() => {
         this.myChart = this.$echarts.init(document.getElementById(`myChart_${this.tabIndex}`))
+        this.myChart.resize()
       }, 0)
       this.showEchart()
     },
@@ -312,8 +314,19 @@ export default {
     calcLeftTime: Api.UNITS.calcLeftTime
   },
   computed: {
+    ...mapState({
+      asideCollapse: 'asideCollapse'
+    }),
     curTableData() {
       return this.list.data.slice((this.list.currentPage - 1) * this.list.pagesize, this.list.currentPage * this.list.pagesize)
+    }
+  },
+  watch: {
+    asideCollapse(val, oldVal) {
+      // 监听侧边栏的折叠变化，一旦发生变化要重新生成ecarts
+      setTimeout(() => {
+        this.myChart.resize()
+      }, 300)
     }
   }
 }

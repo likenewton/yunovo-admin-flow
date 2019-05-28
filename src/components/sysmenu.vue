@@ -47,6 +47,9 @@ export default {
       }
     }
   },
+  mounted() {
+    
+  },
   methods: {
     enterSystem() {
       this.$router.push({ name: 'home' })

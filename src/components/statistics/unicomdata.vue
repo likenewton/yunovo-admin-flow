@@ -65,6 +65,7 @@
 </template>
 <script>
 import Api from 'assets/js/api.js'
+import { mapMutations, mapState } from 'vuex'
 
 export default {
   data() {
@@ -81,7 +82,6 @@ export default {
       },
       formInline: {},
       myChart_0: null,
-      myChart_1: null,
       // 激活-未激活柱状图数据
       option_0: {
         title: {
@@ -299,8 +299,19 @@ export default {
     calcLeftTime: Api.UNITS.calcLeftTime
   },
   computed: {
+    ...mapState({
+      asideCollapse: 'asideCollapse'
+    }),
     curTableData() {
       return this.list.data.slice((this.list.currentPage - 1) * this.list.pagesize, this.list.currentPage * this.list.pagesize)
+    }
+  },
+  watch: {
+    asideCollapse(val, oldVal) {
+      // 监听侧边栏的折叠变化，一旦发生变化要重新生成ecarts
+      setTimeout(() => {
+        this[`myChart_${this.tabIndex}`].resize()
+      }, 300)
     }
   }
 }

@@ -1,5 +1,6 @@
 <template>
   <div class="inner-head">
+    <v-token></v-token>
     <img class="logo" src="../../assets/images/LOGO-188X56.png">
     <i v-if="showMenu" class="el-icon-fontcaidan1 pointer menu-icon" @click="collapseAside"></i>
     <el-tooltip v-if="showMenu" class="sysmenu fr pointer" effect="dark" content="回到门户" placement="bottom-end">
@@ -13,7 +14,7 @@
       </el-dropdown-menu>
     </el-dropdown>
     <div class="avatar fr">
-      <img src="../../assets/images/shouquan.png">
+      <img src="../../assets/images/liuliang.png">
     </div>
     <el-badge v-if="messageCount" :value="messageCount" class="item fr pointer" type="danger">
       <i class="el-icon-fontziyuan"></i>
@@ -34,7 +35,7 @@ export default {
   props: {
     messageCount: {
       type: Number,
-      default: 2
+      default: 0
     },
     showMenu: {
       type: Boolean,

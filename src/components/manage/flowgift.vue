@@ -4,12 +4,11 @@
       <el-tabs @tab-click="changeTab">
         <el-tab-pane>
           <span slot="label">赠送流量</span>
-          <el-form :model="formInline" :rules="rules" ref="ruleForm" label-width="126px" class="demo-ruleForm" size="small">
+          <el-form :model="formInline" :rules="rules" ref="ruleForm" label-width="126px" class="demo-ruleForm" size="small" :status-icon="true">
             <el-form-item prop="iccid">
               <span slot="label">卡ICCID列表：</span>
-              <el-input type="textarea" v-model="formInline.iccid" rows="4" placeholder="一行代表一个ICCID
-多行代表多个ICCID
-建议不超过200个ICCID"></el-input>
+              <el-input type="textarea" v-model="formInline.iccid" rows="4" placeholder="请输入卡ICCID"></el-input>
+              <div class="annotation">一行代表一个ICCID，多行代表多个ICCID，建议不超过200个ICCID</div>
             </el-form-item>
             <el-form-item prop="model">
               <span slot="label">套餐模式：</span>
@@ -18,7 +17,8 @@
             </el-form-item>
             <el-form-item prop="tc_flow">
               <span slot="label">套餐流量：</span>
-              <el-input v-model="formInline.tc_flow" @input="formInline.tc_flow = limitNumber(formInline.tc_flow)" placeholder="默认单位为M，精确到3位小数(无限制填：99999999)"></el-input>
+              <el-input v-model="formInline.tc_flow" @input="formInline.tc_flow = limitNumber(formInline.tc_flow)" placeholder="请输入套餐流量"></el-input>
+              <div class="annotation">默认单位为M，精确到3位小数(无限制填：99999999)</div>
             </el-form-item>
             <el-form-item prop="is_clear">
               <span slot="label">是否清零：</span>
@@ -27,7 +27,7 @@
             </el-form-item>
             <el-form-item prop="eff_pro">
               <span slot="label">有效周期：</span>
-              <el-select v-model="formInline.eff_pro" placeholder="请选择">
+              <el-select v-model="formInline.eff_pro" placeholder="请选择有效周期">
                 <el-option label="1个月" :value="0"></el-option>
                 <el-option label="2个月" :value="1"></el-option>
                 <el-option label="3个月" :value="2"></el-option>
@@ -35,7 +35,7 @@
             </el-form-item>
             <el-form-item prop="donator_remark">
               <span slot="label">赠者&备注：</span>
-              <el-input type="textarea" v-model="formInline.donator_remark" placeholder="" rows="4"></el-input>
+              <el-input type="textarea" v-model="formInline.donator_remark" placeholder="请输入赠者&备注" rows="4"></el-input>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>

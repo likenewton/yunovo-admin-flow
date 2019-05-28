@@ -69,6 +69,7 @@
 </template>
 <script>
 import Api from 'assets/js/api.js'
+import { mapMutations, mapState } from 'vuex'
 
 export default {
   data() {
@@ -197,6 +198,7 @@ export default {
           label: {
             normal: {
               show: true,
+              formatter: '',
               position: 'top'
             }
           },
@@ -232,6 +234,7 @@ export default {
       this.tabIndex = para.index
       setTimeout(() => {
         this.myChart = this.$echarts.init(document.getElementById(`myChart_${this.tabIndex}`))
+        this.myChart.resize()
       }, 0)
       this.getOptionData()
     },
@@ -262,6 +265,14 @@ export default {
           <span>${variable[this.tabIndex]}</span>
         </div>
       </div>`
+    },
+    formatterText(series) {
+      let variable = {
+        '0': `${series.data}次`,
+        '1': `${Api.UNITS.formatFlowUnit(series.data, 2, false)}`,
+        '2': `${Api.UNITS.formatMoney(series.data)}元`
+      }
+      return `${variable[this.tabIndex]}`
     },
     // 获取列表数据
     getData() {
@@ -351,6 +362,7 @@ export default {
       let label = option.xAxis.data = [] // 底坐标标签
       let data1 = option.series[0].data = [] // 分类一数据
       option.tooltip.formatter = this.formatter
+      option.series[0].label.normal.formatter = this.formatterText
       option.title.text = chartConst.title
       option.series[0].name = chartConst.name
       this.list.data.forEach((v) => {
@@ -372,8 +384,19 @@ export default {
     calcLeftTime: Api.UNITS.calcLeftTime
   },
   computed: {
+    ...mapState({
+      asideCollapse: 'asideCollapse'
+    }),
     curTableData() {
       return this.list.data.slice((this.list.currentPage - 1) * this.list.pagesize, this.list.currentPage * this.list.pagesize)
+    }
+  },
+  watch: {
+    asideCollapse(val, oldVal) {
+      // 监听侧边栏的折叠变化，一旦发生变化要重新生成ecarts
+      setTimeout(() => {
+        this.myChart.resize()
+      }, 300)
     }
   }
 }

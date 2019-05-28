@@ -154,7 +154,7 @@ module.exports = {
     let now = new Date().getTime()
     // ie 下兼容性问题
     if (time) {
-      var a = new Date(time).getTime() || new Date(time.replace(/-/g,"/")).getTime()
+      var a = new Date(time).getTime() || new Date(time.replace(/-/g, "/")).getTime()
     }
     if (a - now > 0) {
       htmlStr = `${time} <span style="display:inline-block;color:#008000;font-weight:bold"">(${Math.ceil((a - now) / 24 / 3600000)}天)</span>`
@@ -218,5 +218,17 @@ module.exports = {
   // 验证密码格式
   validatorPassword(value) {
     return /^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&*]+$)(?![a-zA-z\d]+$)(?![a-zA-z!@#$%^&*]+$)(?![\d!@#$%^&*]+$)[a-zA-Z\d!@#$%^&*]+$/.test(value) && value.length >= 6
-  }
+  },
+  getQuery(attr) {
+    let href = location.href
+    let queryStr = href.substr(href.indexOf('?') + 1)
+    let queryArr = queryStr.split('&')
+    let queryObj = {}
+    queryArr.forEach(v => {
+      let tplArr = v.split('=')
+      queryObj[tplArr[0]] = tplArr[1]
+    })
+    if (attr) return queryObj[attr]
+    else return queryObj
+  },
 }

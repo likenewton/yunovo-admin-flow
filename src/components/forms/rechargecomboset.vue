@@ -3,10 +3,10 @@
     <div slot="header" class="clearfix">
       <span>充值套餐设置</span>
     </div>
-    <el-form :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="120px" size="small">
+    <el-form :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="120px" size="small" :status-icon="true">
       <el-form-item prop="jg_name">
         <span slot="label">机构名称：</span>
-        <el-select v-model="formInline.jg_name" placeholder="请选择">
+        <el-select v-model="formInline.jg_name" placeholder="请选择机构名称">
           <el-option label="机构1" :value="0"></el-option>
           <el-option label="机构2" :value="1"></el-option>
           <el-option label="机构3" :value="2"></el-option>
@@ -19,20 +19,23 @@
       </el-form-item>
       <el-form-item prop="tc_name">
         <span slot="label">套餐名称：</span>
-        <el-input v-model="formInline.tc_name" placeholder="若为空将根据套餐情况规则组合名称"></el-input>
+        <el-input v-model="formInline.tc_name" placeholder="请输入套餐名称"></el-input>
+        <div class="annotation">若为空将根据套餐情况规则组合名称</div>
       </el-form-item>
       <el-form-item prop="tc_flow">
         <span slot="label">套餐流量：</span>
-        <el-input v-model="formInline.tc_flow" @input="formInline.tc_flow = limitNumber(formInline.tc_flow)" placeholder="默认单位为M，精确到3位小数(无限制填：99999999)"></el-input>
+        <el-input v-model="formInline.tc_flow" @input="formInline.tc_flow = limitNumber(formInline.tc_flow)" placeholder="请输入套餐流量"></el-input>
+        <div class="annotation">默认单位为M，精确到3位小数(无限制填：99999999)</div>
       </el-form-item>
       <el-form-item prop="tc_price">
         <span slot="label">套餐价格：</span>
-        <el-input v-model="formInline.tc_price" @input="formInline.tc_price = limitNumber(formInline.tc_price, 5)" placeholder="最多精确到3位小数"></el-input>
+        <el-input v-model="formInline.tc_price" @input="formInline.tc_price = limitNumber(formInline.tc_price, 5)" placeholder="请输入套餐价格"></el-input>
+        <div class="annotation">最多精确到3位小数</div>
       </el-form-item>
       <el-form-item prop="tc_discount">
         <span slot="label">套餐折扣：</span>
-        <el-input v-model="formInline.tc_discount" @input="formInline.tc_discount = limitNumber(formInline.tc_discount, 1)" placeholder="折扣范围0.1至1
-0.5代表打5折，1为不打折"></el-input>
+        <el-input v-model="formInline.tc_discount" @input="formInline.tc_discount = limitNumber(formInline.tc_discount, 1)" placeholder="请输入套餐折扣"></el-input>
+        <div class="annotation">折扣范围0.1至1，0.5代表打5折，1为不打折</div>
       </el-form-item>
       <el-form-item prop="type">
         <span slot="label">套餐类型：</span>
@@ -41,7 +44,7 @@
       </el-form-item>
       <el-form-item prop="fp_month">
         <span slot="label">分配月数：</span>
-        <el-select v-model="formInline.fp_month" placeholder="请选择">
+        <el-select v-model="formInline.fp_month" placeholder="请选择分配月数">
           <el-option label="1个月" :value="0"></el-option>
           <el-option label="2个月" :value="1"></el-option>
           <el-option label="3个月" :value="2"></el-option>
@@ -54,7 +57,7 @@
       </el-form-item>
       <el-form-item prop="eff_pro">
         <span slot="label">有效周期：</span>
-        <el-select v-model="formInline.eff_pro" placeholder="请选择">
+        <el-select v-model="formInline.eff_pro" placeholder="请选择有效周期">
           <el-option label="1个月" :value="0"></el-option>
           <el-option label="2个月" :value="1"></el-option>
           <el-option label="3个月" :value="2"></el-option>
@@ -62,18 +65,21 @@
       </el-form-item>
       <el-form-item prop="rebate_money">
         <span slot="label">返利金额：</span>
-        <el-input v-model="formInline.rebate_money" @input="formInline.rebate_money = limitNumber(formInline.rebate_money, 5)" placeholder="填0代表套餐无返利，将根据机构返利情况计算"></el-input>
+        <el-input v-model="formInline.rebate_money" @input="formInline.rebate_money = limitNumber(formInline.rebate_money, 5)" placeholder="请输入返利金额"></el-input>
+        <div class="annotation">填 0 代表套餐无返利，将根据机构返利情况计算</div>
       </el-form-item>
       <el-form-item prop="tc_remark">
         <span slot="label">套餐备注：</span>
-        <el-input type="textarea" v-model="formInline.tc_remark" placeholder="显示在充值处给用户看的套餐详细描述" rows="4"></el-input>
+        <el-input type="textarea" v-model="formInline.tc_remark" placeholder="请输入套餐备注" rows="4"></el-input>
+        <div class="annotation">显示在充值处给用户看的套餐详细描述</div>
       </el-form-item>
       <el-form-item prop="is_recommend">
         <span slot="label">是否推荐：</span>
-        <el-select v-model="formInline.is_recommend" placeholder="用户充值选择套餐处显示推荐">
+        <el-select v-model="formInline.is_recommend" placeholder="请选择是否推荐">
           <el-option label="否" :value="0"></el-option>
           <el-option label="是" :value="1"></el-option>
         </el-select>
+        <div class="annotation">用户充值选择套餐处显示推荐</div>
       </el-form-item>
       <el-form-item>
         <el-button @click="$router.back()">返回</el-button>
@@ -104,7 +110,6 @@ export default {
         rebate_money: '',
         is_recommend: ''
       },
-      fileList: [], // 文件上传列表
       rules: {
         jg_name: [{
           required: true,
@@ -158,7 +163,7 @@ export default {
     }
   },
   mounted() {
-    // 一进入页面就先拿到省
+
   },
   methods: {
     // 提交表单

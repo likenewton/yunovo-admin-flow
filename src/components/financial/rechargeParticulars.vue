@@ -100,7 +100,64 @@ export default {
           trigger: 'item',
           formatter: "{a} <br/>{b} : {c} ({d}%)"
         },
-        toolbox: _echart.getOption().toolbox,
+        toolbox: {
+          show: true,
+          right: 20,
+          feature: {
+            dataView: {
+              show: true,
+              iconStyle: {
+                borderColor: '#9a83da'
+              },
+              emphasis: {
+                iconStyle: {
+                  borderColor: '#9a8dda'
+                }
+              },
+              optionToContent(opt) {
+                let series = opt.series
+                let table = `<table style="width:100%;text-align:center"><tbody>
+                ${function a() {
+                  let str = ''
+                  series.forEach((v) => {
+                    str += `<tr><td style="font-weight:bold">${v.name}</td></tr>`
+                    v.data.forEach((v2) => {
+                      str += `<tr><td>${v2.name}</td><td>${v2.value}</td></tr>`
+                    })
+                    str += '<tr style="height: 20px"></tr>'
+                  })
+                  return str
+                }()}
+              </tbody></table>`
+                return table
+              },
+              contentToOption() {},
+              buttonColor: '#ff7477'
+            },
+            restore: {
+              show: true,
+              iconStyle: {
+                borderColor: '#ffc367'
+              },
+              emphasis: {
+                iconStyle: {
+                  borderColor: '#ffcf85'
+                }
+              }
+            },
+            saveAsImage: {
+              show: true,
+              iconStyle: {
+                borderColor: '#3cb1ff'
+              },
+              emphasis: {
+                iconStyle: {
+                  borderColor: '#63c1ff'
+                }
+              }
+            }
+          }
+        },
         legend: {
           top: 40,
           data: ['微信', '支付宝', '充值卡', '银行转账', '已付款', '未付款'],

@@ -159,7 +159,6 @@ class Echarts {
   }
 
   getOption() {
-    console.log(this.option)
     return this.option
   }
 

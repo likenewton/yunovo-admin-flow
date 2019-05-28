@@ -3,7 +3,7 @@
     <div slot="header" class="clearfix">
       <span>充值套餐设置</span>
     </div>
-    <el-form v-loading="loadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="160px" size="small">
+    <el-form v-loading="loadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="160px" size="small" :status-icon="true">
       <el-form-item prop="jg_name">
         <span slot="label">机构名称：</span>
         <el-select v-model="formInline.jg_name" placeholder="请选择">
@@ -13,8 +13,9 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="warning_flow">
-        <span slot="label">预警流量(M)：</span>
-        <el-input v-model="formInline.warning_flow" @input="formInline.warning_flow = limitNumber(formInline.warning_flow)" placeholder="单位：M"></el-input>
+        <span slot="label">预警流量：</span>
+        <el-input v-model="formInline.warning_flow" @input="formInline.warning_flow = limitNumber(formInline.warning_flow)" placeholder="请输入预警流量"></el-input>
+        <div class="annotation">单位：M</div>
       </el-form-item>
       <el-form-item prop="blow_tpl">
         <span slot="label">低于预警值通知模板：</span>

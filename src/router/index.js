@@ -1,3 +1,5 @@
+import Api from 'assets/js/api.js'
+window._axios = Api.AXIOS.init() // 将_axios注册到全局，方便调用
 // 按需加载路由
 // [chunk1](公共页面)
 const Login = r => require.ensure([], () => r(require('@/components/login.vue')), 'chunk1')
@@ -314,9 +316,22 @@ let router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   //会在任意路由跳转前执行, 检测当前是否还处于登录状态
+  setTimeout(() => {
+    if (!_axios) {
+      _axios.send({
+        method: 'get',
+        url: _axios.ajaxAd.isLogin,
+        done: (res) => {
+          // next()
+        }
+      })
+    } else {
+      next()
+    }
 
-  // 测试， 永远处于登录状态
-  (true || to.path === '/login') ? next(): next('/login')
+    // 测试， 永远处于登录状态
+    next()
+  }, 0)
 })
 
 export default router

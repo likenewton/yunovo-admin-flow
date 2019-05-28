@@ -3,26 +3,26 @@
     <div slot="header" class="clearfix">
       <span>流量卡出货批次</span>
     </div>
-    <el-form :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="225px" size="small">
+    <el-form :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="225px" size="small" :status-icon="true">
       <el-form-item prop="batch_code">
         <span slot="label">批次编号：</span>
-        <el-input v-model="formInline.batch_code" placeholder="请输入"></el-input>
+        <el-input v-model="formInline.batch_code" placeholder="请输入批次编号"></el-input>
       </el-form-item>
       <el-form-item prop="batch_name">
         <span slot="label">批次名称：</span>
-        <el-input v-model="formInline.batch_name" placeholder="请输入"></el-input>
+        <el-input v-model="formInline.batch_name" placeholder="请输入批次名称"></el-input>
       </el-form-item>
       <el-form-item prop="batch_remark">
         <span slot="label">批次备注：</span>
-        <el-input type="textarea" v-model="formInline.batch_remark" placeholder="请输入" rows="4"></el-input>
+        <el-input type="textarea" v-model="formInline.batch_remark" placeholder="请输入批次备注" rows="4"></el-input>
       </el-form-item>
       <el-form-item prop="ex_name">
         <span slot="label">出货人名：</span>
-        <el-input v-model="formInline.ex_name" placeholder="请输入"></el-input>
+        <el-input v-model="formInline.ex_name" placeholder="请输入出货人名"></el-input>
       </el-form-item>
       <el-form-item prop="jg_name">
         <span slot="label">机构名称：</span>
-        <el-select v-model="formInline.jg_name" placeholder="请选择">
+        <el-select v-model="formInline.jg_name" placeholder="请选择机构名称">
           <el-option label="机构1" :value="0"></el-option>
           <el-option label="机构2" :value="1"></el-option>
           <el-option label="机构3" :value="2"></el-option>
@@ -34,11 +34,12 @@
       </el-form-item>
       <el-form-item prop="batch_clw">
         <span slot="label">车联网批次：</span>
-        <el-input v-model="formInline.batch_clw" placeholder="若需将车联网设备中的卡归属到本批次初始化信息中，需关联车联网出货批次编号"></el-input>
+        <el-input v-model="formInline.batch_clw" placeholder="请输入车联网批次"></el-input>
+        <div class="annotation">若需将车联网设备中的卡归属到本批次初始化信息中，需关联车联网出货批次编号</div>
       </el-form-item>
       <el-form-item prop="ks_name">
         <span slot="label">流量卡商：</span>
-        <el-select v-model="formInline.ks_name" placeholder="请选择">
+        <el-select v-model="formInline.ks_name" placeholder="请选择流量卡商">
           <el-option label="卡商1" :value="0"></el-option>
           <el-option label="卡商2" :value="1"></el-option>
           <el-option label="卡商3" :value="2"></el-option>
@@ -46,11 +47,12 @@
       </el-form-item>
       <el-form-item prop="tc_flow">
         <span slot="label">套餐流量：</span>
-        <el-input v-model.number="formInline.tc_flow" placeholder="默认单位为M，精确到3位小数(无限制填：99999999)"></el-input>
+        <el-input v-model.number="formInline.tc_flow" placeholder="请输入套餐流量"></el-input>
+        <div class="annotation">默认单位为M，精确到3位小数(无限制填：99999999)</div>
       </el-form-item>
       <el-form-item prop="months">
         <span slot="label">分配月数：</span>
-        <el-select v-model="formInline.months" placeholder="请选择">
+        <el-select v-model="formInline.months" placeholder="请选择分配月数">
           <el-option label="1个月" :value="0"></el-option>
           <el-option label="2个月" :value="1"></el-option>
           <el-option label="3个月" :value="2"></el-option>
@@ -58,7 +60,8 @@
       </el-form-item>
       <el-form-item prop="yj_flow">
         <span slot="label">月均流量：</span>
-        <el-input v-model.number="formInline.yj_flow" placeholder="默认单位为M，精确到3位小数(无限制填：99999999)"></el-input>
+        <el-input v-model.number="formInline.yj_flow" placeholder="请输入月均流量"></el-input>
+        <div class="annotation">默认单位为M，精确到3位小数(无限制填：99999999)</div>
       </el-form-item>
       <el-form-item prop="is_clear">
         <span slot="label">是否清零：</span>
@@ -69,7 +72,7 @@
       </el-form-item>
       <el-form-item prop="eff_period">
         <span slot="label">有效周期：</span>
-        <el-select v-model="formInline.eff_period" placeholder="请选择">
+        <el-select v-model="formInline.eff_period" placeholder="请选择有效周期">
           <el-option label="1个月" :value="0"></el-option>
           <el-option label="2个月" :value="1"></el-option>
           <el-option label="3个月" :value="2"></el-option>
@@ -77,7 +80,8 @@
       </el-form-item>
       <el-form-item prop="real_flow">
         <span slot="label">实名认证成功赠送流量：</span>
-        <el-input v-model.number="formInline.real_flow" placeholder="默认单位为M，精确到3位小数(无限制填：99999999)"></el-input>
+        <el-input v-model.number="formInline.real_flow" placeholder="请输入"></el-input>
+        <div class="annotation">默认单位为M，精确到3位小数(无限制填：99999999)</div>
       </el-form-item>
       <el-form-item prop="real_period">
         <span slot="label">实名认证成功赠送流量有效周期：</span>
@@ -89,7 +93,8 @@
       </el-form-item>
       <el-form-item prop="perf_flow">
         <span slot="label">完善资料成功赠送流量：</span>
-        <el-input v-model.number="formInline.perf_flow" placeholder="默认单位为M，精确到3位小数(无限制填：99999999)"></el-input>
+        <el-input v-model.number="formInline.perf_flow" placeholder="请输入"></el-input>
+        <div class="annotation">默认单位为M，精确到3位小数(无限制填：99999999)</div>
       </el-form-item>
       <el-form-item prop="perf_period">
         <span slot="label">完善资料成功赠送流量有效周期：</span>
@@ -101,7 +106,8 @@
       </el-form-item>
       <el-form-item prop="bind_flow">
         <span slot="label">绑定设备成功赠送流量：</span>
-        <el-input v-model.number="formInline.bind_flow" placeholder="默认单位为M，精确到3位小数(无限制填：99999999)"></el-input>
+        <el-input v-model.number="formInline.bind_flow" placeholder="请输入"></el-input>
+        <div class="annotation">默认单位为M，精确到3位小数(无限制填：99999999)</div>
       </el-form-item>
       <el-form-item prop="bind_period">
         <span slot="label">绑定设备成功赠送流量有效周期：</span>

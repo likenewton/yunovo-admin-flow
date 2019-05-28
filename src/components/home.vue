@@ -182,7 +182,11 @@
     </el-row>
     <el-row style="margin-top: 20px">
       <el-card class="bottom-card" shadow="never" :style="{height: '450px'}">
-        <div class="header">平台经营趋势统计</div>
+        <div class="header">
+          <span>平台经营趋势统计</span>
+          <el-date-picker class="date_picker" v-model="bottomCardDate" type="daterange" align="right" unlink-panels range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions" size="small">
+          </el-date-picker>
+        </div>
         <el-row>
           <el-tabs @tab-click="changeTab_2">
             <el-tab-pane label="续费趋势">
@@ -236,6 +240,7 @@
 </template>
 <script>
 import Api from 'assets/js/api.js'
+import { mapMutations, mapState } from 'vuex'
 
 export default {
   data() {
@@ -304,6 +309,34 @@ export default {
         name: '云智易联',
         value: 36525.35
       }],
+      bottomCardDate: '',
+      pickerOptions: {
+        shortcuts: [{
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+            picker.$emit('pick', [start, end]);
+          }
+        }, {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+            picker.$emit('pick', [start, end]);
+          }
+        }, {
+          text: '最近三个月',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+            picker.$emit('pick', [start, end]);
+          }
+        }]
+      },
       option_1: {
         series: [{
           type: 'pie',
@@ -355,12 +388,13 @@ export default {
       this.tabIndex_1 = para.index
       this.myChart_1 = this.$echarts.init(document.getElementById(`canvas_1_${para.index}`))
       this.getTab1Data()
-
     },
     changeTab_2(para) {
       this.tabIndex_2 = para.index
       setTimeout(() => {
         this.myChart_2 = this.$echarts.init(document.getElementById(`canvas_2_${para.index}`))
+        // tab切换的时候都重新修正一下尺寸
+        this.myChart_2.resize()
       }, 0)
       this.getTab2Data()
     },
@@ -524,6 +558,19 @@ export default {
           return str
         }()}
       </div>`
+    }
+  },
+  computed: {
+    ...mapState({
+      asideCollapse: 'asideCollapse'
+    })
+  },
+  watch: {
+    asideCollapse(val, oldVal) {
+      // 监听侧边栏的折叠变化，一旦发生变化要重新调整ecarts尺寸
+      setTimeout(() => {
+        this.myChart_2.resize()
+      }, 300)
     }
   }
 }
@@ -697,6 +744,13 @@ export default {
   }
 
   .bottom-card {
+    .date_picker {
+      position: absolute;
+      right: 20px;
+      top: 35px;
+      z-index: 10;
+    }
+
     .rank-list {
       .title {
         font-size: 20px;
