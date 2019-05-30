@@ -19,6 +19,8 @@ class AXIOS {
       // 公共
       isLogin: '/fc/api/sso/isLogin',
       getLoginInfo: '/fc/api/sso/getLoginInfo',
+      // 下拉列表
+      getCardTypes: '/fc/api/select/api/select/cardTypes',
       // 统计分析
       getStats: '/fc/api/gprs/stats/'
     }

@@ -13,5 +13,8 @@ export default {
   },
   isLogin: state => {
     return state.isLogin
+  },
+  cardTypes: state => {
+    return state.cardTypes
   }
 }

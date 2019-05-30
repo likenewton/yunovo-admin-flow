@@ -1,6 +1,7 @@
 <template>
   <div class="inner-head">
     <v-token></v-token>
+    <v-store></v-store>
     <img class="logo" src="../../assets/images/LOGO-188X56.png">
     <i v-if="showMenu" class="el-icon-fontcaidan1 pointer menu-icon" @click="collapseAside"></i>
     <el-tooltip v-if="showMenu" class="sysmenu fr pointer" effect="dark" content="回到门户" placement="bottom-end">

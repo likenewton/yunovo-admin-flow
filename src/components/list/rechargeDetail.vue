@@ -119,23 +119,23 @@
         <el-tab-pane>
           <span slot="label">日使用情况</span>
           <el-table v-loading="loadData" :data="curTableData" border :default-sort="{prop: 'statistics_date', order: 'descending'}" size="mini">
-            <el-table-column show-overflow-tooltip prop="statistics_date" label="统计日期" min-width="100" sortable></el-table-column>
-            <el-table-column show-overflow-tooltip label="日使用流量" min-width="100">
+            <el-table-column prop="statistics_date" label="统计日期" min-width="100" sortable></el-table-column>
+            <el-table-column label="日使用流量" min-width="100">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.day_use)"></div>
               </template>
             </el-table-column>
-            <el-table-column show-overflow-tooltip label="日超标流量" min-width="100">
+            <el-table-column label="日超标流量" min-width="100">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.day_exceed)"></div>
               </template>
             </el-table-column>
-            <el-table-column show-overflow-tooltip label="昨日剩余流量" min-width="100">
+            <el-table-column label="昨日剩余流量" min-width="100">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.yesday_leftflow)"></div>
               </template>
             </el-table-column>
-            <el-table-column show-overflow-tooltip label="今日剩余流量" min-width="100">
+            <el-table-column label="今日剩余流量" min-width="100">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.day_leftflow)"></div>
               </template>
@@ -147,19 +147,19 @@
         <!-- 月使用情况 -->
         <el-tab-pane>
           <span slot="label">月使用情况</span>
-          <el-table v-loading="loadData" :data="curTableData" border :default-sort="{prop: 'statistics_month', order: 'descending'}" size="mini">
-            <el-table-column show-overflow-tooltip prop="statistics_month" label="统计年月" min-width="100" sortable></el-table-column>
-            <el-table-column show-overflow-tooltip label="月使用流量" min-width="100">
+          <el-table v-loading="loadData" :data="curTableData" border size="mini">
+            <el-table-column prop="statistics_month" label="统计年月" min-width="100" sortable></el-table-column>
+            <el-table-column label="月使用流量" min-width="100">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.month_use)"></div>
               </template>
             </el-table-column>
-            <el-table-column show-overflow-tooltip label="月剩余流量" min-width="100">
+            <el-table-column label="月剩余流量" min-width="100">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.month_left)"></div>
               </template>
             </el-table-column>            
-            <el-table-column show-overflow-tooltip label="月超标流量" min-width="100">
+            <el-table-column label="月超标流量" min-width="100">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.month_exceed)"></div>
               </template>

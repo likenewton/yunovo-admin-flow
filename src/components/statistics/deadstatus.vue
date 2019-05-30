@@ -6,10 +6,8 @@
           <el-input v-model="formInline.iccid" placeholder="请输入卡的iccid"></el-input>
         </el-form-item>
         <el-form-item label="卡商名称">
-          <el-select v-model="formInline.ks_name" placeholder="请选择">
-            <el-option label="卡商1" value="0"></el-option>
-            <el-option label="卡商2" value="1"></el-option>
-            <el-option label="卡商3" value="2"></el-option>
+          <el-select v-model="formInline.card_type" placeholder="请选择">
+            <el-option v-for="(item, index) in cardTypes" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="所属机构">
@@ -27,52 +25,52 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">查询</el-button>
-          <el-button type="warning">重置</el-button>
+          <el-button type="primary" @click="getData">查询</el-button>
+          <el-button type="warning" @click="formInline = {}">重置</el-button>
         </el-form-item>
       </el-form>
     </el-card>
-    <el-card class="box-card clearfix" shadow="never">
+    <el-card class="box-card clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
         <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
-      <el-table v-loading="loadData" ref="multipleTable" :data="curTableData" border :default-sort="{prop: 'import_time', order: 'descending'}" size="mini">
+      <el-table ref="multipleTable" :data="list.data" @sort-change="handleSortChange" border size="mini">
         <el-table-column fixed="left" label="卡ICCID" width="180">
           <template slot-scope="scope">
             <el-button type="text">{{scope.row.iccid}}</el-button>
           </template>
         </el-table-column>
-        <el-table-column prop="ks_name" label="卡商名称" show-overflow-tooltip min-width="130"></el-table-column>
-        <el-table-column label="所属机构" show-overflow-tooltip min-width="135">
-          <template slot-scope="scope" show-overflow-tooltip>
+        <el-table-column prop="ks_name" label="卡商名称" min-width="123"></el-table-column>
+        <el-table-column label="所属机构" min-width="130">
+          <template slot-scope="scope">
             <el-button type="text">{{scope.row.jg_name}}</el-button>
           </template>
         </el-table-column>
-        <el-table-column label="当月用量" show-overflow-tooltip width="95">
+        <el-table-column label="当月用量" width="95">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.month_flow)"></div>
           </template>
         </el-table-column>
-        <el-table-column label="累计用量" show-overflow-tooltip width="95">
+        <el-table-column label="累计用量" width="95">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.total_flow)"></div>
           </template>
         </el-table-column>
-        <el-table-column label="剩余用量" show-overflow-tooltip width="95">
+        <el-table-column label="剩余用量" width="95">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.left_flow)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="import_time" label="导卡时间" show-overflow-tooltip width="151" sortable></el-table-column>
-        <el-table-column prop="active_time" label="激活时间" show-overflow-tooltip width="151" sortable></el-table-column>
-        <el-table-column prop="eq_time" label="设备更新时间" show-overflow-tooltip width="151" sortable></el-table-column>
-        <el-table-column prop="stop_time" label="上次停用时间" show-overflow-tooltip width="151" sortable></el-table-column>
-        <el-table-column label="过期时间" show-overflow-tooltip width="205">
+        <el-table-column prop="import_time" label="导卡时间" width="153" sortable="custom"></el-table-column>
+        <el-table-column prop="active_time" label="激活时间" width="153" sortable="custom"></el-table-column>
+        <el-table-column prop="eq_time" label="设备更新时间" width="153" sortable="custom"></el-table-column>
+        <el-table-column prop="stop_time" label="上次停用时间" width="153" sortable="custom"></el-table-column>
+        <el-table-column label="过期时间" width="205">
           <template slot-scope="scope">
             <div v-html="calcLeftTime(scope.row.ex_time)"></div>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" width="95">
+        <el-table-column fixed="right" label="操作" width="98">
           <template slot-scope="scope">
             <el-button type="text">同步</el-button>
             <el-button type="text" v-if="scope.row.is_op">停用</el-button>
@@ -87,12 +85,12 @@
 </template>
 <script>
 import Api from 'assets/js/api.js'
+import { mapState } from 'vuex'
 
 export default {
   data() {
     return {
       loadData: true,
-      tabIndex: '0',
       pageSizes: Api.STATIC.pageSizes,
       list: {
         data: [],
@@ -100,21 +98,14 @@ export default {
         currentPage: 1,
         total: 0,
       },
+      sort: {},
       formInline: {}
     }
   },
   mounted() {
-    // 进入页面的时候请求数据
-    if (this.list.data.length === 0) {
-      this.getData()
-    } else {
-      this.loadData = false
-    }
+    this.getData()
   },
   methods: {
-    routeName() {
-      return this.$route.name
-    },
     handleSizeChange(val) {
       this.list.pagesize = val
       this.getData()
@@ -123,36 +114,24 @@ export default {
       this.list.currentPage = val
       this.getData()
     },
+    handleSortChange(val) {
+      Api.UNITS.setSortSearch(val, this)
+      this.getData()
+    },
     // 获取列表数据
     getData() {
-      setTimeout(() => {
-        // 数据请求成功
-        this.list.data = [{
-          id: 0,
-          iccid: '89860617040000312399',
-          ks_name: '智网科技 JASPER',
-          jg_name: '卡仕特-西格玛',
-          month_flow: 1,
-          total_flow: NaN,
-          left_flow: -10235.363,
-          import_time: '2019-03-25 12:52:10',
-          active_time: '2019-03-25 12:52:10',
-          eq_time: '2019-03-25 12:52:10',
-          stop_time: '2019-03-25 12:52:10',
-          ex_time: '2020-03-25 12:52:10',
-          is_op: true
-        }]
-        this.list.total = this.list.data.length
-        this.loadData = false
-      }, 1000)
+      Api.UNITS.getListData({
+        vue: this,
+        url: _axios.ajaxAd.getStats
+      })
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,
     calcLeftTime: Api.UNITS.calcLeftTime
   },
   computed: {
-    curTableData() {
-      return this.list.data.slice((this.list.currentPage - 1) * this.list.pagesize, this.list.currentPage * this.list.pagesize)
-    }
+    ...mapState({
+      cardTypes: 'cardTypes' // 卡商列表
+    })
   }
 }
 

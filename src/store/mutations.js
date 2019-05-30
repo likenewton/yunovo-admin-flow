@@ -1,8 +1,9 @@
-const SET_ASIDECOLLAPSE = 'SET_ASIDECOLLAPSE'
-const SET_ASIDEFLAG = 'SET_ASIDEFLAG'
-const SET_DIALOGVISIBLE = 'SET_DIALOGVISIBLE'
-const SET_AUTHMENU = 'SET_AUTHMENU'
-const SET_ISLOGIN = 'SET_ISLOGIN'
+const SET_ASIDECOLLAPSE = 'SET_ASIDECOLLAPSE' // 侧边栏是否处于折叠状态
+const SET_ASIDEFLAG = 'SET_ASIDEFLAG' // 设置面包屑
+const SET_DIALOGVISIBLE = 'SET_DIALOGVISIBLE' // 公共dialog对话框是否显示
+const SET_AUTHMENU = 'SET_AUTHMENU' // 设置菜单权限列表
+const SET_ISLOGIN = 'SET_ISLOGIN' // 是否登录
+const SET_CARDTYPES = 'SET_CARDTYPES' // 设置机构列表
 
 export default {
   [SET_ASIDECOLLAPSE](state, paras) {
@@ -18,6 +19,9 @@ export default {
     state.authMenu = paras.authMenu
   },
   [SET_ISLOGIN](state, paras) {
-    state.authMenu = paras.isLogin
+    state.isLogin = paras.isLogin
+  },
+  [SET_CARDTYPES](state, paras) {
+    state.cardTypes = paras.cardTypes
   }
 }

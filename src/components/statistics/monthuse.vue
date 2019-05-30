@@ -7,9 +7,7 @@
         </el-form-item>
         <el-form-item label="卡商名称">
           <el-select v-model="formInline.card_type" placeholder="请选择">
-            <el-option label="卡商1" value="0"></el-option>
-            <el-option label="卡商2" value="1"></el-option>
-            <el-option label="卡商3" value="2"></el-option>
+            <el-option v-for="(item, index) in cardTypes" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="所属机构">
@@ -32,25 +30,25 @@
         </el-form-item>
       </el-form>
     </el-card>
-    <el-card class="box-card clearfix" shadow="never">
+    <el-card class="box-card clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
         <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
-      <el-table v-loading="loadData" ref="multipleTable" :data="list.data" border :default-sort="{prop: 'active_time', order: 'descending'}" size="mini">
-        <el-table-column fixed="left" show-overflow-tooltip label="卡ICCID" width="200">
+      <el-table ref="multipleTable" @sort-change="handleSortChange" :data="list.data" border size="mini">
+        <el-table-column fixed="left" label="卡ICCID" width="200">
           <template slot-scope="scope">
             <el-button type="text">{{scope.row.iccid}}</el-button>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="ks_name" label="卡商名称" min-width="140"></el-table-column>
-        <el-table-column show-overflow-tooltip label="所属机构" min-width="140">
+        <el-table-column prop="ks_name" label="卡商名称" min-width="140"></el-table-column>
+        <el-table-column label="所属机构" min-width="140">
           <template slot-scope="scope">
             <el-button type="text">{{scope.row.jg_name}}</el-button>
           </template>
         </el-table-column>
-        <el-table-column prop="active_time" label="卡激活时间" show-overflow-tooltip width="158" sortable></el-table-column>
-        <el-table-column prop="month" label="月份" show-overflow-tooltip width="100"></el-table-column>
-        <el-table-column label="月使用流量" show-overflow-tooltip width="110">
+        <el-table-column prop="active_time" label="卡激活时间" width="158" sortable="custom"></el-table-column>
+        <el-table-column prop="month" label="月份" width="100" sortable="custom"></el-table-column>
+        <el-table-column label="月使用流量" width="110">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.month_use)"></div>
           </template>
@@ -63,6 +61,7 @@
 </template>
 <script>
 import Api from 'assets/js/api.js'
+import { mapState } from 'vuex'
 
 export default {
   data() {
@@ -75,6 +74,7 @@ export default {
         currentPage: 1,
         total: 0,
       },
+      sort: {},
       formInline: {}
     }
   },
@@ -91,34 +91,24 @@ export default {
       this.list.currentPage = val
       this.getData()
     },
+    handleSortChange(val) {
+      Api.UNITS.setSortSearch(val, this)
+      this.getData()
+    },
     // 获取列表数据
     getData() {
-      this.loadData = true
-      _axios.send({
-        method: 'post',
-        url: _axios.ajaxAd.getStats,
-        data: Object.assign(this.formInline, {
-          size: this.list.pagesize,
-          current: this.list.currentPage
-        }),
-        done: (res) => {
-          this.loadData = false
-          console.log(res)
-          this.list.data = [{
-            id: 0,
-            iccid: '89860617040000688970',
-            ks_name: '智网科技 JASPER',
-            jg_name: '卡仕特-西格玛',
-            active_time: '2019-03-25 12:52:10',
-            month: '2019-05',
-            month_use: 6565.5
-          }]
-          this.list.total = this.list.data.length
-        }
+      Api.UNITS.getListData({
+        vue: this,
+        url: _axios.ajaxAd.getStats
       })
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,
     calcLeftTime: Api.UNITS.calcLeftTime
+  },
+  computed: {
+    ...mapState({
+      cardTypes: 'cardTypes' // 卡商列表
+    })
   }
 }
 
