@@ -29,12 +29,15 @@ export default {
 </script>
 <style lang="scss">
 
+.el-container {
+  overflow: hidden;
+}
+
 .el-main {
   position: relative;
   padding: 20px 20px 0 !important;
   background: #f5f5f5;
   overflow-x: hidden;
-  height: 100%;
 
   .main-inner {
     position: relative;

@@ -3,7 +3,7 @@
     <el-header>
       <v-head :messageCount="0" :showMenu="false"></v-head>
     </el-header>
-    <div class="menu-warpper" @click="enterSystem">
+    <div class="menu-warpper">
       <div class="menu-item item_1 pointer">
         <img src="../assets/images/diaodu.png">
         <span class="menu-text">MTP任务调度</span>
@@ -21,7 +21,7 @@
         <img src="../assets/images/shebei.png">
         <span class="menu-text">设备中心</span>
       </div>
-      <div class="menu-item item_6 pointer">
+      <div class="menu-item item_6 pointer" @click="enter_6">
         <img src="../assets/images/liuliang.png">
         <span class="menu-text">流量中心</span>
       </div>
@@ -51,8 +51,8 @@ export default {
     
   },
   methods: {
-    enterSystem() {
-      this.$router.push({ name: 'home' })
+    enter_6() {
+      console.log('enter_6')
     }
   }
 }

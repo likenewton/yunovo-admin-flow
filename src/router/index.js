@@ -316,22 +316,26 @@ let router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   //会在任意路由跳转前执行, 检测当前是否还处于登录状态
-  setTimeout(() => {
-    if (!_axios) {
+  if (Api.UNITS.getQuery(Api.STATIC.token)) {
+    // 当页面重定向过来的时候带的token 要保存进去，并且此时肯定是登录成功的不用再验证了
+    localStorage.setItem(Api.STATIC.token, Api.UNITS.getQuery(Api.STATIC.token))
+    next()
+  } else {
+    // 如果页面没有token要验证有效性
+    if (_axios) {
       _axios.send({
         method: 'get',
         url: _axios.ajaxAd.isLogin,
         done: (res) => {
-          // next()
+          next()
         }
       })
     } else {
       next()
     }
-
-    // 测试， 永远处于登录状态
-    next()
-  }, 0)
+  }
+  // 测试， 永远处于登录状态
+  // next()
 })
 
 export default router

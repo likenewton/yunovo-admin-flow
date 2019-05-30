@@ -4,10 +4,10 @@
     <img class="logo" src="../../assets/images/LOGO-188X56.png">
     <i v-if="showMenu" class="el-icon-fontcaidan1 pointer menu-icon" @click="collapseAside"></i>
     <el-tooltip v-if="showMenu" class="sysmenu fr pointer" effect="dark" content="回到门户" placement="bottom-end">
-      <i class="el-icon-fonttuichu1" style="color:#606266" @click="toSysmeum"></i>
+      <i class="el-icon-fonttuichu1" style="color:#606266" @click="toUcIndexUrl"></i>
     </el-tooltip>
     <el-dropdown trigger="click" class="pointer fr" @command="handleCommand">
-      <span class="el-dropdown-link">Newton<i class="el-icon-caret-bottom el-icon--right"></i></span>
+      <span class="el-dropdown-link">{{userInfo.userName}}<i class="el-icon-caret-bottom el-icon--right"></i></span>
       <el-dropdown-menu slot="dropdown" style="">
         <el-dropdown-item command="modify" icon="el-icon-fontxiugaimima1">修改密码</el-dropdown-item>
         <el-dropdown-item command="quit" icon="el-icon-fonticon-tuichu">退出</el-dropdown-item>
@@ -28,8 +28,16 @@ export default {
   name: 'vHead',
   data() {
     return {
-      routename: this.$route.name,
-      isShow: true
+      // 控制侧边栏的展示
+      isShow: true,
+      userInfo: {
+        userName: 'Newton',
+        loginName: 'Ailsa'
+      },
+      // 登出
+      logoutUrl: '',
+      // 回到门户
+      ucIndexUrl: ''
     }
   },
   props: {
@@ -42,6 +50,17 @@ export default {
       default: true
     }
   },
+  mounted() {
+    _axios.send({
+      method: 'get',
+      url: _axios.ajaxAd.getLoginInfo,
+      done: (res) => {
+        this.ucIndexUrl = res.data.data.ucIndexUrl
+        this.logoutUrl = res.data.data.logoutUrl
+        this.userInfo = res.data.data.userInfo
+      }
+    })
+  },
   methods: {
     ...mapMutations([
       'SET_ASIDECOLLAPSE'
@@ -52,11 +71,16 @@ export default {
 
       } else if (command === 'quit') {
         // 这里做一些退出的操作然后跳转注销页面
-
+        if (this.logoutUrl) {
+          location.href = this.logoutUrl
+        }
       }
     },
-    toSysmeum() {
-      this.$router.push({ name: 'sysmenu' })
+    // 回到门户
+    toUcIndexUrl() {
+      if (this.ucIndexUrl) {
+        location.href = this.ucIndexUrl
+      }
     },
     collapseAside() {
       if (this.isShow && this.asideCollapse) {
@@ -76,12 +100,12 @@ export default {
     ...mapState({
       asideCollapse: 'asideCollapse'
     }),
+    routename() {
+      return this.$route.name
+    },
     choiceArticleTitle() {
       return this.titleList[this.TYPE].filter((v) => v.ID === this.ID)[0]
     }
-  },
-  mounted() {
-
   }
 }
 

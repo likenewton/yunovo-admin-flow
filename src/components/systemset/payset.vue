@@ -9,7 +9,8 @@
         <el-table-column show-overflow-tooltip label="支付方式" min-width="150" sortable>
           <template slot-scope="scope">
             <i :class="scope.row.icon" class="pay_icon"></i>
-            <span>{{scope.row.pay_way}}</span>
+            <span class="pointer" @click="openPayLink(scope)">{{scope.row.pay_way}}</span>
+            <!-- <el-button type="text" @click="openPayLink(scope)">{{scope.row.pay_way}}</el-button> -->
           </template>
         </el-table-column>
         <el-table-column fixed="right" show-overflow-tooltip label="管理" width="140">
@@ -104,15 +105,20 @@ export default {
         this.list.data = [{
           id: 'alipay',
           pay_way: '支付宝支付',
-          icon: 'el-icon-fontalipay'
+          icon: 'el-icon-fontalipay',
+          link: 'https://open.alipay.com/platform/home.htm'
         }, {
           id: 'wechart',
           pay_way: '微信支付',
-          icon: 'el-icon-fontweixinzhifu1'
+          icon: 'el-icon-fontweixinzhifu1',
+          link: 'https://pay.weixin.qq.com'
         }]
         this.list.total = this.list.data.length
         this.loadData = false
       }, 1000)
+    },
+    openPayLink(scope) {
+      window.open(scope.row.link)
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,
     calcLeftTime: Api.UNITS.calcLeftTime

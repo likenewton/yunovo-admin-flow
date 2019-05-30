@@ -191,7 +191,7 @@
           <el-tabs @tab-click="changeTab_2">
             <el-tab-pane label="续费趋势">
               <el-row :gutter="20">
-                <el-col :span="16">
+                <el-col :span="15">
                   <div id="canvas_2_0"></div>
                 </el-col>
                 <el-col :span="8" class="rank-list">

@@ -117,10 +117,10 @@ export default {
 }
 
 .el-aside {
+  position: relative;
   padding-top: 30px;
   background: $asideBackgroundColor;
   color: #333;
-  min-height: 100%;
 
   * {
     background: $asideBackgroundColor;

@@ -6,27 +6,32 @@
     <el-form v-loading="isLoadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="120px" size="small" :status-icon="true">
       <el-form-item prop="lang_name">
         <span slot="label">语言名称：</span>
-        <el-input v-model="formInline.lang_name"></el-input>
+        <el-input v-model="formInline.lang_name" placeholder="请输入语言名称"></el-input>
       </el-form-item>      
       <el-form-item prop="code">
         <span slot="label">代码：</span>
-        <el-input v-model="formInline.code" placeholder="不要改变，如果这是你的默认语言"></el-input>
+        <el-input v-model="formInline.code" placeholder="请输入代码"></el-input>
+        <div class="annotation">不要改变，如果这是你的默认语言</div>
       </el-form-item>
       <el-form-item prop="regional">
         <span slot="label">区域：</span>
-        <el-input v-model="formInline.regional" placeholder="例：en_US.UTF-8,en_US,en-gb,english"></el-input>
+        <el-input v-model="formInline.regional" placeholder="请输入区域"></el-input>
+        <div class="annotation">例：en_US.UTF-8,en_US,en-gb,english</div>
       </el-form-item>
       <el-form-item prop="picture">
         <span slot="label">图片：</span>
-        <el-input v-model="formInline.picture" placeholder="例：gb.png"></el-input>
+        <el-input v-model="formInline.picture" placeholder="请输入图片"></el-input>
+        <div class="annotation">例：gb.png</div>
       </el-form-item>
       <el-form-item prop="dir_name">
         <span slot="label">文件目录：</span>
-        <el-input v-model="formInline.dir_name" placeholder="语言文件目录(注意大小写)"></el-input>
+        <el-input v-model="formInline.dir_name" placeholder="请输入文件目录"></el-input>
+        <div class="annotation">语言文件目录(注意大小写)</div>
       </el-form-item>
       <el-form-item prop="file_name">
         <span slot="label">文件名：</span>
-        <el-input v-model="formInline.file_name" placeholder="调用的语言文件名，不带后缀"></el-input>
+        <el-input v-model="formInline.file_name" placeholder="请输入文件名"></el-input>
+        <div class="annotation">调用的语言文件名，不带后缀</div>
       </el-form-item>
       <el-form-item prop="status">
         <span slot="label">状态：</span>

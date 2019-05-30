@@ -47,7 +47,7 @@
         <el-button size="mini" type="warning">导入</el-button>
         <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
-      <el-table v-loading="loadData" ref="multipleTable" :data="curTableData" border :default-sort="{prop: 'exceed_time', order: 'descending'}" size="mini">
+      <el-table v-loading="loadData" ref="multipleTable" :data="curTableData" border :default-sort="{prop: 'excard_time', order: 'descending'}" size="mini">
         <el-table-column fixed="left" show-overflow-tooltip label="卡ICCID" min-width="170">
           <template slot-scope="scope">
             <el-button type="text">{{scope.row.iccid}}</el-button>
@@ -55,17 +55,17 @@
         </el-table-column>
         <el-table-column show-overflow-tooltip prop="ks_name" label="卡商名称" min-width="120"></el-table-column>
         <el-table-column show-overflow-tooltip prop="jg_name" label="机构名称" min-width="120"></el-table-column>
-        <el-table-column label="当月用量" show-overflow-tooltip min-width="93" sortable>
+        <el-table-column label="当月用量" show-overflow-tooltip min-width="93">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.m_use)"></div>
           </template>
         </el-table-column>
-        <el-table-column label="累计用量" show-overflow-tooltip min-width="93" sortable>
+        <el-table-column label="累计用量" show-overflow-tooltip min-width="93">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.total_use)"></div>
           </template>
         </el-table-column>
-        <el-table-column label="剩余用量" show-overflow-tooltip min-width="93" sortable>
+        <el-table-column label="剩余用量" show-overflow-tooltip min-width="93">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.left_use)"></div>
           </template>
@@ -73,7 +73,7 @@
         <el-table-column prop="excard_time" label="导卡时间" show-overflow-tooltip min-width="151" sortable></el-table-column>
         <el-table-column prop="active_time" label="激活时间" show-overflow-tooltip min-width="151" sortable></el-table-column>
         <el-table-column prop="eq_time" label="设备更新时间" show-overflow-tooltip min-width="151" sortable></el-table-column>
-        <el-table-column label="过期时间" show-overflow-tooltip min-width="215" sortable>
+        <el-table-column label="过期时间" show-overflow-tooltip min-width="215">
           <template slot-scope="scope">
             <div v-html="calcLeftTime(scope.row.exceed_time)"></div>
           </template>
@@ -82,7 +82,7 @@
         <el-table-column prop="active_status" label="激活状态" show-overflow-tooltip min-width="70"></el-table-column>
         <el-table-column fixed="right" label="操作" min-width="140">
           <template slot-scope="scope">
-            <el-button type="text">同步</el-button>
+            <el-button type="text" @click="showDetail(scope)">同步</el-button>
             <el-button type="text">停用</el-button>
             <el-button type="text">套餐</el-button>
           </template>
@@ -112,12 +112,7 @@ export default {
       },
       formInline: {},
       // 要展开的对话框的参数
-      dialogPara: {
-        loadDialog: true,
-        isShowCancelBtn: false,
-        title: '机构流量ICCID卡统计图表',
-        content: '<div id="myChart" style="width:100%; height:300px"></div>'
-      },
+      dialogPara: {},
       // 图表实例
       myChart: null,
       options: {
@@ -190,12 +185,29 @@ export default {
       this.getData()
     },
     showEcharts() {
+      this.dialogPara = {
+        loadDialog: true,
+        isShowCancelBtn: false,
+        title: '机构流量ICCID卡统计图表',
+        content: '<div id="myChart" style="width:100%; height:300px"></div>'
+      }
       this.SET_DIALOGVISIBLE({ dialogVisible: true })
       setTimeout(() => {
         // myChart因为是要放在dialog中所以必须要等到dialog展示之后才能展示
         this.myChart = this.$echarts.init(document.getElementById('myChart'))
         this.getEchartsData()
       }, 0)
+    },
+    // 展示dialog iccid的详细
+    showDetail(scope) {
+      this.dialogPara = {
+        loadDialog: true,
+        isShowCancelBtn: false,
+        title: `详细信息(${scope.row.iccid})`,
+        content: '<div style="height: 100px"></div>'
+      }
+      this.SET_DIALOGVISIBLE({ dialogVisible: true })
+      this.getIccidDetailData(scope)
     },
     // 获取列表数据
     getData() {
@@ -220,12 +232,48 @@ export default {
         this.loadData = false
       }, 1000)
     },
-    // 获取图标数据
+    // 获取图表数据
     getEchartsData() {
       setTimeout(() => {
         this.dialogPara.loadDialog = false
         // 这里拿到数据后要将数据保存到options中在调用setOption
         this.myChart.setOption(this.options)
+      }, 1000)
+    },
+    // 获取iccid详细信息
+    getIccidDetailData(scope) {
+      setTimeout(() => {
+        this.dialogPara.loadDialog = false
+        this.dialogPara.content = `<div class="iccid_detail">
+          <div class="item">
+            <span class="fbs-left">MSISDN</span>
+            <span class="fbs-right">861064604868138</span>
+          </div>
+          <div class="item">
+            <span class="fbs-left">IMSI</span>
+            <span class="fbs-right">460064520075138</span>
+          </div>
+          <div class="item">
+            <span class="fbs-left">上次充值时间</span>
+            <span class="fbs-right">2019-04-15 09:20:20</span>
+          </div>
+          <div class="item">
+            <span class="fbs-left">设备更新时间</span>
+            <span class="fbs-right">2019-04-15 09:20:20</span>
+          </div>
+          <div class="item">
+            <span class="fbs-left">联通流量卡状态</span>
+            <span class="fbs-right">已启用</span>
+          </div>
+          <div class="item">
+            <span class="fbs-left">联通当月使用流量</span>
+            <span class="fbs-right">${this.formatFlowUnit(565.3)}</span>
+          </div>
+          <div class="item">
+            <span class="fbs-left">联通累计使用流量</span>
+            <span class="fbs-right">${this.formatFlowUnit(2565.3)}</span>
+          </div>
+        </div>`
       }, 1000)
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,
@@ -254,6 +302,22 @@ export default {
   td {
     * {
       font-size: 14px;
+    }
+  }
+}
+
+.iccid_detail {
+  .item {
+    height: 30px;
+    line-height: 30px;
+
+    >span {
+      padding: 0 10px;
+      text-align: center;
+    }
+
+    .fbs-left {
+      width: 50%;
     }
   }
 }

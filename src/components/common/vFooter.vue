@@ -8,7 +8,7 @@
 <script>
 
 export default {
-  name: 'vHead',
+  name: 'vFooter',
   data() {
     return {
 

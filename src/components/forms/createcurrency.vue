@@ -3,30 +3,32 @@
     <div slot="header" class="clearfix">
       <span>货币设置</span>
     </div>
-    <el-form v-loading="isLoadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="210px" size="small" :status-icon="true">
+    <el-form v-loading="isLoadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="140px" size="small" :status-icon="true">
       <el-form-item prop="currency_name">
         <span slot="label">货币名称：</span>
-        <el-input v-model="formInline.currency_name"></el-input>
+        <el-input v-model="formInline.currency_name" placeholder="请输入货币名称"></el-input>
       </el-form-item>      
       <el-form-item prop="code">
-        <span slot="label">代码(必须是有效的<el-button type="text" @click="iso">ISO代码</el-button>)：</span>
-        <el-input v-model="formInline.code" placeholder="如果这是您的默认货币请不要改变"></el-input>
+        <span slot="label">代码：</span>
+        <el-input v-model="formInline.code" placeholder="请输入ISO代码"></el-input>
+        <div class="annotation">如果这是您的默认货币请不要改变(必须是有效的<el-button type="text" @click="iso">ISO代码</el-button>)</div>
       </el-form-item>
       <el-form-item prop="left_symbel">
         <span slot="label">左符号：</span>
-        <el-input v-model="formInline.left_symbel"></el-input>
+        <el-input v-model="formInline.left_symbel" placeholder="请输入货币左边符号"></el-input>
       </el-form-item>
       <el-form-item prop="right_symbel">
         <span slot="label">右符号：</span>
-        <el-input v-model="formInline.right_symbel"></el-input>
+        <el-input v-model="formInline.right_symbel" placeholder="请输入货币右边符号"></el-input>
       </el-form-item>
       <el-form-item prop="fixed_count">
         <span slot="label">小数位：</span>
-        <el-input v-model.number="formInline.fixed_count"></el-input>
+        <el-input v-model.number="formInline.fixed_count" placeholder="请输入货币小数位"></el-input>
       </el-form-item>
       <el-form-item prop="rate">
         <span slot="label">汇率：</span>
-        <el-input v-model="formInline.rate" placeholder='如果这是您的默认货币，请将它设置为1.0'></el-input>
+        <el-input v-model="formInline.rate" placeholder='请输入汇率'></el-input>
+        <div class="annotation">如果这是您的默认货币，请将它设置为1.0</div>
       </el-form-item>
       <el-form-item prop="status">
         <span slot="label">状态：</span>

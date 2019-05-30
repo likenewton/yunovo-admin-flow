@@ -47,7 +47,7 @@
       </el-form-item>
       <el-form-item prop="tc_flow">
         <span slot="label">套餐流量：</span>
-        <el-input v-model.number="formInline.tc_flow" placeholder="请输入套餐流量"></el-input>
+        <el-input v-model="formInline.tc_flow" @input="formInline.tc_flow = limitNumber(formInline.tc_flow, 8, 3)" placeholder="请输入套餐流量"></el-input>
         <div class="annotation">默认单位为M，精确到3位小数(无限制填：99999999)</div>
       </el-form-item>
       <el-form-item prop="months">
@@ -60,7 +60,7 @@
       </el-form-item>
       <el-form-item prop="yj_flow">
         <span slot="label">月均流量：</span>
-        <el-input v-model.number="formInline.yj_flow" placeholder="请输入月均流量"></el-input>
+        <el-input v-model="formInline.yj_flow" @input="formInline.yj_flow = limitNumber(formInline.yj_flow, 8, 3)" placeholder="请输入月均流量"></el-input>
         <div class="annotation">默认单位为M，精确到3位小数(无限制填：99999999)</div>
       </el-form-item>
       <el-form-item prop="is_clear">
@@ -80,7 +80,7 @@
       </el-form-item>
       <el-form-item prop="real_flow">
         <span slot="label">实名认证成功赠送流量：</span>
-        <el-input v-model.number="formInline.real_flow" placeholder="请输入"></el-input>
+        <el-input v-model="formInline.real_flow" @input="formInline.real_flow = limitNumber(formInline.real_flow, 8, 3)" placeholder="请输入"></el-input>
         <div class="annotation">默认单位为M，精确到3位小数(无限制填：99999999)</div>
       </el-form-item>
       <el-form-item prop="real_period">
@@ -93,7 +93,7 @@
       </el-form-item>
       <el-form-item prop="perf_flow">
         <span slot="label">完善资料成功赠送流量：</span>
-        <el-input v-model.number="formInline.perf_flow" placeholder="请输入"></el-input>
+        <el-input v-model="formInline.perf_flow" @input="formInline.perf_flow = limitNumber(formInline.perf_flow, 8, 3)" placeholder="请输入"></el-input>
         <div class="annotation">默认单位为M，精确到3位小数(无限制填：99999999)</div>
       </el-form-item>
       <el-form-item prop="perf_period">
@@ -106,7 +106,7 @@
       </el-form-item>
       <el-form-item prop="bind_flow">
         <span slot="label">绑定设备成功赠送流量：</span>
-        <el-input v-model.number="formInline.bind_flow" placeholder="请输入"></el-input>
+        <el-input v-model="formInline.bind_flow" @input="formInline.bind_flow = limitNumber(formInline.bind_flow, 8, 3)" placeholder="请输入"></el-input>
         <div class="annotation">默认单位为M，精确到3位小数(无限制填：99999999)</div>
       </el-form-item>
       <el-form-item prop="bind_period">
@@ -134,6 +134,8 @@
   </el-card>
 </template>
 <script>
+import Api from 'assets/js/api.js'
+
 export default {
   data() {
     return {
@@ -195,10 +197,6 @@ export default {
           required: true,
           message: '请输入套餐流量',
           trigger: 'blur'
-        }, {
-          type: 'number',
-          message: '只能输入数字',
-          trigger: 'blur'
         }],
         months: [{
           required: true,
@@ -208,10 +206,6 @@ export default {
         yj_flow: [{
           required: true,
           message: '请输入月均流量',
-          trigger: 'blur'
-        }, {
-          type: 'number',
-          message: '只能输入数字',
           trigger: 'blur'
         }],
         is_clear: [{
@@ -305,8 +299,8 @@ export default {
     // 文件上传成功回调函数
     uploadHandleSuccess(res, file) {
       this.$message.success('文件上传成功')
-    }
-
+    },
+    limitNumber: Api.UNITS.limitNumber
   }
 }
 

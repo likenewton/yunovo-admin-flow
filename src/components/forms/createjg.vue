@@ -6,7 +6,7 @@
     <el-form v-loading="isLoadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="120px" size="small" :status-icon="true">
       <el-form-item prop="jg_name">
         <span slot="label">机构名称：</span>
-        <el-input v-model="formInline.jg_name"></el-input>
+        <el-input v-model="formInline.jg_name" placeholder="请选择机构名称"></el-input>
       </el-form-item>
       <el-form-item prop="parent_jgname">
         <span slot="label">所属父机构：</span>
@@ -18,15 +18,15 @@
       </el-form-item>
       <el-form-item prop="acc_count">
         <span slot="label">可开账户数量：</span>
-        <el-input v-model="formInline.acc_count"></el-input>
+        <el-input v-model="formInline.acc_count" @input="formInline.acc_count = limitNumber(formInline.acc_count, 6, 0)" placeholder="请输入可开账户数量"></el-input>
       </el-form-item>
       <el-form-item prop="inform_addr">
         <span slot="label">异步通知地址：</span>
-        <el-input v-model="formInline.inform_addr"></el-input>
+        <el-input v-model="formInline.inform_addr" placeholder="请输入异步通知地址"></el-input>
       </el-form-item>
       <el-form-item prop="jg_desc">
         <span slot="label">机构描述：</span>
-        <el-input type="textarea" v-model="formInline.jg_desc" rows="4"></el-input>
+        <el-input type="textarea" v-model="formInline.jg_desc" rows="4" placeholder="请输入"></el-input>
       </el-form-item>
       <el-form-item prop="e_mail">
         <span slot="label">负责人邮箱：</span>
@@ -38,7 +38,8 @@
       </el-form-item>
       <el-form-item prop="repay_rate">
         <span slot="label">返利比率：</span>
-        <el-input v-model="formInline.repay_rate" placeholder="值需小于1大于等于0，返利比率 * 充值金额 = 返利金额"></el-input>
+        <el-input v-model="formInline.repay_rate" placeholder="请输入返利比率"></el-input>
+        <div class="annotation">值需小于1大于等于0，返利比率 * 充值金额 = 返利金额</div>
       </el-form-item>
       <el-form-item>
         <el-button @click="$router.back()">返回</el-button>

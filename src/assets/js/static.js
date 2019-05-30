@@ -192,7 +192,7 @@ module.exports = {
     title: '微信支付',
     name: 'wechart'
   }],
-  token: '_clw_token_',
+  token: '_iov_token_',
   // 分页器公共配置项
   pageSizes: [10, 20, 30, 40],
   // svg path:// '路径'

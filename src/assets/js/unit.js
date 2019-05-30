@@ -105,7 +105,14 @@ module.exports = {
       sessionStorage.setItem('asideData', breadArr)
     } else {
       // 打开的不是侧边栏页面，将目录拉取下来
-      breadArr = sessionStorage.getItem('asideData').split(',')
+      breadArr = sessionStorage.getItem('asideData')
+      if (breadArr) {
+        // 如果有数据就代表是通过其他路由进入的
+        breadArr = breadArr.split(',')
+      } else {
+        // 如果没有数据就代表是直接通过url进入的默认进入 业务管理->流量卡
+        breadArr = ['首页', '业务管理', '流量卡']
+      }
     }
     return breadArr
   },
