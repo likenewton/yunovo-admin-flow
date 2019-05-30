@@ -9,7 +9,7 @@
         </el-menu-item>
       </router-link>
       <!-- 循环渲染的列表页 -->
-      <el-submenu :index="menuItem.title" v-for="menuItem in asideData" :key="menuItem.title">
+      <el-submenu :index="menuItem.title" v-for="menuItem in authMenu" :key="menuItem.title">
         <template slot="title">
           <i class="submenu-icon" :class="menuItem.icon"></i>
           <span class="title-text">{{menuItem.title}}</span>
@@ -34,10 +34,7 @@ import { mapState, mapMutations } from 'vuex'
 export default {
   name: 'vAside',
   data() {
-    return {
-      asideData: Api.STATIC.asideData,
-      routes: this.$router.options.routes[0].children || []
-    }
+    return {}
   },
   mounted() {
     this.testFn()
@@ -45,13 +42,14 @@ export default {
   computed: {
     ...mapState({
       asideCollapse: 'asideCollapse',
-      asideFlag: 'asideFlag'
+      asideFlag: 'asideFlag',
+      authMenu: 'authMenu'
     }),
     routeName() {
       return this.$route.name
     },
     selectData() {
-      return Api.UNITS.getBreadArr(this.routeName, this.asideData)
+      return Api.UNITS.getBreadArr(this.routeName, this.authMenu)
     }
   },
   methods: {

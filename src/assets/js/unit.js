@@ -1,4 +1,9 @@
+
 module.exports = {
+  // 获取权限菜单
+  getAuthMenu(asideData) {
+    return asideData
+  },
   // 验证xml文件格式
   validateXML(xmlContent) {
     //errorCode 0是xml正确，1是xml错误，2是无法验证
@@ -85,10 +90,10 @@ module.exports = {
   },
 
   // 获取页面面包屑数组
-  getBreadArr(name, asideData) {
+  getBreadArr(name, authMenu) {
     let breadArr = []
     if (name === 'home') return [, , '首页']
-    asideData.forEach((v1) => {
+    authMenu.forEach((v1) => {
       if (v1.name === name) {
         breadArr.push('首页', v1.title)
         return false
@@ -102,16 +107,16 @@ module.exports = {
     })
     if (breadArr.length > 0) {
       // 点击的是侧边栏页面
-      sessionStorage.setItem('asideData', breadArr)
+      sessionStorage.setItem('authMenu', breadArr)
     } else {
       // 打开的不是侧边栏页面，将目录拉取下来
-      breadArr = sessionStorage.getItem('asideData')
+      breadArr = sessionStorage.getItem('authMenu')
       if (breadArr) {
         // 如果有数据就代表是通过其他路由进入的
         breadArr = breadArr.split(',')
       } else {
-        // 如果没有数据就代表是直接通过url进入的默认进入 业务管理->流量卡
-        breadArr = ['首页', '业务管理', '流量卡']
+        // 如果没有数据就代表是直接通过url进入的默认进入 第一个菜单第一项
+        breadArr = ['首页', authMenu[0].title, authMenu[0].children[0].title]
       }
     }
     return breadArr

@@ -30,14 +30,7 @@ export default {
     return {
       // 控制侧边栏的展示
       isShow: true,
-      userInfo: {
-        userName: 'Newton',
-        loginName: 'Ailsa'
-      },
-      // 登出
-      logoutUrl: '',
-      // 回到门户
-      ucIndexUrl: ''
+      userInfo: {}
     }
   },
   props: {
@@ -55,9 +48,7 @@ export default {
       method: 'get',
       url: _axios.ajaxAd.getLoginInfo,
       done: (res) => {
-        this.ucIndexUrl = res.data.data.ucIndexUrl
-        this.logoutUrl = res.data.data.logoutUrl
-        this.userInfo = res.data.data.userInfo
+        this.userInfo = res.data.data
       }
     })
   },
@@ -71,16 +62,12 @@ export default {
 
       } else if (command === 'quit') {
         // 这里做一些退出的操作然后跳转注销页面
-        if (this.logoutUrl) {
-          location.href = this.logoutUrl
-        }
+        location.href = this.userInfo.logoutUrl
       }
     },
     // 回到门户
     toUcIndexUrl() {
-      if (this.ucIndexUrl) {
-        location.href = this.ucIndexUrl
-      }
+      location.href = this.userInfo.ucIndexUrl
     },
     collapseAside() {
       if (this.isShow && this.asideCollapse) {

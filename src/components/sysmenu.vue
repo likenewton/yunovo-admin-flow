@@ -52,7 +52,7 @@ export default {
   },
   methods: {
     enter_6() {
-      console.log('enter_6')
+      this.$router.push({ name: 'home' })
     }
   }
 }

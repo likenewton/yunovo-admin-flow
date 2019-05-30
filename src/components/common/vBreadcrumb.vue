@@ -12,7 +12,6 @@ export default {
   name: 'vBreadcrumb',
   data() {
     return {
-      asideData: Api.STATIC.asideData,
       operData: Api.STATIC.operData
     }
   },
@@ -36,7 +35,7 @@ export default {
         return 'home'
       }
       this.isShowBreadCrumb = true
-      this.asideData.forEach((v1) => {
+      this.authMenu.forEach((v1) => {
         if (v1.title === title) {
           routeName = v1.name
           return false
@@ -53,7 +52,8 @@ export default {
   },
   computed: {
     ...mapState({
-      asideFlag: 'asideFlag'
+      asideFlag: 'asideFlag',
+      authMenu: 'authMenu'
     }),
     routeName() {
       return this.$route.name

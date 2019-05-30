@@ -21,21 +21,22 @@
       </el-button-group>
       <el-table v-loading="loadData" ref="multipleTable" :data="curTableData" border @selection-change="handleSelectionChange" :default-sort="{prop: 'jg_name', order: 'descending'}" size="mini">
         <el-table-column fixed="left" type="selection" min-width="60"></el-table-column>
-        <el-table-column show-overflow-tooltip label="机构名称" min-width="140" sortable>
+        <el-table-column label="机构名称" min-width="140" sortable>
           <template slot-scope="scope">
             <el-button type="text">{{scope.row.jg_name}}</el-button>
           </template>
         </el-table-column>
-        <el-table-column prop="coop_code" label="合作编号" show-overflow-tooltip min-width="125"></el-table-column>
-        <el-table-column prop="coop_key" label="合作秘钥" show-overflow-tooltip min-width="300"></el-table-column>
-        <el-table-column prop="acc_count" label="可开账号数量" show-overflow-tooltip width="95"></el-table-column>
-        <el-table-column prop="e_mail" label="负责人邮箱" show-overflow-tooltip min-width="140"></el-table-column>
-        <el-table-column prop="phone_number" label="负责人手机" show-overflow-tooltip width="110"></el-table-column>
-        <el-table-column prop="repay_rate" label="返利比率" show-overflow-tooltip width="70"></el-table-column>
-        <el-table-column prop="jg_desc" label="机构描述" show-overflow-tooltip min-width="160"></el-table-column>
-        <el-table-column prop="create_p" label="创建者" show-overflow-tooltip min-width="80"></el-table-column>
-        <el-table-column prop="update_p" label="更改者" show-overflow-tooltip min-width="80"></el-table-column>
-        <el-table-column fixed="right" show-overflow-tooltip label="管理" min-width="60">
+        <el-table-column prop="coop_code" label="合作编号" min-width="125"></el-table-column>
+        <el-table-column prop="coop_key" label="合作秘钥" min-width="250"></el-table-column>
+        <el-table-column prop="sync_addr" label="异步通知地址" min-width="250"></el-table-column>
+        <el-table-column prop="acc_count" label="可开账号数量" width="95"></el-table-column>
+        <el-table-column prop="e_mail" label="负责人邮箱" min-width="145"></el-table-column>
+        <el-table-column prop="phone_number" label="负责人手机" width="110"></el-table-column>
+        <el-table-column prop="repay_rate" label="返利比率" width="70"></el-table-column>
+        <el-table-column prop="jg_desc" label="机构描述" min-width="160"></el-table-column>
+        <el-table-column prop="create_p" label="创建者" min-width="80"></el-table-column>
+        <el-table-column prop="update_p" label="更改者" min-width="80"></el-table-column>
+        <el-table-column fixed="right" label="管理" min-width="60">
           <template slot-scope="scope">
             <el-button type="text" @click="updateJg">编辑</el-button>
           </template>
@@ -106,6 +107,7 @@ export default {
           jg_name: '卡仕特-西格玛',
           coop_code: 'mhn356uz28zclmw',
           coop_key: ' http://weixin.wenwen.vstchina.com/weixinYG/FocusOnServlet',
+          sync_addr: 'http://weixin.wenwen.vstchina.com/weixinYG/FocusOnServlet',
           acc_count: 4,
           e_mail: '52875440@qq.com',
           phone_number: '13286320200',

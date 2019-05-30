@@ -16,8 +16,11 @@ class AXIOS {
 
     // ajax请求地址
     this.ajaxAd = {
+      // 公共
       isLogin: '/fc/api/sso/isLogin',
-      getLoginInfo: '/fc/api/sso/getLoginInfo'
+      getLoginInfo: '/fc/api/sso/getLoginInfo',
+      // 统计分析
+      getStats: '/fc/api/gprs/stats/'
     }
   }
 
@@ -36,7 +39,7 @@ class AXIOS {
       headers: data.headers
     }).then(res => {
       // 这里要根据状态码来对不同的响应状态做处理
-      console.log(res)
+      // console.log(res)
       if (res.data.status === 401) {
         // 未登录状态跳转登录页
         location.replace(res.data.redirectUrl)

@@ -1,5 +1,5 @@
 module.exports = {
-  // 侧边栏菜单配置数据
+  // 侧边栏菜单配置数据(最高权限)
   asideData: [{
     title: '业务管理',
     icon: 'el-icon-fontmima',
