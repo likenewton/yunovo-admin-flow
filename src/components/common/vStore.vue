@@ -11,18 +11,19 @@ export default {
     return {}
   },
   mounted() {
-    if (this.cardTypes.length === 0) {
-      this.getCardTypes()
-    }
+    if (this.cardTypes.length === 0) this.getCardTypes()
+    if (this.orgs.length === 0) this.getOrgs()
   },
   methods: {
     ...mapActions([
-      'getCardTypes'
+      'getCardTypes',
+      'getOrgs'
     ])
   },
   computed: {
     ...mapState({
-      cardTypes: 'cardTypes' // 卡商列表
+      cardTypes: 'cardTypes', // 卡商列表
+      orgs: 'orgs', // 机构列表
     })
   }
 }

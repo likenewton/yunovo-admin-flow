@@ -34,6 +34,7 @@ module.exports = {
         para.vue[loadData] = false
         para.vue[list].data = res.data.data || []
         para.vue[list].total = para.vue[list].data.length
+        para.cb && para.cb(res)
       }
     })
   },

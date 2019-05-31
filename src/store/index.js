@@ -10,7 +10,8 @@ const state = {
   dialogVisible: false, // 公共dialog是否显示
   authMenu: [], // 授权可以展示的菜单
   isLogin: false, // 登录状态
-  cardTypes: [], // 机构列表
+  cardTypes: [], // 卡商列表
+  orgs: [], // 机构列表
 }
 
 export default new Vuex.Store({

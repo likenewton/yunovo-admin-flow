@@ -12,9 +12,7 @@
         </el-form-item>
         <el-form-item label="所属机构">
           <el-select v-model="formInline.org_id" placeholder="请选择">
-            <el-option label="机构1" value="0"></el-option>
-            <el-option label="机构2" value="1"></el-option>
-            <el-option label="机构3" value="2"></el-option>
+            <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="月份">
@@ -107,7 +105,8 @@ export default {
   },
   computed: {
     ...mapState({
-      cardTypes: 'cardTypes' // 卡商列表
+      cardTypes: 'cardTypes', // 卡商列表
+      orgs: 'orgs', // 机构列表
     })
   }
 }

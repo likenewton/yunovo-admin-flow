@@ -16,5 +16,8 @@ export default {
   },
   cardTypes: state => {
     return state.cardTypes
+  },
+  orgs: state => {
+    return state.orgs
   }
 }

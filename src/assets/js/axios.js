@@ -21,6 +21,7 @@ class AXIOS {
       getLoginInfo: '/fc/api/sso/getLoginInfo',
       // 下拉列表
       getCardTypes: '/fc/api/select/api/select/cardTypes',
+      getOrgs: '/fc/api/select/api/select/orgs',
       // 统计分析
       getStats: '/fc/api/gprs/stats/'
     }

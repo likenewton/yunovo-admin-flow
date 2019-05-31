@@ -10,11 +10,9 @@
             <el-option v-for="(item, index) in cardTypes" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="机构名称">
-          <el-select v-model="formInline.jg_name" placeholder="请选择">
-            <el-option label="机构1" value="0"></el-option>
-            <el-option label="机构2" value="1"></el-option>
-            <el-option label="机构3" value="2"></el-option>
+        <el-form-item label="所属机构">
+          <el-select v-model="formInline.org_id" placeholder="请选择">
+            <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -156,37 +154,37 @@ export default {
     },
     // 获取列表数据
     getData() {
-      // Api.UNITS.getListData({
-      //   vue: this,
-      //   url: _axios.ajaxAd.getStats
-      // })
-      this.loadData = true
-      _axios.send({
-        method: 'get',
-        url: _axios.ajaxAd.getStats,
-        params: Object.assign(this.formInline, {
-          ascs: this.sort.ascs,
-          descs: this.sort.descs,
-          size: this.list.pagesize,
-          current: this.list.currentPage
-        }),
-        done: (res) => {
-          this.loadData = false
-          this.list.data = [{
-            id: 0,
-            card_iccid: '89860617040000312399',
-            ks_name: '智网科技 JASPER',
-            jg_name: '卡仕特-西格玛',
-            recharge_count: 1,
-            stopcard_count: 1,
-            stopcard_flow: 542.3,
-            recharge_time: '2019-03-25 12:52:10',
-            stopcard_time: '2019-03-25 12:52:10',
-            last_time: '2019-03-25 12:52:10',
-          }]
-          this.list.total = this.list.data.length
-        }
+      Api.UNITS.getListData({
+        vue: this,
+        url: _axios.ajaxAd.getStats
       })
+      // this.loadData = true
+      // _axios.send({
+      //   method: 'get',
+      //   url: _axios.ajaxAd.getStats,
+      //   params: Object.assign(this.formInline, {
+      //     ascs: this.sort.ascs,
+      //     descs: this.sort.descs,
+      //     size: this.list.pagesize,
+      //     current: this.list.currentPage
+      //   }),
+      //   done: (res) => {
+      //     this.loadData = false
+      //     this.list.data = [{
+      //       id: 0,
+      //       card_iccid: '89860617040000312399',
+      //       ks_name: '智网科技 JASPER',
+      //       jg_name: '卡仕特-西格玛',
+      //       recharge_count: 1,
+      //       stopcard_count: 1,
+      //       stopcard_flow: 542.3,
+      //       recharge_time: '2019-03-25 12:52:10',
+      //       stopcard_time: '2019-03-25 12:52:10',
+      //       last_time: '2019-03-25 12:52:10',
+      //     }]
+      //     this.list.total = this.list.data.length
+      //   }
+      // })
     },
     // 获取dialog中列表数据
     getDetailData() {
@@ -220,7 +218,8 @@ export default {
   computed: {
     ...mapState({
       dialogVisible: 'dialogVisible',
-      cardTypes: 'cardTypes' // 卡商列表
+      cardTypes: 'cardTypes', // 卡商列表
+      orgs: 'orgs'
     })
   }
 }
