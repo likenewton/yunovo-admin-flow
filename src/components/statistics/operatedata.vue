@@ -7,45 +7,45 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">查询</el-button>
-          <el-button type="warning">重置</el-button>
+          <el-button type="primary" @click="getData">查询</el-button>
+          <el-button type="warning" @click="formInline = {}">重置</el-button>
         </el-form-item>
       </el-form>
     </el-card>
-    <el-card class="box-card clearfix" shadow="never">
+    <el-card class="box-card clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
         <el-button size="mini" type="primary" @click="showEcharts('0')">支付图表</el-button>
         <el-button size="mini" type="primary" @click="showEcharts('1')">在线图表</el-button>
         <el-button size="mini" type="primary" @click="showEcharts('2')">激活图表</el-button>
         <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
-      <el-table v-loading="loadData" ref="multipleTable" :data="curTableData" border :default-sort="{prop: 'statistic_data', order: 'descending'}" size="mini">
-        <el-table-column show-overflow-tooltip prop="statistic_data" label="统计日期" width="93" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="sell_num" label="售卡总数" width="93" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="recharge_total" label="累冲成数" width="93" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="recharge_day" label="日冲次数" width="73"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="recharge_fail_day" label="日冲败数" width="73"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="recharge_suc_day" label="日冲成数" width="93" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="use_total" label="使用总量" width="93" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="normal_use" label="正常使用" width="73"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="abnormal_use" label="异常使用" width="73"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="active_total" label="累计激活" width="93" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="active_num" label="激活总数" width="93" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="abeq_num" label="非设备激活" width="85"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="eq_num" label="设备端激活" width="85"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="stopcard_total" label="累计停卡" width="93" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="stopcard_num" label="停卡数量" width="93" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip label="消耗流量" width="95">
+      <el-table ref="multipleTable" :data="list.data" @sort-change="handleSortChange" border size="mini">
+        <el-table-column prop="statistic_data" label="统计日期" width="93" sortable="custom"></el-table-column>
+        <el-table-column prop="sell_num" label="售卡总数" width="93" sortable="custom"></el-table-column>
+        <el-table-column prop="recharge_total" label="累冲成数" width="93" sortable="custom"></el-table-column>
+        <el-table-column prop="recharge_day" label="日冲次数" width="73"></el-table-column>
+        <el-table-column prop="recharge_fail_day" label="日冲败数" width="73"></el-table-column>
+        <el-table-column prop="recharge_suc_day" label="日冲成数" width="93" sortable="custom"></el-table-column>
+        <el-table-column prop="use_total" label="使用总量" width="93" sortable="custom"></el-table-column>
+        <el-table-column prop="normal_use" label="正常使用" width="73"></el-table-column>
+        <el-table-column prop="abnormal_use" label="异常使用" width="73"></el-table-column>
+        <el-table-column prop="active_total" label="累计激活" width="93" sortable="custom"></el-table-column>
+        <el-table-column prop="active_num" label="激活总数" width="93" sortable="custom"></el-table-column>
+        <el-table-column prop="abeq_num" label="非设备激活" width="85"></el-table-column>
+        <el-table-column prop="eq_num" label="设备端激活" width="85"></el-table-column>
+        <el-table-column prop="stopcard_total" label="累计停卡" width="93" sortable="custom"></el-table-column>
+        <el-table-column prop="stopcard_num" label="停卡数量" width="93" sortable="custom"></el-table-column>
+        <el-table-column label="消耗流量" width="95">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.use_flow)"></div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip label="已付金额" min-width="110">
+        <el-table-column label="已付金额" min-width="110">
           <template slot-scope="scope">
             <div>￥{{scope.row.pay_money|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip label="返利金额" min-width="110">
+        <el-table-column label="返利金额" min-width="110">
           <template slot-scope="scope">
             <div>￥{{scope.row.repay_money|formatMoney}}</div>
           </template>
@@ -60,7 +60,6 @@
 <script>
 import Api from 'assets/js/api.js'
 import { mapState, mapMutations } from 'vuex'
-
 const _echart = new Api.ECHARTS()
 
 export default {
@@ -74,6 +73,7 @@ export default {
         currentPage: 1,
         total: 0,
       },
+      sort: {},
       formInline: {},
       // 要展开的对话框的参数
       dialogPara: {
@@ -102,12 +102,7 @@ export default {
     }
   },
   mounted() {
-    // 进入页面的时候请求数据
-    if (this.list.data.length === 0) {
-      this.getData()
-    } else {
-      this.loadData = false
-    }
+    this.getData()
   },
   methods: {
     ...mapMutations([
@@ -121,6 +116,10 @@ export default {
       this.list.currentPage = val
       this.getData()
     },
+    handleSortChange(val) {
+      Api.UNITS.setSortSearch(val, this)
+      this.getData()
+    },
     showEcharts(type) {
       this.SET_DIALOGVISIBLE({ dialogVisible: true })
       setTimeout(() => {
@@ -132,32 +131,37 @@ export default {
     },
     // 获取列表数据
     getData() {
-      setTimeout(() => {
-        // 数据请求成功
-        this.list.data = [{
-          id: 0,
-          statistic_data: '2019-05-06',
-          sell_num: 56546,
-          recharge_total: 41451,
-          recharge_day: 121,
-          recharge_fail_day: 71,
-          recharge_suc_day: 50,
-          use_total: 80000,
-          normal_use: 50000,
-          abnormal_use: 30000,
-          active_total: 50000,
-          active_num: 80,
-          abeq_num: 50,
-          eq_num: 30,
-          stopcard_total: 60000,
-          stopcard_num: 100,
-          use_flow: 65452.3,
-          pay_money: -2030.94,
-          repay_money: 451112.51
-        }]
-        this.list.total = this.list.data.length
-        this.loadData = false
-      }, 1000)
+      console.log(this.formInline)
+      Api.UNITS.getListData({
+        vue: this,
+        url: _axios.ajaxAd.getStats
+      })
+      // setTimeout(() => {
+      //   // 数据请求成功
+      //   this.list.data = [{
+      //     id: 0,
+      //     statistic_data: '2019-05-06',
+      //     sell_num: 56546,
+      //     recharge_total: 41451,
+      //     recharge_day: 121,
+      //     recharge_fail_day: 71,
+      //     recharge_suc_day: 50,
+      //     use_total: 80000,
+      //     normal_use: 50000,
+      //     abnormal_use: 30000,
+      //     active_total: 50000,
+      //     active_num: 80,
+      //     abeq_num: 50,
+      //     eq_num: 30,
+      //     stopcard_total: 60000,
+      //     stopcard_num: 100,
+      //     use_flow: 65452.3,
+      //     pay_money: -2030.94,
+      //     repay_money: 451112.51
+      //   }]
+      //   this.list.total = this.list.data.length
+      //   this.loadData = false
+      // }, 1000)
     },
     // 获取图表数据
     getEchartsData() {
@@ -183,11 +187,8 @@ export default {
   },
   computed: {
     ...mapState({
-      dialogVisible: 'dialogVisible',
-    }),
-    curTableData() {
-      return this.list.data.slice((this.list.currentPage - 1) * this.list.pagesize, this.list.currentPage * this.list.pagesize)
-    }
+      dialogVisible: 'dialogVisible'
+    })
   }
 }
 

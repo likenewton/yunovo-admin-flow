@@ -19,5 +19,8 @@ export default {
   },
   orgs: state => {
     return state.orgs
+  },
+  months: state => {
+    return state.months
   }
 }

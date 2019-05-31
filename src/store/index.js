@@ -12,6 +12,7 @@ const state = {
   isLogin: false, // 登录状态
   cardTypes: [], // 卡商列表
   orgs: [], // 机构列表
+  months: [], // 月份列表
 }
 
 export default new Vuex.Store({

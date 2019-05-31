@@ -5,6 +5,7 @@ module.exports = {
   },
   // 设置升降序字段
   setSortSearch(val, _this, sort = 'sort') {
+    if (!val.prop) return _this[sort] = {}
     if (val.order === 'descending') {
       _this[sort] = {
         descs: val.prop
@@ -16,11 +17,22 @@ module.exports = {
     }
   },
   // 获取列表数据（通用） this, url, list, formInline, sort
-  getListData(para) {
+  getListData(paras) {
+    let para = paras
     let list = para.list || 'list'
     let sort = para.sort || 'sort'
-    let loadData = para.loadData || 'loadData'
-    para.vue[loadData] = true
+
+    // 某些排序的字段要换成另外的一个字段， 这里定制化一些字段
+    let filterArr = {
+      card_type_name: 'card_id',
+      org_name: 'org_id'
+    }
+
+    if (filterArr[para.vue[sort].ascs]) {
+      para.vue[sort].ascs = filterArr[para.vue[sort].ascs]
+    } else if (filterArr[para.vue[sort].descs]) {
+      para.vue[sort].descs = filterArr[para.vue[sort].descs]
+    }
     _axios.send({
       method: para.method || 'get',
       url: para.url,
@@ -31,9 +43,6 @@ module.exports = {
         current: para.vue[list].currentPage
       }),
       done: (res) => {
-        para.vue[loadData] = false
-        para.vue[list].data = res.data.data || []
-        para.vue[list].total = para.vue[list].data.length
         para.cb && para.cb(res)
       }
     })
@@ -163,7 +172,7 @@ module.exports = {
       if (isNaN(count)) {
         htmlStr = `<span style="color:#e92322;font-weight:bold">无限制</span>`
       } else if (Math.abs(count / 1024) < 1) {
-        htmlStr = `<span>${count}</span><span style="color:#008000;font-weight:bold">&nbsp;M</span>`
+        htmlStr = `<span>${count.toFixed(fix)}</span><span style="color:#008000;font-weight:bold">&nbsp;M</span>`
       } else if (Math.abs(count / 1024 / 1024) < 1) {
         htmlStr = `<span>${(count / 1024).toFixed(fix)}</span><span style="color:#0000FF;font-weight:bold">&nbsp;G</span>`
       } else {

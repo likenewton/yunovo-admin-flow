@@ -3,7 +3,7 @@
     <el-card class="box-card" style="margin-bottom: 20px" shadow="never">
       <el-form :inline="true" :model="formInline" class="demo-form-inline" size="small">
         <el-form-item label="机构名称">
-          <el-select v-model="formInline.org_id" placeholder="请选择">
+          <el-select v-model="formInline.org_id" filterable placeholder="请选择">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
@@ -21,7 +21,7 @@
       <el-button-group style="margin-bottom: 10px">
         <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
-      <el-table ref="multipleTable" :data="list.data" :sort-change="handleSortChange" border size="mini">
+      <el-table ref="multipleTable" :data="list.data" @sort-change="handleSortChange" border size="mini">
         <el-table-column label="机构名称" min-width="125">
           <template slot-scope="scope">
             <el-button type="text">{{scope.row.jg_name}}</el-button>
@@ -276,9 +276,6 @@ export default {
     this.getData()
   },
   methods: {
-    routeName() {
-      return this.$route.name
-    },
     changeTab(para) {
       this.tabIndex = para.index
       setTimeout(() => {

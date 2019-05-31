@@ -4,7 +4,7 @@ class AXIOS {
     this.data = {
       method: 'get',
       params: null,
-      timeout: 10000,
+      timeout: 30000,
       data: null, // 请求体所带的参数
       done: null, // 接口请求成功回调函数
       headers: {
@@ -22,6 +22,7 @@ class AXIOS {
       // 下拉列表
       getCardTypes: '/fc/api/select/api/select/cardTypes',
       getOrgs: '/fc/api/select/api/select/orgs',
+      getMonths: '/fc/api/select/api/select/stats/getMonths',
       // 统计分析
       getStats: '/fc/api/gprs/stats/'
     }
@@ -49,14 +50,14 @@ class AXIOS {
       } else {
         // status === 0 为正常返回
         if (res.data.status === 0) {
-          data.done && data.done(res)
+          data.done && data.done(res.data)
         }
       }
     }).catch(error => {
       console.log(error)
       Vue.prototype.$notify.error({
         title: '错误',
-        message: error
+        message: '服务器异常'
       })
     })
   }

@@ -49,7 +49,7 @@ export default {
       method: 'get',
       url: _axios.ajaxAd.getLoginInfo,
       done: (res) => {
-        this.userInfo = res.data.data
+        this.userInfo = res.data
       }
     })
   },

@@ -6,17 +6,17 @@
           <el-input v-model="formInline.iccid" placeholder="请输入卡的iccid"></el-input>
         </el-form-item>
         <el-form-item label="卡商名称">
-          <el-select v-model="formInline.card_type" placeholder="请选择">
+          <el-select v-model="formInline.card_type" filterable placeholder="请选择">
             <el-option v-for="(item, index) in cardTypes" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="所属机构">
-          <el-select v-model="formInline.org_id" placeholder="请选择">
+          <el-select v-model="formInline.org_id" filterable placeholder="请选择">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="过期时间">
-          <el-select v-model="formInline.ex_time" placeholder="请选择">
+          <el-select v-model="formInline.ex_time" filterable placeholder="请选择">
             <el-option label="2019-05" value="0"></el-option>
             <el-option label="2019-06" value="1"></el-option>
             <el-option label="2019-07" value="2"></el-option>
@@ -118,9 +118,18 @@ export default {
     },
     // 获取列表数据
     getData() {
+      this.loadData = true
       Api.UNITS.getListData({
         vue: this,
-        url: _axios.ajaxAd.getStats
+        url: _axios.ajaxAd.getStats,
+        cb: (res) => {
+          // this.loadData = false
+          // this.list = Object.assign(this.list, {
+          //   data: res.data.page.records || [],
+          //   total: res.data.page.total
+          // })
+          // this.usedTotal = res.data.other.usedTotal
+        }
       })
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,

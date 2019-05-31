@@ -92,6 +92,15 @@
   }
 }
 
+.btn-link {
+  cursor: pointer;
+  color: #3cb1ff !important;
+
+  &:hover {
+    color: #63c1ff !important;
+  }
+}
+
 .el-tabs__nav-wrap::after {
   content: "";
   position: absolute;

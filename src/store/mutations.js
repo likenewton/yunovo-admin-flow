@@ -5,6 +5,7 @@ const SET_AUTHMENU = 'SET_AUTHMENU' // 设置菜单权限列表
 const SET_ISLOGIN = 'SET_ISLOGIN' // 是否登录
 const SET_CARDTYPES = 'SET_CARDTYPES' // 设置卡商列表
 const SET_ORGS = 'SET_ORGS' // 设置机构列表
+const SET_MONTHS = 'SET_MONTHS' // 设置月份列表
 
 export default {
   [SET_ASIDECOLLAPSE](state, paras) {
@@ -27,5 +28,8 @@ export default {
   },
   [SET_ORGS](state, paras) {
     state.orgs = paras.orgs
+  },
+  [SET_MONTHS](state, paras) {
+    state.months = paras.months
   }
 }

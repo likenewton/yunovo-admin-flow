@@ -6,12 +6,12 @@
           <el-input v-model="formInline.card_iccid" placeholder="请输入卡的iccid"></el-input>
         </el-form-item>
         <el-form-item label="卡商名称">
-          <el-select v-model="formInline.card_type" placeholder="请选择">
+          <el-select v-model="formInline.card_type" filterable placeholder="请选择">
             <el-option v-for="(item, index) in cardTypes" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="机构名称">
-          <el-select v-model="formInline.org_id" placeholder="请选择">
+          <el-select v-model="formInline.org_id" filterable placeholder="请选择">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>

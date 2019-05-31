@@ -3,10 +3,8 @@
     <el-card class="box-card" style="margin-bottom: 20px" shadow="never">
       <el-form :inline="true" :model="formInline" class="demo-form-inline" size="small">
         <el-form-item label="机构名称">
-          <el-select v-model="formInline.jg_name" placeholder="请选择">
-            <el-option label="机构1" value="0"></el-option>
-            <el-option label="机构2" value="1"></el-option>
-            <el-option label="机构3" value="2"></el-option>
+          <el-select v-model="formInline.org_id" filterable placeholder="请选择">
+            <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="导卡时间">
@@ -18,37 +16,37 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">查询</el-button>
-          <el-button type="warning">重置</el-button>
+          <el-button type="primary" @click="getData">查询</el-button>
+          <el-button type="warning" @click="formInline = {}">重置</el-button>
         </el-form-item>
       </el-form>
     </el-card>
-    <el-card class="box-card clearfix" style="margin-bottom: 20px" shadow="never">
+    <el-card class="box-card clearfix" style="margin-bottom: 20px" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
         <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
-      <el-table v-loading="loadData" ref="multipleTable" :data="curTableData" border :default-sort="{prop: 'sell_num', order: 'descending'}" size="mini">
-        <el-table-column fixed="left" show-overflow-tooltip label="机构名称" min-width="125">
+      <el-table ref="multipleTable" @sort-change="handleSortChange" :data="list.data" border size="mini">
+        <el-table-column fixed="left" label="机构名称" min-width="125">
           <template slot-scope="scope">
             <el-button type="text">{{scope.row.jg_name}}</el-button>
           </template>
         </el-table-column>
-        <el-table-column prop="sell_num" label="售卡数量" show-overflow-tooltip min-width="93" sortable></el-table-column>
-        <el-table-column prop="noactive_num" label="未激活数" show-overflow-tooltip min-width="93" sortable></el-table-column>
-        <el-table-column prop="noactive_rate" label="未激活率" show-overflow-tooltip min-width="93" sortable></el-table-column>
-        <el-table-column prop="active_num" label="已激活数" show-overflow-tooltip min-width="93" sortable></el-table-column>
-        <el-table-column prop="active_rate" label="已激活率" show-overflow-tooltip min-width="93" sortable></el-table-column>
-        <el-table-column label="使用总流量" show-overflow-tooltip min-width="93">
+        <el-table-column prop="sell_num" label="售卡数量" min-width="93" sortable="custom"></el-table-column>
+        <el-table-column prop="noactive_num" label="未激活数" min-width="93" sortable="custom"></el-table-column>
+        <el-table-column prop="noactive_rate" label="未激活率" min-width="93" sortable="custom"></el-table-column>
+        <el-table-column prop="active_num" label="已激活数" min-width="93" sortable="custom"></el-table-column>
+        <el-table-column prop="active_rate" label="已激活率" min-width="93" sortable="custom"></el-table-column>
+        <el-table-column label="使用总流量" min-width="93">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.usetotal_flow)"></div>
           </template>
         </el-table-column>
-        <el-table-column label="当月使用流量" show-overflow-tooltip min-width="93">
+        <el-table-column label="当月使用流量" min-width="93">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.usemonth_flow)"></div>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="导出明细" show-overflow-tooltip width="125">
+        <el-table-column fixed="right" label="导出明细" width="125">
           <template slot-scope="scope">
             <el-button type="text">已激活</el-button>
             <el-button type="text">未激活</el-button>
@@ -58,7 +56,7 @@
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
-    <el-card class="box-card clearfix" shadow="never">
+    <el-card class="box-card clearfix" shadow="never" v-loading="echartLoadData">
       <div id="myChart_0" style="width:100%; height:380px"></div>
     </el-card>
   </div>
@@ -66,11 +64,13 @@
 <script>
 import Api from 'assets/js/api.js'
 import { mapMutations, mapState } from 'vuex'
+const _echart = new Api.ECHARTS()
 
 export default {
   data() {
     return {
       loadData: true,
+      echartLoadData: true,
       tabIndex: '0',
       pageSizes: Api.STATIC.pageSizes,
       // 列表数据
@@ -80,6 +80,7 @@ export default {
         currentPage: 1,
         total: 0,
       },
+      sort: {},
       formInline: {},
       myChart_0: null,
       // 激活-未激活柱状图数据
@@ -102,66 +103,7 @@ export default {
           bottom: '3%',
           containLabel: true
         },
-        toolbox: {
-          show: true,
-          right: 20,
-          feature: {
-            dataView: {
-              show: true,
-              iconStyle: {
-                borderColor: '#9a83da'
-              },
-              emphasis: {
-                iconStyle: {
-                  borderColor: '#9a8dda'
-                }
-              },
-              optionToContent(opt) {
-                let axisData = opt.xAxis[0].data
-                let series = opt.series
-                let table = `<table style="width:100%;text-align:center"><tbody><tr>
-                  <td>机构名称</td>
-                    <td>${series[0].name}</td>
-                    <td>${series[1].name}</td>
-                  </tr>`
-                for (let i = 0, l = axisData.length; i < l; i++) {
-                  table += `<tr>
-                    <td>${axisData[i]}</td>
-                    <td>${series[0].data[i]}</td>
-                    <td>${series[1].data[i]}</td>
-                    </tr>`
-                }
-                table += '</tbody></table>'
-                return table
-              },
-              // 调用optionToContent之后一定要配置此项
-              contentToOption() {},
-              buttonColor: '#ff7477'
-            },
-            restore: {
-              show: true,
-              iconStyle: {
-                borderColor: '#ffc367'
-              },
-              emphasis: {
-                iconStyle: {
-                  borderColor: '#ffcf85'
-                }
-              }
-            },
-            saveAsImage: {
-              show: true,
-              iconStyle: {
-                borderColor: '#3cb1ff'
-              },
-              emphasis: {
-                iconStyle: {
-                  borderColor: '#63c1ff'
-                }
-              }
-            }
-          }
-        },
+        toolbox: _echart.getOption().toolbox,
         yAxis: {
           type: 'value',
           splitLine: { show: false }
@@ -204,8 +146,12 @@ export default {
                 position: 'top',
                 formatter: '',
                 rich: {
+                  a: {
+                    align: 'center'
+                  },
                   b: {
-                    color: '#ff7477'
+                    color: '#ff7477',
+                    align: 'center'
                   }
                 }
               }
@@ -225,17 +171,9 @@ export default {
     setTimeout(() => {
       this.myChart_0 = this.$echarts.init(document.getElementById('myChart_0'))
     }, 0)
-    // 进入页面的时候请求数据
-    if (this.list.data.length === 0) {
-      this.getData()
-    } else {
-      this.loadData = false
-    }
+    this.getData()
   },
   methods: {
-    routeName() {
-      return this.$route.name
-    },
     handleSizeChange(val) {
       this.list.pagesize = val
       this.getData()
@@ -244,36 +182,47 @@ export default {
       this.list.currentPage = val
       this.getData()
     },
+    handleSortChange(val) {
+      Api.UNITS.setSortSearch(val, this)
+      this.getData()
+    },
     // 获取列表数据
     getData() {
-      setTimeout(() => {
-        // 数据请求成功
-        this.list.data = [{
-          id: 0,
-          jg_name: '卡仕特-西格玛',
-          sell_num: 12,
-          noactive_num: 11,
-          noactive_rate: '91.67%',
-          active_num: 1,
-          active_rate: '8.33%',
-          usetotal_flow: 52145631,
-          usemonth_flow: 995421
-        }, {
-          id: 1,
-          jg_name: '奇橙天下',
-          sell_num: 25,
-          noactive_num: 10,
-          noactive_rate: '91.67%',
-          active_num: 15,
-          active_rate: '8.33%',
-          usetotal_flow: 52145631,
-          usemonth_flow: 995421
-        }]
-        this.list.total = this.list.data.length
-        this.loadData = false
-        // 数据拿到了就可以格式化图表数据了
-        this.getOptionData()
-      }, 1000)
+      Api.UNITS.getListData({
+        vue: this,
+        url: _axios.ajaxAd.getStats,
+        cb: () => {
+          this.getOptionData()
+        }
+      })
+      // setTimeout(() => {
+      //   // 数据请求成功
+      //   this.list.data = [{
+      //     id: 0,
+      //     jg_name: '卡仕特-西格玛',
+      //     sell_num: 12,
+      //     noactive_num: 11,
+      //     noactive_rate: '91.67%',
+      //     active_num: 1,
+      //     active_rate: '8.33%',
+      //     usetotal_flow: 52145631,
+      //     usemonth_flow: 995421
+      //   }, {
+      //     id: 1,
+      //     jg_name: '奇橙天下',
+      //     sell_num: 25,
+      //     noactive_num: 10,
+      //     noactive_rate: '91.67%',
+      //     active_num: 15,
+      //     active_rate: '8.33%',
+      //     usetotal_flow: 52145631,
+      //     usemonth_flow: 995421
+      //   }]
+      //   this.list.total = this.list.data.length
+      //   this.loadData = false
+      //   // 数据拿到了就可以格式化图表数据了
+      //   this.getOptionData()
+      // }, 1000)
     },
     // 获取图表数据
     getOptionData() {
@@ -287,12 +236,13 @@ export default {
           data1.push(v.active_num)
           data2.push(v.noactive_num)
           option.series[1].label.normal.formatter = function(series) {
-            return `{b|已激活：${option.series[0].data[series.dataIndex]}}\n{a|未激活：${series.data}}`
+            return `{b|${option.series[0].data[series.dataIndex]}}\n{a|${series.data}}`
           }
         }
       })
       setTimeout(() => {
         this[`myChart_${this.tabIndex}`].setOption(option)
+        this.echartLoadData = false
       }, 0)
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,
@@ -300,11 +250,9 @@ export default {
   },
   computed: {
     ...mapState({
-      asideCollapse: 'asideCollapse'
-    }),
-    curTableData() {
-      return this.list.data.slice((this.list.currentPage - 1) * this.list.pagesize, this.list.currentPage * this.list.pagesize)
-    }
+      asideCollapse: 'asideCollapse',
+      orgs: 'orgs'
+    })
   },
   watch: {
     asideCollapse(val, oldVal) {
