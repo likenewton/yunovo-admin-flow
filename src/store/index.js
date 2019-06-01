@@ -13,6 +13,7 @@ const state = {
   cardTypes: [], // 卡商列表
   orgs: [], // 机构列表
   months: [], // 月份列表
+  exceedSelect: [{ value: '1', label: '未过期' }, { value: '0', label: '已过期' }], // 下拉选择是否过期
 }
 
 export default new Vuex.Store({

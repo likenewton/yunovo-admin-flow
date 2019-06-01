@@ -28,12 +28,13 @@
     </el-card>
     <el-card class="box-card clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="mini" type="warning">导出</el-button>
+        <el-button size="mini" type="warning" @click="exportExcel">导出</el-button>
       </el-button-group>
-      <el-table ref="multipleTable" @sort-change="handleSortChange" :data="list.data" border size="mini">
+      <el-table ref="multipleTable" @sort-change="handleSortChange" :data="list.data" :height="tableHeight" border size="mini">
         <el-table-column fixed="left" label="卡ICCID" width="200">
           <template slot-scope="scope">
-            <span class="btn-link">{{scope.row.card_iccid}}</span>
+            <span v-if="scope.row.sums">{{scope.row.card_iccid}}</span>
+            <span v-else class="btn-link">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="card_type_name" label="卡商名称" min-width="120" sortable="custom"></el-table-column>
@@ -44,17 +45,12 @@
         </el-table-column>
         <el-table-column prop="time_active" label="卡激活时间" width="158" sortable="custom"></el-table-column>
         <el-table-column prop="how_month" label="月份" width="100" sortable="custom"></el-table-column>
-        <el-table-column label="月使用流量" width="110">
+        <el-table-column prop="month_used" label="月使用流量" width="110">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.month_used)"></div>
           </template>
         </el-table-column>
       </el-table>
-      <el-row class="result-list">
-        <span class="result-item">流量使用小计：<span v-html="formatFlowUnit(usedPage)"></span></span>
-        <span class="result-item">流量使用总计：<span v-html="formatFlowUnit(usedTotal)"></span></span>
-        <span class="result-item">流量使用平均：<span v-html="formatFlowUnit(avaused)"></span></span>
-      </el-row>
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
@@ -71,14 +67,18 @@ export default {
       pageSizes: Api.STATIC.pageSizes,
       list: {
         data: [],
-        pagesize: Api.STATIC.pageSizes[3],
+        pagesize: Api.STATIC.pageSizes[1],
         currentPage: 1,
         total: 0,
       },
       usedTotal: 0, // 总使用流量
       sort: {},
-      formInline: {},
-      months: [] // 下拉列表月份
+      formInline: {
+        org_id: '45',
+        mdate: '201904'
+      },
+      months: [], // 下拉列表月份
+      tableHeight: Api.UNITS.tableHeight()
     }
   },
   mounted() {
@@ -111,8 +111,21 @@ export default {
             data: res.data.page.records || [],
             total: res.data.page.total
           })
-          console.log(res.data)
-          this.usedTotal = res.data.other.usedTotal
+          this.usedTotal = res.data.other ? res.data.other.usedTotal : 0
+          if (this.list.data.length === 0) return
+          this.list.data.push(...[{
+            sums: true,
+            card_iccid: '总平均',
+            month_used: this.avaused
+          }, {
+            sums: true,
+            card_iccid: '小计',
+            month_used: Api.UNITS.pageSums(this.list.data, 'month_used')
+          }, {
+            sums: true,
+            card_iccid: '总计',
+            month_used: this.usedTotal
+          }])
         }
       })
     },
@@ -122,6 +135,17 @@ export default {
         url: _axios.ajaxAd.getMonths,
         done: (res) => {
           this.months = res.data
+        }
+      })
+    },
+    // 导出excel
+    exportExcel() {
+      _axios.send({
+        method: 'get',
+        url: _axios.ajaxAd.statsExport,
+        params: this.formInline,
+        done: (res) => {
+          console.log(res)
         }
       })
     },
@@ -136,14 +160,6 @@ export default {
     // 流量使用均值
     avaused() {
       return this.usedTotal ? this.usedTotal / this.list.total : 0
-    },
-    // 流量使用小计(该页面总计)
-    usedPage() {
-      let sum = 0
-      this.list.data.forEach((v) => {
-        sum += v.month_used
-      })
-      return sum
     }
   }
 }
@@ -169,6 +185,7 @@ export default {
   .result-list {
     margin: 0 auto;
     text-align: right;
+
     .result-item {
       display: inline-block;
       padding: 10px 15px;

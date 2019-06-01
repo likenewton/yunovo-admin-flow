@@ -22,5 +22,8 @@ export default {
   },
   months: state => {
     return state.months
+  },
+  exceedSelect: state => {
+    return state.exceedSelect
   }
 }

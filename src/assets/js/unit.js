@@ -3,6 +3,14 @@ module.exports = {
   getAuthMenu(asideData) {
     return asideData
   },
+  // 获取当前页面求和
+  pageSums(data, key) {
+    let sum = 0
+    data.forEach((v) => {
+      sum += v[key] || 0
+    })
+    return sum
+  },
   // 设置升降序字段
   setSortSearch(val, _this, sort = 'sort') {
     if (!val.prop) return _this[sort] = {}
@@ -21,13 +29,11 @@ module.exports = {
     let para = paras
     let list = para.list || 'list'
     let sort = para.sort || 'sort'
-
     // 某些排序的字段要换成另外的一个字段， 这里定制化一些字段
     let filterArr = {
       card_type_name: 'card_id',
       org_name: 'org_id'
     }
-
     if (filterArr[para.vue[sort].ascs]) {
       para.vue[sort].ascs = filterArr[para.vue[sort].ascs]
     } else if (filterArr[para.vue[sort].descs]) {
@@ -38,7 +44,7 @@ module.exports = {
       url: para.url,
       params: $.extend({}, para.vue[para.formInline || 'formInline'], {
         ascs: para.vue[sort].ascs,
-        descs:para.vue[sort].descs,
+        descs: para.vue[sort].descs,
         size: para.vue[list].pagesize,
         current: para.vue[list].currentPage
       }),
@@ -286,4 +292,10 @@ module.exports = {
     if (attr) return queryObj[attr]
     else return queryObj
   },
+  tableHeight() {
+    let height = $(window).height() - 500
+    if (height < 550) height = 550
+    console.log(height)
+    return height
+  }
 }

@@ -1,4 +1,3 @@
-
 class AXIOS {
   constructor(para) {
     this.data = {
@@ -23,8 +22,11 @@ class AXIOS {
       getCardTypes: '/fc/api/select/api/select/cardTypes',
       getOrgs: '/fc/api/select/api/select/orgs',
       getMonths: '/fc/api/select/api/select/stats/getMonths',
-      // 统计分析
-      getStats: '/fc/api/gprs/stats/'
+      // 菜单列表
+      getStats: '/fc/api/gprs/stats/',
+      getHalt: '/fc/api/gprs/halt/',
+      // 导出
+      statsExport: '/fc/api/gprs/stats/export',
     }
   }
 
@@ -51,6 +53,11 @@ class AXIOS {
         // status === 0 为正常返回
         if (res.data.status === 0) {
           data.done && data.done(res.data)
+        } else if (res.data.status === 500) {
+          Vue.prototype.$notify.error({
+            title: '错误',
+            message: 'status: 500,' + res.data.msg
+          })
         }
       }
     }).catch(error => {

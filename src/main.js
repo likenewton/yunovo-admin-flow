@@ -64,7 +64,7 @@ router.beforeEach((to, from, next) => {
     store.commit('isLogin', { isLogin: true })
     next()
   } else {
-    // 如果页面没有token要验证有效性
+    // 如果URL地址上没有带token要验证有效性
     _axios.send({
       method: 'get',
       url: _axios.ajaxAd.isLogin,

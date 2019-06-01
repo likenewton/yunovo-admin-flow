@@ -3,7 +3,7 @@
     <el-card class="box-card" style="margin-bottom: 20px" shadow="never">
       <el-form :inline="true" :model="formInline" class="demo-form-inline" size="small">
         <el-form-item label="卡ICCID">
-          <el-input v-model="formInline.iccid" placeholder="请输入卡的iccid"></el-input>
+          <el-input v-model="formInline.card_iccid" placeholder="请输入卡的iccid"></el-input>
         </el-form-item>
         <el-form-item label="卡商名称">
           <el-select v-model="formInline.card_type" filterable placeholder="请选择">
@@ -16,10 +16,8 @@
           </el-select>
         </el-form-item>
         <el-form-item label="过期时间">
-          <el-select v-model="formInline.ex_time" filterable placeholder="请选择">
-            <el-option label="2019-05" value="0"></el-option>
-            <el-option label="2019-06" value="1"></el-option>
-            <el-option label="2019-07" value="2"></el-option>
+          <el-select v-model="formInline.time_expire" filterable placeholder="请选择">
+            <el-option v-for="(item, index) in exceedSelect" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -32,44 +30,45 @@
       <el-button-group style="margin-bottom: 10px">
         <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
-      <el-table ref="multipleTable" :data="list.data" @sort-change="handleSortChange" border size="mini">
-        <el-table-column fixed="left" label="卡ICCID" width="180">
+      <el-table ref="multipleTable" :data="list.data" @sort-change="handleSortChange" :height="tableHeight" border size="mini" height="550px">
+        <el-table-column fixed="left" prop="card_iccid" label="卡ICCID" width="178">
           <template slot-scope="scope">
-            <el-button type="text">{{scope.row.iccid}}</el-button>
+            <span v-if="scope.row.sums">{{scope.row.card_iccid}}</span>
+            <span v-else class="btn-link">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="ks_name" label="卡商名称" min-width="123"></el-table-column>
-        <el-table-column label="所属机构" min-width="130">
-          <template slot-scope="scope">
-            <el-button type="text">{{scope.row.jg_name}}</el-button>
+        <el-table-column prop="card_type_name" label="卡商名称" min-width="120"></el-table-column>
+        <el-table-column prop="org_name" label="所属机构" min-width="120">
+          <template slot-scope="scope" prop="org_name">
+            <span class="btn-link">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="当月用量" width="95">
+        <el-table-column prop="used_month" label="当月用量" width="95" sortable="custom">
           <template slot-scope="scope">
-            <div v-html="formatFlowUnit(scope.row.month_flow)"></div>
+            <div v-html="formatFlowUnit(scope.row.used_month)"></div>
           </template>
         </el-table-column>
-        <el-table-column label="累计用量" width="95">
+        <el-table-column prop="used_total" label="累计用量" width="95" sortable="custom">
           <template slot-scope="scope">
-            <div v-html="formatFlowUnit(scope.row.total_flow)"></div>
+            <div v-html="formatFlowUnit(scope.row.used_total)"></div>
           </template>
         </el-table-column>
-        <el-table-column label="剩余用量" width="95">
+        <el-table-column prop="max_unused" label="剩余用量" width="95" sortable="custom">
           <template slot-scope="scope">
-            <div v-html="formatFlowUnit(scope.row.left_flow)"></div>
+            <div v-html="formatFlowUnit(scope.row.max_unused)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="import_time" label="导卡时间" width="153" sortable="custom"></el-table-column>
-        <el-table-column prop="active_time" label="激活时间" width="153" sortable="custom"></el-table-column>
-        <el-table-column prop="eq_time" label="设备更新时间" width="153" sortable="custom"></el-table-column>
-        <el-table-column prop="stop_time" label="上次停用时间" width="153" sortable="custom"></el-table-column>
-        <el-table-column label="过期时间" width="205">
+        <el-table-column prop="time_added" label="导卡时间" width="153" sortable="custom"></el-table-column>
+        <el-table-column prop="time_active" label="激活时间" width="153" sortable="custom"></el-table-column>
+        <el-table-column prop="time_last" label="设备更新时间" width="153" sortable="custom"></el-table-column>
+        <el-table-column prop="time_stop" label="上次停用时间" width="153" sortable="custom"></el-table-column>
+        <el-table-column prop="time_expire" label="过期时间" width="210">
           <template slot-scope="scope">
-            <div v-html="calcLeftTime(scope.row.ex_time)"></div>
+            <div v-if="!scope.row.sums" v-html="calcLeftTime(scope.row.time_expire)"></div>
           </template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="98">
-          <template slot-scope="scope">
+          <template slot-scope="scope" v-if="!scope.row.sums">
             <el-button type="text">同步</el-button>
             <el-button type="text" v-if="scope.row.is_op">停用</el-button>
             <el-button type="text" v-else>启用</el-button>
@@ -97,7 +96,8 @@ export default {
         total: 0,
       },
       sort: {},
-      formInline: {}
+      formInline: {},
+      tableHeight: Api.UNITS.tableHeight()
     }
   },
   mounted() {
@@ -121,14 +121,30 @@ export default {
       this.loadData = true
       Api.UNITS.getListData({
         vue: this,
-        url: _axios.ajaxAd.getStats,
+        url: _axios.ajaxAd.getHalt,
         cb: (res) => {
-          // this.loadData = false
-          // this.list = Object.assign(this.list, {
-          //   data: res.data.page.records || [],
-          //   total: res.data.page.total
-          // })
-          // this.usedTotal = res.data.other.usedTotal
+          this.loadData = false
+          console.log(res)
+          this.list = Object.assign(this.list, {
+            data: res.data.page.records || [],
+            total: res.data.page.total
+          })
+          let other = res.data.other || {}
+          if (this.list.data.length === 0) return
+          // 一下计算合计
+          this.list.data.push(...[{
+            sums: true,
+            card_iccid: '小计',
+            used_month: Api.UNITS.pageSums(this.list.data, 'used_month'),
+            max_unused: Api.UNITS.pageSums(this.list.data, 'max_unused'),
+            used_total: Api.UNITS.pageSums(this.list.data, 'used_total')
+          }, {
+            sums: true,
+            card_iccid: '总计',
+            used_month: other.used_month || 0,
+            used_total: other.used_total || 0,
+            max_unused: other.max_unused || 0
+          }])
         }
       })
     },
@@ -139,6 +155,7 @@ export default {
     ...mapState({
       cardTypes: 'cardTypes', // 卡商列表
       orgs: 'orgs', // 机构列表
+      exceedSelect: 'exceedSelect'
     })
   }
 }
