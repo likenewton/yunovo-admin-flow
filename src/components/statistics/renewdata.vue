@@ -22,15 +22,15 @@
         <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
       <el-table ref="multipleTable" @sort-change="handleSortChange" :data="list.data" border size="mini">
-        <el-table-column label="机构名称" min-width="140">
+        <el-table-column label="机构名称" min-width="140" sortable="custom">
           <template slot-scope="scope">
             <el-button type="text">{{scope.row.jg_name}}</el-button>
           </template>
         </el-table-column>
-        <el-table-column prop="sell_num" label="售卡数量" min-width="110" sortable="custom"></el-table-column>
-        <el-table-column prop="active_num" label="激活卡数" min-width="110" sortable="custom"></el-table-column>
-        <el-table-column prop="renew_num" label="续费卡数" min-width="110" sortable="custom"></el-table-column>
-        <el-table-column prop="renew_rate" label="续费比率" min-width="110" sortable="custom"></el-table-column>
+        <el-table-column prop="sell_num" label="售卡数量" min-width="95" sortable="custom"></el-table-column>
+        <el-table-column prop="active_num" label="激活卡数" min-width="95" sortable="custom"></el-table-column>
+        <el-table-column prop="renew_num" label="续费卡数" min-width="95" sortable="custom"></el-table-column>
+        <el-table-column prop="renew_rate" label="续费比率" min-width="95" sortable="custom"></el-table-column>
       </el-table>
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
@@ -59,16 +59,9 @@ export default {
   },
   mounted() {
     // 进入页面的时候请求数据
-    if (this.list.data.length === 0) {
-      this.getData()
-    } else {
-      this.loadData = false
-    }
+    this.getData()
   },
   methods: {
-    routeName() {
-      return this.$route.name
-    },
     handleSizeChange(val) {
       this.list.pagesize = val
       this.getData()
@@ -83,23 +76,24 @@ export default {
     },
     // 获取列表数据
     getData() {
-      Api.UNITS.getListData({
-        vue: this,
-        url: _axios.ajaxAd.getStats
-      })
-      // setTimeout(() => {
-      //   // 数据请求成功
-      //   this.list.data = [{
-      //     id: 0,
-      //     jg_name: '卡仕特-西格玛',
-      //     sell_num: 12,
-      //     active_num: 1,
-      //     renew_num: 2,
-      //     renew_rate: '50.65%'
-      //   }]
-      //   this.list.total = this.list.data.length
-      //   this.loadData = false
-      // }, 1000)
+      console.log(this.formInline)
+      // Api.UNITS.getListData({
+      //   vue: this,
+      //   url: _axios.ajaxAd.getStats
+      // })
+      setTimeout(() => {
+        // 数据请求成功
+        this.list.data = [{
+          id: 0,
+          jg_name: '卡仕特-西格玛',
+          sell_num: 12,
+          active_num: 1,
+          renew_num: 2,
+          renew_rate: '50.65%'
+        }]
+        this.list.total = this.list.data.length
+        this.loadData = false
+      }, 1000)
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,
     calcLeftTime: Api.UNITS.calcLeftTime

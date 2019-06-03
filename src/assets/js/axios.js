@@ -22,9 +22,13 @@ class AXIOS {
       getCardTypes: '/fc/api/select/api/select/cardTypes',
       getOrgs: '/fc/api/select/api/select/orgs',
       getMonths: '/fc/api/select/api/select/stats/getMonths',
-      // 菜单列表
+      // table列表
       getStats: '/fc/api/gprs/stats/',
       getHalt: '/fc/api/gprs/halt/',
+      getOnOffLog: '/fc/api/gprs/onoffLog/',
+      getAbnormal: '/fc/api/gprs/abnormal/',
+      // 明细
+      getOnOffLogDetail: '/fc/api/gprs/onoffLog/detail',
       // 导出
       statsExport: '/fc/api/gprs/stats/export',
     }

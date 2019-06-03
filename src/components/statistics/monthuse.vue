@@ -30,7 +30,7 @@
       <el-button-group style="margin-bottom: 10px">
         <el-button size="mini" type="warning" @click="exportExcel">导出</el-button>
       </el-button-group>
-      <el-table ref="multipleTable" @sort-change="handleSortChange" :data="list.data" :height="tableHeight" border size="mini">
+      <el-table class="list_table" @sort-change="handleSortChange" :data="list.data" :height="maxTableHeight" border size="mini">
         <el-table-column fixed="left" label="卡ICCID" width="200">
           <template slot-scope="scope">
             <span v-if="scope.row.sums">{{scope.row.card_iccid}}</span>
@@ -73,12 +73,9 @@ export default {
       },
       usedTotal: 0, // 总使用流量
       sort: {},
-      formInline: {
-        org_id: '45',
-        mdate: '201904'
-      },
+      formInline: {},
       months: [], // 下拉列表月份
-      tableHeight: Api.UNITS.tableHeight()
+      maxTableHeight: Api.UNITS.maxTableHeight()
     }
   },
   mounted() {
@@ -101,16 +98,10 @@ export default {
     },
     // 获取列表数据
     getData() {
-      this.loadData = true
       Api.UNITS.getListData({
         vue: this,
         url: _axios.ajaxAd.getStats,
         cb: (res) => {
-          this.loadData = false
-          this.list = Object.assign(this.list, {
-            data: res.data.page.records || [],
-            total: res.data.page.total
-          })
           this.usedTotal = res.data.other ? res.data.other.usedTotal : 0
           if (this.list.data.length === 0) return
           this.list.data.push(...[{

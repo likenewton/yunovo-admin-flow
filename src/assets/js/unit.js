@@ -3,7 +3,7 @@ module.exports = {
   getAuthMenu(asideData) {
     return asideData
   },
-  // 获取当前页面求和
+  // 获取当前页面某个字段求和
   pageSums(data, key) {
     let sum = 0
     data.forEach((v) => {
@@ -27,75 +27,37 @@ module.exports = {
   // 获取列表数据（通用） this, url, list, formInline, sort
   getListData(paras) {
     let para = paras
-    let list = para.list || 'list'
-    let sort = para.sort || 'sort'
+    let list = para.vue[para.list || 'list']
+    let sort = para.vue[para.sort || 'sort']
+    let formInline = para.vue[para.formInline || 'formInline']
     // 某些排序的字段要换成另外的一个字段， 这里定制化一些字段
-    let filterArr = {
+    let sortFilterArr = {
       card_type_name: 'card_id',
       org_name: 'org_id'
     }
-    if (filterArr[para.vue[sort].ascs]) {
-      para.vue[sort].ascs = filterArr[para.vue[sort].ascs]
-    } else if (filterArr[para.vue[sort].descs]) {
-      para.vue[sort].descs = filterArr[para.vue[sort].descs]
+    if (sortFilterArr[sort.ascs]) {
+      sort.ascs = sortFilterArr[sort.ascs]
+    } else if (sortFilterArr[sort.descs]) {
+      sort.descs = sortFilterArr[sort.descs]
     }
+    // formInline表单中的起止时间为一个数组，要换成两个分开的字段
+    para.vue[para.loadData || 'loadData'] = true
     _axios.send({
       method: para.method || 'get',
       url: para.url,
-      params: $.extend({}, para.vue[para.formInline || 'formInline'], {
-        ascs: para.vue[sort].ascs,
-        descs: para.vue[sort].descs,
-        size: para.vue[list].pagesize,
-        current: para.vue[list].currentPage
+      params: $.extend({}, formInline, {
+        ascs: sort.ascs,
+        descs: sort.descs,
+        size: list.pagesize,
+        current: list.currentPage
       }),
       done: (res) => {
+        para.vue[para.loadData || 'loadData'] = false
+        list.data = res.data.page.records
+        list.total = res.data.page.total
         para.cb && para.cb(res)
       }
     })
-  },
-  // 验证xml文件格式
-  validateXML(xmlContent) {
-    //errorCode 0是xml正确，1是xml错误，2是无法验证
-    var xmlDoc, errorMessage, errorCode = 0;
-    // code for IE
-    if (window.ActiveXObject) {
-      xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
-      xmlDoc.async = "false";
-      xmlDoc.loadXML(xmlContent);
-
-      if (xmlDoc.parseError.errorCode != 0) {
-        errorMessage = "错误code: " + xmlDoc.parseError.errorCode + "\n";
-        errorMessage = errorMessage + "错误原因: " + xmlDoc.parseError.reason;
-        errorMessage = errorMessage + "错误位置: " + xmlDoc.parseError.line;
-        errorCode = 1;
-      } else {
-        errorMessage = "格式正确";
-      }
-    }
-    // code for Mozilla, Firefox, Opera, chrome, safari,etc.
-    else if (document.implementation.createDocument) {
-      var parser = new DOMParser();
-      xmlDoc = parser.parseFromString(xmlContent, "text/xml");
-      var error = xmlDoc.getElementsByTagName("parsererror");
-      if (error.length > 0) {
-        if (xmlDoc.documentElement.nodeName == "parsererror") {
-          errorCode = 1;
-          errorMessage = xmlDoc.documentElement.childNodes[0].nodeValue;
-        } else {
-          errorCode = 1;
-          errorMessage = xmlDoc.getElementsByTagName("parsererror")[0].innerHTML;
-        }
-      } else {
-        errorMessage = "格式正确";
-      }
-    } else {
-      errorCode = 2;
-      errorMessage = "浏览器不支持验证，无法验证xml正确性";
-    }
-    return {
-      "msg": errorMessage,
-      "error_code": errorCode
-    }
   },
 
   // 限制小数位数和整数位数 num1(整数)， num2(小数)
@@ -109,13 +71,6 @@ module.exports = {
       expStr = `^\\d{1,${num1}}(\\.\\d{0,${num2}})?`
     }
     return val.match(new RegExp(expStr)) && val.match(new RegExp(expStr))[0]
-  },
-
-  // 限制数值得最小值与最大值
-  limitNumberSize(val, max, min) {
-    if (typeof val === 'number') {
-      console.log(1)
-    }
   },
 
   // 加载动画
@@ -292,10 +247,9 @@ module.exports = {
     if (attr) return queryObj[attr]
     else return queryObj
   },
-  tableHeight() {
+  maxTableHeight() {
     let height = $(window).height() - 500
     if (height < 550) height = 550
-    console.log(height)
-    return height
+    return height + 'px'
   }
 }

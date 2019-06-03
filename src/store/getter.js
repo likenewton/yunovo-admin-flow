@@ -13,17 +13,5 @@ export default {
   },
   isLogin: state => {
     return state.isLogin
-  },
-  cardTypes: state => {
-    return state.cardTypes
-  },
-  orgs: state => {
-    return state.orgs
-  },
-  months: state => {
-    return state.months
-  },
-  exceedSelect: state => {
-    return state.exceedSelect
   }
 }

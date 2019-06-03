@@ -16,10 +16,13 @@
           </el-select>
         </el-form-item>
         <el-form-item label="日差异流量">
-          <el-select v-model="formInline.ex_time" placeholder="请选择">
-            <el-option label=">=150M" value="0"></el-option>
-            <el-option label=">=500M" value="1"></el-option>
-            <el-option label=">=1G" value="2"></el-option>
+          <el-select v-model="formInline.unicom_diff" placeholder="请选择">
+            <el-option v-for="(item, index) in unicomDiffSelect" :key="index" :label="item.label" :value="item.value"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="剩余流量">
+          <el-select v-model="formInline.max_unused" placeholder="请选择">
+            <el-option v-for="(item, index) in maxUnusedSelect" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -32,44 +35,44 @@
       <el-button-group style="margin-bottom: 10px">
         <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
-      <el-table ref="multipleTable" @sort-change="handleSortChange" :data="list.data" border size="mini">
-        <el-table-column fixed="left" label="卡ICCID" width="180">
+      <el-table ref="multipleTable" @sort-change="handleSortChange" :data="list.data" :height="maxTableHeight" border size="mini">
+        <el-table-column fixed="left" prop="card_iccid" label="卡ICCID" width="180">
           <template slot-scope="scope">
-            <el-button type="text">{{scope.row.iccid}}</el-button>
+            <span class="btn-link">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="ks_name" label="卡商名称" min-width="140"></el-table-column>
-        <el-table-column label="机构名称" min-width="140">
+        <el-table-column prop="card_type_name" label="卡商名称" min-width="150" sortable="custom"></el-table-column>
+        <el-table-column prop="org_name" label="机构名称" min-width="180" sortable="custom">
           <template slot-scope="scope">
-            <el-button type="text">{{scope.row.jg_name}}</el-button>
+            <span class="btn-link">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="日差异流量" min-width="95">
+        <el-table-column prop="unicom_diff" label="日差异流量" min-width="105" sortable="custom">
           <template slot-scope="scope">
-            <div v-html="formatFlowUnit(scope.row.daydif_flow)"></div>
+            <div v-html="formatFlowUnit(scope.row.unicom_diff)"></div>
           </template>
         </el-table-column>
-        <el-table-column label="剩余用量" min-width="95">
+        <el-table-column prop="max_unused" label="剩余用量" min-width="95" sortable="custom">
           <template slot-scope="scope">
-            <div v-html="formatFlowUnit(scope.row.left_flow)"></div>
+            <div v-html="formatFlowUnit(scope.row.max_unused)"></div>
           </template>
         </el-table-column>
-        <el-table-column label="平台使用总流量" min-width="110">
+        <el-table-column prop="used_total" label="平台使用总流量" min-width="130" sortable="custom">
           <template slot-scope="scope">
-            <div v-html="formatFlowUnit(scope.row.plattotal_flow)"></div>
+            <div v-html="formatFlowUnit(scope.row.used_total)"></div>
           </template>
         </el-table-column>
-        <el-table-column label="联通使用总流量" min-width="110">
+        <el-table-column prop="unicom_total" label="联通使用总流量" min-width="130" sortable="custom">
           <template slot-scope="scope">
-            <div v-html="formatFlowUnit(scope.row.unicomtotal_flow)"></div>
+            <div v-html="formatFlowUnit(scope.row.unicom_total)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="eq_time" label="设备更新时间" min-width="155" sortable="custom"></el-table-column>
-        <el-table-column fixed="right" label="操作" width="95">
+        <el-table-column prop="time_last" label="设备更新时间" min-width="155" sortable="custom"></el-table-column>
+        <el-table-column fixed="right" prop='unicom_stop' label="操作" width="95">
           <template slot-scope="scope">
+            <el-button type="text" class="text_success" v-if="scope.row.unicom_stop == 1">启用</el-button>
+            <el-button type="text" class="text_danger" v-else>停用</el-button>
             <el-button type="text">套餐</el-button>
-            <el-button type="text" v-if="scope.row.is_op">停用</el-button>
-            <el-button type="text" v-else>启用</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -86,7 +89,6 @@ export default {
   data() {
     return {
       loadData: true,
-      tabIndex: '0',
       pageSizes: Api.STATIC.pageSizes,
       list: {
         data: [],
@@ -95,21 +97,15 @@ export default {
         total: 0,
       },
       sort: {},
-      formInline: {}
+      formInline: {},
+      maxTableHeight: Api.UNITS.maxTableHeight()
     }
   },
   mounted() {
     // 进入页面的时候请求数据
-    if (this.list.data.length === 0) {
-      this.getData()
-    } else {
-      this.loadData = false
-    }
+    this.getData()
   },
   methods: {
-    routeName() {
-      return this.$route.name
-    },
     handleSizeChange(val) {
       this.list.pagesize = val
       this.getData()
@@ -126,25 +122,8 @@ export default {
     getData() {
       Api.UNITS.getListData({
         vue: this,
-        url: _axios.ajaxAd.getStats
+        url: _axios.ajaxAd.getAbnormal
       })
-      // setTimeout(() => {
-      //   // 数据请求成功
-      //   this.list.data = [{
-      //     id: 0,
-      //     iccid: '89860617040000312399',
-      //     ks_name: '智网科技 JASPER',
-      //     jg_name: '卡仕特-西格玛',
-      //     daydif_flow: 1245,
-      //     left_flow: 98542,
-      //     plattotal_flow: 54657554,
-      //     unicomtotal_flow: 75452454,
-      //     eq_time: '2019-03-25 12:52:10',
-      //     is_op: true
-      //   }]
-      //   this.list.total = this.list.data.length
-      //   this.loadData = false
-      // }, 1000)
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,
     calcLeftTime: Api.UNITS.calcLeftTime
@@ -153,6 +132,8 @@ export default {
     ...mapState({
       cardTypes: 'cardTypes', // 卡商列表
       orgs: 'orgs', // 机构列表
+      unicomDiffSelect: 'unicomDiffSelect', // 日差异流量
+      maxUnusedSelect: 'maxUnusedSelect', // 剩余流量
     })
   }
 }

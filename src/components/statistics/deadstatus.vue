@@ -30,7 +30,7 @@
       <el-button-group style="margin-bottom: 10px">
         <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
-      <el-table ref="multipleTable" :data="list.data" @sort-change="handleSortChange" :height="tableHeight" border size="mini" height="550px">
+      <el-table ref="multipleTable" :data="list.data" @sort-change="handleSortChange" :height="maxTableHeight" border size="mini" height="550px">
         <el-table-column fixed="left" prop="card_iccid" label="卡ICCID" width="178">
           <template slot-scope="scope">
             <span v-if="scope.row.sums">{{scope.row.card_iccid}}</span>
@@ -97,7 +97,7 @@ export default {
       },
       sort: {},
       formInline: {},
-      tableHeight: Api.UNITS.tableHeight()
+      maxTableHeight: Api.UNITS.maxTableHeight()
     }
   },
   mounted() {
@@ -118,17 +118,10 @@ export default {
     },
     // 获取列表数据
     getData() {
-      this.loadData = true
       Api.UNITS.getListData({
         vue: this,
         url: _axios.ajaxAd.getHalt,
         cb: (res) => {
-          this.loadData = false
-          console.log(res)
-          this.list = Object.assign(this.list, {
-            data: res.data.page.records || [],
-            total: res.data.page.total
-          })
           let other = res.data.other || {}
           if (this.list.data.length === 0) return
           // 一下计算合计

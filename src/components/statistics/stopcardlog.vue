@@ -25,31 +25,31 @@
       <el-button-group style="margin-bottom: 10px">
         <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
-      <el-table ref="multipleTable" :data="list.data" @sort-change="handleSortChange" border size="mini">
-        <el-table-column fixed="left" label="卡ICCID" width="200">
+      <el-table ref="multipleTable" :data="list.data" @sort-change="handleSortChange" :height="maxTableHeight" border size="mini">
+        <el-table-column fixed="left" prop="card_iccid" label="卡ICCID" width="200">
           <template slot-scope="scope">
-            <el-button type="text" @click="checkRechargeDetail(scope.row.card_iccid)">{{scope.row.card_iccid}}</el-button>
+            <span class="btn-link" @click="checkRechargeDetail(scope.row.card_iccid)">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="ks_name" label="卡商名称" min-width="140"></el-table-column>
-        <el-table-column label="所属机构" min-width="140">
+        <el-table-column prop="card_type_name" label="卡商名称" min-width="140"></el-table-column>
+        <el-table-column prop="org_name" label="所属机构" min-width="140">
           <template slot-scope="scope">
-            <el-button type="text">{{scope.row.jg_name}}</el-button>
+            <span class="btn-link">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="recharge_count" label="充值次数" min-width="110" sortable="custom"></el-table-column>
-        <el-table-column prop="stopcard_count" label="停卡次数" min-width="110" sortable="custom"></el-table-column>
-        <el-table-column label="上次停卡流量" min-width="105">
+        <el-table-column prop="pay_count" label="充值次数" min-width="95" sortable="custom"></el-table-column>
+        <el-table-column prop="stop_num" label="停卡次数" min-width="95" sortable="custom"></el-table-column>
+        <el-table-column prop="stop_value" label="上次停卡流量" min-width="105">
           <template slot-scope="scope">
-            <div v-html="formatFlowUnit(scope.row.stopcard_flow)"></div>
+            <div v-html="formatFlowUnit(scope.row.stop_value)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="recharge_time" label="上次充值时间" min-width="151" sortable="custom"></el-table-column>
-        <el-table-column prop="stopcard_time" label="上次停卡时间" min-width="151" sortable="custom"></el-table-column>
-        <el-table-column prop="last_time" label="最后更新时间" min-width="151" sortable="custom"></el-table-column>
+        <el-table-column prop="time_paid" label="上次充值时间" min-width="155" sortable="custom"></el-table-column>
+        <el-table-column prop="time_stop" label="上次停卡时间" min-width="155" sortable="custom"></el-table-column>
+        <el-table-column prop="time_last" label="最后更新时间" min-width="155" sortable="custom"></el-table-column>
         <el-table-column fixed="right" label="操作" width="110">
           <template slot-scope="scope">
-            <el-button type="text" @click="showStopCardDetail(scope.row.card_iccid)">详情</el-button>
+            <el-button type="text" @click="showStopCardDetail(scope.row)">详情</el-button>
             <el-button type="text">套餐</el-button>
           </template>
         </el-table-column>
@@ -59,22 +59,27 @@
     </el-card>
     <el-dialog title="停卡详情列表" :visible.sync="dialogTableVisible">
       <div slot class="clearfix">
-        <el-table v-loading="dialogList.loadData" :data="dialogList.data" border size="mini">
-          <el-table-column fixed="left" label="卡ICCID" width="200">
+        <el-table v-loading="dialogList.loadData" :data="curTableData" :height="maxDialogHeight" border size="mini">
+          <el-table-column fixed="left" prop="card_iccid" label="卡ICCID" width="180">
             <template slot-scope="scope">
               <el-button type="text" @click="checkRechargeDetail(scope.row.card_iccid)">{{scope.row.card_iccid}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="剩余流量" width="105">
+          <el-table-column prop="balance_value" label="剩余流量" width="105">
             <template slot-scope="scope">
-              <div v-html="formatFlowUnit(scope.row.left_flow)"></div>
+              <div v-html="formatFlowUnit(scope.row.balance_value)"></div>
             </template>
           </el-table-column>
-          <el-table-column prop="op_declare" label="操作说明" min-width="200"></el-table-column>
-          <el-table-column prop="stopcard_time" label="停卡时间" width="151"></el-table-column>
-          <el-table-column prop="result_status" label="执行结果" width="100"></el-table-column>
+          <el-table-column prop="user_name" label="操作说明" min-width="200"></el-table-column>
+          <el-table-column prop="time_added" label="停卡时间" width="155"></el-table-column>
+          <el-table-column prop="exec_status" label="执行结果" width="75">
+            <template slot-scope="scope">
+              <span class="text_success" v-if="scope.row.exec_status === 1">成功</span>
+              <span class="text_danger" v-else>失败</span>
+            </template>
+          </el-table-column>
         </el-table>
-        <el-pagination @size-change="handleSizeChangeDetail" @current-change="handleCurrentChangeDetail" :current-page="currentPage" :page-sizes="pageSizes" :page-size="dialogList.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="dialogList.total" class="clearfix">
+        <el-pagination @size-change="handleSizeChangeDetail" @current-change="handleCurrentChangeDetail" :current-page="currentPage" :page-sizes="dialogList.pageSizes" :page-size="dialogList.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="dialogList.total" class="clearfix">
         </el-pagination>
       </div>
     </el-dialog>
@@ -96,25 +101,27 @@ export default {
         total: 0,
       },
       dialogTableVisible: false,
-      dialogList: {
+      dialogList: { // dialog table列表数据
         loadData: true,
+        pageSizes: [5, 10, 15, 20],
         data: [],
-        pagesize: Api.STATIC.pageSizes[1],
+        pagesize: 10,
         currentPage: 1,
         total: 0,
       },
-      curChoiceIccid: '',
+      curChoiceRow: {}, // iccid详情列表 当前选择项保存项(list.data中的某一项)
       sort: {},
-      formInline: {}
+      formInline: {
+        card_type: '1',
+        org_id: '1'
+      },
+      maxTableHeight: Api.UNITS.maxTableHeight(),
+      maxDialogHeight: $(window).height() / 2
     }
   },
   mounted() {
     // 进入页面的时候请求数据
-    if (this.list.data.length === 0) {
-      this.getData()
-    } else {
-      this.loadData = false
-    }
+    this.getData()
   },
   methods: {
     ...mapMutations([
@@ -136,15 +143,13 @@ export default {
     // dialog中的列表
     handleSizeChangeDetail(val) {
       this.dialogList.pagesize = val
-      this.getDetailData()
     },
     handleCurrentChangeDetail(val) {
       this.dialogList.currentPage = val
-      this.getDetailData()
     },
     // 打开dialog 展示某一个iccid数据
-    showStopCardDetail(card_iccid) {
-      this.curChoiceIccid = card_iccid
+    showStopCardDetail(row) {
+      this.curChoiceRow = row
       this.dialogTableVisible = true
       this.getDetailData()
     },
@@ -156,58 +161,25 @@ export default {
     getData() {
       Api.UNITS.getListData({
         vue: this,
-        url: _axios.ajaxAd.getStats
+        url: _axios.ajaxAd.getOnOffLog
       })
-      // this.loadData = true
-      // _axios.send({
-      //   method: 'get',
-      //   url: _axios.ajaxAd.getStats,
-      //   params: Object.assign(this.formInline, {
-      //     ascs: this.sort.ascs,
-      //     descs: this.sort.descs,
-      //     size: this.list.pagesize,
-      //     current: this.list.currentPage
-      //   }),
-      //   done: (res) => {
-      //     this.loadData = false
-      //     this.list.data = [{
-      //       id: 0,
-      //       card_iccid: '89860617040000312399',
-      //       ks_name: '智网科技 JASPER',
-      //       jg_name: '卡仕特-西格玛',
-      //       recharge_count: 1,
-      //       stopcard_count: 1,
-      //       stopcard_flow: 542.3,
-      //       recharge_time: '2019-03-25 12:52:10',
-      //       stopcard_time: '2019-03-25 12:52:10',
-      //       last_time: '2019-03-25 12:52:10',
-      //     }]
-      //     this.list.total = this.list.data.length
-      //   }
-      // })
     },
     // 获取dialog中列表数据
     getDetailData() {
       this.dialogList.loadData = true
       _axios.send({
         method: 'get',
-        url: _axios.ajaxAd.getStats,
+        url: _axios.ajaxAd.getOnOffLogDetail,
         params: {
-          card_iccid: this.curChoiceIccid,
+          card_id: this.curChoiceRow.card_id,
+          card_iccid: this.curChoiceRow.card_iccid,
           size: this.dialogList.pagesize,
           current: this.dialogList.currentPage
         },
         done: (res) => {
           this.dialogList.loadData = false
-          this.dialogList.data = [{
-            id: 0,
-            card_iccid: '89860617040000312399',
-            left_flow: -100.3,
-            op_declare: '一些说明',
-            stopcard_time: '2019-03-25 12:52:10',
-            result_status: '成功'
-          }]
-          this.dialogList.total = this.dialogList.data.length
+          this.dialogList.data = res.data
+          this.dialogList.total = res.data.length
         }
       })
     },
@@ -220,7 +192,11 @@ export default {
       dialogVisible: 'dialogVisible',
       cardTypes: 'cardTypes', // 卡商列表
       orgs: 'orgs'
-    })
+    }),
+    // dialog中的表单采用前端分页
+    curTableData() {
+      return this.dialogList.data.slice((this.dialogList.currentPage - 1) * this.dialogList.pagesize, this.dialogList.currentPage * this.dialogList.pagesize)
+    }
   }
 }
 
