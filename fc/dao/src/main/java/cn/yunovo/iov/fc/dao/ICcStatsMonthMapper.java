@@ -25,7 +25,5 @@ public interface ICcStatsMonthMapper extends BaseMapper<CcStatsMonth> {
 	
 	public List<CcStatsMonth> queryItemsPage(Page<CcStatsMonth> page, @Param("org_id")Integer org_id, @Param("card_type")Integer card_type, @Param("card_iccid")String card_iccid, @Param("mdate")String mdate, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 	
-	public Long queryItemsPageCount(@Param("org_id")Integer org_id, @Param("card_type")Integer card_type, @Param("card_iccid")String card_iccid, @Param("mdate")String mdate, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
-	
 	public Long usedTotal(@Param("org_id")Integer org_id, @Param("card_type")Integer card_type, @Param("card_iccid")String card_iccid, @Param("mdate")String mdate, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 }

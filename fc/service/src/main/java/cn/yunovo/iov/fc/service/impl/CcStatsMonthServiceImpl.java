@@ -167,10 +167,10 @@ public class CcStatsMonthServiceImpl extends ServiceImpl<ICcStatsMonthMapper, Cc
 			ccStatsMonth.setCard_type_name(cardTypes.get(ccStatsMonth.getCard_type()));
 		}
 
-		Long count = iCcStatsMonthMapper.queryItemsPageCount(org_id, card_type, card_iccid, mdate, orgpos,
-				orgpos.split(","));
+		//Long count = iCcStatsMonthMapper.queryItemsPageCount(org_id, card_type, card_iccid, mdate, orgpos,
+		//		orgpos.split(","));
 		page.setRecords(records);
-		page.setTotal(count);
+		//page.setTotal(count);
 		p.setPage(page);
 		p.setOther(other);
 

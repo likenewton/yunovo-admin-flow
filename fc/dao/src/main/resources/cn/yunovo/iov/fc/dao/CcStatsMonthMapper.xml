@@ -7,8 +7,8 @@
 		SELECT how_month FROM cc_stats_month s
 		INNER JOIN cc_gprs_card c on
 		s.card_id = c.card_id
-		WHERE
-		c.org_id IN
+ 	WHERE 1 =1 		
+		AND c.org_id IN
 		<foreach collection="orgs" item="id" index="index" open="("
 			close=")" separator=",">
 			#{id}
@@ -59,7 +59,7 @@
 		</if>
 
 		<if test="card_iccid != null">
-			<bind name="card_iccid_bind" value="'%'+card_iccid'%'" />
+			<bind name="card_iccid_bind" value="'%'+card_iccid+'%'" />
 			AND C.card_iccid LIKE #{card_iccid_bind}
 		</if>
 
@@ -85,7 +85,7 @@
 
 					</when>
 					<otherwise>
-						c.org_id IN
+						AND c.org_id IN
 						<foreach collection="orgs" item="id" index="index"
 							open="(" close=")" separator=",">
 							#{id}
@@ -101,7 +101,7 @@
 		</if>
 
 		<if test="card_iccid != null">
-			<bind name="card_iccid_bind" value="'%'+card_iccid'%'" />
+			<bind name="card_iccid_bind" value="'%'+card_iccid+'%'" />
 			AND c.card_iccid LIKE #{card_iccid_bind}
 		</if>
 

@@ -10,7 +10,7 @@
   	<module>common</module>
   	<module>dao</module>
   	<module>model</module>
-  	<module>web</module>
+  	<module>fc-web</module>
   	<module>service</module>
   	<module>mybatisGenerator</module>
   </modules>

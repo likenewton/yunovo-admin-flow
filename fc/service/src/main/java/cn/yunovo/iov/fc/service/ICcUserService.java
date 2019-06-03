@@ -2,6 +2,8 @@ package cn.yunovo.iov.fc.service;
 
 import cn.yunovo.iov.fc.model.entity.CcUser;
 
+import java.util.Map;
+
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -17,5 +19,7 @@ public interface ICcUserService extends IService<CcUser>  {
 	public CcUser findUserOrgAndOrgpos(String username);
 	
 	public String getOrgpos(String loginname);
+	
+	public Map<String, String> userMap();
 	
 }

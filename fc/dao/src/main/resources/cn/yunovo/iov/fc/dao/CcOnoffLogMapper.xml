@@ -29,6 +29,8 @@
 				ORDER BY onoff_id DESC
 			) SL
 		INNER JOIN `cc_gprs_card` C ON C.card_id = SL.card_id
+		
+		 WHERE 1 =1 
 		]]>
 		<choose>
 
@@ -64,7 +66,7 @@
 		GROUP BY	SL.card_id 
 	
 	</select>
-	
+	<!-- 
 	<select id="getItemsPageCount" resultType="Long">
 		SELECT COUNT(*) FROM (	
 			<![CDATA[
@@ -78,6 +80,8 @@
 						ORDER BY onoff_id DESC
 					) SL
 				INNER JOIN `cc_gprs_card` C ON C.card_id = SL.card_id
+				
+				 WHERE 1 =1 
 				]]>
 				<choose>
 		
@@ -112,8 +116,8 @@
 				
 				GROUP BY	SL.card_id 
 				
-				)
+				) T
 	
-	</select>
+	</select> -->
 
 </mapper>

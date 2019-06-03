@@ -1,0 +1,169 @@
+server: 
+  port: 9098
+  servlet: 
+    context-path: /fc
+  tomcat: 
+    uri-encoding: UTF-8
+BasePath: /fc
+
+
+loging: 
+  config: classpath:logback.xml
+  level: 
+    cn: 
+      yunovo: 
+        iov: debug
+    com.ibatis: debug
+spring: 
+  redis:
+    host: 192.168.3.240
+    port: 6379
+    ssl: false
+    password: yunovo2Redis
+    database: 1
+    jedis: 
+      poll: 
+        maxIdle: 8
+        minIdle: 0
+        maxActive: 8
+  datasource:
+    clw: 
+      name: clw
+      type: com.alibaba.druid.pool.DruidDataSource
+      url: "jdbc:mysql://10.0.3.52:3306/gprs?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT"
+      username: root
+      password: 123456
+      driver-class-name: com.mysql.jdbc.Driver
+      minIdle: 0
+      maxActive: 2
+      initialSize: 1
+      timeBetweenEvictionRunsMillis: 3000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+hessian:
+  path:
+    usercenter: http://tcas.yunovo.cn:8082/uc_web
+    mpk: http://tcas.yunovo.cn:8080/mpk_web
+    
+fc: 
+  gprs: 
+    card_type: 
+      1: 智网吉林11位卡
+      2: 智网科技 JASPER
+      3: 吉林长春 JASPER
+      4: 智网定向流量卡
+      5: 吉林长春 新APN
+    arr_onofflog: 
+      api: 第三方机构调用API接口操作
+      lost: 24小时内失联但流量消耗大于50M
+      mend: 月结成功后执行开卡处理
+      topup: 用户充值成功执行开卡处理
+      shell: 小时对账流量卡余量不足停卡
+      reset: 重置流量卡时开卡
+      plstop: 批量执行停卡操作
+      plopen: 批量执行开卡操作
+      daylimit: 当天使用流量超过限定量停卡
+      jasper: 因流量卡切换设备联通系统停卡
+      syshell: 系统日结流量卡余量不足停卡
+      sys2api: 设备上报时流量不足经与联通对账确认停卡
+      selfop: 客户在流量详情处手动开卡
+      
+      
+#cas
+---
+spring: 
+  profiles: dev
+casClient: 
+  casEnabled: true
+  casServerHost: 192.168.3.240
+  casServerUrlPrefix: http://192.168.3.240:8081/cas-server
+  casServerLoginUrl: http://192.168.3.240:8081/cas-server/login
+  casServerLogoutUrl: http://192.168.3.240:8081/cas-server/logout
+  serverHost: 10.0.0.160
+  serverName: http://10.0.0.160:9098
+  service: http://10.0.0.160:9098/fc/api/sso/ssoLogin
+  exludeFilterResource: "*remote*"
+  serverIndexUrls: /fc/sso/api/ssoLogin
+  redirectAfterValidation: false
+  h5IndexUrl: "http://10.0.0.120:8091/"
+  h5Client: true
+  ucIndexUrl: "http://10.0.0.120:8091/"
+  authTokenCrypto: 
+    signingKey: eckhybvk3nqorVo5efMxERNu_CkR8KCYfV6Hv7J1MVASsVG-DHYzMLpz4UbnGfwz4Y4bu3SAzBMICqlROp2gBQ
+    signingKeySize: 512
+    encryptionKey: GPSAnpFr7BLttXAZjVKbnks-QKfEFBfZqeHmUyKk5TBTG5fNtesETWU_b5YcXVud
+    encryptionKeySize: 256
+    effectiveTimeSec: 3600
+    cryptoAlg: "A192CBC-HS384"
+  ticketValidation: 
+    proxyReceptorUrl: 
+    proxyGrantingTicketStorageClass: 
+    millisBetweenCleanUps: 
+    acceptAnyProxy: 
+    allowedProxyChains: 
+    proxyCallbackUrl: 
+    encoding: UTF-8
+    renew: false
+    exceptionOnValidationFailure: true
+    redirectAfterValidation: false
+    useSession: false
+    encodeServiceUrl: true
+    serviceParameterName: service
+    artifactParameterName: ticket
+  clientAuth: 
+    renew: false
+    gateway: false
+    gatewayStorageClass: 
+    artifactParameterName: ticket
+    serviceParameterName: service
+    
+---
+spring: 
+  profiles: test
+casClient: 
+  casEnabled: true
+  casServerHost: 192.168.3.240
+  casServerUrlPrefix: http://192.168.3.240:8081/cas-server
+  casServerLoginUrl: http://192.168.3.240:8081/cas-server/login
+  casServerLogoutUrl: http://192.168.3.240:8081/cas-server/logout
+  serverHost: 10.0.0.160
+  serverName: http://192.168.3.240:9098
+  service: http://192.168.3.240:9098/fc/api/sso/ssoLogin
+  exludeFilterResource: "*remote*"
+  serverIndexUrls: /fc/sso/api/ssoLogin
+  redirectAfterValidation: false
+  h5IndexUrl: "http://10.0.0.120:8091/"
+  h5Client: true
+  ucIndexUrl: "http://10.0.0.120:8091/"
+  authTokenCrypto: 
+    signingKey: eckhybvk3nqorVo5efMxERNu_CkR8KCYfV6Hv7J1MVASsVG-DHYzMLpz4UbnGfwz4Y4bu3SAzBMICqlROp2gBQ
+    signingKeySize: 512
+    encryptionKey: GPSAnpFr7BLttXAZjVKbnks-QKfEFBfZqeHmUyKk5TBTG5fNtesETWU_b5YcXVud
+    encryptionKeySize: 256
+    effectiveTimeSec: 3600
+    cryptoAlg: "A192CBC-HS384"
+  ticketValidation: 
+    proxyReceptorUrl: 
+    proxyGrantingTicketStorageClass: 
+    millisBetweenCleanUps: 
+    acceptAnyProxy: 
+    allowedProxyChains: 
+    proxyCallbackUrl: 
+    encoding: UTF-8
+    renew: false
+    exceptionOnValidationFailure: true
+    redirectAfterValidation: false
+    useSession: false
+    encodeServiceUrl: true
+    serviceParameterName: service
+    artifactParameterName: ticket
+  clientAuth: 
+    renew: false
+    gateway: false
+    gatewayStorageClass: 
+    artifactParameterName: ticket
+    serviceParameterName: service
+#application中验证登录跳转uc配置

@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.metadata.BaseRowModel;
+import com.baomidou.mybatisplus.annotation.TableName;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -22,6 +23,7 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
+@TableName("cc_stats_month")
 @ApiModel(value = "Cc_stats_month对象", description = "流量卡月流量使用情况统计表")
 public class CcStatsMonth extends BaseRowModel {
 

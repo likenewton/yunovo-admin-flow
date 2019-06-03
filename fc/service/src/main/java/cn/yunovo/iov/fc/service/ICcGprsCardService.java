@@ -4,13 +4,13 @@ import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcGprsCard;
+import cn.yunovo.iov.fc.model.entity.SellPayResultBean;
+import cn.yunovo.iov.fc.model.result.CardUsedResultBean;
+import cn.yunovo.iov.fc.model.result.UnicomStatResultBean;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.ibatis.annotations.Param;
-
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -28,4 +28,43 @@ public interface ICcGprsCardService extends IService<CcGprsCard> {
 	
 	public PageData<CcGprsCard, HashMap<String, Double>> getHaltPage(PageForm pageForm, String card_iccid,
 			Integer card_type, Integer org_id, Integer time_expire, LoginInfo info);
+	
+	public PageData<CcGprsCard, Object>  getItemsPage(PageForm pageForm, String card_iccid,
+			Integer card_type, Integer org_id, Integer max_unused, Integer unicom_diff, LoginInfo info);
+	
+	/**
+	 * 统计分析-续费数据
+	 * @param pageForm
+	 * @param org_id 机构id
+	 * @param date_start
+	 * @param date_end
+	 * @param info
+	 * @return
+	 */
+	public PageData<SellPayResultBean, Object> getSellPayPage(PageForm pageForm, Integer org_id, String date_start, String date_end, LoginInfo info);
+	
+	/**
+	 * 统计分析-流量卡使用情况查询
+	 * @param pageForm
+	 * @param org_id
+	 * @param date_start
+	 * @param date_end
+	 * @param info
+	 * @return
+	 */
+	public PageData<CardUsedResultBean, CardUsedResultBean> getCardUsedPage(PageForm pageForm, Integer org_id, String date_start, String date_end, LoginInfo info);
+	
+	
+	/**
+	 * 统计分析-联通情况
+	 * @param pageForm
+	 * @param org_id
+	 * @param date_start
+	 * @param date_end
+	 * @param jstart
+	 * @param jend
+	 * @param info
+	 * @return
+	 */
+	public PageData<UnicomStatResultBean, UnicomStatResultBean> getUnicomStatPage(PageForm pageForm, Integer org_id, String date_start, String date_end, String jstart, String jend,LoginInfo info);
 }

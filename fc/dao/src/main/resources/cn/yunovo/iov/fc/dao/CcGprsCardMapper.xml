@@ -44,7 +44,8 @@
 					<when test='time_expire == 1'>
 						<![CDATA[ AND time_expire > NOW() ]]>
 					</when>
-					<otherwise><![CDATA[ AND time_expire <= NOW() ]]>  </otherwise>
+					<otherwise><![CDATA[ AND time_expire <= NOW() ]]>
+					</otherwise>
 				</choose>
 			</when>
 
@@ -55,9 +56,8 @@
 
 		</choose>
 	</select>
-	
-	<select id="getHaltPageCount"
-		resultType="Long">
+
+	<!-- <select id="getHaltPageCount" resultType="Long">
 
 		SELECT count(*) FROM cc_gprs_card WHERE unicom_stop = 1
 
@@ -98,7 +98,8 @@
 					<when test='time_expire == 1'>
 						<![CDATA[ AND time_expire > NOW() ]]>
 					</when>
-					<otherwise><![CDATA[ AND time_expire <= NOW() ]]>  </otherwise>
+					<otherwise><![CDATA[ AND time_expire <= NOW() ]]>
+					</otherwise>
 				</choose>
 			</when>
 
@@ -108,8 +109,8 @@
 
 
 		</choose>
-	</select>
-	
+	</select> -->
+
 	<select id="getHaltTotal" resultType="java.util.HashMap">
 	<![CDATA[
 		SELECT SUM(used_month) AS used_month, SUM(used_total) AS used_total,
@@ -149,12 +150,467 @@
 					<when test='time_expire == 1'>
 						<![CDATA[ AND time_expire > NOW() ]]>
 					</when>
-					<otherwise><![CDATA[ AND time_expire <= NOW() ]]>  </otherwise>
+					<otherwise><![CDATA[ AND time_expire <= NOW() ]]>
+					</otherwise>
 				</choose>
 			</when>
 			<otherwise>
 			</otherwise>
 		</choose>
+	</select>
+
+
+	<select id="getItemsPage"
+		resultType="cn.yunovo.iov.fc.model.entity.CcGprsCard">
+
+		SELECT * FROM cc_gprs_card WHERE 1 =1
+
+		<choose>
+
+			<when test="org_id != null">
+				AND org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+
+		<if test="card_type != null">
+			AND card_type = #{card_type}
+		</if>
+
+		<if test="card_iccid != null">
+			<bind name="card_iccid_bind" value="'%'+card_iccid+'%'" />
+			AND card_iccid LIKE #{card_iccid_bind}
+		</if>
+
+		<if test="max_unused != null and max_unused &gt; 1">
+			<![CDATA[ AND max_unused <= -#{max_unused}  AND unicom_stop = 0 ]]>
+		</if>
+
+		<if test="unicom_diff != null and unicom_diff &gt; 1">
+			<![CDATA[ AND unicom_diff >= #{unicom_diff} ]]>
+		</if>
+	</select>
+
+	<!-- <select id="getItemsPageCount" resultType="Long">
+
+		SELECT count(*) FROM cc_gprs_card WHERE 1 =1
+
+		<choose>
+
+			<when test="org_id != null">
+				AND org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+
+		<if test="card_type != null">
+			AND card_type = #{card_type}
+		</if>
+
+		<if test="card_iccid != null">
+			<bind name="card_iccid_bind" value="'%'+card_iccid+'%'" />
+			AND card_iccid LIKE #{card_iccid_bind}
+		</if>
+
+		<if test="max_unused != null and max_unused &gt; 1">
+			<![CDATA[ AND max_unused <= -#{max_unused}  AND unicom_stop = 0 ]]>
+		</if>
+
+		<if test="unicom_diff != null and unicom_diff &gt; 1">
+			<![CDATA[ AND unicom_diff >= #{unicom_diff} ]]>
+		</if>
+	</select> -->
+
+	<!-- 获取机构售卡数量与支付情况 -->
+	<select id="getSellPayPage"	resultType="cn.yunovo.iov.fc.model.entity.SellPayResultBean">
+
+		SELECT org_id, card_count, act_count, pay_cards, (pay_cards/act_count) * 100 AS pay_rate 
+		FROM
+		(SELECT org_id, COUNT(card_id) AS card_count, SUM(IF(GC.time_active IS NULL, 0, 1)) AS act_count,
+		(SELECT COUNT(DISTINCT card_id) FROM cc_gprs_pay GP WHERE GP.org_id = GC.org_id
+
+		<if test="date_start != null">
+			<![CDATA[  AND time_paid >= #{date_start} ]]>
+		</if>
+
+		<if test="date_end != null">
+			<![CDATA[ AND time_paid <= #{date_end} ]]>
+		</if>
+
+		AND is_paid = 1 AND pay_method > 0) AS pay_cards
+		
+		FROM cc_gprs_card GC WHERE 1 = 1
+
+		<choose>
+
+			<when test="org_id != null">
+				AND org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+
+		 GROUP BY org_id) AS T
+	</select>
+	<!-- <select id="getSellPayPageCount"
+		resultType="Long">
+
+		SELECT count(*) 
+		FROM
+		(SELECT org_id, COUNT(card_id) AS card_count, SUM(IF(GC.time_active IS NULL, 0, 1)) AS act_count,
+		(SELECT COUNT(DISTINCT card_id) FROM cc_gprs_pay GP WHERE GP.org_id = GC.org_id
+
+		<if test="date_start != null">
+			<![CDATA[  AND time_paid >= #{date_start} ]]>
+		</if>
+
+		<if test="date_end != null">
+			<![CDATA[ AND time_paid <= #{date_end} ]]>
+		</if>
+
+		AND is_paid = 1 AND pay_method > 0) AS pay_cards
+		
+		FROM cc_gprs_card GC WHERE 1 = 1
+
+		<choose>
+
+			<when test="org_id != null">
+				AND org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+
+		 GROUP BY org_id) AS T
+	</select> -->
+	
+	
+	<!-- 流量卡使用统计 -->
+	<select id="getCardUsedPage" resultType="cn.yunovo.iov.fc.model.result.CardUsedResultBean">
+	
+		SELECT org_id, COUNT(card_id) AS card_count, SUM(unicom_stop) AS unicom_stop, SUM(IF(time_active IS NULL, 0, 1)) AS activated,
+		SUM(IF(time_active IS NULL,1,0)) AS nonactivated, SUM(IF(max_unused >= 9999999, 0, max_unused)) AS unused_count, SUM(used_total) AS used_count,
+		SUM(IF(pay_total >= 9999999, 0, pay_total)) AS pay_total FROM cc_gprs_card WHERE 1=1
+		
+		<choose>
+
+			<when test="org_id != null">
+				AND org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+		
+		<if test="date_start != null">
+			<![CDATA[  AND time_added >= #{date_start} ]]>
+		</if>
+
+		<if test="date_end != null">
+			<![CDATA[ AND time_added <= #{date_end} ]]>
+		</if>
+		
+		 GROUP BY org_id
+	</select>
+	
+	<!-- <select id="getCardUsedPageCount" resultType="Long">
+	
+		select count(*) FROM (
+		
+		SELECT org_id FROM  cc_gprs_card WHERE 1=1
+		
+		<choose>
+
+			<when test="org_id != null">
+				AND org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+		
+		<if test="date_start != null">
+			<![CDATA[  AND time_added >= #{date_start} ]]>
+		</if>
+
+		<if test="date_end != null">
+			<![CDATA[ AND time_added <= #{date_end} ]]>
+		</if>
+		
+		 GROUP BY org_id
+		 
+		 ) t
+	</select> -->
+	
+	<!-- 流量卡使用统计 -->
+	<select id="getCardUsedTotal" resultType="cn.yunovo.iov.fc.model.result.CardUsedResultBean">
+		SELECT SUM(card_count) AS card_count,SUM(activated) AS activated, SUM(nonactivated) AS nonactivated,
+			SUM(unused_count) AS unused_count,SUM(used_count) AS used_count FROM (
+		SELECT org_id, COUNT(card_id) AS card_count, SUM(unicom_stop) AS unicom_stop, SUM(IF(time_active IS NULL, 0, 1)) AS activated,
+		SUM(IF(time_active IS NULL,1,0)) AS nonactivated, SUM(IF(max_unused >= 9999999, 0, max_unused)) AS unused_count, SUM(used_total) AS used_count,
+		SUM(IF(pay_total >= 9999999, 0, pay_total)) AS pay_total FROM  cc_gprs_card WHERE 1=1
+		
+		<choose>
+
+			<when test="org_id != null">
+				AND org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+		
+		<if test="date_start != null">
+			<![CDATA[  AND time_added >= #{date_start} ]]>
+		</if>
+
+		<if test="date_end != null">
+			<![CDATA[ AND time_added <= #{date_end} ]]>
+		</if>
+		
+		 GROUP BY org_id
+		 
+		 ) t
+	</select>
+	
+	<!-- 统计分析-联通情况统计 -->
+	<select id="getUnicomStatPage" resultType="cn.yunovo.iov.fc.model.result.CardUsedResultBean">
+	
+		SELECT org_id,COUNT(card_id) AS card_count, SUM(IF (time_active IS NULL,0,1)) AS activated,
+		SUM(IF (time_active IS NULL,1,0)) AS nonactivated, SUM(unicom_total) AS unicom_count,
+		SUM(unicom_month) AS month_count FROM cc_gprs_card WHERE 1=1
+		
+		<choose>
+
+			<when test="org_id != null">
+				AND org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+		
+		<if test="date_start != null">
+			<![CDATA[  AND time_added >= #{date_start} ]]>
+		</if>
+
+		<if test="date_end != null">
+			<![CDATA[ AND time_added <= #{date_end} ]]>
+		</if>
+		
+		<if test="jstart != null">
+			<![CDATA[  AND time_active >= #{jstart} ]]>
+		</if>
+
+		<if test="jend != null">
+			<![CDATA[ AND time_active <= #{jend} ]]>
+		</if>
+		
+		 GROUP BY org_id
+	</select>
+	<!-- 
+	<select id="getUnicomStatPageCount" resultType="Long">
+	
+		select count(*) FROM (
+		
+		SELECT org_id FROM  cc_gprs_card WHERE 1=1
+		
+		<choose>
+
+			<when test="org_id != null">
+				AND org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+		
+		<if test="date_start != null">
+			<![CDATA[  AND time_added >= #{date_start} ]]>
+		</if>
+
+		<if test="date_end != null">
+			<![CDATA[ AND time_added <= #{date_end} ]]>
+		</if>
+		
+		<if test="jstart != null">
+			<![CDATA[  AND time_active >= #{jstart} ]]>
+		</if>
+
+		<if test="jend != null">
+			<![CDATA[ AND time_active <= #{jend} ]]>
+		</if>
+		
+		 GROUP BY org_id
+		 
+		 ) t
+	</select>
+	 -->
+	<!-- 流量卡使用统计 -->
+	<select id="getUnicomStatTotal" resultType="cn.yunovo.iov.fc.model.result.CardUsedResultBean">
+	
+		SELECT SUM(card_count) AS card_count, SUM(activated) AS activated,
+			SUM(nonactivated) AS nonactivated, SUM(unicom_count) AS unicom_count, SUM(month_count) AS month_count FROM (
+			
+		SELECT org_id,COUNT(card_id) AS card_count, SUM(IF (time_active IS NULL,0,1)) AS activated,
+		SUM(IF (time_active IS NULL,1,0)) AS nonactivated, SUM(unicom_total) AS unicom_count,
+		SUM(unicom_month) AS month_count FROM cc_gprs_card WHERE 1=1
+		
+		<choose>
+
+			<when test="org_id != null">
+				AND org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+		
+		<if test="date_start != null">
+			<![CDATA[  AND time_added >= #{date_start} ]]>
+		</if>
+
+		<if test="date_end != null">
+			<![CDATA[ AND time_added <= #{date_end} ]]>
+		</if>
+		
+		<if test="jstart != null">
+			<![CDATA[  AND time_active >= #{jstart} ]]>
+		</if>
+
+		<if test="jend != null">
+			<![CDATA[ AND time_active <= #{jend} ]]>
+		</if>
+		
+		 GROUP BY org_id
+		 
+		 ) t
 	</select>
 
 </mapper>

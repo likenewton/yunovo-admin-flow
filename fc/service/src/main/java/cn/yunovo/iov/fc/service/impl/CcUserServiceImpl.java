@@ -8,8 +8,14 @@ import cn.yunovo.iov.fc.service.ICcUserService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 /**
  * <p>
@@ -51,6 +57,20 @@ public class CcUserServiceImpl extends ServiceImpl<ICcUserMapper, CcUser> implem
 		
 		String orgpos = iCcOrgService.getOrgpos(user.getOrg_id(), user.getOrgpos());
 		return orgpos;
+	}
+
+	@Override
+	public Map<String, String> userMap() {
+		
+		List<CcUser> selectList = iCcUserMapper.selectList(new QueryWrapper<>());
+		if(CollectionUtils.isEmpty(selectList)) {
+			return null;
+		}
+		
+		Map<String, String> userMap = selectList.stream().collect(Collectors.toMap(CcUser::getUsername, CcUser::getFirstname));
+		
+		
+		return userMap;
 	}
 
 }
