@@ -49,7 +49,7 @@ module.exports = {
       title: '续费数据',
       name: 'renewdata'
     }, {
-      title: '用量数据',
+      title: '累计用量',
       name: 'usedata'
     }, {
       title: '联通流量卡',

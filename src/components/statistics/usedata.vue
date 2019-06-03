@@ -7,9 +7,11 @@
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="起止时间">
-          <el-date-picker v-model="formInline.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-          </el-date-picker>
+        <el-form-item label="激活开始日期">
+          <el-date-picker v-model="formInline.date_start" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker>
+        </el-form-item>
+        <el-form-item label="激活结束日期">
+          <el-date-picker v-model="formInline.date_end" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="getData">查询</el-button>
@@ -22,32 +24,44 @@
         <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
       <el-table ref="multipleTable" :data="list.data" @sort-change="handleSortChange" border size="mini">
-        <el-table-column label="机构名称" min-width="125">
+        <el-table-column prop="org_name" label="机构名称" min-width="170">
           <template slot-scope="scope">
-            <el-button type="text">{{scope.row.jg_name}}</el-button>
+            <span class="btn-link">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="sell_num" label="售卡数量" min-width="95" sortable="custom"></el-table-column>
-        <el-table-column prop="noactive_num" label="未激活数" min-width="95" sortable="custom"></el-table-column>
-        <el-table-column prop="noactive_rate" label="未激活率" min-width="95" sortable="custom"></el-table-column>
-        <el-table-column prop="active_num" label="已激活数" min-width="95" sortable="custom"></el-table-column>
-        <el-table-column prop="active_rate" label="已激活率" min-width="95" sortable="custom"></el-table-column>
-        <el-table-column label="分配总流量" min-width="95">
+        <el-table-column prop="card_count" label="售卡数量" min-width="95" sortable="custom"></el-table-column>
+        <el-table-column prop="nonactivated" label="未激活数" min-width="95" sortable="custom"></el-table-column>
+        <el-table-column label="未激活率" min-width="80">
           <template slot-scope="scope">
-            <div v-html="formatFlowUnit(scope.row.fptotal_flow)"></div>
+            <span>{{(scope.row.nonactivated/scope.row.card_count).toFixed(3)}}%</span>
           </template>
         </el-table-column>
-        <el-table-column label="使用流量" min-width="95">
+        <el-table-column prop="activated" label="已激活数" min-width="95" sortable="custom"></el-table-column>
+        <el-table-column label="已激活率" min-width="80">
           <template slot-scope="scope">
-            <div v-html="formatFlowUnit(scope.row.usetotal_flow)"></div>
+            <span>{{(scope.row.activated/scope.row.card_count).toFixed(3)}}%</span>
           </template>
         </el-table-column>
-        <el-table-column label="剩余流量" min-width="95">
+        <el-table-column prop="pay_total" label="分配总流量" min-width="95">
           <template slot-scope="scope">
-            <div v-html="formatFlowUnit(scope.row.lefttotal_flow)"></div>
+            <div v-html="formatFlowUnit(scope.row.pay_total)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="useflow_rate" label="使用流量率" min-width="108" sortable="custom"></el-table-column>
+        <el-table-column prop="used_count" label="使用流量" min-width="95">
+          <template slot-scope="scope">
+            <div v-html="formatFlowUnit(scope.row.used_count)"></div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="unused_count" label="剩余流量" min-width="95">
+          <template slot-scope="scope">
+            <div v-html="formatFlowUnit(scope.row.unused_count)"></div>
+          </template>
+        </el-table-column>
+        <el-table-column label="使用流量率" min-width="80">
+          <template slot-scope="scope">
+            <span>{{(scope.row.used_count/scope.row.pay_total).toFixed(3)}}%</span>
+          </template>
+        </el-table-column>
       </el-table>
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
@@ -118,7 +132,6 @@ export default {
           type: 'category',
           data: [], //要设置的
           axisLabel: {
-            interval: 0,
             textStyle: {
               fontSize: 12
             }
@@ -215,7 +228,6 @@ export default {
           type: 'category',
           data: [], //要设置的
           axisLabel: {
-            interval: 0,
             textStyle: {
               fontSize: 12
             }
@@ -300,138 +312,11 @@ export default {
     getData() {
       Api.UNITS.getListData({
         vue: this,
-        url: _axios.ajaxAd.getStats,
+        url: _axios.ajaxAd.getCardUsed,
         cb: () => {
           this.getOptionData()
         }
       })
-      // setTimeout(() => {
-      //   // 数据请求成功
-      //   this.list.data = [{
-      //     id: 0,
-      //     jg_name: '卡仕特-西格玛',
-      //     sell_num: 12,
-      //     noactive_num: 11,
-      //     noactive_rate: '91.67%',
-      //     active_num: 1,
-      //     active_rate: '8.33%',
-      //     fptotal_flow: 12452,
-      //     usetotal_flow: 845214,
-      //     lefttotal_flow: 421414,
-      //     useflow_rate: '41.24%'
-      //   }, {
-      //     id: 0,
-      //     jg_name: '自营',
-      //     sell_num: 33,
-      //     noactive_num: 6,
-      //     noactive_rate: '91.67%',
-      //     active_num: 27,
-      //     active_rate: '8.33%',
-      //     fptotal_flow: 12452,
-      //     usetotal_flow: 245214,
-      //     lefttotal_flow: 1421414,
-      //     useflow_rate: '41.24%'
-      //   }, {
-      //     id: 0,
-      //     jg_name: '自营 > 双平泰',
-      //     sell_num: 120,
-      //     noactive_num: 55,
-      //     noactive_rate: '91.67%',
-      //     active_num: 65,
-      //     active_rate: '8.33%',
-      //     fptotal_flow: 12452,
-      //     usetotal_flow: 145214,
-      //     lefttotal_flow: 21414,
-      //     useflow_rate: '41.24%'
-      //   }, {
-      //     id: 0,
-      //     jg_name: '凯隆丁威特',
-      //     sell_num: 45,
-      //     noactive_num: 11,
-      //     noactive_rate: '91.67%',
-      //     active_num: 34,
-      //     active_rate: '8.33%',
-      //     fptotal_flow: 12452,
-      //     usetotal_flow: 645214,
-      //     lefttotal_flow: 821414,
-      //     useflow_rate: '41.24%'
-      //   }, {
-      //     id: 0,
-      //     jg_name: '博毅',
-      //     sell_num: 66,
-      //     noactive_num: 19,
-      //     noactive_rate: '91.67%',
-      //     active_num: 47,
-      //     active_rate: '8.33%',
-      //     fptotal_flow: 12452,
-      //     usetotal_flow: 745214,
-      //     lefttotal_flow: 421414,
-      //     useflow_rate: '41.24%'
-      //   }, {
-      //     id: 0,
-      //     jg_name: '天之眼',
-      //     sell_num: 100,
-      //     noactive_num: 80,
-      //     noactive_rate: '91.67%',
-      //     active_num: 20,
-      //     active_rate: '8.33%',
-      //     fptotal_flow: 12452,
-      //     usetotal_flow: 545214,
-      //     lefttotal_flow: 421414,
-      //     useflow_rate: '41.24%'
-      //   }, {
-      //     id: 0,
-      //     jg_name: '湖南纽曼',
-      //     sell_num: 30,
-      //     noactive_num: 24,
-      //     noactive_rate: '91.67%',
-      //     active_num: 6,
-      //     active_rate: '8.33%',
-      //     fptotal_flow: 12452,
-      //     usetotal_flow: 545214,
-      //     lefttotal_flow: 421414,
-      //     useflow_rate: '41.24%'
-      //   }, {
-      //     id: 0,
-      //     jg_name: '奇橙天下',
-      //     sell_num: 140,
-      //     noactive_num: 50,
-      //     noactive_rate: '91.67%',
-      //     active_num: 90,
-      //     active_rate: '8.33%',
-      //     fptotal_flow: 12452,
-      //     usetotal_flow: 545214,
-      //     lefttotal_flow: 421414,
-      //     useflow_rate: '41.24%'
-      //   }, {
-      //     id: 0,
-      //     jg_name: '自营 > 云智易联',
-      //     sell_num: 110,
-      //     noactive_num: 85,
-      //     noactive_rate: '91.67%',
-      //     active_num: 25,
-      //     active_rate: '8.33%',
-      //     fptotal_flow: 12452,
-      //     usetotal_flow: 545214,
-      //     lefttotal_flow: 421414,
-      //     useflow_rate: '41.24%'
-      //   }, {
-      //     id: 0,
-      //     jg_name: '自营 > 云智测试',
-      //     sell_num: 47,
-      //     noactive_num: 17,
-      //     noactive_rate: '91.67%',
-      //     active_num: 30,
-      //     active_rate: '8.33%',
-      //     fptotal_flow: 12452,
-      //     usetotal_flow: 545214,
-      //     lefttotal_flow: 421414,
-      //     useflow_rate: '41.24%'
-      //   }]
-      //   this.list.total = this.list.data.length
-      //   this.loadData = false
-      //   this.getOptionData()
-      // }, 1000)
     },
     // 获取图表数据
     getOptionData() {
@@ -440,18 +325,18 @@ export default {
       let data1 = option.series[0].data = [] // 分类一数据
       let data2 = option.series[1].data = [] // 分类二数据
       this.list.data.forEach((v) => {
-        label.push(v.jg_name)
+        label.push(v.org_name)
         if (this.tabIndex === '0') {
-          data1.push(v.active_num)
-          data2.push(v.noactive_num)
+          data1.push(v.activated)
+          data2.push(v.nonactivated)
           option.series[1].label.normal.formatter = function(series) {
             return `{b|${option.series[0].data[series.dataIndex]}}\n{a|${series.data}}`
           }
         } else if (this.tabIndex === '1') {
-          data1.push(v.lefttotal_flow)
-          data2.push(v.usetotal_flow)
+          data1.push(v.unused_count)
+          data2.push(v.used_count)
           option.series[1].label.normal.formatter = function(series) {
-            return `{b|${Api.UNITS.formatFlowUnit(option.series[0].data[1], 2, false)}}\n{a|${Api.UNITS.formatFlowUnit(series.data, 2, false)}}`
+            return `{b|${Api.UNITS.formatFlowUnit(option.series[0].data[series.dataIndex], 2, false)}}\n{a|${Api.UNITS.formatFlowUnit(series.data, 2, false)}}`
           }
         }
       })

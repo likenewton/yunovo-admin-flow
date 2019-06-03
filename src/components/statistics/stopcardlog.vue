@@ -10,7 +10,7 @@
             <el-option v-for="(item, index) in cardTypes" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="所属机构">
+        <el-form-item label="机构名称">
           <el-select v-model="formInline.org_id" filterable placeholder="请选择">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
@@ -112,7 +112,6 @@ export default {
       curChoiceRow: {}, // iccid详情列表 当前选择项保存项(list.data中的某一项)
       sort: {},
       formInline: {
-        card_type: '1',
         org_id: '1'
       },
       maxTableHeight: Api.UNITS.maxTableHeight(),

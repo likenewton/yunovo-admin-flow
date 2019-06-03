@@ -178,6 +178,10 @@ export default {
       }
     }
 
+    .el-menu-item {
+      background: none;
+    }
+
     .sub-item {
       height: 45px;
       line-height: 45px;

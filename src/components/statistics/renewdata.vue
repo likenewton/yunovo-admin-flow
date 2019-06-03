@@ -7,9 +7,11 @@
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="起止时间">
-          <el-date-picker v-model="formInline.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-          </el-date-picker>
+        <el-form-item label="开始日期">
+          <el-date-picker v-model="formInline.date_start" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker>
+        </el-form-item>
+        <el-form-item label="结束日期">
+          <el-date-picker v-model="formInline.date_end" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="getData">查询</el-button>
@@ -22,15 +24,19 @@
         <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
       <el-table ref="multipleTable" @sort-change="handleSortChange" :data="list.data" border size="mini">
-        <el-table-column label="机构名称" min-width="140" sortable="custom">
+        <el-table-column prop="org_name" label="机构名称" min-width="180" sortable="custom">
           <template slot-scope="scope">
-            <el-button type="text">{{scope.row.jg_name}}</el-button>
+            <span class="btn-link">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="sell_num" label="售卡数量" min-width="95" sortable="custom"></el-table-column>
-        <el-table-column prop="active_num" label="激活卡数" min-width="95" sortable="custom"></el-table-column>
-        <el-table-column prop="renew_num" label="续费卡数" min-width="95" sortable="custom"></el-table-column>
-        <el-table-column prop="renew_rate" label="续费比率" min-width="95" sortable="custom"></el-table-column>
+        <el-table-column prop="card_count" label="售卡数量" min-width="100" sortable="custom"></el-table-column>
+        <el-table-column prop="act_count" label="激活卡数" min-width="100" sortable="custom"></el-table-column>
+        <el-table-column prop="pay_cards" label="续费卡数" min-width="100" sortable="custom"></el-table-column>
+        <el-table-column prop="pay_rate" label="续费比率" min-width="100" sortable="custom">
+          <template slot-scope="scope">
+            <span>{{scope.row.pay_rate ? scope.row.pay_rate.toFixed(3) : 0}}%</span>
+          </template>
+        </el-table-column>
       </el-table>
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
@@ -76,24 +82,10 @@ export default {
     },
     // 获取列表数据
     getData() {
-      console.log(this.formInline)
-      // Api.UNITS.getListData({
-      //   vue: this,
-      //   url: _axios.ajaxAd.getStats
-      // })
-      setTimeout(() => {
-        // 数据请求成功
-        this.list.data = [{
-          id: 0,
-          jg_name: '卡仕特-西格玛',
-          sell_num: 12,
-          active_num: 1,
-          renew_num: 2,
-          renew_rate: '50.65%'
-        }]
-        this.list.total = this.list.data.length
-        this.loadData = false
-      }, 1000)
+      Api.UNITS.getListData({
+        vue: this,
+        url: _axios.ajaxAd.getSell2pay
+      })
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,
     calcLeftTime: Api.UNITS.calcLeftTime

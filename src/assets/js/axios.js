@@ -27,6 +27,8 @@ class AXIOS {
       getHalt: '/fc/api/gprs/halt/',
       getOnOffLog: '/fc/api/gprs/onoffLog/',
       getAbnormal: '/fc/api/gprs/abnormal/',
+      getSell2pay: '/fc/api/gprs/sell2pay/',
+      getCardUsed: '/fc/api/gprs/cardUsed/',
       // 明细
       getOnOffLogDetail: '/fc/api/gprs/onoffLog/detail',
       // 导出
