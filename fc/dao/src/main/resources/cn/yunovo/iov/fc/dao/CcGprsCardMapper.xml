@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.yunovo.iov.fc.dao.ICcGprsCardMapper">
+
+	<select id="getHaltPage"
+		resultType="cn.yunovo.iov.fc.model.entity.CcGprsCard">
+
+		SELECT * FROM cc_gprs_card WHERE unicom_stop = 1
+
+		<choose>
+
+			<when test="org_id != null">
+				AND org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+
+		<if test="card_type != null">
+			AND card_type = #{card_type}
+		</if>
+
+		<if test="card_iccid != null">
+			<bind name="card_iccid_bind" value="'%'+card_iccid+'%'" />
+			AND card_iccid LIKE #{card_iccid_bind}
+		</if>
+		<choose>
+
+			<when test="time_expire != null">
+				<choose>
+					<when test='time_expire == 1'>
+						<![CDATA[ AND time_expire > NOW() ]]>
+					</when>
+					<otherwise><![CDATA[ AND time_expire <= NOW() ]]>  </otherwise>
+				</choose>
+			</when>
+
+			<otherwise>
+
+			</otherwise>
+
+
+		</choose>
+	</select>
+	
+	<select id="getHaltPageCount"
+		resultType="Long">
+
+		SELECT count(*) FROM cc_gprs_card WHERE unicom_stop = 1
+
+		<choose>
+
+			<when test="org_id != null">
+				AND org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+
+		<if test="card_type != null">
+			AND card_type = #{card_type}
+		</if>
+
+		<if test="card_iccid != null">
+			<bind name="card_iccid_bind" value="'%'+card_iccid'%'" />
+			AND card_iccid LIKE #{card_iccid_bind}
+		</if>
+		<choose>
+
+			<when test="time_expire != null">
+				<choose>
+					<when test='time_expire == 1'>
+						<![CDATA[ AND time_expire > NOW() ]]>
+					</when>
+					<otherwise><![CDATA[ AND time_expire <= NOW() ]]>  </otherwise>
+				</choose>
+			</when>
+
+			<otherwise>
+
+			</otherwise>
+
+
+		</choose>
+	</select>
+	
+	<select id="getHaltTotal" resultType="java.util.HashMap">
+	<![CDATA[
+		SELECT SUM(used_month) AS used_month, SUM(used_total) AS used_total,
+		SUM(IF(max_unused < 0, max_unused ,0)) AS max_unused FROM cc_gprs_card WHERE unicom_stop = 1
+		
+		]]>
+		<choose>
+
+			<when test="org_id != null">
+				AND org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+		</choose>
+		<if test="card_type != null">
+			AND card_type = #{card_type}
+		</if>
+		<if test="card_iccid != null">
+			<bind name="card_iccid_bind" value="'%'+card_iccid'%'" />
+			AND card_iccid LIKE #{card_iccid_bind}
+		</if>
+		<choose>
+			<when test="time_expire != null">
+				<choose>
+					<when test='time_expire == 1'>
+						<![CDATA[ AND time_expire > NOW() ]]>
+					</when>
+					<otherwise><![CDATA[ AND time_expire <= NOW() ]]>  </otherwise>
+				</choose>
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+</mapper>
