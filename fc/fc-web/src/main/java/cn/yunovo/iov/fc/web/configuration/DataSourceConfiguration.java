@@ -42,7 +42,9 @@ public class DataSourceConfiguration {
         Interceptor[] plugins = new Interceptor[1];
         plugins[0] = paginationInterceptor();
         /*plugins[1] = new PerformanceInterceptor();
-        factoryBean.setPlugins(plugins);*/
+        */
+        
+        factoryBean.setPlugins(plugins);
         
         /*GlobalConfig global = new GlobalConfig();
         global.getDbConfig().setTableUnderline(false);
