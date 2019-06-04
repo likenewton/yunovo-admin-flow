@@ -464,7 +464,7 @@
 	</select>
 	
 	<!-- 统计分析-联通情况统计 -->
-	<select id="getUnicomStatPage" resultType="cn.yunovo.iov.fc.model.result.CardUsedResultBean">
+	<select id="getUnicomStatPage" resultType="cn.yunovo.iov.fc.model.result.UnicomStatResultBean">
 	
 		SELECT org_id,COUNT(card_id) AS card_count, SUM(IF (time_active IS NULL,0,1)) AS activated,
 		SUM(IF (time_active IS NULL,1,0)) AS nonactivated, SUM(unicom_total) AS unicom_count,
@@ -561,7 +561,7 @@
 	</select>
 	 -->
 	<!-- 流量卡使用统计 -->
-	<select id="getUnicomStatTotal" resultType="cn.yunovo.iov.fc.model.result.CardUsedResultBean">
+	<select id="getUnicomStatTotal" resultType="cn.yunovo.iov.fc.model.result.UnicomStatResultBean">
 	
 		SELECT SUM(card_count) AS card_count, SUM(activated) AS activated,
 			SUM(nonactivated) AS nonactivated, SUM(unicom_count) AS unicom_count, SUM(month_count) AS month_count FROM (

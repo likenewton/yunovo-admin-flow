@@ -88,7 +88,7 @@ casClient:
   exludeFilterResource: "*remote*"
   serverIndexUrls: /fc/sso/api/ssoLogin
   redirectAfterValidation: false
-  h5IndexUrl: "http://10.0.0.120:8091/"
+  h5IndexUrl: "http://10.0.0.120:8091/#/"
   h5Client: true
   ucIndexUrl: "http://10.0.0.120:8091/"
   authTokenCrypto: 

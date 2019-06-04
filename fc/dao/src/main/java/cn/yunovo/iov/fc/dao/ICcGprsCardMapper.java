@@ -30,7 +30,7 @@ public interface ICcGprsCardMapper extends BaseMapper<CcGprsCard> {
 	
 	public List<CcGprsCard> getItemsPage(IPage<CcGprsCard> page, @Param("card_iccid")String card_iccid, @Param("card_type")Integer card_type, @Param("org_id")Integer org_id, @Param("max_unused")Integer max_unused, @Param("unicom_diff")Integer unicom_diff, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 	
-	public Long getItemsPageCount(@Param("card_iccid")String card_iccid, @Param("card_type")Integer card_type, @Param("org_id")Integer org_id, @Param("max_unused")Integer max_unused, @Param("unicom_diff")Integer unicom_diff, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	//public Long getItemsPageCount(@Param("card_iccid")String card_iccid, @Param("card_type")Integer card_type, @Param("org_id")Integer org_id, @Param("max_unused")Integer max_unused, @Param("unicom_diff")Integer unicom_diff, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 	
 	/**
 	 * 获取机构售卡数量与支付情况
