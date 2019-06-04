@@ -135,9 +135,9 @@ casClient:
   exludeFilterResource: "*remote*"
   serverIndexUrls: /fc/sso/api/ssoLogin
   redirectAfterValidation: false
-  h5IndexUrl: "http://10.0.0.120:8091/"
+  h5IndexUrl: "http://10.0.0.120:8091/#/"
   h5Client: true
-  ucIndexUrl: "http://10.0.0.120:8091/"
+  ucIndexUrl: "http://10.0.0.120:8091/#/"
   authTokenCrypto: 
     signingKey: eckhybvk3nqorVo5efMxERNu_CkR8KCYfV6Hv7J1MVASsVG-DHYzMLpz4UbnGfwz4Y4bu3SAzBMICqlROp2gBQ
     signingKeySize: 512
