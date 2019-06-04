@@ -26,7 +26,7 @@ public class CcStats implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@ApiModelProperty(value = "统计日期")
-	private LocalDate stats_date;
+	private String stats_date;
 
 	@ApiModelProperty(value = "机构编号")
 	private Integer org_id;

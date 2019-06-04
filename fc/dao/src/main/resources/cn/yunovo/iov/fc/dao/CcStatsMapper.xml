@@ -3,7 +3,7 @@
 <mapper namespace="cn.yunovo.iov.fc.dao.ICcStatsMapper">
 
 	<!-- 统计分析-运营数据 -->
-	<select id="getItems" resultType="cn.yunovo.iov.fc.model.entity.CcStats">
+	<select id="getItemsPage" resultType="cn.yunovo.iov.fc.model.entity.CcStats">
 	
 	SELECT stats_date, SUM(rlname_cards) AS rlname_cards, SUM(card_total) AS card_total, SUM(pay_total) AS pay_total,
 		SUM(pay_count) AS pay_count, SUM(pay_failed) AS pay_failed, SUM(pay_succeed) AS pay_succeed, SUM(online_count) AS online_count,
@@ -43,6 +43,7 @@
 			<![CDATA[ AND time_added <= #{date_end} ]]>
 		</if>
 		
+		 GROUP BY stats_date
 	</select>
 
 </mapper>
