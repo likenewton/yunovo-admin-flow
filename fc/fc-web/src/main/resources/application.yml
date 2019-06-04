@@ -10,9 +10,7 @@ BasePath: /fc
 loging: 
   config: classpath:logback.xml
   level: 
-    cn: 
-      yunovo: 
-        iov: debug
+    cn.yunovo.iov: debug
     com.ibatis: debug
 spring: 
   redis:

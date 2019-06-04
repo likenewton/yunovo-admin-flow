@@ -2,6 +2,7 @@ package cn.yunovo.iov.fc.web.configuration;
 
 import javax.sql.DataSource;
 
+import org.apache.ibatis.logging.slf4j.Slf4jImpl;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -38,10 +39,10 @@ public class DataSourceConfiguration {
         factoryBean.setDataSource(dataSource);
         factoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:cn/yunovo/iov/fc/dao/*.xml"));
         
-        Interceptor[] plugins = new Interceptor[2];
+        Interceptor[] plugins = new Interceptor[1];
         plugins[0] = paginationInterceptor();
-        plugins[1] = new PerformanceInterceptor();
-        factoryBean.setPlugins(plugins);
+        /*plugins[1] = new PerformanceInterceptor();
+        factoryBean.setPlugins(plugins);*/
         
         /*GlobalConfig global = new GlobalConfig();
         global.getDbConfig().setTableUnderline(false);
@@ -50,7 +51,7 @@ public class DataSourceConfiguration {
         //关闭驼峰规则匹配
         MybatisConfiguration mybatisConfiguration = new MybatisConfiguration();
         mybatisConfiguration.setMapUnderscoreToCamelCase(false);
-        
+        mybatisConfiguration.setLogImpl(Slf4jImpl.class);
         factoryBean.setConfiguration(mybatisConfiguration);
         return factoryBean.getObject();
     }
