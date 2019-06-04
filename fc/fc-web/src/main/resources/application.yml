@@ -68,7 +68,33 @@ fc:
       syshell: 系统日结流量卡余量不足停卡
       sys2api: 设备上报时流量不足经与联通对账确认停卡
       selfop: 客户在流量详情处手动开卡
-      
+    arr_ntf_type: 
+      unknown: 未知来源
+      yzzx: 云智公众号
+      wszl: 完善资料通知
+      jmapi: 静默API充值
+      expire: 流量微信通知
+      promotion: 流量促销通知
+      wxclw: 车联网微信号
+      qrcode: 设备端扫码充
+      qrcode-dpj: 大屏机端扫码
+      qrcode-hsj: 后视镜端扫码
+      rebate-event: 充值返现活动
+      lottery-event: 充值抽奖活动
+      discount-event: 充值折扣活动
+      near_200: 流量200M预警
+      near_100: 流量100M预警
+      near_50: 流量50M预警
+      near_00: 流量用完第一次预警
+      near_01: 流量用完第二次预警
+      near_02: 流量用完第三次预警
+      indate_15: 有效期15天预警
+      indate_7: 有效期7天预警
+      indate_3: 有效期3天预警
+      indate_1: 有效期1天预警
+      indate_00: 流量过期第一次预警
+      indate_01: 流量过期第二次预警
+      indate_02: 流量过期第三次预警  
       
 #cas
 ---

@@ -15,6 +15,7 @@ import cn.yunovo.iov.fc.common.utils.ResultUtil;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcUser;
+import cn.yunovo.iov.fc.service.ICcNotifyService;
 import cn.yunovo.iov.fc.service.ICcOrgService;
 import cn.yunovo.iov.fc.service.ICcStatsMonthService;
 import cn.yunovo.iov.fc.service.ICcUserService;
@@ -34,6 +35,9 @@ public class SelectController extends BaseController{
 	
 	@Autowired
 	private ICcStatsMonthService iCcStatsMonthService;
+	
+	@Autowired
+	private ICcNotifyService iCcNotifyService;
 	
 	public static List<SelectBean> CARD_TYPES = new ArrayList<>();
 	
@@ -93,6 +97,14 @@ public class SelectController extends BaseController{
 		
 		LoginInfo info = this.getLoginBaseInfo();
 		List<SelectBean> months = iCcStatsMonthService.monthSelect(info);
+		return ResultUtil.success("ok", months);
+	}
+	
+	@ApiOperation(notes="统计分析-通知或来源下拉数据接口", value = "统计分析-通知或来源下拉数据接口")
+	@RequestMapping(path="/api/select/notifyFrom/select", method= {RequestMethod.GET})
+	public Result<List<SelectBean>> getNotifyFrom() {
+		
+		List<SelectBean> months = iCcNotifyService.select();
 		return ResultUtil.success("ok", months);
 	}
 	
