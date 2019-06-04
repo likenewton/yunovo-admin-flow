@@ -37,4 +37,16 @@ public class PayOnlineController extends BaseController{
 		PageData<CcStats, Object> data = iCcStatsService.getItemsPage(pageForm, null, date_start, date_end, this.getLoginBaseInfo());
 		return ResultUtil.success(data);
 	}
+	
+	@ApiOperation(value = "统计分析-流量卡运营统计(机构明细)")
+	@ApiImplicitParams(value = {
+			@ApiImplicitParam(name = "stats_date", value = "统计日期 YYYY-MM-DD", required = true, dataType = "String", paramType = "query"),
+			@ApiImplicitParam(name = "org_id", value = "机构id", required = false, dataType = "int", paramType = "query")
+			})
+	@RequestMapping(path = "/org", method = { RequestMethod.GET, RequestMethod.POST })
+	public Result<PageData<CcStats, Object>> getItemsOrgPage(PageForm pageForm, Integer org_id, String stats_date) {
+		
+		PageData<CcStats, Object> data = iCcStatsService.getItemsOrgPage(pageForm, org_id, stats_date, this.getLoginBaseInfo());
+		return ResultUtil.success(data);
+	}
 }

@@ -19,4 +19,6 @@ public interface ICcStatsService extends IService<CcStats> {
 
 	public PageData<CcStats,Object> getItemsPage(PageForm pageForm, Integer org_id, String date_start, String date_end, LoginInfo info);
 	
+	public PageData<CcStats,Object> getItemsOrgPage(PageForm pageForm, Integer org_id, String stats_date, LoginInfo info);
+	
 }

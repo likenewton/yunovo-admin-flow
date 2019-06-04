@@ -2,6 +2,9 @@ package cn.yunovo.iov.fc.model.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
+import com.baomidou.mybatisplus.annotation.TableField;
+
 import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -117,5 +120,10 @@ public class CcStats implements Serializable {
 
 	@ApiModelProperty(value = "超标流量(MB)")
 	private BigDecimal over_amount;
+	
+	@TableField(exist=false)
+	@ApiModelProperty(value = "机构名称")
+	private String org_name;
+	
 
 }

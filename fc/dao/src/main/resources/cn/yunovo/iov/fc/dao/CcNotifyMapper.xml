@@ -23,7 +23,7 @@
 		</if>
 	
 	
-		GROUP BY ntf_date
+		GROUP BY ntf_date,ntf_type
 	</select>
 	
 	
