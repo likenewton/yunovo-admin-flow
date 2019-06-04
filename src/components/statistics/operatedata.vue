@@ -3,12 +3,12 @@
     <el-card class="box-card" style="margin-bottom: 20px" shadow="never">
       <el-form :inline="true" :model="formInline" class="demo-form-inline" size="small">
         <el-form-item label="统计日期">
-          <el-date-picker v-model="formInline.statistic_data" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-          </el-date-picker>
+          <el-date-picker v-model="formInline.date_start" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
+          <el-date-picker v-model="formInline.date_end" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="getData">查询</el-button>
-          <el-button type="warning" @click="formInline = {}">重置</el-button>
+          <el-button type="warning" @click="resetData">重置</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -19,35 +19,39 @@
         <el-button size="mini" type="primary" @click="showEcharts('2')">激活图表</el-button>
         <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
-      <el-table ref="multipleTable" :data="list.data" @sort-change="handleSortChange" border size="mini">
-        <el-table-column prop="statistic_data" label="统计日期" width="93" sortable="custom"></el-table-column>
-        <el-table-column prop="sell_num" label="售卡总数" width="93" sortable="custom"></el-table-column>
-        <el-table-column prop="recharge_total" label="累冲成数" width="93" sortable="custom"></el-table-column>
-        <el-table-column prop="recharge_day" label="日冲次数" width="73"></el-table-column>
-        <el-table-column prop="recharge_fail_day" label="日冲败数" width="73"></el-table-column>
-        <el-table-column prop="recharge_suc_day" label="日冲成数" width="93" sortable="custom"></el-table-column>
-        <el-table-column prop="use_total" label="使用总量" width="93" sortable="custom"></el-table-column>
-        <el-table-column prop="normal_use" label="正常使用" width="73"></el-table-column>
-        <el-table-column prop="abnormal_use" label="异常使用" width="73"></el-table-column>
-        <el-table-column prop="active_total" label="累计激活" width="93" sortable="custom"></el-table-column>
-        <el-table-column prop="active_num" label="激活总数" width="93" sortable="custom"></el-table-column>
-        <el-table-column prop="abeq_num" label="非设备激活" width="85"></el-table-column>
-        <el-table-column prop="eq_num" label="设备端激活" width="85"></el-table-column>
-        <el-table-column prop="stopcard_total" label="累计停卡" width="93" sortable="custom"></el-table-column>
-        <el-table-column prop="stopcard_num" label="停卡数量" width="93" sortable="custom"></el-table-column>
-        <el-table-column label="消耗流量" width="95">
+      <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border size="mini" resizable>
+        <el-table-column prop="stats_date" label="统计日期" width="95" sortable="custom">
           <template slot-scope="scope">
-            <div v-html="formatFlowUnit(scope.row.use_flow)"></div>
+            <span class="btn-link" @click="$router.push({ name: 'orgList', query: { date: scope.row.stats_date } })">{{scope.row.stats_date}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="已付金额" min-width="110">
+        <el-table-column prop="card_total" label="售卡总数" width="73"></el-table-column>
+        <el-table-column prop="pay_total" label="累冲成数" width="73"></el-table-column>
+        <el-table-column prop="pay_count" label="日冲次数" width="90" sortable="custom"></el-table-column>
+        <el-table-column prop="pay_failed" label="日冲败数" width="90" sortable="custom"></el-table-column>
+        <el-table-column prop="pay_succeed" label="日冲成数" width="90" sortable="custom"></el-table-column>
+        <el-table-column prop="online_count" label="使用总量" width="73"></el-table-column>
+        <el-table-column prop="online_api" label="正常使用" width="90" sortable="custom"></el-table-column>
+        <el-table-column prop="online_other" label="异常使用" width="90" sortable="custom"></el-table-column>
+        <el-table-column prop="active_total" label="累计激活" width="73"></el-table-column>
+        <el-table-column prop="active_count" label="激活总数" width="90" sortable="custom"></el-table-column>
+        <el-table-column prop="active_unicom" label="非设备激活" width="102" sortable="custom"></el-table-column>
+        <el-table-column prop="active_device" label="设备端激活" width="102" sortable="custom"></el-table-column>
+        <el-table-column prop="stop_total" label="累计停卡" width="90" sortable="custom"></el-table-column>
+        <el-table-column prop="stop_count" label="停卡数量" width="90" sortable="custom"></el-table-column>
+        <el-table-column prop="used_amount" label="消耗流量" width="90" sortable="custom">
           <template slot-scope="scope">
-            <div>￥{{scope.row.pay_money|formatMoney}}</div>
+            <div v-html="formatFlowUnit(scope.row.used_amount)"></div>
           </template>
         </el-table-column>
-        <el-table-column label="返利金额" min-width="110">
+        <el-table-column prop="pay_succeed_money" label="已付金额" min-width="106" sortable="custom">
           <template slot-scope="scope">
-            <div>￥{{scope.row.repay_money|formatMoney}}</div>
+            <div>￥{{scope.row.pay_succeed_money|formatMoney}}</div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="rebate_money" label="返利金额" min-width="106" sortable="custom">
+          <template slot-scope="scope">
+            <div>￥{{scope.row.rebate_money|formatMoney}}</div>
           </template>
         </el-table-column>
       </el-table>
@@ -75,6 +79,7 @@ export default {
       },
       sort: {},
       formInline: {},
+      maxTableHeight: Api.UNITS.maxTableHeight(),
       // 要展开的对话框的参数
       dialogPara: {
         loadDialog: true,
@@ -85,6 +90,7 @@ export default {
       // 图表实例
       myChart: null,
       chartType: '0',
+      chartData: null,
       chartConst: {
         '0': {
           title: '流量卡运营充值统计图表',
@@ -120,71 +126,90 @@ export default {
       Api.UNITS.setSortSearch(val, this)
       this.getData()
     },
-    showEcharts(type) {
-      this.SET_DIALOGVISIBLE({ dialogVisible: true })
-      setTimeout(() => {
-        // myChart因为是要放在dialog中所以必须要等到dialog展示之后才能展示
-        if (!this.myChart) this.myChart = this.$echarts.init(document.getElementById('myChart'))
-        this.chartType = type
-        this.getEchartsData()
-      }, 0)
+    resetData() {
+      this.formInline = {} // 1、重置查询表单
+      this.sort = {} // 2、重置排序
+      this.$refs.listTable.clearSort() // 3、清空排序样式
+      this.getData()
     },
     // 获取列表数据
     getData() {
-      console.log(this.formInline)
       Api.UNITS.getListData({
         vue: this,
-        url: _axios.ajaxAd.getStats
+        url: _axios.ajaxAd.getPayOnline
       })
-      // setTimeout(() => {
-      //   // 数据请求成功
-      //   this.list.data = [{
-      //     id: 0,
-      //     statistic_data: '2019-05-06',
-      //     sell_num: 56546,
-      //     recharge_total: 41451,
-      //     recharge_day: 121,
-      //     recharge_fail_day: 71,
-      //     recharge_suc_day: 50,
-      //     use_total: 80000,
-      //     normal_use: 50000,
-      //     abnormal_use: 30000,
-      //     active_total: 50000,
-      //     active_num: 80,
-      //     abeq_num: 50,
-      //     eq_num: 30,
-      //     stopcard_total: 60000,
-      //     stopcard_num: 100,
-      //     use_flow: 65452.3,
-      //     pay_money: -2030.94,
-      //     repay_money: 451112.51
-      //   }]
-      //   this.list.total = this.list.data.length
-      //   this.loadData = false
-      // }, 1000)
+    },
+    // 打开图表的dialog
+    showEcharts(type) {
+      this.SET_DIALOGVISIBLE({ dialogVisible: true })
+      Vue.nextTick(() => {
+        // myChart因为是要放在dialog中所以必须要等到dialog展示之后才能展示
+        if (!this.myChart) this.myChart = this.$echarts.init(document.getElementById('myChart'))
+        this.chartType = type
+        this.dialogPara.title = this.chartConst[this.chartType].title
+        this.dialogPara.loadDialog = true
+        this.getEchartsData()
+      })
     },
     // 获取图表数据
     getEchartsData() {
-      // 该echart 中的数据似乎跟list没有关系
-      const constData = this.chartConst[this.chartType]
-      this.dialogPara.title = constData.title
-      this.dialogPara.loadDialog = true
-      setTimeout(() => {
-        _echart.setOption({
-          legend: constData.legend,
-          xAxis: { data: Api.STATIC.echarts.legend[this.chartType] },
-          series: [{ data: Api.STATIC.echarts.data[this.chartType][0] },
-            { data: Api.STATIC.echarts.data[this.chartType][1] },
-            { data: Api.STATIC.echarts.data[this.chartType][2] }
-          ]
+      if (!this.chartData) {
+        _axios.send({
+          method: 'get',
+          url: _axios.ajaxAd.getPayOnline,
+          params: {
+            ascs: 'stats_date',
+            size: 9999, // 不用分页直接获取所有数据
+            current: 1
+          },
+          done: (res) => {
+            this.chartData = res.data.page.records
+            this.handleChartData()
+          }
         })
-        this.myChart.setOption(_echart.getOption())
-        this.dialogPara.loadDialog = false
-      }, 1000)
+      } else {
+        this.handleChartData()
+      }
+    },
+    // 拿到图表数据后处理图表数据用来渲染
+    handleChartData() {
+      let [xAxisData, data1, data2, data3] = [
+        [],
+        [],
+        [],
+        []
+      ]
+      this.chartData.forEach((v) => {
+        xAxisData.push(v.stats_date)
+        if (this.chartType === '0') {
+          data1.push(v.pay_count)
+          data2.push(v.pay_succeed)
+          data3.push(v.pay_failed)
+        } else if (this.chartType === '1') {
+          data1.push(v.online_count)
+          data2.push(v.online_api)
+          data3.push(v.online_other)
+        } else if (this.chartType === '2') {
+          data1.push(v.active_count)
+          data2.push(v.active_unicom)
+          data3.push(v.active_device)
+        }
+      })
+      _echart.setOption({
+        legend: this.chartConst[this.chartType].legend,
+        xAxis: { data: xAxisData },
+        series: [{ data: data1 },
+          { data: data2 },
+          { data: data3 }
+        ]
+      })
+      this.myChart.setOption(_echart.getOption())
+      this.dialogPara.loadDialog = false
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,
     calcLeftTime: Api.UNITS.calcLeftTime
   },
+
   computed: {
     ...mapState({
       dialogVisible: 'dialogVisible'

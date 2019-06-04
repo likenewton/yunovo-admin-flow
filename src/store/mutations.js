@@ -6,6 +6,7 @@ const SET_ISLOGIN = 'SET_ISLOGIN' // 是否登录
 const SET_CARDTYPES = 'SET_CARDTYPES' // 设置卡商列表
 const SET_ORGS = 'SET_ORGS' // 设置机构列表
 const SET_MONTHS = 'SET_MONTHS' // 设置月份列表
+const SET_NOTIFYSFROM = 'SET_NOTIFYSFROM' // 设置通知来源
 
 export default {
   [SET_ASIDECOLLAPSE](state, paras) {
@@ -31,5 +32,8 @@ export default {
   },
   [SET_MONTHS](state, paras) {
     state.months = paras.months
+  },
+  [SET_NOTIFYSFROM](state, paras) {
+    state.notifysFrom = paras.notifysFrom
   }
 }

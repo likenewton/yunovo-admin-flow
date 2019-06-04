@@ -6,23 +6,23 @@
           <el-input v-model="formInline.card_iccid" placeholder="请输入卡的iccid"></el-input>
         </el-form-item>
         <el-form-item label="卡商名称">
-          <el-select v-model="formInline.card_type" filterable placeholder="请选择">
+          <el-select v-model="formInline.card_type" filterable clearable placeholder="请选择">
             <el-option v-for="(item, index) in cardTypes" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="所属机构">
-          <el-select v-model="formInline.org_id" filterable placeholder="请选择">
+          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="过期时间">
-          <el-select v-model="formInline.time_expire" filterable placeholder="请选择">
+          <el-select v-model="formInline.time_expire" filterable clearable placeholder="请选择">
             <el-option v-for="(item, index) in exceedSelect" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="getData">查询</el-button>
-          <el-button type="warning" @click="formInline = {}">重置</el-button>
+          <el-button type="warning" @click="resetData">重置</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -30,7 +30,7 @@
       <el-button-group style="margin-bottom: 10px">
         <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
-      <el-table ref="multipleTable" :data="list.data" @sort-change="handleSortChange" :height="maxTableHeight" border size="mini" height="550px">
+      <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column fixed="left" prop="card_iccid" label="卡ICCID" width="178">
           <template slot-scope="scope">
             <span v-if="scope.row.sums">{{scope.row.card_iccid}}</span>
@@ -114,6 +114,12 @@ export default {
     },
     handleSortChange(val) {
       Api.UNITS.setSortSearch(val, this)
+      this.getData()
+    },
+    resetData() {
+      this.formInline = {} // 1、重置查询表单
+      this.sort = {} // 2、重置排序
+      this.$refs.listTable.clearSort() // 3、清空排序样式
       this.getData()
     },
     // 获取列表数据

@@ -28,5 +28,15 @@ export default {
         context.commit('SET_MONTHS', { orgs: res.data })
       }
     })
+  },
+  // 通知来源
+  getNotifySelect(context) {
+    _axios.send({
+      method: 'get',
+      url: _axios.ajaxAd.getNotifySelect,
+      done: (res) => {
+        context.commit('SET_NOTIFYSFROM', { notifysFrom: res.data })
+      }
+    })
   }
 }

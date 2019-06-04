@@ -127,7 +127,7 @@ class Echarts {
     this.option.legend.data = this.data.legend.data
     this.option.xAxis.data = xAxisData
     this.option.dataZoom = {
-      startValue: (xAxisData.length - 10) >= 0 ? xAxisData[xAxisData.length - 10] : xAxisData[0],
+      startValue: (xAxisData.length - 20) >= 0 ? xAxisData[xAxisData.length - 20] : xAxisData[0],
       type: 'inside'
     }
     if (this.data.title) {

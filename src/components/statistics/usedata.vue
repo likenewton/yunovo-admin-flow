@@ -3,7 +3,7 @@
     <el-card class="box-card" style="margin-bottom: 20px" shadow="never">
       <el-form :inline="true" :model="formInline" class="demo-form-inline" size="small">
         <el-form-item label="机构名称">
-          <el-select v-model="formInline.org_id" filterable placeholder="请选择">
+          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
@@ -15,7 +15,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="getData">查询</el-button>
-          <el-button type="warning" @click="formInline = {}">重置</el-button>
+          <el-button type="warning" @click="resetData">重置</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -23,43 +23,44 @@
       <el-button-group style="margin-bottom: 10px">
         <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
-      <el-table ref="multipleTable" :data="list.data" @sort-change="handleSortChange" border size="mini">
+      <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column prop="org_name" label="机构名称" min-width="170">
           <template slot-scope="scope">
-            <span class="btn-link">{{scope.row.org_name}}</span>
+            <span v-if="scope.row.sums">{{scope.row.org_name}}</span>
+            <span v-else class="btn-link">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="card_count" label="售卡数量" min-width="95" sortable="custom"></el-table-column>
         <el-table-column prop="nonactivated" label="未激活数" min-width="95" sortable="custom"></el-table-column>
         <el-table-column label="未激活率" min-width="80">
           <template slot-scope="scope">
-            <span>{{(scope.row.nonactivated/scope.row.card_count).toFixed(3)}}%</span>
+            <span>{{(scope.row.nonactivated/scope.row.card_count*100).toFixed(3)}}%</span>
           </template>
         </el-table-column>
         <el-table-column prop="activated" label="已激活数" min-width="95" sortable="custom"></el-table-column>
         <el-table-column label="已激活率" min-width="80">
           <template slot-scope="scope">
-            <span>{{(scope.row.activated/scope.row.card_count).toFixed(3)}}%</span>
+            <span>{{(scope.row.activated/scope.row.card_count*100).toFixed(3)}}%</span>
           </template>
         </el-table-column>
         <el-table-column prop="pay_total" label="分配总流量" min-width="95">
           <template slot-scope="scope">
-            <div v-html="formatFlowUnit(scope.row.pay_total)"></div>
+            <div v-html="formatFlowUnit(scope.row.used_count + scope.row.unused_count)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="used_count" label="使用流量" min-width="95">
+        <el-table-column prop="used_count" label="使用流量" min-width="95" sortable="custom">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.used_count)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="unused_count" label="剩余流量" min-width="95">
+        <el-table-column prop="unused_count" label="剩余流量" min-width="95" sortable="custom">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.unused_count)"></div>
           </template>
         </el-table-column>
         <el-table-column label="使用流量率" min-width="80">
           <template slot-scope="scope">
-            <span>{{(scope.row.used_count/scope.row.pay_total).toFixed(3)}}%</span>
+            <span>{{(scope.row.used_count/(scope.row.used_count + scope.row.unused_count)*100).toFixed(3)}}%</span>
           </template>
         </el-table-column>
       </el-table>
@@ -101,6 +102,7 @@ export default {
         total: 0,
       },
       sort: {},
+      maxTableHeight: Api.UNITS.maxTableHeight(),
       myChart_0: null,
       myChart_1: null,
       // 激活-未激活柱状图数据
@@ -308,13 +310,38 @@ export default {
       Api.UNITS.setSortSearch(val, this)
       this.getData()
     },
+    resetData() {
+      this.formInline = {} // 1、重置查询表单
+      this.sort = {} // 2、重置排序
+      this.$refs.listTable.clearSort() // 3、清空排序样式
+      this.getData()
+    },
     // 获取列表数据
     getData() {
       Api.UNITS.getListData({
         vue: this,
         url: _axios.ajaxAd.getCardUsed,
-        cb: () => {
+        cb: (res) => {
+          let other = res.data.other || {}
           this.getOptionData()
+          if (this.list.data.length === 0) return
+          this.list.data.push(...[{
+            sums: true,
+            org_name: '小计',
+            card_count: Api.UNITS.pageSums(this.list.data, 'card_count'),
+            nonactivated: Api.UNITS.pageSums(this.list.data, 'nonactivated'),
+            activated: Api.UNITS.pageSums(this.list.data, 'activated'),
+            used_count: Api.UNITS.pageSums(this.list.data, 'used_count'),
+            unused_count: Api.UNITS.pageSums(this.list.data, 'unused_count')
+          }, {
+            sums: true,
+            org_name: '总计',
+            card_count: other.card_count,
+            nonactivated: other.nonactivated,
+            activated: other.activated,
+            used_count: other.used_count,
+            unused_count: other.unused_count
+          }])
         }
       })
     },
@@ -325,14 +352,15 @@ export default {
       let data1 = option.series[0].data = [] // 分类一数据
       let data2 = option.series[1].data = [] // 分类二数据
       this.list.data.forEach((v) => {
-        label.push(v.org_name)
-        if (this.tabIndex === '0') {
+        if (this.tabIndex === '0' && !v.sums) {
+          label.push(v.org_name)
           data1.push(v.activated)
           data2.push(v.nonactivated)
           option.series[1].label.normal.formatter = function(series) {
             return `{b|${option.series[0].data[series.dataIndex]}}\n{a|${series.data}}`
           }
-        } else if (this.tabIndex === '1') {
+        } else if (this.tabIndex === '1' && !v.sums) {
+          label.push(v.org_name)
           data1.push(v.unused_count)
           data2.push(v.used_count)
           option.series[1].label.normal.formatter = function(series) {

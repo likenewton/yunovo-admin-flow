@@ -7,7 +7,7 @@ module.exports = {
   pageSums(data, key) {
     let sum = 0
     data.forEach((v) => {
-      sum += v[key] || 0
+      sum += Number(v[key]) || 0
     })
     return sum
   },
@@ -33,7 +33,8 @@ module.exports = {
     // 某些排序的字段要换成另外的一个字段， 这里定制化一些字段
     let sortFilterArr = {
       card_type_name: 'card_id',
-      org_name: 'org_id'
+      org_name: 'org_id',
+      ntf_type_name: 'ntf_type'
     }
     if (sortFilterArr[sort.ascs]) {
       sort.ascs = sortFilterArr[sort.ascs]
@@ -250,7 +251,7 @@ module.exports = {
   maxTableHeight() {
     let height = $(window).height() - 500
     if (height < 550) height = 550
-    return height + 'px'
+    return height
   },
   // 时间格式化
   formatdate(date, fmt) {

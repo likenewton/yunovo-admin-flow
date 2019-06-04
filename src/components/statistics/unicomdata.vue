@@ -3,21 +3,21 @@
     <el-card class="box-card" style="margin-bottom: 20px" shadow="never">
       <el-form :inline="true" :model="formInline" class="demo-form-inline" size="small">
         <el-form-item label="机构名称">
-          <el-select v-model="formInline.org_id" filterable placeholder="请选择">
+          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="导卡时间">
-          <el-date-picker v-model="formInline.import_time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-          </el-date-picker>
+          <el-date-picker v-model="formInline.date_start" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
+          <el-date-picker v-model="formInline.date_end" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="激活时间">
-          <el-date-picker v-model="formInline.active_time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-          </el-date-picker>
+          <el-date-picker v-model="formInline.jstart" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
+          <el-date-picker v-model="formInline.jend" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="getData">查询</el-button>
-          <el-button type="warning" @click="formInline = {}">重置</el-button>
+          <el-button type="warning" @click="resetData">重置</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -25,28 +25,37 @@
       <el-button-group style="margin-bottom: 10px">
         <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
-      <el-table ref="multipleTable" @sort-change="handleSortChange" :data="list.data" border size="mini">
-        <el-table-column fixed="left" label="机构名称" min-width="125">
+      <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" border size="mini" resizable>
+        <el-table-column fixed="left" prop="org_name" label="机构名称" min-width="180" sortable="custom">
           <template slot-scope="scope">
-            <el-button type="text">{{scope.row.jg_name}}</el-button>
+            <span v-if="scope.row.sums">{{scope.row.org_name}}</span>
+            <span v-else class="btn-link">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="sell_num" label="售卡数量" min-width="93" sortable="custom"></el-table-column>
-        <el-table-column prop="noactive_num" label="未激活数" min-width="93" sortable="custom"></el-table-column>
-        <el-table-column prop="noactive_rate" label="未激活率" min-width="93" sortable="custom"></el-table-column>
-        <el-table-column prop="active_num" label="已激活数" min-width="93" sortable="custom"></el-table-column>
-        <el-table-column prop="active_rate" label="已激活率" min-width="93" sortable="custom"></el-table-column>
-        <el-table-column label="使用总流量" min-width="93">
+        <el-table-column prop="card_count" label="售卡数量" min-width="95" sortable="custom"></el-table-column>
+        <el-table-column prop="nonactivated" label="未激活数" min-width="95" sortable="custom"></el-table-column>
+        <el-table-column prop="noactive_rate" label="未激活率" min-width="95">
           <template slot-scope="scope">
-            <div v-html="formatFlowUnit(scope.row.usetotal_flow)"></div>
+            <span>{{(scope.row.nonactivated/scope.row.card_count*100).toFixed(3)}}%</span>
           </template>
         </el-table-column>
-        <el-table-column label="当月使用流量" min-width="93">
+        <el-table-column prop="activated" label="已激活数" min-width="95" sortable="custom"></el-table-column>
+        <el-table-column prop="active_rate" label="已激活率" min-width="95">
           <template slot-scope="scope">
-            <div v-html="formatFlowUnit(scope.row.usemonth_flow)"></div>
+            <span>{{(scope.row.activated/scope.row.card_count*100).toFixed(3)}}%</span>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="导出明细" width="125">
+        <el-table-column prop="unicom_count" label="使用总流量" min-width="105" sortable="custom">
+          <template slot-scope="scope">
+            <div v-html="formatFlowUnit(scope.row.unicom_count)"></div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="month_count" label="当月使用流量" min-width="117" sortable="custom">
+          <template slot-scope="scope">
+            <div v-html="formatFlowUnit(scope.row.month_count)"></div>
+          </template>
+        </el-table-column>
+        <el-table-column fixed="right" label="导出" width="140">
           <template slot-scope="scope">
             <el-button type="text">已激活</el-button>
             <el-button type="text">未激活</el-button>
@@ -182,47 +191,45 @@ export default {
       this.list.currentPage = val
       this.getData()
     },
-    handleSortChange(val) {
+    handleSortChange(val = {}) {
       Api.UNITS.setSortSearch(val, this)
+      this.getData()
+    },
+    // 重置列表
+    resetData() {
+      this.formInline = {} // 1、重置查询表单
+      this.sort = {} // 2、重置排序
+      this.$refs.listTable.clearSort() // 3、清空排序样式
       this.getData()
     },
     // 获取列表数据
     getData() {
       Api.UNITS.getListData({
         vue: this,
-        url: _axios.ajaxAd.getStats,
-        cb: () => {
+        url: _axios.ajaxAd.getUnicomStat,
+        cb: (res) => {
+          let other = res.data.other || {}
           this.getOptionData()
+          if (this.list.data.length === 0) return
+          this.list.data.push(...[{
+            sums: true,
+            org_name: '小计',
+            card_count: Api.UNITS.pageSums(this.list.data, 'card_count'),
+            nonactivated: Api.UNITS.pageSums(this.list.data, 'nonactivated'),
+            activated: Api.UNITS.pageSums(this.list.data, 'activated'),
+            unicom_count: Api.UNITS.pageSums(this.list.data, 'unicom_count'),
+            month_count: Api.UNITS.pageSums(this.list.data, 'month_count')
+          }, {
+            sums: true,
+            org_name: '总计',
+            card_count: other.card_count,
+            nonactivated: other.nonactivated,
+            activated: other.activated,
+            unicom_count: other.unicom_count,
+            month_count: other.month_count
+          }])
         }
       })
-      // setTimeout(() => {
-      //   // 数据请求成功
-      //   this.list.data = [{
-      //     id: 0,
-      //     jg_name: '卡仕特-西格玛',
-      //     sell_num: 12,
-      //     noactive_num: 11,
-      //     noactive_rate: '91.67%',
-      //     active_num: 1,
-      //     active_rate: '8.33%',
-      //     usetotal_flow: 52145631,
-      //     usemonth_flow: 995421
-      //   }, {
-      //     id: 1,
-      //     jg_name: '奇橙天下',
-      //     sell_num: 25,
-      //     noactive_num: 10,
-      //     noactive_rate: '91.67%',
-      //     active_num: 15,
-      //     active_rate: '8.33%',
-      //     usetotal_flow: 52145631,
-      //     usemonth_flow: 995421
-      //   }]
-      //   this.list.total = this.list.data.length
-      //   this.loadData = false
-      //   // 数据拿到了就可以格式化图表数据了
-      //   this.getOptionData()
-      // }, 1000)
     },
     // 获取图表数据
     getOptionData() {
@@ -231,10 +238,10 @@ export default {
       let data1 = option.series[0].data = [] // 分类一数据
       let data2 = option.series[1].data = [] // 分类二数据
       this.list.data.forEach((v) => {
-        label.push(v.jg_name)
-        if (this.tabIndex === '0') {
-          data1.push(v.active_num)
-          data2.push(v.noactive_num)
+        if (this.tabIndex === '0' && !v.sums) {
+          label.push(v.org_name)
+          data1.push(v.activated)
+          data2.push(v.nonactivated)
           option.series[1].label.normal.formatter = function(series) {
             return `{b|${option.series[0].data[series.dataIndex]}}\n{a|${series.data}}`
           }

@@ -59,9 +59,11 @@ const Createlang = r => require.ensure([], () => r(require('@/components/forms/c
 const Createcurrency = r => require.ensure([], () => r(require('@/components/forms/createcurrency.vue')), 'chunk3') // 货币设置(添加货币)
 const Createnation = r => require.ensure([], () => r(require('@/components/forms/createnation.vue')), 'chunk3') // 添加地区(邮编)
 
-// [chunk4](展示列表)
+// [chunk4](展示列表,页面里面的二级页面)
 const RechargeDetail = r => require.ensure([], () => r(require('@/components/list/rechargeDetail.vue')), 'chunk4')
 const IccidList = r => require.ensure([], () => r(require('@/components/list/iccidList.vue')), 'chunk4')
+const OrgList = r => require.ensure([], () => r(require('@/components/list/orgList.vue')), 'chunk4')
+const OrgListDetail = r => require.ensure([], () => r(require('@/components/list/orgListDetail.vue')), 'chunk4')
 
 let router = new VueRouter({
   // 路由第一大类必须是侧边栏对应路由，非侧边栏的路由从第二大类开始部署
@@ -289,6 +291,14 @@ let router = new VueRouter({
       path: 'iccidList',
       name: 'iccidList',
       component: IccidList
+    }, {
+      path: 'orgList',
+      name: 'orgList',
+      component: OrgList
+    }, {
+      path: 'orgListDetail',
+      name: 'orgListDetail',
+      component: OrgListDetail
     }]
   }, {
     path: '',
