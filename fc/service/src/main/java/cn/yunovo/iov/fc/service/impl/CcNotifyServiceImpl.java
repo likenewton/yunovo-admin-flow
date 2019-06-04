@@ -127,7 +127,7 @@ public class CcNotifyServiceImpl extends ServiceImpl<ICcNotifyMapper, CcNotify> 
 		Entry<String, String> temp = null;
 		while(it.hasNext()) {
 			temp = it.next();
-			bean = new SelectBean(temp.getKey(), temp.getValue());
+			bean = new SelectBean(temp.getValue(), temp.getKey());
 			select.add(bean);
 		}
 		
