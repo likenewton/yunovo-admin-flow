@@ -58,7 +58,7 @@ module.exports = {
       title: '运营统计',
       name: 'operatedata'
     }, {
-      title: '充值通知与支付来源',
+      title: '通知来源',
       name: 'informsource'
     }]
   }, {
@@ -201,5 +201,5 @@ module.exports = {
   token: '_iov_token_',
   // 分页器公共配置项
   pageSizes: [10, 20, 40, 60],
-  colorList: ['#3cb1ff', '#ffc367', '#ff7477', '#27da99', '#3ecec9', '#9a83da', '#3cb1ff', '#ffc367', '#ff7477', '#27da99', '#3ecec9', '#9a83da', '#3cb1ff', '#ffc367', '#ff7477', '#27da99', '#3ecec9', '#9a83da', '#3cb1ff', '#ffc367', '#ff7477', '#27da99', '#3ecec9', '#9a83da', '#3cb1ff', '#ffc367', '#ff7477', '#27da99', '#3ecec9', '#9a83da', '#3cb1ff', '#ffc367', '#ff7477', '#27da99', '#3ecec9', '#9a83da', '#3cb1ff', '#ffc367', '#ff7477', '#27da99', '#3ecec9', '#9a83da'],
+  colorList: ['#3cb1ff', '#ffc367', '#ff7477', '#27da99', '#3ecec9', '#9a83da'],
 }

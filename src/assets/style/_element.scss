@@ -125,3 +125,12 @@
 .el-date-editor .el-range-separator {
   width: auto;
 }
+
+.el-form {
+
+  .el-input,
+  .el-select,
+  .el-date-editor {
+    width: 180px !important;
+  }
+}

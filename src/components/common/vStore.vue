@@ -14,12 +14,14 @@ export default {
     if (this.cardTypes.length === 0) this.getCardTypes()
     if (this.orgs.length === 0) this.getOrgs()
     if (this.notifysFrom.length === 0) this.getNotifySelect()
+    if (this.months.length === 0) this.getMonths()
   },
   methods: {
     ...mapActions([
       'getCardTypes',
       'getOrgs',
       'getNotifySelect',
+      'getMonths',
     ])
   },
   computed: {
@@ -27,6 +29,7 @@ export default {
       cardTypes: 'cardTypes', // 卡商列表
       orgs: 'orgs', // 机构列表
       notifysFrom: 'notifysFrom', // 通知来源
+      months: 'months', // 月份
     })
   }
 }

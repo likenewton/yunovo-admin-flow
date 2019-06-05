@@ -1,48 +1,49 @@
 <template>
   <div>
-    <el-card class="box-card clearfix" style="margin-bottom: 20px" shadow="never">
+    <el-card class="box-card" style="margin-bottom: 20px" shadow="never">
       <el-form :inline="true" :model="formInline" class="demo-form-inline" size="small">
         <el-form-item label="机构名称">
-          <el-select v-model="formInline.jg_name" placeholder="请选择">
-            <el-option label="机构1" value="0"></el-option>
-            <el-option label="机构2" value="1"></el-option>
-            <el-option label="机构3" value="2"></el-option>
+          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择">
+            <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="起止时间">
-          <el-date-picker v-model="formInline.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-          </el-date-picker>
+        <el-form-item label="起止日期">
+          <el-date-picker v-model="formInline.date_start" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
+          <el-date-picker v-model="formInline.date_end" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">查询</el-button>
-          <el-button type="warning">重置</el-button>
+          <el-button type="primary" @click="getData">查询</el-button>
+          <el-button type="warning" @click="resetData">重置</el-button>
         </el-form-item>
       </el-form>
-      <el-table v-loading="loadData" ref="multipleTable" :data="curTableData" border :default-sort="{prop: 'recharge_total', order: 'descending'}" size="mini">
-        <el-table-column show-overflow-tooltip label="机构名称" min-width="125">
+    </el-card>
+    <el-card class="recharge_sum clearfix" style="margin-bottom: 20px" shadow="never" v-loading="loadData">
+      <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border resizable size="mini">
+        <el-table-column label="机构名称" min-width="200" sortable="custom">
           <template slot-scope="scope">
-            <el-button type="text">{{scope.row.jg_name}}</el-button>
+            <span v-if="scope.row.sums">{{scope.row.org_name}}</span>
+            <span v-else class="btn-link">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="recharge_count" label="充值次数" show-overflow-tooltip min-width="110" sortable></el-table-column>
-        <el-table-column label="分配总流量" show-overflow-tooltip min-width="110">
+        <el-table-column prop="recharge_count" label="充值次数" min-width="110" sortable="custom"></el-table-column>
+        <el-table-column prop="fptotal_flow" label="分配总流量" min-width="110" sortable="custom">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.fptotal_flow)"></div>
           </template>
         </el-table-column>
-        <el-table-column label="充值总金额" show-overflow-tooltip min-width="110">
+        <el-table-column prop="recharge_total" label="充值总金额" min-width="110" sortable="custom">
           <template slot-scope="scope">
             <div>￥{{scope.row.recharge_total|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="返利总金额" show-overflow-tooltip min-width="110">
+        <el-table-column prop="repay_total" label="返利总金额" min-width="110" sortable="custom">
           <template slot-scope="scope">
             <div>￥{{scope.row.repay_total|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="操作" show-overflow-tooltip min-width="80">
+        <el-table-column label="操作" min-width="80">
           <template slot-scope="scope">
-            <el-button type="text" @click="showDetail">详情</el-button>
+            <el-button v-if="!scope.row.sums" type="text" @click="$router.push({ name: 'iccidList' })">详情</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -70,6 +71,7 @@
 <script>
 import Api from 'assets/js/api.js'
 import { mapMutations, mapState } from 'vuex'
+const _echart = new Api.ECHARTS()
 
 export default {
   data() {
@@ -85,6 +87,8 @@ export default {
         total: 0,
       },
       formInline: {},
+      sort: {},
+      maxTableHeight: Api.UNITS.maxTableHeight(),
       chartConst: {
         '0': {
           title: '机构充值记录统计',
@@ -119,64 +123,7 @@ export default {
           bottom: '3%',
           containLabel: true
         },
-        toolbox: {
-          show: true,
-          right: 20,
-          feature: {
-            dataView: {
-              show: true,
-              iconStyle: {
-                borderColor: '#9a83da'
-              },
-              emphasis: {
-                iconStyle: {
-                  borderColor: '#9a8dda'
-                }
-              },
-              optionToContent(opt) {
-                let axisData = opt.xAxis[0].data
-                let series = opt.series
-                let table = `<table style="width:100%;text-align:center"><tbody><tr>
-                  <td>机构名称</td>
-                    <td>${series[0].name}</td>
-                  </tr>`
-                for (let i = 0, l = axisData.length; i < l; i++) {
-                  table += `<tr>
-                    <td>${axisData[i]}</td>
-                    <td>${series[0].data[i]}</td>
-                    </tr>`
-                }
-                table += '</tbody></table>'
-                return table
-              },
-              // 调用optionToContent之后一定要配置此项
-              contentToOption() {},
-              buttonColor: '#ff7477'
-            },
-            restore: {
-              show: true,
-              iconStyle: {
-                borderColor: '#ffc367'
-              },
-              emphasis: {
-                iconStyle: {
-                  borderColor: '#ffcf85'
-                }
-              }
-            },
-            saveAsImage: {
-              show: true,
-              iconStyle: {
-                borderColor: '#3cb1ff'
-              },
-              emphasis: {
-                iconStyle: {
-                  borderColor: '#63c1ff'
-                }
-              }
-            }
-          }
-        },
+        toolbox: _echart.getOption().toolbox,
         yAxis: {
           type: 'value',
           splitLine: { show: false }
@@ -185,7 +132,6 @@ export default {
           type: 'category',
           data: [], //要设置的
           axisLabel: {
-            interval: 0,
             textStyle: {
               fontSize: 12
             }
@@ -206,7 +152,7 @@ export default {
           itemStyle: {
             normal: {
               color(params) {
-                const colorList = Api.STATIC.colorList
+                const colorList = Api.UNITS.getColorList([], 60)
                 return colorList[params.dataIndex]
               }
             }
@@ -216,27 +162,20 @@ export default {
     }
   },
   mounted() {
-    setTimeout(() => {
+    Vue.nextTick(() => {
       this.myChart = this.$echarts.init(document.getElementById('myChart_0'))
-    }, 0)
+    })
     // 进入页面的时候请求数据
-    if (this.list.data.length === 0) {
-      this.getData()
-    } else {
-      this.loadData = false
-    }
+    this.getData()
   },
   methods: {
-    routeName() {
-      return this.$route.name
-    },
     changeTab(para) {
       this.tabIndex = para.index
-      setTimeout(() => {
+      Vue.nextTick(() => {
         this.myChart = this.$echarts.init(document.getElementById(`myChart_${this.tabIndex}`))
         this.myChart.resize()
-      }, 0)
-      this.getOptionData()
+      })
+      this.setOptionData()
     },
     handleSizeChange(val) {
       this.list.pagesize = val
@@ -246,8 +185,64 @@ export default {
       this.list.currentPage = val
       this.getData()
     },
-    showDetail() {
-      this.$router.push({ name: 'iccidList' })
+    handleSortChange(val = {}) {
+      Api.UNITS.setSortSearch(val, this)
+      this.getData()
+    },
+    // 重置列表
+    resetData() {
+      this.formInline = {} // 1、重置查询表单
+      this.sort = {} // 2、重置排序
+      this.$refs.listTable.clearSort() // 3、清空排序样式
+      this.getData()
+    },
+    // 获取列表数据
+    getData() {
+      Api.UNITS.getListData({
+        vue: this,
+        url: _axios.ajaxAd.getUnicomStat,
+        cb: (res) => {
+          let other = res.data.other || {}
+          this.setOptionData()
+          if (this.list.data.length === 0) return
+          this.list.data.push(...[{
+            sums: true,
+            org_name: '总计',
+            card_count: other.card_count,
+            nonactivated: other.nonactivated,
+            activated: other.activated,
+            unicom_count: other.unicom_count,
+            month_count: other.month_count
+          }])
+        }
+      })
+    },
+    // 获取图表数据
+    setOptionData() {
+      let option = this.option
+      let chartConst = this.chartConst[this.tabIndex]
+      let label = option.xAxis.data = [] // 底坐标标签
+      let data1 = option.series[0].data = [] // 分类一数据
+      option.tooltip.formatter = this.formatter
+      option.series[0].label.normal.formatter = this.formatterToolTip
+      option.title.text = chartConst.title
+      option.series[0].name = chartConst.name
+      this.list.data.forEach((v) => {
+        if (this.tabIndex === '0' && !v.sums) {
+          label.push(v.org_name)
+          data1.push(v.activated)
+        } else if (this.tabIndex === '1' && !v.sums) {
+          label.push(v.org_name)
+          data1.push(v.activated)
+        } else if (this.tabIndex === '2' && !v.sums) {
+          label.push(v.org_name)
+          data1.push(v.activated)
+        }
+      })
+      // 绘图
+      Vue.nextTick(() => {
+        this.myChart.setOption(option)
+      })
     },
     // 格式化option
     formatter(series) {
@@ -266,7 +261,7 @@ export default {
         </div>
       </div>`
     },
-    formatterText(series) {
+    formatterToolTip(series) {
       let variable = {
         '0': `${series.data}次`,
         '1': `${Api.UNITS.formatFlowUnit(series.data, 2, false)}`,
@@ -274,122 +269,14 @@ export default {
       }
       return `${variable[this.tabIndex]}`
     },
-    // 获取列表数据
-    getData() {
-      setTimeout(() => {
-        // 数据请求成功
-        this.list.data = [{
-          id: 0,
-          jg_name: '卡仕特-西格玛',
-          recharge_count: 28,
-          fptotal_flow: 12452,
-          recharge_total: 564521.23,
-          repay_total: 2352.32
-        }, {
-          id: 0,
-          jg_name: '自营',
-          recharge_count: 14,
-          fptotal_flow: 22452,
-          recharge_total: 564521.23,
-          repay_total: 2352.32
-        }, {
-          id: 0,
-          jg_name: '自营 > 双平泰',
-          recharge_count: 30,
-          fptotal_flow: 8952,
-          recharge_total: 564521.23,
-          repay_total: 2352.32
-        }, {
-          id: 0,
-          jg_name: '凯隆丁威特',
-          recharge_count: 65,
-          fptotal_flow: 85452,
-          recharge_total: 564521.23,
-          repay_total: 2352.32
-        }, {
-          id: 0,
-          jg_name: '博毅',
-          recharge_count: 15,
-          fptotal_flow: 23562,
-          recharge_total: 564521.23,
-          repay_total: 2352.32
-        }, {
-          id: 0,
-          jg_name: '天之眼',
-          recharge_count: 33,
-          fptotal_flow: 14585,
-          recharge_total: 564521.23,
-          repay_total: 2352.32
-        }, {
-          id: 0,
-          jg_name: '湖南纽曼',
-          recharge_count: 41,
-          fptotal_flow: 8754,
-          recharge_total: 564521.23,
-          repay_total: 2352.32
-        }, {
-          id: 0,
-          jg_name: '自营 > 云智测试',
-          recharge_count: 9,
-          fptotal_flow: 6854,
-          recharge_total: 564521.23,
-          repay_total: 2352.32
-        }, {
-          id: 0,
-          jg_name: '奇橙天下',
-          recharge_count: 48,
-          fptotal_flow: 68745,
-          recharge_total: 564521.23,
-          repay_total: 2352.32
-        }, {
-          id: 0,
-          jg_name: '自营 > 云智易联',
-          recharge_count: 74,
-          fptotal_flow: 85452,
-          recharge_total: 564521.23,
-          repay_total: 2352.32
-        }]
-        this.list.total = this.list.data.length
-        this.loadData = false
-        // 数据拿到了就可以格式化图表数据了
-        this.getOptionData()
-      }, 1000)
-    },
-    // 获取图表数据
-    getOptionData() {
-      let option = this.option
-      let chartConst = this.chartConst[this.tabIndex]
-      let label = option.xAxis.data = [] // 底坐标标签
-      let data1 = option.series[0].data = [] // 分类一数据
-      option.tooltip.formatter = this.formatter
-      option.series[0].label.normal.formatter = this.formatterText
-      option.title.text = chartConst.title
-      option.series[0].name = chartConst.name
-      this.list.data.forEach((v) => {
-        label.push(v.jg_name)
-        if (this.tabIndex === '0') {
-          data1.push(v.recharge_count)
-        } else if (this.tabIndex === '1') {
-          data1.push(v.fptotal_flow)
-        } else if (this.tabIndex === '2') {
-          data1.push(v.recharge_total)
-        }
-      })
-      // 绘图
-      setTimeout(() => {
-        this.myChart.setOption(option)
-      }, 0)
-    },
     formatFlowUnit: Api.UNITS.formatFlowUnit,
     calcLeftTime: Api.UNITS.calcLeftTime
   },
   computed: {
     ...mapState({
-      asideCollapse: 'asideCollapse'
-    }),
-    curTableData() {
-      return this.list.data.slice((this.list.currentPage - 1) * this.list.pagesize, this.list.currentPage * this.list.pagesize)
-    }
+      asideCollapse: 'asideCollapse',
+      orgs: 'orgs'
+    })
   },
   watch: {
     asideCollapse(val, oldVal) {
@@ -403,23 +290,25 @@ export default {
 
 </script>
 <style lang="scss">
-.el-pagination {
-  float: right;
-  margin: 25px 40px 0 0;
-}
+.recharge_sum {
+  .el-pagination {
+    float: right;
+    margin: 25px 40px 0 0;
+  }
 
-.el-table {
-  .table-head {}
+  .el-table {
+    .table-head {}
 
-  td {
-    * {
-      font-size: 14px;
+    td {
+      * {
+        font-size: 14px;
+      }
     }
   }
-}
 
-.el-date-editor .el-range-separator {
-  width: auto;
+  .el-date-editor .el-range-separator {
+    width: auto;
+  }
 }
 
 </style>

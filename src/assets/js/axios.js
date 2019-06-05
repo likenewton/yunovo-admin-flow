@@ -36,6 +36,7 @@ class AXIOS {
       // 明细
       getOnOffLogDetail: '/fc/api/gprs/onoffLog/detail',
       getNotifyFromOrg: '/fc/api/gprs/notifyFrom/org',
+      getPayOnlineOrg: '/fc/api/gprs/payOnline/org',
       // 导出
       statsExport: '/fc/api/gprs/stats/export',
     }

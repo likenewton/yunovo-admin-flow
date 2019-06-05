@@ -15,7 +15,7 @@
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="过期时间">
+        <el-form-item label="是否过期">
           <el-select v-model="formInline.time_expire" filterable clearable placeholder="请选择">
             <el-option v-for="(item, index) in exceedSelect" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>

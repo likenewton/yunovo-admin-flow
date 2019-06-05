@@ -1,66 +1,92 @@
 <template>
   <div class="recharge_particulars">
-    <el-card class="box-card" style="margin-bottom: 20px" shadow="never">
+    <el-card style="margin-bottom: 20px" shadow="never">
       <el-form :inline="true" :model="formInline" class="demo-form-inline" size="small">
+        <el-form-item label="订单编号">
+          <el-input v-model="formInline.x1" placeholder="请输入订单编号"></el-input>
+        </el-form-item>
         <el-form-item label="卡ICCID">
-          <el-input v-model="formInline.iccid" placeholder="请输入卡的iccid"></el-input>
+          <el-input v-model="formInline.cardd_iccid" placeholder="请输入卡的iccid"></el-input>
+        </el-form-item>
+        <el-form-item label="支付流水号">
+          <el-input v-model="formInline.x3" placeholder="请输入支付流水号"></el-input>
         </el-form-item>
         <el-form-item label="卡商名称">
-          <el-select v-model="formInline.ks_name" placeholder="请选择">
-            <el-option label="卡商1" value="0"></el-option>
-            <el-option label="卡商2" value="1"></el-option>
-            <el-option label="卡商3" value="2"></el-option>
+          <el-select v-model="formInline.card_type" filterable clearable placeholder="请选择">
+            <el-option v-for="(item, index) in cardTypes" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="机构名称">
-          <el-select v-model="formInline.jg_name" placeholder="请选择">
-            <el-option label="机构1" value="0"></el-option>
-            <el-option label="机构2" value="1"></el-option>
-            <el-option label="机构3" value="2"></el-option>
+          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择">
+            <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="订单来源">
+          <el-select v-model="formInline.x2" filterable clearable placeholder="请选择">
+            <el-option v-for="(item, index) in notifysFrom" :key="index" :label="item.label" :value="item.value"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="支付状态">
+          <el-select v-model="formInline.x2" filterable clearable placeholder="请选择">
+            <el-option v-for="(item, index) in paySelect" :key="index" :label="item.label" :value="item.value"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="充值日期">
+          <el-date-picker v-model="formInline.date_start" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
+          <el-date-picker v-model="formInline.date_end" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
+        </el-form-item>
+        <el-form-item label="付款日期">
+          <el-date-picker v-model="formInline.date_start" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
+          <el-date-picker v-model="formInline.date_end" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
+        </el-form-item>
         <el-form-item>
-          <el-button type="primary">查询</el-button>
-          <el-button type="warning">重置</el-button>
+          <el-button type="primary" @click="getData">查询</el-button>
+          <el-button type="warning" @click="resetData">重置</el-button>
         </el-form-item>
       </el-form>
     </el-card>
-    <el-card class="box-card clearfix" shadow="never">
+    <el-card class="box-card clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
         <el-button size="mini" type="primary" @click="showEcharts()">图表</el-button>
         <el-button size="mini" type="warning">导出明细</el-button>
         <el-button size="mini" type="warning">导出快照</el-button>
       </el-button-group>
-      <el-table v-loading="loadData" ref="multipleTable" :data="curTableData" border :default-sort="{prop: 'statistic_data', order: 'descending'}" size="mini">
-        <el-table-column show-overflow-tooltip prop="order_code" label="5订单编号" width="172"></el-table-column>
-        <el-table-column show-overflow-tooltip label="ICCID卡" width="176">
+      <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border resizable size="mini">
+        <el-table-column prop="order_code" label="订单编号" min-width="172" sortable="custom"></el-table-column>
+        <el-table-column prop="card_iccid" label="ICCID卡" min-width="180" sortable="custom">
           <template slot-scope="scope">
-            <el-button type="text">{{scope.row.iccid}}</el-button>
+            <span v-if="scope.row.sums">{{scope.row.card_iccid}}</span>
+            <span v-else class="btn-link">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="ks_name" label="卡商名称" min-width="135"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="jg_name" label="机构名称" min-width="135"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="pay_way" label="付款方式" width="80"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="pay_code" label="支付流水号" min-width="160"></el-table-column>
-        <el-table-column show-overflow-tooltip label="套餐流量" width="95">
+        <el-table-column prop="ks_name" label="卡商名称" min-width="135" sortable="custom"></el-table-column>
+        <el-table-column prop="org_name" label="机构名称" min-width="135" sortable="custom">
+          <template slot-scope="scope">
+            <span v-if="scope.row.sums">{{scope.row.org_name}}</span>
+            <span v-else class="btn-link">{{scope.row.org_name}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="pay_way" label="付款方式" width="90" sortable="custom"></el-table-column>
+        <el-table-column prop="pay_code" label="支付流水号" min-width="160" sortable="custom"></el-table-column>
+        <el-table-column prop="combo_flow" label="套餐流量" width="95" sortable="custom">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.combo_flow)"></div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip label="套餐价格" width="110">
+        <el-table-column prop="combo_price" label="套餐价格" width="90" sortable="custom">
           <template slot-scope="scope">
             <div>￥{{scope.row.combo_price|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip label="返利金额" width="110">
+        <el-table-column porp="repay_money" label="返利金额" width="90" sortable="custom">
           <template slot-scope="scope">
             <div>￥{{scope.row.repay_money|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column show-overflow-tooltip prop="recharge_time" label="充值时间" width="153" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="pay_status" label="支付状态" width="75"></el-table-column>
-        <el-table-column show-overflow-tooltip prop="pay_time" label="付款时间" width="153" sortable></el-table-column>
-        <el-table-column show-overflow-tooltip prop="order_resource" label="订单来源" width="80"></el-table-column>
+        <el-table-column prop="recharge_time" label="充值时间" width="153" sortable="custom"></el-table-column>
+        <el-table-column prop="pay_status" label="支付状态" width="90" sortable="custom"></el-table-column>
+        <el-table-column prop="pay_time" label="付款时间" width="153" sortable="custom"></el-table-column>
+        <el-table-column prop="order_resource" label="订单来源" width="90" sortable="custom"></el-table-column>
       </el-table>
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
@@ -86,6 +112,8 @@ export default {
         total: 0,
       },
       formInline: {},
+      sort: {},
+      maxTableHeight: Api.UNITS.maxTableHeight(),
       // 要展开的对话框的参数
       dialogPara: {
         loadDialog: true,
@@ -220,11 +248,7 @@ export default {
   },
   mounted() {
     // 进入页面的时候请求数据
-    if (this.list.data.length === 0) {
-      this.getData()
-    } else {
-      this.loadData = false
-    }
+    this.getData()
   },
   methods: {
     ...mapMutations([
@@ -238,27 +262,31 @@ export default {
       this.list.currentPage = val
       this.getData()
     },
-    showEcharts(type) {
-      this.SET_DIALOGVISIBLE({ dialogVisible: true })
-      setTimeout(() => {
-        // myChart因为是要放在dialog中所以必须要等到dialog展示之后才能展示
-        if (!this.myChart) this.myChart = this.$echarts.init(document.getElementById('myChart'))
-        this.getEchartsData()
-      }, 0)
+    handleSortChange(val = {}) {
+      Api.UNITS.setSortSearch(val, this)
+      this.getData()
+    },
+    // 重置列表
+    resetData() {
+      this.formInline = {} // 1、重置查询表单
+      this.sort = {} // 2、重置排序
+      this.$refs.listTable.clearSort() // 3、清空排序样式
+      this.getData()
     },
     // 获取列表数据
     getData() {
+      this.loadData = true
       setTimeout(() => {
         // 数据请求成功
         this.list.data = [{
           id: 0,
           order_code: '190429-140217-873768',
-          iccid: '89860918700307506235',
+          card_iccid: '89860918700307506235',
           ks_name: '智网吉林11位卡',
-          jg_name: '自营 > 云智测试',
+          org_name: '自营 > 云智测试',
           pay_way: '系统赠送',
           pay_code: 'system-give 系统赠送',
-          combo_flow: 563.5,
+          combo_flow: 1023.23,
           combo_price: 545.25,
           repay_money: 54.21,
           recharge_time: '2018-05-54 09:14:14',
@@ -270,9 +298,16 @@ export default {
         this.loadData = false
       }, 1000)
     },
+    showEcharts(type) {
+      this.SET_DIALOGVISIBLE({ dialogVisible: true })
+      Vue.nextTick(() => {
+        // myChart因为是要放在dialog中所以必须要等到dialog展示之后才能展示
+        if (!this.myChart) this.myChart = this.$echarts.init(document.getElementById('myChart'))
+        this.getEchartsData()
+      })
+    },
     // 获取图表数据
     getEchartsData() {
-      // 该echart 中的数据似乎跟list没有关系
       this.dialogPara.loadDialog = true
       setTimeout(() => {
         this.myChart.setOption(this.option)
@@ -285,26 +320,29 @@ export default {
   computed: {
     ...mapState({
       dialogVisible: 'dialogVisible',
-    }),
-    curTableData() {
-      return this.list.data.slice((this.list.currentPage - 1) * this.list.pagesize, this.list.currentPage * this.list.pagesize)
-    }
+      cardTypes: 'cardTypes',
+      orgs: 'orgs',
+      notifysFrom: 'notifysFrom',
+      paySelect: 'paySelect',
+    })
   }
 }
 
 </script>
 <style lang="scss">
-.el-pagination {
-  float: right;
-  margin: 25px 40px 0 0;
-}
+.recharge_particulars {
+  .el-pagination {
+    float: right;
+    margin: 25px 40px 0 0;
+  }
 
-.el-table {
-  .table-head {}
+  .el-table {
+    .table-head {}
 
-  td {
-    * {
-      font-size: 14px;
+    td {
+      * {
+        font-size: 14px;
+      }
     }
   }
 }

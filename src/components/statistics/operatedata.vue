@@ -22,7 +22,7 @@
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border size="mini" resizable>
         <el-table-column prop="stats_date" label="统计日期" width="95" sortable="custom">
           <template slot-scope="scope">
-            <span class="btn-link" @click="$router.push({ name: 'orgList', query: { date: scope.row.stats_date } })">{{scope.row.stats_date}}</span>
+            <span class="btn-link" @click="$router.push({ name: 'orgList', query: { stats_date: scope.row.stats_date } })">{{scope.row.stats_date}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="card_total" label="售卡总数" width="73"></el-table-column>

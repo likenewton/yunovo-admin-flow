@@ -74,13 +74,11 @@ export default {
       usedTotal: 0, // 总使用流量
       sort: {},
       formInline: {},
-      months: [], // 下拉列表月份
       maxTableHeight: Api.UNITS.maxTableHeight()
     }
   },
   mounted() {
     // 进入页面的时候请求数据
-    this.getMonths()
     this.getData()
   },
   methods: {
@@ -126,15 +124,6 @@ export default {
         }
       })
     },
-    getMonths() {
-      _axios.send({
-        method: 'get',
-        url: _axios.ajaxAd.getMonths,
-        done: (res) => {
-          this.months = res.data
-        }
-      })
-    },
     // 导出excel
     exportExcel() {
       _axios.send({
@@ -153,6 +142,7 @@ export default {
     ...mapState({
       cardTypes: 'cardTypes', // 卡商列表
       orgs: 'orgs', // 机构列表
+      months: 'months'
     }),
     // 流量使用均值
     avaused() {

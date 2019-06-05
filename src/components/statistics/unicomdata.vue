@@ -7,11 +7,11 @@
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="导卡时间">
+        <el-form-item label="导卡日期">
           <el-date-picker v-model="formInline.date_start" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
           <el-date-picker v-model="formInline.date_end" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
         </el-form-item>
-        <el-form-item label="激活时间">
+        <el-form-item label="激活日期">
           <el-date-picker v-model="formInline.jstart" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
           <el-date-picker v-model="formInline.jend" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
         </el-form-item>
@@ -25,7 +25,7 @@
       <el-button-group style="margin-bottom: 10px">
         <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
-      <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" border size="mini" resizable>
+      <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border size="mini" resizable>
         <el-table-column fixed="left" prop="org_name" label="机构名称" min-width="180" sortable="custom">
           <template slot-scope="scope">
             <span v-if="scope.row.sums">{{scope.row.org_name}}</span>
@@ -91,6 +91,7 @@ export default {
       },
       sort: {},
       formInline: {},
+      maxTableHeight: Api.UNITS.maxTableHeight(),
       myChart_0: null,
       // 激活-未激活柱状图数据
       option_0: {

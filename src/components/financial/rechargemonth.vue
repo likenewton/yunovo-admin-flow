@@ -1,48 +1,50 @@
 <template>
   <div>
-    <el-card class="box-card clearfix" style="margin-bottom: 20px" shadow="never">
+    <el-card class="box-card" style="margin-bottom: 20px" shadow="never">
       <el-form :inline="true" :model="formInline" class="demo-form-inline" size="small">
         <el-form-item label="机构名称">
-          <el-select v-model="formInline.jg_name" placeholder="请选择">
-            <el-option label="机构1" value="0"></el-option>
-            <el-option label="机构2" value="1"></el-option>
-            <el-option label="机构3" value="2"></el-option>
+          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择">
+            <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="起止时间">
-          <el-date-picker v-model="formInline.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-          </el-date-picker>
+        <el-form-item label="月份">
+          <el-select v-model="formInline.mdate" filterable clearable placeholder="请选择">
+            <el-option v-for="(item, index) in months" :key="index" :label="item.label" :value="item.value"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">查询</el-button>
-          <el-button type="warning">重置</el-button>
+          <el-button type="primary" @click="getData">查询</el-button>
+          <el-button type="warning" @click="resetData">重置</el-button>
         </el-form-item>
       </el-form>
-      <el-table v-loading="loadData" ref="multipleTable" :data="curTableData" border :default-sort="{prop: 'jg_name', order: 'descending'}" size="mini">
-        <el-table-column show-overflow-tooltip label="机构名称" min-width="125">
+    </el-card>
+    <el-card class="box-card clearfix" style="margin-bottom: 20px" shadow="never" v-loading="loadData">
+      <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border resizable size="mini">
+        <el-table-column prop="org_name" label="机构名称" min-width="200" sortable="custom">
           <template slot-scope="scope">
-            <el-button type="text">{{scope.row.jg_name}}</el-button>
+            <span v-if="scope.row.sums">{{scope.row.org_name}}</span>
+            <span v-else class="btn-link">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="month" label="月份" show-overflow-tooltip min-width="110" sortable></el-table-column>
-        <el-table-column prop="pay_count" label="已付款次数" show-overflow-tooltip min-width="110" sortable></el-table-column>
-        <el-table-column prop="nopay_count" label="未付款次数" show-overflow-tooltip min-width="110" sortable></el-table-column>
-        <el-table-column label="分配总流量" show-overflow-tooltip min-width="110">
+        <el-table-column prop="how_month" label="月份" min-width="110" sortable="custom"></el-table-column>
+        <el-table-column prop="pay_count" label="已付款次数" min-width="110" sortable="custom"></el-table-column>
+        <el-table-column prop="nopay_count" label="未付款次数" min-width="110" sortable="custom"></el-table-column>
+        <el-table-column prop="fptotal_flow" label="分配总流量" min-width="110" sortable="custom">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.fptotal_flow)"></div>
           </template>
         </el-table-column>
-        <el-table-column label="充值总金额" show-overflow-tooltip min-width="110">
+        <el-table-column prop="recharge_total" label="充值总金额" min-width="110" sortable="custom">
           <template slot-scope="scope">
             <div>￥{{scope.row.recharge_total|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="返利总金额" show-overflow-tooltip min-width="110">
+        <el-table-column prop="repay_total" label="返利总金额" min-width="110" sortable="custom">
           <template slot-scope="scope">
             <div>￥{{scope.row.repay_total|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="未付款金额" show-overflow-tooltip min-width="110">
+        <el-table-column prop="nopay_total" label="未付款金额" min-width="110" sortable="custom">
           <template slot-scope="scope">
             <div>￥{{scope.row.nopay_total|formatMoney}}</div>
           </template>
@@ -83,14 +85,14 @@ export default {
       // 列表数据
       list: {
         data: [],
-        pagesize: Api.STATIC.pageSizes[1],
+        pagesize: Api.STATIC.pageSizes[0],
         currentPage: 1,
         total: 0,
       },
       // 查询表单数据
-      formInline: {
-        jg_name: '自营'
-      },
+      formInline: {},
+      sort: {},
+      maxTableHeight: Api.UNITS.maxTableHeight(),
       chartConst: {
         '0': {
           title: '次数统计',
@@ -109,27 +111,20 @@ export default {
     }
   },
   mounted() {
-    setTimeout(() => {
+    Vue.nextTick(() => {
       this.myChart = this.$echarts.init(document.getElementById('myChart_0'))
-    }, 0)
+    })
     // 进入页面的时候请求数据
-    if (this.list.data.length === 0) {
-      this.getData()
-    } else {
-      this.loadData = false
-    }
+    this.getData()
   },
   methods: {
-    routeName() {
-      return this.$route.name
-    },
     changeTab(para) {
       this.tabIndex = para.index
-      setTimeout(() => {
+      Vue.nextTick(() => {
         this.myChart = this.$echarts.init(document.getElementById(`myChart_${this.tabIndex}`))
         this.myChart.resize()
-      }, 0)
-      this.showEchart()
+      })
+      this.setEchartOption()
     },
     handleSizeChange(val) {
       this.list.pagesize = val
@@ -139,8 +134,73 @@ export default {
       this.list.currentPage = val
       this.getData()
     },
-    showDetail() {
-      this.$router.push({ name: 'iccidList' })
+    handleSortChange(val = {}) {
+      Api.UNITS.setSortSearch(val, this)
+      this.getData()
+    },
+    // 重置列表
+    resetData() {
+      this.formInline = {} // 1、重置查询表单
+      this.sort = {} // 2、重置排序
+      this.$refs.listTable.clearSort() // 3、清空排序样式
+      this.getData()
+    },
+    // 获取列表数据
+    getData() {
+      Api.UNITS.getListData({
+        vue: this,
+        url: _axios.ajaxAd.getStats,
+        cb: (res) => {
+          let other = res.data.other || {}
+          this.setEchartOption()
+          if (this.list.data.length === 0) return
+          this.list.data.push(...[{
+            sums: true,
+            org_name: '总计',
+            card_count: other.card_count,
+            nonactivated: other.nonactivated,
+            activated: other.activated,
+            unicom_count: other.unicom_count,
+            month_count: other.month_count
+          }])
+        }
+      })
+    },
+    // 获取图表数据
+    setEchartOption() {
+      const chartConst = this.chartConst[this.tabIndex]
+      let series = []
+
+      if (this.tabIndex === '0') { // tab1
+        series = [{}, {}]
+        this.list.data.forEach((v) => {
+          series[0].data = v.pay_count
+          series[1].data = v.nopay_count
+        })
+      } else if (this.tabIndex === '1') { // tab2
+        series = [{}]
+        this.list.data.forEach((v) => {
+          series[0].data = v.fptotal_flow
+        })
+      } else if (this.tabIndex === '2') { // tab3
+        series = [{}, {}, {}]
+        this.list.data.forEach((v) => {
+          series[0].data = v.recharge_total
+          series[0].data = v.repay_total
+          series[0].data = v.nopay_total
+        })
+      }
+      _echart.setOption({
+        title: this.list.data[0].org_name,
+        legend: chartConst.legend,
+        xAxis: { data: this.list.data.map((v) => v.how_month) },
+        series,
+        formatter: this.formatter
+      })
+      // 绘图
+      Vue.nextTick(() => {
+        this.myChart.setOption(_echart.getOption())
+      })
     },
     formatterDealFn(data) {
       let variable = {
@@ -169,157 +229,15 @@ export default {
         }()}
       </div>`
     },
-    // 获取列表数据
-    getData() {
-      setTimeout(() => {
-        // 数据请求成功
-        this.list.data = [{
-          id: 0,
-          jg_name: '自营',
-          month: '2019-05',
-          pay_count: 12,
-          nopay_count: 2,
-          fptotal_flow: 12452,
-          recharge_total: 15621.3,
-          repay_total: 2352.32,
-          nopay_total: 4512.23
-        }, {
-          id: 0,
-          jg_name: '自营',
-          month: '2019-06',
-          pay_count: 12,
-          nopay_count: 2,
-          fptotal_flow: 12452,
-          recharge_total: 15621.23,
-          repay_total: 2352.32,
-          nopay_total: 4512.23
-        }, {
-          id: 0,
-          jg_name: '自营',
-          month: '2019-07',
-          pay_count: 12,
-          nopay_count: 2,
-          fptotal_flow: 12452,
-          recharge_total: 15621.2,
-          repay_total: 2352.32,
-          nopay_total: 4512.23
-        }, {
-          id: 0,
-          jg_name: '自营',
-          month: '2019-08',
-          pay_count: 12,
-          nopay_count: 2,
-          fptotal_flow: 12452,
-          recharge_total: 15621.23,
-          repay_total: 2352.32,
-          nopay_total: 4512.23
-        }, {
-          id: 0,
-          jg_name: '自营',
-          month: '2019-09',
-          pay_count: 12,
-          nopay_count: 2,
-          fptotal_flow: 12452,
-          recharge_total: 15621.23,
-          repay_total: 2352.32,
-          nopay_total: 4512.23
-        }, {
-          id: 0,
-          jg_name: '自营',
-          month: '2019-10',
-          pay_count: 12,
-          nopay_count: 2,
-          fptotal_flow: 12452,
-          recharge_total: 15621.23,
-          repay_total: 2352.32,
-          nopay_total: 4512.23
-        }, {
-          id: 0,
-          jg_name: '自营',
-          month: '2019-11',
-          pay_count: 12,
-          nopay_count: 2,
-          fptotal_flow: 12452,
-          recharge_total: 15621.23,
-          repay_total: 2352.32,
-          nopay_total: 4512.23
-        }, {
-          id: 0,
-          jg_name: '自营',
-          month: '2019-12',
-          pay_count: 12,
-          nopay_count: 2,
-          fptotal_flow: 12452,
-          recharge_total: 15621.23,
-          repay_total: 2352.32,
-          nopay_total: 4512.23
-        }, {
-          id: 0,
-          jg_name: '自营',
-          month: '2020-01',
-          pay_count: 12,
-          nopay_count: 2,
-          fptotal_flow: 12452,
-          recharge_total: 15621.23,
-          repay_total: 2352.32,
-          nopay_total: 4512.23
-        }, {
-          id: 0,
-          jg_name: '自营',
-          month: '2020-02',
-          pay_count: 12,
-          nopay_count: 2,
-          fptotal_flow: 12452,
-          recharge_total: 15621.23,
-          repay_total: 2352.32,
-          nopay_total: 4512.23
-        }]
-        this.list.total = this.list.data.length
-        this.loadData = false
-        // 数据拿到了就可以格式化图表数据了
-        this.showEchart()
-      }, 1000)
-    },
-    // 获取图表数据
-    showEchart() {
-      const chartConst = this.chartConst[this.tabIndex]
-      let series = []
-
-      if (this.tabIndex === '0') { // tab1
-        series = [{}, {}]
-        series[0].data = this.list.data.map((v) => v.pay_count)
-        series[1].data = this.list.data.map((v) => v.nopay_count)
-      } else if (this.tabIndex === '1') { // tab2
-        series = [{}]
-        series[0].data = this.list.data.map((v) => v.fptotal_flow)
-      } else if (this.tabIndex === '2') { // tab3
-        series = [{}, {}, {}]
-        series[0].data = this.list.data.map((v) => v.recharge_total)
-        series[1].data = this.list.data.map((v) => v.repay_total)
-        series[2].data = this.list.data.map((v) => v.nopay_total)
-      }
-      _echart.setOption({
-        title: this.formInline.jg_name,
-        legend: chartConst.legend,
-        xAxis: { data: this.list.data.map((v) => v.month) },
-        series,
-        formatter: this.formatter
-      })
-      // 绘图
-      setTimeout(() => {
-        this.myChart.setOption(_echart.getOption())
-      }, 0)
-    },
     formatFlowUnit: Api.UNITS.formatFlowUnit,
     calcLeftTime: Api.UNITS.calcLeftTime
   },
   computed: {
     ...mapState({
-      asideCollapse: 'asideCollapse'
-    }),
-    curTableData() {
-      return this.list.data.slice((this.list.currentPage - 1) * this.list.pagesize, this.list.currentPage * this.list.pagesize)
-    }
+      asideCollapse: 'asideCollapse',
+      orgs: 'orgs',
+      months: 'months'
+    })
   },
   watch: {
     asideCollapse(val, oldVal) {

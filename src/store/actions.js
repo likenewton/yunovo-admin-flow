@@ -25,7 +25,7 @@ export default {
       method: 'get',
       url: _axios.ajaxAd.getMonths,
       done: (res) => {
-        context.commit('SET_MONTHS', { orgs: res.data })
+        context.commit('SET_MONTHS', { months: res.data })
       }
     })
   },
