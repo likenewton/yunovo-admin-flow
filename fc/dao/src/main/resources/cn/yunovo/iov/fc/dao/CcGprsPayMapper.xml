@@ -136,6 +136,8 @@
 		<if test="mdate != null">
 			<![CDATA[  AND DATE_FORMAT(time_added, '%Y-%m') = #{mdate} ]]>
 		</if>
+		
+		 GROUP BY org_id, pay_method
 	</select>
 	
 	

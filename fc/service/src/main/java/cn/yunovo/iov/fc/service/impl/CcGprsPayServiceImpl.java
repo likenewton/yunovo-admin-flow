@@ -138,7 +138,7 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 			date_end = date_end + " 23:59:59";
 		}
 
-		List<OrgPayReportResultBean> records = iCcGprsPayMapper.getOrgPayReportPage(page, org_id, date_start, date_end, mdate, orgpos, orgpos.split(","));
+		List<OrgPayReportResultBean> records = iCcGprsPayMapper.getOrgPayReportPage(page, org_id, pay_method,date_start, date_end, mdate, orgpos, orgpos.split(","));
 
 		if (CollectionUtils.isEmpty(records)) {
 			page.setTotal(0);
@@ -148,7 +148,7 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 			return p;
 		}
 
-		OrgPayReportResultBean total = iCcGprsPayMapper.getOrgPayReportTotal(org_id, date_start, date_end, orgpos, mdate, orgpos.split(","));
+		OrgPayReportResultBean total = iCcGprsPayMapper.getOrgPayReportTotal(org_id,pay_method, date_start, date_end, mdate, orgpos, orgpos.split(","));
 		Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
 		Map<String, String>  arr_pay_method = this.getArr_pay_method();
 		for (OrgPayReportResultBean ccGprsPay : records) {

@@ -1,5 +1,6 @@
 package cn.yunovo.iov.fc.web.controller.gprs;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,6 +24,7 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping(path="/api/gprs/report", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ReportController extends BaseController{
 
+	@Autowired
 	private ICcGprsPayService iCcGprsPayService;
 	
 	@ApiOperation(value = "统计分析-充值总额")
