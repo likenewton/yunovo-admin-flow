@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@ApiModel(value = "UnicomStatResultBean对象", description = "统计分析-联通情况查询结果bean")
+@ApiModel(value = "OrgPayReportResultBean对象", description = "统计分析-联通情况查询结果bean")
 public class OrgPayReportResultBean {
 
 	
