@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.yunovo.iov.fc.dao.ICcGprsPayMapper">
+
+	<select id="getPayCountPage" resultType="cn.yunovo.iov.fc.model.entity.CcGprsPay">
+	
+		<![CDATA[
+		SELECT org_id, COUNT(pay_id) AS pay_count, SUM(IF(gprs_amount < 9999999, gprs_amount, 0)) AS gprs_amount,
+		SUM(gprs_price) AS money_count, SUM(rebate_money) AS money_rebate FROM cc_gprs_pay WHERE is_paid = 1 AND pay_method > 0
+		
+		]]>
+		
+		<choose>
+
+			<when test="org_id != null">
+				AND org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+		
+		<if test="date_start != null">
+			<![CDATA[  AND time_paid >= #{date_start} ]]>
+		</if>
+
+		<if test="date_end != null">
+			<![CDATA[ AND time_paid <= #{date_end} ]]>
+		</if>
+		
+		 GROUP BY org_id
+	</select>
+	
+	<select id="getPayCountTotal" resultType="cn.yunovo.iov.fc.model.entity.CcGprsPay">
+	
+		<![CDATA[
+		SELECT org_id, COUNT(pay_id) AS pay_count, SUM(IF(gprs_amount < 9999999, gprs_amount, 0)) AS gprs_amount,
+		SUM(gprs_price) AS money_count, SUM(rebate_money) AS money_rebate FROM cc_gprs_pay WHERE is_paid = 1 AND pay_method > 0
+		
+		]]>
+		
+		<choose>
+
+			<when test="org_id != null">
+				AND org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+		
+		<if test="date_start != null">
+			<![CDATA[  AND time_paid >= #{date_start} ]]>
+		</if>
+
+		<if test="date_end != null">
+			<![CDATA[ AND time_paid <= #{date_end} ]]>
+		</if>
+		
+	</select>
+	
+	<select id="getOrgPayReportPage" resultType="cn.yunovo.iov.fc.model.result.OrgPayReportResultBean">
+	
+		<![CDATA[
+		SELECT count(is_paid) as  paid_count,SUM(IF(is_paid = 1,1,0)) AS paid_amount,
+		SUM(IF(is_paid = 0,1,0)) AS nopaid_amount, SUM(IF(is_paid = 1 AND gprs_amount < 9999999, gprs_amount, 0)) AS gprs_amount,
+		SUM(IF(is_paid = 1, gprs_price, 0)) AS paid_money, SUM(IF(is_paid = 0, gprs_price, 0)) AS nopaid_money,
+		SUM(rebate_money) AS rebate_money, org_id, pay_method, LEFT(time_added, 7) AS mdate FROM cc_gprs_pay WHERE  1=1
+		
+		]]>
+		
+		<choose>
+
+			<when test="org_id != null">
+				AND org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+		<choose>
+		
+			<when test="pay_method != null">
+				AND pay_method = #{pay_method}
+			</when>
+			<otherwise>
+				AND pay_method > 0
+			</otherwise>
+		
+		</choose>
+		
+		<if test="date_start != null">
+			<![CDATA[  AND time_added >= #{date_start} ]]>
+		</if>
+
+		<if test="date_end != null">
+			<![CDATA[ AND time_added <= #{date_end} ]]>
+		</if>
+		
+		<if test="mdate != null">
+			<![CDATA[  AND DATE_FORMAT(time_added, '%Y-%m') = #{mdate} ]]>
+		</if>
+	</select>
+	
+	
+	<select id="getOrgPayReportTotal" resultType="cn.yunovo.iov.fc.model.result.OrgPayReportResultBean">
+	
+		<![CDATA[
+		SELECT count(is_paid) as paid_count,SUM(IF(is_paid = 1,1,0)) AS paid_amount,
+		SUM(IF(is_paid = 0,1,0)) AS nopaid_amount, SUM(IF(is_paid = 1 AND gprs_amount < 9999999, gprs_amount, 0)) AS gprs_amount,
+		SUM(IF(is_paid = 1, gprs_price, 0)) AS paid_money, SUM(IF(is_paid = 0, gprs_price, 0)) AS nopaid_money,
+		SUM(rebate_money) AS rebate_money, org_id, pay_method, LEFT(time_added, 7) AS mdate FROM cc_gprs_pay WHERE  1=1
+		
+		]]>
+		
+		<choose>
+
+			<when test="org_id != null">
+				AND org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+		<choose>
+		
+			<when test="pay_method != null">
+				AND pay_method = #{pay_method}
+			</when>
+			<otherwise>
+				AND pay_method > 0
+			</otherwise>
+		
+		</choose>
+		
+		<if test="date_start != null">
+			<![CDATA[  AND time_added >= #{date_start} ]]>
+		</if>
+
+		<if test="date_end != null">
+			<![CDATA[ AND time_added <= #{date_end} ]]>
+		</if>
+		
+		<if test="mdate != null">
+			<![CDATA[  AND DATE_FORMAT(time_added, '%Y-%m') = #{mdate} ]]>
+		</if>
+		
+	</select>
+
+</mapper>

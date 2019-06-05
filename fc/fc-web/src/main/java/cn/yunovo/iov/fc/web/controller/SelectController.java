@@ -15,6 +15,7 @@ import cn.yunovo.iov.fc.common.utils.ResultUtil;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcUser;
+import cn.yunovo.iov.fc.service.ICcGprsPayService;
 import cn.yunovo.iov.fc.service.ICcNotifyService;
 import cn.yunovo.iov.fc.service.ICcOrgService;
 import cn.yunovo.iov.fc.service.ICcStatsMonthService;
@@ -38,6 +39,9 @@ public class SelectController extends BaseController{
 	
 	@Autowired
 	private ICcNotifyService iCcNotifyService;
+	
+	@Autowired
+	private ICcGprsPayService iCcGprsPayService;
 	
 	public static List<SelectBean> CARD_TYPES = new ArrayList<>();
 	
@@ -105,6 +109,14 @@ public class SelectController extends BaseController{
 	public Result<List<SelectBean>> getNotifyFrom() {
 		
 		List<SelectBean> months = iCcNotifyService.select();
+		return ResultUtil.success("ok", months);
+	}
+	
+	@ApiOperation(notes="财务报表-付款方式", value = "财务报表-付款方式")
+	@RequestMapping(path="/api/select/payMethod/select", method= {RequestMethod.GET})
+	public Result<List<SelectBean>> getPayMethod() {
+		
+		List<SelectBean> months = iCcGprsPayService.select();
 		return ResultUtil.success("ok", months);
 	}
 	

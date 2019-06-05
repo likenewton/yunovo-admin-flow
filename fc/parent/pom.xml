@@ -146,7 +146,7 @@
 		<dependency>
 			<groupId>cn.yunovo.iov.cas</groupId>
 			<artifactId>cas-client</artifactId>
-			<version>v3.2.2</version>
+			<version>v3.2.2.001</version>
 		</dependency>
 		
 		<!-- https://mvnrepository.com/artifact/com.alibaba/easyexcel -->
