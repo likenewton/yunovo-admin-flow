@@ -2,11 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.yunovo.iov.fc.dao.ICcGprsPayMapper">
 
-	<select id="getPayCountPage" resultType="cn.yunovo.iov.fc.model.entity.CcGprsPay">
+	<select id="getPayCountPage" resultType="cn.yunovo.iov.fc.model.result.PayCountResultBean">
 	
 		<![CDATA[
 		SELECT org_id, COUNT(pay_id) AS pay_count, SUM(IF(gprs_amount < 9999999, gprs_amount, 0)) AS gprs_amount,
-		SUM(gprs_price) AS money_count, SUM(rebate_money) AS money_rebate FROM cc_gprs_pay WHERE is_paid = 1 AND pay_method > 0
+		SUM(gprs_price) AS money_count, SUM(rebate_money) AS rebate_money FROM cc_gprs_pay WHERE is_paid = 1 AND pay_method > 0
 		
 		]]>
 		
@@ -43,11 +43,11 @@
 		 GROUP BY org_id
 	</select>
 	
-	<select id="getPayCountTotal" resultType="cn.yunovo.iov.fc.model.entity.CcGprsPay">
+	<select id="getPayCountTotal" resultType="cn.yunovo.iov.fc.model.result.PayCountResultBean">
 	
 		<![CDATA[
 		SELECT org_id, COUNT(pay_id) AS pay_count, SUM(IF(gprs_amount < 9999999, gprs_amount, 0)) AS gprs_amount,
-		SUM(gprs_price) AS money_count, SUM(rebate_money) AS money_rebate FROM cc_gprs_pay WHERE is_paid = 1 AND pay_method > 0
+		SUM(gprs_price) AS money_count, SUM(rebate_money) AS rebate_money FROM cc_gprs_pay WHERE is_paid = 1 AND pay_method > 0
 		
 		]]>
 		

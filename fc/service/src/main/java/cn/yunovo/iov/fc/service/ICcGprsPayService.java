@@ -10,6 +10,7 @@ import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcGprsPay;
 import cn.yunovo.iov.fc.model.result.OrgPayReportResultBean;
+import cn.yunovo.iov.fc.model.result.PayCountResultBean;
 
 /**
  * <p>
@@ -21,7 +22,7 @@ import cn.yunovo.iov.fc.model.result.OrgPayReportResultBean;
  */
 public interface ICcGprsPayService extends IService<CcGprsPay> {
 
-	public PageData<CcGprsPay,CcGprsPay> getPayCountPage(PageForm pageForm, Integer org_id, String date_start, String date_end, LoginInfo info);
+	public PageData<PayCountResultBean,PayCountResultBean> getPayCountPage(PageForm pageForm, Integer org_id, String date_start, String date_end, LoginInfo info);
 	
 	public PageData<OrgPayReportResultBean, OrgPayReportResultBean> getOrgPayReportPage(PageForm pageForm, Integer org_id, Integer pay_method, String date_start, String mdate, String date_end, LoginInfo info);
 

@@ -12,6 +12,7 @@ import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcGprsPay;
 import cn.yunovo.iov.fc.model.result.OrgPayReportResultBean;
+import cn.yunovo.iov.fc.model.result.PayCountResultBean;
 import cn.yunovo.iov.fc.service.ICcGprsPayService;
 import cn.yunovo.iov.fc.web.controller.BaseController;
 import io.swagger.annotations.Api;
@@ -34,9 +35,9 @@ public class ReportController extends BaseController{
 			@ApiImplicitParam(name = "org_id", value = "机构id", required = false, dataType = "int", paramType = "query")
 			})
 	@RequestMapping(path = "/", method = { RequestMethod.GET, RequestMethod.POST })
-	public Result<PageData<CcGprsPay, CcGprsPay>> payReport(PageForm pageForm, Integer org_id, String date_start, String date_end) {
+	public Result<PageData<PayCountResultBean, PayCountResultBean>> payReport(PageForm pageForm, Integer org_id, String date_start, String date_end) {
 		
-		PageData<CcGprsPay, CcGprsPay>  data = iCcGprsPayService.getPayCountPage(pageForm, org_id, date_start, date_end, this.getLoginBaseInfo());
+		PageData<PayCountResultBean, PayCountResultBean>  data = iCcGprsPayService.getPayCountPage(pageForm, org_id, date_start, date_end, this.getLoginBaseInfo());
 		return ResultUtil.success(data);
 	}
 	

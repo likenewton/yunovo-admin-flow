@@ -8,6 +8,7 @@ import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcGprsPay;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
 import cn.yunovo.iov.fc.model.result.OrgPayReportResultBean;
+import cn.yunovo.iov.fc.model.result.PayCountResultBean;
 import cn.yunovo.iov.fc.service.ICcGprsPayService;
 import cn.yunovo.iov.fc.service.ICcOrgService;
 import cn.yunovo.iov.fc.service.ICcUserService;
@@ -54,10 +55,10 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 	private ICcGprsPayMapper iCcGprsPayMapper;
 	
 	@Override
-	public PageData<CcGprsPay, CcGprsPay> getPayCountPage(PageForm pageForm, Integer org_id, String date_start,
+	public PageData<PayCountResultBean, PayCountResultBean> getPayCountPage(PageForm pageForm, Integer org_id, String date_start,
 			String date_end, LoginInfo info) {
 		// 组装分页参数
-		Page<CcGprsPay> page = new Page<>();
+		Page<PayCountResultBean> page = new Page<>();
 		page.setCurrent(pageForm.getCurrent());
 		page.setSize(pageForm.getSize());
 
@@ -67,7 +68,7 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 			page.setAsc(pageForm.getAscs());
 			page.setDesc(pageForm.getDescs());
 		}
-		PageData<CcGprsPay, CcGprsPay> p = new PageData<>();
+		PageData<PayCountResultBean, PayCountResultBean> p = new PageData<>();
 		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
 		if (StringUtils.isEmpty(orgpos)) {
 			page.setTotal(0);
@@ -84,7 +85,7 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 			date_end = date_end + " 23:59:59";
 		}
 
-		List<CcGprsPay> records = iCcGprsPayMapper.getPayCountPage(page, org_id, date_start, date_end, orgpos, orgpos.split(","));
+		List<PayCountResultBean> records = iCcGprsPayMapper.getPayCountPage(page, org_id, date_start, date_end, orgpos, orgpos.split(","));
 
 		if (CollectionUtils.isEmpty(records)) {
 			page.setTotal(0);
@@ -94,9 +95,9 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 			return p;
 		}
 
-		CcGprsPay total = iCcGprsPayMapper.getPayCountTotal(org_id, date_start, date_end, orgpos, orgpos.split(","));
+		PayCountResultBean total = iCcGprsPayMapper.getPayCountTotal(org_id, date_start, date_end, orgpos, orgpos.split(","));
 		Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
-		for (CcGprsPay ccGprsPay : records) {
+		for (PayCountResultBean ccGprsPay : records) {
 			ccGprsPay.setOrg_name(orgs.get(String.valueOf(ccGprsPay.getOrg_id())).getName());
 		}
 
