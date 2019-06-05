@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card class="box-card" style="margin-bottom: 20px" shadow="never">
-      <el-form :inline="true" :model="formInline" class="demo-form-inline" size="small">
+      <el-form class="search-form" :inline="true" :model="formInline" size="small">
         <el-form-item label="机构名称">
           <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>

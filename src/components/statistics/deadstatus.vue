@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card class="box-card" style="margin-bottom: 20px" shadow="never">
-      <el-form :inline="true" :model="formInline" class="demo-form-inline" size="small">
+      <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item label="卡ICCID">
           <el-input v-model="formInline.card_iccid" placeholder="请输入卡的iccid"></el-input>
         </el-form-item>
@@ -75,7 +75,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
   </div>

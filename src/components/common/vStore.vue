@@ -15,6 +15,7 @@ export default {
     if (this.orgs.length === 0) this.getOrgs()
     if (this.notifysFrom.length === 0) this.getNotifySelect()
     if (this.months.length === 0) this.getMonths()
+    if (this.payMethodSelect.length === 0) this.getPayMethodSelect()
   },
   methods: {
     ...mapActions([
@@ -22,6 +23,7 @@ export default {
       'getOrgs',
       'getNotifySelect',
       'getMonths',
+      'getPayMethodSelect',
     ])
   },
   computed: {
@@ -30,6 +32,7 @@ export default {
       orgs: 'orgs', // 机构列表
       notifysFrom: 'notifysFrom', // 通知来源
       months: 'months', // 月份
+      payMethodSelect: 'payMethodSelect', // 支付方式
     })
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card class="box-card" style="margin-bottom: 20px" shadow="never">
-      <el-form :inline="true" :model="formInline" class="demo-form-inline" size="small">
+      <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item label="通知或来源">
           <el-select v-model="formInline.ntf_type" filterable placeholder="请选择">
             <el-option v-for="(item, index) in notifysFrom" :key="index" :label="item.label" :value="item.value"></el-option>

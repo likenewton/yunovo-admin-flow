@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card class="box-card" style="margin-bottom: 20px" shadow="never">
-      <el-form :inline="true" :model="formInline" class="demo-form-inline" size="small">
+      <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item label="机构名称">
           <el-select v-model="formInline.jg_name" placeholder="请选择">
             <el-option label="机构1" value="0"></el-option>

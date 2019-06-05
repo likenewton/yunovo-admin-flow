@@ -1,7 +1,7 @@
 <template>
   <div class="combo_recharge">
     <el-card style="margin-bottom: 20px" shadow="never">
-      <el-form :inline="true" :model="formInline" size="small">
+      <el-form class="search-form" :inline="true" :model="formInline" size="small">
         <el-form-item label="机构名称">
           <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
@@ -9,9 +9,7 @@
         </el-form-item>
         <el-form-item label="付款方式">
           <el-select v-model="formInline.pay_way" placeholder="请选择">
-            <el-option label="支付宝" value="0"></el-option>
-            <el-option label="微信" value="1"></el-option>
-            <el-option label="其他" value="2"></el-option>
+            <el-option v-for="(item, index) in payMethodSelect" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="起止日期">
@@ -132,6 +130,7 @@ export default {
   computed: {
     ...mapState({
       orgs: 'orgs',
+      payMethodSelect: 'payMethodSelect'
     })
   }
 }

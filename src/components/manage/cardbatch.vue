@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card class="box-card" style="margin-bottom: 20px" shadow="never">
-      <el-form :inline="true" :model="formInline" class="demo-form-inline" size="small">
+      <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item label="批次编号">
           <el-input v-model="formInline.bt_code" placeholder="请输入"></el-input>
         </el-form-item>

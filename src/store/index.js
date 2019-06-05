@@ -14,6 +14,7 @@ const state = {
   orgs: [], // 机构列表
   months: [], // 月份列表
   notifysFrom: [], // 通知来源
+  payMethodSelect: [], // 付款方式
   exceedSelect: [{ value: '1', label: '未过期' }, { value: '0', label: '已过期' }], // 下拉选择是否过期
   paySelect: [{ value: '1', label: '未支付' }, { value: '0', label: '已支付' }], // 下拉选择是否支付
   unicomDiffSelect: [{ value: '150', label: '>=150M' }, { value: '200', label: '>=200M' }, { value: '500', label: '>=500M' }, { value: '750', label: '>=750M' }, { value: '1024', label: '>=1G' }, { value: '2048', label: '>=2G' }, { value: '3072', label: '>=3G' }, { value: '4096', label: '>=4G' }], // 下拉选择日差异流量

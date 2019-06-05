@@ -23,6 +23,7 @@ class AXIOS {
       getOrgs: '/fc/api/select/api/select/orgs',
       getMonths: '/fc/api/select/api/select/stats/getMonths',
       getNotifySelect: '/fc/api/select/api/select/notifyFrom/select',
+      getPayMethodSelect: '/fc/api/select/api/select/payMethod/select',
       // table列表
       getStats: '/fc/api/gprs/stats/',
       getHalt: '/fc/api/gprs/halt/',
@@ -33,6 +34,8 @@ class AXIOS {
       getUnicomStat: '/fc/api/gprs/unicomStat/',
       getPayOnline: '/fc/api/gprs/payOnline/',
       getNotifysFrom: '/fc/api/gprs/notifyFrom/',
+      getOrgPayReport: '/fc/api/gprs/report/orgPayReport',
+      getReport: '/fc/api/gprs/report/',
       // 明细
       getOnOffLogDetail: '/fc/api/gprs/onoffLog/detail',
       getNotifyFromOrg: '/fc/api/gprs/notifyFrom/org',

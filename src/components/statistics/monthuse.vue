@@ -1,7 +1,7 @@
 <template>
   <div class="month_used">
     <el-card style="margin-bottom: 20px" shadow="never">
-      <el-form :inline="true" :model="formInline" class="demo-form-inline" size="small">
+      <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item label="卡ICCID">
           <el-input v-model="formInline.card_iccid" placeholder="请输入卡的iccid"></el-input>
         </el-form-item>

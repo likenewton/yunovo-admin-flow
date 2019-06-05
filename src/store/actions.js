@@ -38,5 +38,15 @@ export default {
         context.commit('SET_NOTIFYSFROM', { notifysFrom: res.data })
       }
     })
+  },
+  // 支付方式
+  getPayMethodSelect(context) {
+    _axios.send({
+      method: 'get',
+      url: _axios.ajaxAd.getPayMethodSelect,
+      done: (res) => {
+        context.commit('SET_PAYMETHODSELECT', { payMethodSelect: res.data })
+      }
+    })
   }
 }

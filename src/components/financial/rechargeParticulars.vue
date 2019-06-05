@@ -1,7 +1,7 @@
 <template>
   <div class="recharge_particulars">
     <el-card style="margin-bottom: 20px" shadow="never">
-      <el-form :inline="true" :model="formInline" class="demo-form-inline" size="small">
+      <el-form class="search-form" :inline="true" :model="formInline" size="small">
         <el-form-item label="订单编号">
           <el-input v-model="formInline.x1" placeholder="请输入订单编号"></el-input>
         </el-form-item>

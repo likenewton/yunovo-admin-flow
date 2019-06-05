@@ -1,17 +1,15 @@
 <template>
   <div class="jg_recharge">
     <el-card style="margin-bottom: 20px" shadow="never">
-      <el-form :inline="true" :model="formInline" size="small">
+      <el-form class="search-form" :inline="true" :model="formInline" size="small">
         <el-form-item label="机构名称">
           <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="付款方式">
-          <el-select v-model="formInline.pay_way" placeholder="请选择">
-            <el-option label="支付宝" value="0"></el-option>
-            <el-option label="微信" value="1"></el-option>
-            <el-option label="其他" value="2"></el-option>
+          <el-select v-model="formInline.pay_method" placeholder="请选择">
+            <el-option v-for="(item, index) in payMethodSelect" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="起止日期">
@@ -32,21 +30,33 @@
             <span v-else class="btn-link">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="pay_way" label="支付方式" min-width="100" sortable="custom"></el-table-column>
-        <el-table-column prop="pay_count" label="已付次数" min-width="100" sortable="custom"></el-table-column>
-        <el-table-column label="已付金额" min-width="110" sortable="custom">
+        <el-table-column prop="pay_method" label="支付方式" min-width="100" sortable="custom">
           <template slot-scope="scope">
-            <div>￥{{scope.row.pay_money|formatMoney}}</div>
+            <span>{{scope.row.pay_method_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="pay_rate" label="已付款率" min-width="100" sortable="custom"></el-table-column>
-        <el-table-column prop="nopay_count" label="未付次数" min-width="100" sortable="custom"></el-table-column>
-        <el-table-column label="未付金额" min-width="110" sortable="custom">
+        <el-table-column prop="paid_amount" label="已付次数" min-width="100" sortable="custom"></el-table-column>
+        <el-table-column prop="paid_money" label="已付金额" min-width="140" sortable="custom">
           <template slot-scope="scope">
-            <div>￥{{scope.row.nopay_money|formatMoney}}</div>
+            <div>￥{{scope.row.paid_money|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="nopay_rate" label="未付款率" min-width="100" sortable="custom"></el-table-column>
+        <el-table-column label="已付款率" min-width="100">
+          <template slot-scope="scope">
+            <span>{{(scope.row.paid_amount/scope.row.paid_count*100).toFixed(3)}}%</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="nopaid_amount" label="未付次数" min-width="100" sortable="custom"></el-table-column>
+        <el-table-column prop="nopaid_money" label="未付金额" min-width="140" sortable="custom">
+          <template slot-scope="scope">
+            <div>￥{{scope.row.nopaid_money|formatMoney}}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="未付款率" min-width="100">
+          <template slot-scope="scope">
+            <span>{{(scope.row.nopaid_amount/scope.row.paid_count*100).toFixed(3)}}%</span>
+          </template>
+        </el-table-column>
       </el-table>
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
@@ -99,22 +109,23 @@ export default {
     },
     // 获取列表数据
     getData() {
-      setTimeout(() => {
-        // 数据请求成功
-        this.list.data = [{
-          id: 0,
-          org_name: '卡仕特-西格玛',
-          pay_way: '微信',
-          pay_count: 12,
-          pay_money: 23453.23,
-          pay_rate: '54.25%',
-          nopay_count: 12,
-          nopay_money: 2123,
-          nopay_rate: '25.52%'
-        }]
-        this.list.total = this.list.data.length
-        this.loadData = false
-      }, 1000)
+      Api.UNITS.getListData({
+        vue: this,
+        url: _axios.ajaxAd.getOrgPayReport,
+        cb: (res) => {
+          let other = res.data.other || {}
+          if (this.list.data.length === 0) return
+          this.list.data.push(...[{
+            sums: true,
+            org_name: '总计',
+            paid_amount: other.paid_amount,
+            paid_money: other.paid_money,
+            nopaid_amount: other.nopaid_amount,
+            nopaid_money: other.nopaid_money,
+            paid_count: other.paid_count
+          }])
+        }
+      })
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,
     calcLeftTime: Api.UNITS.calcLeftTime
@@ -122,6 +133,7 @@ export default {
   computed: {
     ...mapState({
       orgs: 'orgs',
+      payMethodSelect: 'payMethodSelect'
     })
   }
 }

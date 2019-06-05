@@ -4,7 +4,7 @@
       <el-tabs @tab-click="changeTab">
         <el-tab-pane>
           <span slot="label">重置操作</span>
-          <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="126px" class="demo-ruleForm" size="small">
+          <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="126px" class="search-form" size="small">
             <el-form-item prop="iccid">
               <span slot="label">卡ICCID列表：</span>
               <el-input type="textarea" v-model="ruleForm.iccid" rows="8"></el-input>

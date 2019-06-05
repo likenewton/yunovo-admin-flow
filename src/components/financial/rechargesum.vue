@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card class="box-card" style="margin-bottom: 20px" shadow="never">
-      <el-form :inline="true" :model="formInline" class="demo-form-inline" size="small">
+      <el-form class="search-form" :inline="true" :model="formInline" size="small">
         <el-form-item label="机构名称">
           <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
@@ -25,32 +25,32 @@
             <span v-else class="btn-link">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="recharge_count" label="充值次数" min-width="110" sortable="custom"></el-table-column>
-        <el-table-column prop="fptotal_flow" label="分配总流量" min-width="110" sortable="custom">
+        <el-table-column prop="pay_count" label="充值次数" min-width="110" sortable="custom"></el-table-column>
+        <el-table-column prop="gprs_amount" label="分配总流量" min-width="110" sortable="custom">
           <template slot-scope="scope">
-            <div v-html="formatFlowUnit(scope.row.fptotal_flow)"></div>
+            <div v-html="formatFlowUnit(scope.row.gprs_amount)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="recharge_total" label="充值总金额" min-width="110" sortable="custom">
+        <el-table-column prop="money_count" label="充值总金额" min-width="110" sortable="custom">
           <template slot-scope="scope">
-            <div>￥{{scope.row.recharge_total|formatMoney}}</div>
+            <div>￥{{scope.row.money_count|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="repay_total" label="返利总金额" min-width="110" sortable="custom">
+        <el-table-column prop="rebate_money" label="返利总金额" min-width="110" sortable="custom">
           <template slot-scope="scope">
-            <div>￥{{scope.row.repay_total|formatMoney}}</div>
+            <div>￥{{scope.row.rebate_money|formatMoney}}</div>
           </template>
         </el-table-column>
         <el-table-column label="操作" min-width="80">
           <template slot-scope="scope">
-            <el-button v-if="!scope.row.sums" type="text" @click="$router.push({ name: 'iccidList' })">详情</el-button>
+            <el-button v-if="!scope.row.sums" type="text" @click="$router.push({ name: 'iccidList', query: { 'org_id': scope.row.org_id } })">详情</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
-    <el-card class="box-card clearfix" shadow="never">
+    <el-card class="box-card clearfix" shadow="never" v-loading="loadData">
       <el-tabs @tab-click="changeTab">
         <el-tab-pane>
           <span slot="label">充值次数</span>
@@ -152,8 +152,7 @@ export default {
           itemStyle: {
             normal: {
               color(params) {
-                const colorList = Api.UNITS.getColorList([], 60)
-                return colorList[params.dataIndex]
+                return Api.UNITS.getColorList([], 60)[params.dataIndex]
               }
             }
           }
@@ -200,7 +199,7 @@ export default {
     getData() {
       Api.UNITS.getListData({
         vue: this,
-        url: _axios.ajaxAd.getUnicomStat,
+        url: _axios.ajaxAd.getReport,
         cb: (res) => {
           let other = res.data.other || {}
           this.setOptionData()
@@ -208,11 +207,10 @@ export default {
           this.list.data.push(...[{
             sums: true,
             org_name: '总计',
-            card_count: other.card_count,
-            nonactivated: other.nonactivated,
-            activated: other.activated,
-            unicom_count: other.unicom_count,
-            month_count: other.month_count
+            gprs_amount: other.gprs_amount,
+            money_count: other.money_count,
+            pay_count: other.pay_count,
+            rebate_money: other.rebate_money
           }])
         }
       })
@@ -230,13 +228,13 @@ export default {
       this.list.data.forEach((v) => {
         if (this.tabIndex === '0' && !v.sums) {
           label.push(v.org_name)
-          data1.push(v.activated)
+          data1.push(v.pay_count)
         } else if (this.tabIndex === '1' && !v.sums) {
           label.push(v.org_name)
-          data1.push(v.activated)
+          data1.push(v.gprs_amount)
         } else if (this.tabIndex === '2' && !v.sums) {
           label.push(v.org_name)
-          data1.push(v.activated)
+          data1.push(v.money_count)
         }
       })
       // 绘图
