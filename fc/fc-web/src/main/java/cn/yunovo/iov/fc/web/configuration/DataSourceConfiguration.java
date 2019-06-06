@@ -47,12 +47,13 @@ public class DataSourceConfiguration {
         factoryBean.setPlugins(plugins);
         
         /*GlobalConfig global = new GlobalConfig();
-        global.getDbConfig().setTableUnderline(false);
+        global.set
         factoryBean.setGlobalConfig(global);*/
         
         //关闭驼峰规则匹配
         MybatisConfiguration mybatisConfiguration = new MybatisConfiguration();
         mybatisConfiguration.setMapUnderscoreToCamelCase(false);
+        mybatisConfiguration.setCacheEnabled(false);
         mybatisConfiguration.setLogImpl(Slf4jImpl.class);
         factoryBean.setConfiguration(mybatisConfiguration);
         return factoryBean.getObject();
