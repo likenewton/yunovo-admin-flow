@@ -11,18 +11,18 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@ApiModel(value = "OrgPayReportResultBean对象", description = "统计分析-联通情况查询结果bean")
-public class OrgPayReportResultBean {
+@ApiModel(value = "MonthPayReportResultBean对象", description = "统计分析-联通情况查询结果bean")
+public class MonthPayReportResultBean {
 
 	
 	@ApiModelProperty(value = "总充值数")
-	private Integer paid_count;
+	private Integer pay_count;
 	
 	@ApiModelProperty(value = "已付次数")
-	private Integer paid_amount;
+	private Integer paid_count;
 	
 	@ApiModelProperty(value = "未付次数")
-	private Integer nopaid_amount;
+	private Integer nopaid_count;
 	
 	@ApiModelProperty(value = "分配总流量")
 	private BigDecimal gprs_amount;
@@ -38,17 +38,11 @@ public class OrgPayReportResultBean {
 	
 	@ApiModelProperty(value = "机构id")
 	private Integer org_id;
-	
-	@ApiModelProperty(value = "支付方式")
-	private Integer pay_method;
-	
+
 	@ApiModelProperty(value = "交易月份")
 	private String mdate;
 	
 	@ApiModelProperty(value = "机构名称")
 	private String org_name;
-	
-	@ApiModelProperty(value = "支付方式名称")
-	private String pay_method_name;
-	
+
 }

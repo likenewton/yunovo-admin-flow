@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import cn.yunovo.iov.fc.model.entity.CcGprsPay;
+import cn.yunovo.iov.fc.model.result.MonthPayReportResultBean;
 import cn.yunovo.iov.fc.model.result.OrgPayReportResultBean;
 import cn.yunovo.iov.fc.model.result.PayCountResultBean;
 import cn.yunovo.iov.fc.model.result.PayListTotalResulBean;
@@ -49,5 +50,18 @@ public interface ICcGprsPayMapper extends BaseMapper<CcGprsPay> {
 	public List<PayPackResultBean> getPayPackPage(IPage<PayPackResultBean> page, @Param("org_id")Integer org_id, @Param("pay_method")Short pay_method, @Param("date_start")String date_start, @Param("date_end")String date_end,  @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 	
 	public PayPackResultBean getPayPackTotal(@Param("org_id")Integer org_id, @Param("pay_method")Short pay_method, @Param("date_start")String date_start, @Param("date_end")String date_end,  @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	
+	/**
+	 * 财务报表-月度充值统计
+	 * @param page
+	 * @param org_id
+	 * @param pay_method
+	 * @param date_start
+	 * @param date_end
+	 * @param orgpos
+	 * @param orgs
+	 * @return
+	 */
+	public List<MonthPayReportResultBean> getMonthCountPage(IPage<MonthPayReportResultBean> page, @Param("org_id")Integer org_id, @Param("mdate")String mdate,  @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 	
 }

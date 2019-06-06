@@ -7,6 +7,7 @@ import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcGprsPay;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
+import cn.yunovo.iov.fc.model.result.MonthPayReportResultBean;
 import cn.yunovo.iov.fc.model.result.OrgPayReportResultBean;
 import cn.yunovo.iov.fc.model.result.PayCountResultBean;
 import cn.yunovo.iov.fc.model.result.PayListTotalResulBean;
@@ -320,6 +321,52 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 		}
 
 		p.setOther(iCcGprsPayMapper.getPayPackTotal(org_id, pay_method, date_start, date_end, orgpos, orgpos.split(",")));
+		page.setRecords(records);
+		p.setPage(page);
+
+		return p;
+	}
+
+	@Override
+	public PageData<MonthPayReportResultBean, OrgPayReportResultBean> getMonthCountPage(PageForm pageForm,
+			Integer org_id, String mdate, LoginInfo info) {
+		
+		// 组装分页参数
+		Page<MonthPayReportResultBean> page = new Page<>();
+		page.setCurrent(pageForm.getCurrent());
+		page.setSize(pageForm.getSize());
+
+		if (ArrayUtils.isEmpty(pageForm.getAscs()) && ArrayUtils.isEmpty(pageForm.getDescs())) {
+		   page.setAsc("gprs_price");
+		} else {
+			page.setAsc(pageForm.getAscs());
+			page.setDesc(pageForm.getDescs());
+		}
+		PageData<MonthPayReportResultBean, OrgPayReportResultBean> p = new PageData<>();
+		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
+		if (StringUtils.isEmpty(orgpos)) {
+			page.setTotal(0);
+			page.setRecords(null);
+			p.setPage(page);
+			return p;
+		}
+		
+		List<MonthPayReportResultBean> records = iCcGprsPayMapper.getMonthCountPage(page, org_id, mdate, orgpos, orgpos.split(","));
+
+		if (CollectionUtils.isEmpty(records)) {
+			page.setTotal(0);
+			page.setRecords(null);
+			p.setPage(page);
+			p.setOther(null);
+			return p;
+		}
+		
+		Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
+		for (MonthPayReportResultBean monthPay : records) {
+			monthPay.setOrg_name(orgs.get(String.valueOf(monthPay.getOrg_id())).getName());
+		}
+
+		p.setOther(iCcGprsPayMapper.getOrgPayReportTotal(org_id, null, null, null, mdate, orgpos, orgpos.split(",")));
 		page.setRecords(records);
 		p.setPage(page);
 

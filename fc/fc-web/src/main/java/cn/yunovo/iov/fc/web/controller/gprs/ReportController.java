@@ -11,6 +11,7 @@ import cn.yunovo.iov.fc.common.utils.ResultUtil;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcGprsPay;
+import cn.yunovo.iov.fc.model.result.MonthPayReportResultBean;
 import cn.yunovo.iov.fc.model.result.OrgPayReportResultBean;
 import cn.yunovo.iov.fc.model.result.PayCountResultBean;
 import cn.yunovo.iov.fc.model.result.PayDetailResultBean;
@@ -110,6 +111,19 @@ public class ReportController extends BaseController{
 	public Result<PageData<PayPackResultBean, PayPackResultBean>> getPayPackPage(PageForm pageForm, Short pay_method,Integer org_id, String date_start, String date_end) {
 		
 		PageData<PayPackResultBean, PayPackResultBean>  data = iCcGprsPayService.getPayPackPage(pageForm, pay_method, org_id, date_start, date_end, this.getLoginBaseInfo());
+		return ResultUtil.success(data);
+	}
+	
+	
+	@ApiOperation(value = "财务报表-充值月度统计")
+	@ApiImplicitParams(value = {
+			@ApiImplicitParam(name = "mdate", value = "统计月份 YYYY-MM", required = false, dataType = "String", paramType = "query"),
+			@ApiImplicitParam(name = "org_id", value = "机构id", required = false, dataType = "int", paramType = "query")
+			})
+	@RequestMapping(path = "/monthReport", method = { RequestMethod.GET, RequestMethod.POST })
+	public Result<PageData<MonthPayReportResultBean, OrgPayReportResultBean>> getMonthCountPage(PageForm pageForm, Integer org_id, String mdate) {
+		
+		PageData<MonthPayReportResultBean, OrgPayReportResultBean>  data = iCcGprsPayService.getMonthCountPage(pageForm, org_id, mdate, this.getLoginBaseInfo());
 		return ResultUtil.success(data);
 	}
 	
