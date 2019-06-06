@@ -465,6 +465,54 @@
 
 		</choose>
 		
+	</select>
+	
+	<select id="getMonthCountPage" resultType="cn.yunovo.iov.fc.model.result.PayPackResultBean">
+	<![CDATA[ 
+		SELECT org_id, SUM(IF(is_paid = 1, 1, 0)) AS paid_count, SUM(IF(is_paid = 0, 1, 0)) AS nopaid_count,
+		SUM(IF(is_paid = 1 AND gprs_amount < 9999999, gprs_amount, 0)) AS gprs_amount, SUM(IF(is_paid = 1, gprs_price, 0)) AS paid_money,
+		SUM(IF(is_paid = 0, gprs_price, 0)) AS nopaid_money, SUM(rebate_money) AS rebate_money, LEFT(time_added, 7) AS mdate FROM {$this->_opt} WHERE pay_method > 0
+	]]>		
+		<choose>
+
+			<when test="org_id != null">
+				AND P.org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND P.org_id IN
+						<foreach collection="orgs" item="id" index="index" open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+		
+		<if test="date_start != null">
+			<![CDATA[  AND time_added >= #{date_start} ]]>
+		</if>
+
+		<if test="date_end != null">
+			<![CDATA[ AND time_added <= #{date_end} ]]>
+		</if>
+		
+		<choose>
+
+			<when test="pay_method != null">
+				AND pay_method = #{pay_method}
+			</when>
+			<otherwise>
+				AND pay_method > 0
+			</otherwise>
+
+		</choose>
+		
 		 GROUP BY gprs_price, gprs_amount
 		
 	</select>
