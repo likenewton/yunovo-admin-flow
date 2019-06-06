@@ -9,7 +9,9 @@ import cn.yunovo.iov.fc.model.entity.CcGprsPay;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
 import cn.yunovo.iov.fc.model.result.OrgPayReportResultBean;
 import cn.yunovo.iov.fc.model.result.PayCountResultBean;
+import cn.yunovo.iov.fc.service.ICcGprsCardService;
 import cn.yunovo.iov.fc.service.ICcGprsPayService;
+import cn.yunovo.iov.fc.service.ICcNotifyService;
 import cn.yunovo.iov.fc.service.ICcOrgService;
 import cn.yunovo.iov.fc.service.ICcUserService;
 
@@ -17,7 +19,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +54,12 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 	
 	@Autowired
 	private ICcGprsPayMapper iCcGprsPayMapper;
+	
+	@Autowired
+	private ICcNotifyService iCcNotifyService;
+	
+	@Autowired
+	private ICcGprsCardService iCcGprsCardService;
 	
 	@Override
 	public PageData<PayCountResultBean, PayCountResultBean> getPayCountPage(PageForm pageForm, Integer org_id, String date_start,
@@ -192,6 +199,75 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 
 	public void setArr_pay_method(Map<String, String> arr_pay_method) {
 		this.arr_pay_method = arr_pay_method;
+	}
+
+	@Override
+	public PageData<CcGprsPay, CcGprsPay> getPayListPage(PageForm pageForm, Integer org_id, String pay_sn,
+			String card_iccid, Integer card_id, Integer card_type, String transfer_id, Double gprs_amount,
+			String pay_from, Short pay_method, Short is_paid, String date_start, String date_end, String paid_start,
+			String paid_end, LoginInfo info) {
+		
+		// 组装分页参数
+		Page<CcGprsPay> page = new Page<>();
+		page.setCurrent(pageForm.getCurrent());
+		page.setSize(pageForm.getSize());
+
+		if (ArrayUtils.isEmpty(pageForm.getAscs()) && ArrayUtils.isEmpty(pageForm.getDescs())) {
+			// page.setAsc(");
+		} else {
+			page.setAsc(pageForm.getAscs());
+			page.setDesc(pageForm.getDescs());
+		}
+		PageData<CcGprsPay, CcGprsPay> p = new PageData<>();
+		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
+		if (StringUtils.isEmpty(orgpos)) {
+			page.setTotal(0);
+			page.setRecords(null);
+			p.setPage(page);
+			return p;
+		}
+
+		if (StringUtils.isNotEmpty(date_start)) {
+			date_start = date_start + " 00:00:00";
+		}
+
+		if (StringUtils.isNotEmpty(date_end)) {
+			date_end = date_end + " 23:59:59";
+		}
+		
+		if (StringUtils.isNotEmpty(paid_start)) {
+			paid_start = date_start + " 00:00:00";
+		}
+
+		if (StringUtils.isNotEmpty(paid_end)) {
+			paid_end = date_end + " 23:59:59";
+		}
+
+		List<CcGprsPay> records = iCcGprsPayMapper.getPayListPage(page, org_id, pay_sn, card_iccid, card_id, card_type, transfer_id, gprs_amount, pay_from, pay_method, is_paid, date_start, date_end, paid_start, paid_end, orgpos, orgpos.split(","));
+
+		if (CollectionUtils.isEmpty(records)) {
+			page.setTotal(0);
+			page.setRecords(null);
+			p.setPage(page);
+			p.setOther(null);
+			return p;
+		}
+
+		Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
+		Map<String, String>  arr_pay_method = this.getArr_pay_method();
+		Map<String, String> ntfType = iCcNotifyService.getArr_ntf_type();
+		Map<String, String> card_types = iCcGprsCardService.getCard_type();
+		for (CcGprsPay ccGprsPay : records) {
+			ccGprsPay.setOrg_name(orgs.get(String.valueOf(ccGprsPay.getOrg_id())).getName());
+			ccGprsPay.setPay_method_name(arr_pay_method.get(String.valueOf(ccGprsPay.getPay_method())));
+			ccGprsPay.setPay_from_name(ntfType.get(StringUtils.defaultIfEmpty(ccGprsPay.getPay_from(), "unknown")));
+			ccGprsPay.setCard_type_name(card_types.get(String.valueOf(ccGprsPay.getCard_type())));
+		}
+
+		page.setRecords(records);
+		p.setPage(page);
+
+		return p;
 	}
 	
 	

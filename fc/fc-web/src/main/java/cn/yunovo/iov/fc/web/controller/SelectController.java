@@ -15,6 +15,7 @@ import cn.yunovo.iov.fc.common.utils.ResultUtil;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcUser;
+import cn.yunovo.iov.fc.service.ICcGprsPackService;
 import cn.yunovo.iov.fc.service.ICcGprsPayService;
 import cn.yunovo.iov.fc.service.ICcNotifyService;
 import cn.yunovo.iov.fc.service.ICcOrgService;
@@ -42,6 +43,9 @@ public class SelectController extends BaseController{
 	
 	@Autowired
 	private ICcGprsPayService iCcGprsPayService;
+	
+	@Autowired
+	private ICcGprsPackService iCcGprsPackService;
 	
 	public static List<SelectBean> CARD_TYPES = new ArrayList<>();
 	
@@ -120,5 +124,11 @@ public class SelectController extends BaseController{
 		return ResultUtil.success("ok", months);
 	}
 	
-	
+	@ApiOperation(notes="财务报表-套餐流量", value = "财务报表-套餐流量")
+	@RequestMapping(path="/api/select/pack", method= {RequestMethod.GET})
+	public Result<List<SelectBean>> getPacks() {
+		
+		List<SelectBean> months = iCcGprsPackService.select(this.getLoginBaseInfo());
+		return ResultUtil.success("ok", months);
+	}
 }

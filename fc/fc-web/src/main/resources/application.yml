@@ -126,7 +126,7 @@ casClient:
     signingKeySize: 512
     encryptionKey: GPSAnpFr7BLttXAZjVKbnks-QKfEFBfZqeHmUyKk5TBTG5fNtesETWU_b5YcXVud
     encryptionKeySize: 256
-    effectiveTimeSec: 3600
+    effectiveTimeSec: 360000
     cryptoAlg: "A192CBC-HS384"
   ticketValidation: 
     proxyReceptorUrl: 

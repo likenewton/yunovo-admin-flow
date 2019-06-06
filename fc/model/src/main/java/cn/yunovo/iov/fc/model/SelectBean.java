@@ -20,9 +20,9 @@ public class SelectBean implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@ApiModelProperty(value="显示的文本内容")
-	private String label;
+	private Object label;
 	
 	@ApiModelProperty(value="select value")
-	private String value;
+	private Object value;
 	
 }

@@ -92,5 +92,23 @@ public class CcGprsPay implements Serializable {
 	@TableField(exist=false)
 	@ApiModelProperty(value = "支付方式名称")
 	private String pay_method_name;
+	
+	@TableField(exist=false)
+	@ApiModelProperty(value = "机构名称")
+	private Integer card_type;
+	
+	@TableField(exist=false)
+	@ApiModelProperty(value = "卡商名称")
+	private String card_type_name;
+	
+	@TableField(exist=false)
+	@ApiModelProperty(value = "流量卡号")
+	private String card_iccid;
+	
+	@TableField(exist=false)
+	@ApiModelProperty(value = "订单来源中文名称")
+	private String pay_from_name;
+	
+	
 
 }

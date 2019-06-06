@@ -1,6 +1,7 @@
 package cn.yunovo.iov.fc.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -25,5 +26,7 @@ public interface ICcNotifyService extends IService<CcNotify> {
 	public PageData<CcNotify,Object> getItemsOrgPage(PageForm pageForm, String ntf_type, Integer org_id, String ntf_date, LoginInfo info);
 
 	List<SelectBean> select();
+	
+	Map<String, String> getArr_ntf_type();
 	
 }
