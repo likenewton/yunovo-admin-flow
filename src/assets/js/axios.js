@@ -39,6 +39,7 @@ class AXIOS {
       getReport: '/fc/api/gprs/report/',
       getPayListPage: '/fc/api/gprs/report/getPayListPage',
       getpayPack: '/fc/api/gprs/report/payPack',
+      getMonthReport: '/fc/api/gprs/report/monthReport',
       // 明细
       getOnOffLogDetail: '/fc/api/gprs/onoffLog/detail',
       getNotifyFromOrg: '/fc/api/gprs/notifyFrom/org',
@@ -46,6 +47,8 @@ class AXIOS {
       getPayDetail: '/fc/api/gprs/report/payDetail',
       // 导出
       statsExport: '/fc/api/gprs/stats/export',
+      // 图表
+      getPayPie: '/fc/api/gprs/report/paylog/chart',
     }
   }
 

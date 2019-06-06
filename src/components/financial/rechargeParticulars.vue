@@ -22,17 +22,17 @@
           </el-select>
         </el-form-item>
         <el-form-item label="订单来源">
-          <el-select v-model="formInline.pay_from" filterable placeholder="请选择">
+          <el-select v-model="formInline.pay_from" filterable clearable placeholder="请选择">
             <el-option v-for="(item, index) in notifysFrom" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="支付状态">
-          <el-select v-model="formInline.is_paid" placeholder="请选择">
+          <el-select v-model="formInline.is_paid" filterable clearable placeholder="请选择">
             <el-option v-for="(item, index) in paySelect" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="套餐流量">
-          <el-select v-model="formInline.gprs_amount" placeholder="请选择">
+          <el-select v-model="formInline.gprs_amount" filterable clearable placeholder="请选择">
             <el-option v-for="(item, index) in gprsAmount" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
@@ -127,9 +127,7 @@ export default {
         currentPage: 1,
         total: 0,
       },
-      formInline: {
-        org_id: '2'
-      },
+      formInline: {},
       sort: {},
       maxTableHeight: Api.UNITS.maxTableHeight(),
       // 要展开的对话框的参数
@@ -206,15 +204,7 @@ export default {
         },
         legend: {
           top: 40,
-          data: ['微信', '支付宝', '充值卡', '银行转账', '已付款', '未付款'],
-          selected: {
-            '微信': true,
-            '支付宝': true,
-            '充值卡': false,
-            '银行转账': false,
-            '已付款': true,
-            '未付款': true
-          }
+          data: ['微信', '支付宝', '已付款', '未付款'],
         },
         series: [{
           name: '支付方式',
@@ -251,7 +241,7 @@ export default {
           itemStyle: {
             normal: {
               color(params) {
-                return Api.UNITS.getColorList(['editor', 'danger'])[params.dataIndex]
+                return Api.UNITS.getColorList(['danger', 'editor'])[params.dataIndex]
               }
             },
             emphasis: {
@@ -322,10 +312,37 @@ export default {
     // 获取图表数据
     getEchartsData() {
       this.dialogPara.loadDialog = true
-      setTimeout(() => {
-        this.myChart.setOption(this.option)
-        this.dialogPara.loadDialog = false
-      }, 1000)
+      _axios.send({
+        methods: 'get',
+        url: _axios.ajaxAd.getPayPie,
+        params: Object.assign({}, this.formInline),
+        done: (res) => {
+          this.dialogPara.loadDialog = false
+          let legend = this.option.legend.data = []
+          let data1 = this.option.series[0].data = []
+          let data2 = this.option.series[1].data = []
+          let methodChart = res.data.methodChart || []
+          let paidChart = res.data.paidChart || []
+          if (methodChart.length === 0 && paidChart.length === 0) {
+            this.$message('暂无数据！')
+          }
+          methodChart.forEach((v) => {
+            legend.push(v.name)
+            data1.push({
+              value: v.value,
+              name: v.name
+            })
+          })
+          paidChart.forEach((v) => {
+            legend.push(this.paySelect.filter((v1) => v1.value == v.name)[0].label)
+            data2.push({
+              value: v.value,
+              name: this.paySelect.filter((v1) => v1.value == v.name)[0].label
+            })
+          })
+          this.myChart.setOption(this.option)
+        }
+      })
     },
     getGprsAmount() {
       _axios.send({
@@ -352,7 +369,8 @@ export default {
       orgs: 'orgs',
       notifysFrom: 'notifysFrom',
       paySelect: 'paySelect',
-      payMethodSelect: 'payMethodSelect'
+      payMethodSelect: 'payMethodSelect',
+      paySelect: 'paySelect'
     })
   }
 }
