@@ -287,7 +287,7 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 		page.setSize(pageForm.getSize());
 
 		if (ArrayUtils.isEmpty(pageForm.getAscs()) && ArrayUtils.isEmpty(pageForm.getDescs())) {
-			// page.setAsc(");
+		   page.setAsc("gprs_price");
 		} else {
 			page.setAsc(pageForm.getAscs());
 			page.setDesc(pageForm.getDescs());
