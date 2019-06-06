@@ -415,7 +415,7 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 		
 		List<PayListChartDataResultBean> methodChart = iCcGprsPayMapper.getMethodChart(org_id, pay_sn, card_iccid, card_id, card_type, transfer_id, gprs_amount, pay_from, pay_method, is_paid, date_start, date_end, paid_start, paid_end, orgpos, orgpos.split(","));
 		
-		if (CollectionUtils.isEmpty(methodChart)) {
+		if (!CollectionUtils.isEmpty(methodChart)) {
 			for (PayListChartDataResultBean payListChartDataResultBean : methodChart) {
 				payListChartDataResultBean.setName(arr_pay_method.get(payListChartDataResultBean.getName()));
 			}
