@@ -10,6 +10,7 @@ import cn.yunovo.iov.fc.model.entity.CcOrg;
 import cn.yunovo.iov.fc.model.result.OrgPayReportResultBean;
 import cn.yunovo.iov.fc.model.result.PayCountResultBean;
 import cn.yunovo.iov.fc.model.result.PayListTotalResulBean;
+import cn.yunovo.iov.fc.model.result.PayPackResultBean;
 import cn.yunovo.iov.fc.service.ICcGprsCardService;
 import cn.yunovo.iov.fc.service.ICcGprsPayService;
 import cn.yunovo.iov.fc.service.ICcNotifyService;
@@ -227,6 +228,10 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 			p.setPage(page);
 			return p;
 		}
+		
+		if(StringUtils.isNotEmpty(pay_from)) {
+			pay_from = iCcNotifyService.getNtfType(pay_from);
+		}
 
 		if (StringUtils.isNotEmpty(date_start)) {
 			date_start = date_start + " 00:00:00";
@@ -266,6 +271,55 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 		}
 
 		p.setOther(iCcGprsPayMapper.getPayListTotal(org_id, pay_sn, card_iccid, card_id, card_type, transfer_id, gprs_amount, pay_from, pay_method, is_paid, date_start, date_end, paid_start, paid_end, orgpos, orgpos.split(",")));
+		page.setRecords(records);
+		p.setPage(page);
+
+		return p;
+	}
+
+	@Override
+	public PageData<PayPackResultBean, PayPackResultBean> getPayPackPage(PageForm pageForm, Short pay_method,
+			Integer org_id, String date_start, String date_end, LoginInfo info) {
+		
+		// 组装分页参数
+		Page<PayPackResultBean> page = new Page<>();
+		page.setCurrent(pageForm.getCurrent());
+		page.setSize(pageForm.getSize());
+
+		if (ArrayUtils.isEmpty(pageForm.getAscs()) && ArrayUtils.isEmpty(pageForm.getDescs())) {
+			// page.setAsc(");
+		} else {
+			page.setAsc(pageForm.getAscs());
+			page.setDesc(pageForm.getDescs());
+		}
+		PageData<PayPackResultBean, PayPackResultBean> p = new PageData<>();
+		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
+		if (StringUtils.isEmpty(orgpos)) {
+			page.setTotal(0);
+			page.setRecords(null);
+			p.setPage(page);
+			return p;
+		}
+
+		if (StringUtils.isNotEmpty(date_start)) {
+			date_start = date_start + " 00:00:00";
+		}
+
+		if (StringUtils.isNotEmpty(date_end)) {
+			date_end = date_end + " 23:59:59";
+		}
+		
+		List<PayPackResultBean> records = iCcGprsPayMapper.getPayPackPage(page, org_id, pay_method, date_start, date_end, orgpos, orgpos.split(","));
+
+		if (CollectionUtils.isEmpty(records)) {
+			page.setTotal(0);
+			page.setRecords(null);
+			p.setPage(page);
+			p.setOther(null);
+			return p;
+		}
+
+		p.setOther(iCcGprsPayMapper.getPayPackTotal(org_id, pay_method, date_start, date_end, orgpos, orgpos.split(",")));
 		page.setRecords(records);
 		p.setPage(page);
 

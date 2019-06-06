@@ -29,4 +29,6 @@ public interface ICcNotifyService extends IService<CcNotify> {
 	
 	Map<String, String> getArr_ntf_type();
 	
+	String getNtfType(String notify_type);
+	
 }

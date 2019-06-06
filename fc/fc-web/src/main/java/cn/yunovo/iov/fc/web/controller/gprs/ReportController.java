@@ -15,6 +15,7 @@ import cn.yunovo.iov.fc.model.result.OrgPayReportResultBean;
 import cn.yunovo.iov.fc.model.result.PayCountResultBean;
 import cn.yunovo.iov.fc.model.result.PayDetailResultBean;
 import cn.yunovo.iov.fc.model.result.PayListTotalResulBean;
+import cn.yunovo.iov.fc.model.result.PayPackResultBean;
 import cn.yunovo.iov.fc.service.ICcGprsCardService;
 import cn.yunovo.iov.fc.service.ICcGprsPayService;
 import cn.yunovo.iov.fc.web.controller.BaseController;
@@ -94,6 +95,21 @@ public class ReportController extends BaseController{
 	public Result<PageData<PayDetailResultBean, PayDetailResultBean>> getPayDetailPage(PageForm pageForm, Integer org_id, String date_start, String date_end) {
 		
 		PageData<PayDetailResultBean, PayDetailResultBean>  data = iCcGprsCardService.getPayDetailPage(pageForm, org_id, date_start, date_end, this.getLoginBaseInfo());
+		return ResultUtil.success(data);
+	}
+	
+	
+	@ApiOperation(value = "财务报表-套餐充值统计")
+	@ApiImplicitParams(value = {
+			@ApiImplicitParam(name = "date_start", value = "开始日期 YYYY-MM-DD", required = false, dataType = "String", paramType = "query"),
+			@ApiImplicitParam(name = "date_end", value = "结束日期 YYYY-MM-DD", required = false, dataType = "String", paramType = "query"),
+			@ApiImplicitParam(name = "pay_method", value = "付款方式", required = false, dataType = "int", paramType = "query"),
+			@ApiImplicitParam(name = "org_id", value = "机构id", required = false, dataType = "int", paramType = "query")
+			})
+	@RequestMapping(path = "/payPack", method = { RequestMethod.GET, RequestMethod.POST })
+	public Result<PageData<PayPackResultBean, PayPackResultBean>> getPayPackPage(PageForm pageForm, Short pay_method,Integer org_id, String date_start, String date_end) {
+		
+		PageData<PayPackResultBean, PayPackResultBean>  data = iCcGprsPayService.getPayPackPage(pageForm, pay_method, org_id, date_start, date_end, this.getLoginBaseInfo());
 		return ResultUtil.success(data);
 	}
 	
