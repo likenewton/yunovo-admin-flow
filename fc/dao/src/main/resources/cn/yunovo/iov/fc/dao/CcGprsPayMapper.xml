@@ -280,7 +280,7 @@
 		
 	</select>
 	
-	<select id="getPayListTotal" resultType="cn.yunovo.iov.fc.model.entity.CcGprsPay">
+	<select id="getPayListTotal" resultType="cn.yunovo.iov.fc.model.result.PayListTotalResulBean">
 	<![CDATA[ 
 		SELECT  COUNT(P.pay_id) AS gprs_cards, SUM(IF(gprs_amount < 9999999, gprs_amount, 0.1)) AS gprs_amount, SUM(gprs_price) AS gprs_price, SUM(rebate_money) AS rebate_money  FROM cc_gprs_pay P LEFT JOIN cc_gprs_card C ON P.card_id = C.card_id WHERE 1=1
 		]]>

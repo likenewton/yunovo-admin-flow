@@ -65,7 +65,7 @@ public class ReportController extends BaseController{
 	@ApiImplicitParams(value = {
 			@ApiImplicitParam(name = "date_start", value = "充值时间-开始日期 YYYY-MM-DD", required = false, dataType = "String", paramType = "query"),
 			@ApiImplicitParam(name = "date_end", value = "充值时间-结束日期 YYYY-MM-DD", required = false, dataType = "String", paramType = "query"),
-			@ApiImplicitParam(name = "pay_sn", value = "付款方式", required = false, dataType = "String", paramType = "query"),
+			@ApiImplicitParam(name = "pay_sn", value = "订单编号", required = false, dataType = "String", paramType = "query"),
 			@ApiImplicitParam(name = "card_iccid", value = "流量卡号", required = false, dataType = "String", paramType = "query"),
 			@ApiImplicitParam(name = "card_type", value = "卡商类型", required = false, dataType = "int", paramType = "query"),
 			@ApiImplicitParam(name = "transfer_id", value = "支付流水号", required = false, dataType = "String", paramType = "query"),
