@@ -10,6 +10,7 @@ import cn.yunovo.iov.fc.model.entity.CcOrg;
 import cn.yunovo.iov.fc.model.result.MonthPayReportResultBean;
 import cn.yunovo.iov.fc.model.result.OrgPayReportResultBean;
 import cn.yunovo.iov.fc.model.result.PayCountResultBean;
+import cn.yunovo.iov.fc.model.result.PayListChartDataResultBean;
 import cn.yunovo.iov.fc.model.result.PayListTotalResulBean;
 import cn.yunovo.iov.fc.model.result.PayPackResultBean;
 import cn.yunovo.iov.fc.service.ICcGprsCardService;
@@ -22,6 +23,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -371,6 +373,56 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 		p.setPage(page);
 
 		return p;
+	}
+
+	@Override
+	public Map<String, List<PayListChartDataResultBean>> getPaylogChart(Integer org_id,
+			String pay_sn, String card_iccid, Integer card_id, Integer card_type, String transfer_id,
+			Double gprs_amount, String pay_from, Short pay_method, Short is_paid, String date_start, String date_end,
+			String paid_start, String paid_end, LoginInfo info) {
+		
+		Map<String, List<PayListChartDataResultBean>> data = new HashMap<>();
+		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
+		if (StringUtils.isEmpty(orgpos)) {
+			return data;
+		}
+		
+		if(StringUtils.isNotEmpty(pay_from)) {
+			pay_from = iCcNotifyService.getNtfType(pay_from);
+		}
+
+		if (StringUtils.isNotEmpty(date_start)) {
+			date_start = date_start + " 00:00:00";
+		}
+
+		if (StringUtils.isNotEmpty(date_end)) {
+			date_end = date_end + " 23:59:59";
+		}
+		
+		if (StringUtils.isNotEmpty(paid_start)) {
+			paid_start = date_start + " 00:00:00";
+		}
+
+		if (StringUtils.isNotEmpty(paid_end)) {
+			paid_end = date_end + " 23:59:59";
+		}
+
+		
+		
+		List<PayListChartDataResultBean> paidChart = iCcGprsPayMapper.getPaidChart(org_id, pay_sn, card_iccid, card_id, card_type, transfer_id, gprs_amount, pay_from, pay_method, is_paid, date_start, date_end, paid_start, paid_end, orgpos, orgpos.split(","));
+		data.put("paidChart", paidChart);
+		Map<String, String>  arr_pay_method = this.getArr_pay_method();
+		
+		List<PayListChartDataResultBean> methodChart = iCcGprsPayMapper.getMethodChart(org_id, pay_sn, card_iccid, card_id, card_type, transfer_id, gprs_amount, pay_from, pay_method, is_paid, date_start, date_end, paid_start, paid_end, orgpos, orgpos.split(","));
+		
+		if (CollectionUtils.isEmpty(methodChart)) {
+			for (PayListChartDataResultBean payListChartDataResultBean : methodChart) {
+				payListChartDataResultBean.setName(arr_pay_method.get(payListChartDataResultBean.getName()));
+			}
+		}
+		data.put("methodChart", methodChart);
+		
+		return data;
 	}
 	
 	

@@ -1,6 +1,7 @@
 package cn.yunovo.iov.fc.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -14,6 +15,7 @@ import cn.yunovo.iov.fc.model.entity.CcGprsPay;
 import cn.yunovo.iov.fc.model.result.MonthPayReportResultBean;
 import cn.yunovo.iov.fc.model.result.OrgPayReportResultBean;
 import cn.yunovo.iov.fc.model.result.PayCountResultBean;
+import cn.yunovo.iov.fc.model.result.PayListChartDataResultBean;
 import cn.yunovo.iov.fc.model.result.PayListTotalResulBean;
 import cn.yunovo.iov.fc.model.result.PayPackResultBean;
 
@@ -38,5 +40,7 @@ public interface ICcGprsPayService extends IService<CcGprsPay> {
 	PageData<PayPackResultBean, PayPackResultBean> getPayPackPage(PageForm pageForm, Short pay_method, Integer org_id, String date_start, String date_end,  LoginInfo info);
 	
 	PageData<MonthPayReportResultBean, OrgPayReportResultBean> getMonthCountPage(PageForm pageForm, Integer org_id, String mdate, LoginInfo info);
+	
+	Map<String, List<PayListChartDataResultBean>> getPaylogChart(Integer org_id, String pay_sn, String card_iccid, Integer card_id, Integer card_type, String transfer_id, Double gprs_amount, String pay_from, Short pay_method, Short is_paid, String date_start, String date_end, String  paid_start, String paid_end, LoginInfo info);
 	
 }

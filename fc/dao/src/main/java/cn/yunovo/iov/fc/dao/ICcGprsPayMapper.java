@@ -11,6 +11,7 @@ import cn.yunovo.iov.fc.model.entity.CcGprsPay;
 import cn.yunovo.iov.fc.model.result.MonthPayReportResultBean;
 import cn.yunovo.iov.fc.model.result.OrgPayReportResultBean;
 import cn.yunovo.iov.fc.model.result.PayCountResultBean;
+import cn.yunovo.iov.fc.model.result.PayListChartDataResultBean;
 import cn.yunovo.iov.fc.model.result.PayListTotalResulBean;
 import cn.yunovo.iov.fc.model.result.PayPackResultBean;
 
@@ -63,5 +64,9 @@ public interface ICcGprsPayMapper extends BaseMapper<CcGprsPay> {
 	 * @return
 	 */
 	public List<MonthPayReportResultBean> getMonthCountPage(IPage<MonthPayReportResultBean> page, @Param("org_id")Integer org_id, @Param("mdate")String mdate,  @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	
+	public List<PayListChartDataResultBean> getMethodChart(@Param("org_id")Integer org_id, @Param("pay_sn")String pay_sn, @Param("card_iccid")String card_iccid, @Param("card_id")Integer card_id, @Param("card_type")Integer card_type, @Param("transfer_id")String transfer_id, @Param("gprs_amount")Double gprs_amount, @Param("pay_from")String pay_from, @Param("pay_method")Short pay_method, @Param("is_paid")Short is_paid, @Param("date_start")String date_start, @Param("date_end")String date_end, @Param("paid_start")String  paid_start, @Param("paid_end")String paid_end, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	
+	public List<PayListChartDataResultBean> getPaidChart(@Param("org_id")Integer org_id, @Param("pay_sn")String pay_sn, @Param("card_iccid")String card_iccid, @Param("card_id")Integer card_id, @Param("card_type")Integer card_type, @Param("transfer_id")String transfer_id, @Param("gprs_amount")Double gprs_amount, @Param("pay_from")String pay_from, @Param("pay_method")Short pay_method, @Param("is_paid")Short is_paid, @Param("date_start")String date_start, @Param("date_end")String date_end, @Param("paid_start")String  paid_start, @Param("paid_end")String paid_end, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 	
 }
