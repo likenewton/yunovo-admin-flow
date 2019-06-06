@@ -560,7 +560,7 @@
 		<choose>
 
 			<when test="org_id != null">
-				AND P.org_id = #{org_id}
+				AND org_id = #{org_id}
 			</when>
 			<otherwise>
 				<choose>
@@ -568,7 +568,7 @@
 
 					</when>
 					<otherwise>
-						AND P.org_id IN
+						AND org_id IN
 						<foreach collection="orgs" item="id" index="index" open="(" close=")" separator=",">
 							#{id}
 						</foreach>
@@ -610,7 +610,7 @@
 		<choose>
 
 			<when test="org_id != null">
-				AND P.org_id = #{org_id}
+				AND org_id = #{org_id}
 			</when>
 			<otherwise>
 				<choose>
@@ -618,7 +618,7 @@
 
 					</when>
 					<otherwise>
-						AND P.org_id IN
+						AND org_id IN
 						<foreach collection="orgs" item="id" index="index" open="(" close=")" separator=",">
 							#{id}
 						</foreach>
