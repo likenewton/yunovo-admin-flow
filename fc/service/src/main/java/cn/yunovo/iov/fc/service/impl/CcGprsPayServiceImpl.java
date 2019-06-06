@@ -9,6 +9,7 @@ import cn.yunovo.iov.fc.model.entity.CcGprsPay;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
 import cn.yunovo.iov.fc.model.result.OrgPayReportResultBean;
 import cn.yunovo.iov.fc.model.result.PayCountResultBean;
+import cn.yunovo.iov.fc.model.result.PayListTotalResulBean;
 import cn.yunovo.iov.fc.service.ICcGprsCardService;
 import cn.yunovo.iov.fc.service.ICcGprsPayService;
 import cn.yunovo.iov.fc.service.ICcNotifyService;
@@ -202,7 +203,7 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 	}
 
 	@Override
-	public PageData<CcGprsPay, CcGprsPay> getPayListPage(PageForm pageForm, Integer org_id, String pay_sn,
+	public PageData<CcGprsPay, PayListTotalResulBean> getPayListPage(PageForm pageForm, Integer org_id, String pay_sn,
 			String card_iccid, Integer card_id, Integer card_type, String transfer_id, Double gprs_amount,
 			String pay_from, Short pay_method, Short is_paid, String date_start, String date_end, String paid_start,
 			String paid_end, LoginInfo info) {
@@ -218,7 +219,7 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 			page.setAsc(pageForm.getAscs());
 			page.setDesc(pageForm.getDescs());
 		}
-		PageData<CcGprsPay, CcGprsPay> p = new PageData<>();
+		PageData<CcGprsPay, PayListTotalResulBean> p = new PageData<>();
 		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
 		if (StringUtils.isEmpty(orgpos)) {
 			page.setTotal(0);
@@ -264,6 +265,7 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 			ccGprsPay.setCard_type_name(card_types.get(String.valueOf(ccGprsPay.getCard_type())));
 		}
 
+		p.setOther(iCcGprsPayMapper.getPayListTotal(org_id, pay_sn, card_iccid, card_id, card_type, transfer_id, gprs_amount, pay_from, pay_method, is_paid, date_start, date_end, paid_start, paid_end, orgpos, orgpos.split(",")));
 		page.setRecords(records);
 		p.setPage(page);
 

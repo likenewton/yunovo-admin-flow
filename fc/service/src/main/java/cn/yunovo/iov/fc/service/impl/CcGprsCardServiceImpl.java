@@ -8,6 +8,7 @@ import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
 import cn.yunovo.iov.fc.model.entity.SellPayResultBean;
 import cn.yunovo.iov.fc.model.result.CardUsedResultBean;
+import cn.yunovo.iov.fc.model.result.PayDetailResultBean;
 import cn.yunovo.iov.fc.model.result.UnicomStatResultBean;
 import cn.yunovo.iov.fc.service.ICcGprsCardService;
 import cn.yunovo.iov.fc.service.ICcOrgService;
@@ -346,6 +347,52 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 		//page.setTotal(count);
 		p.setPage(page);
 		p.setOther(total);
+
+		return p;
+	}
+
+	@Override
+	public PageData<PayDetailResultBean, PayDetailResultBean> getPayDetailPage(PageForm pageForm, Integer org_id,
+			String date_start, String date_end, LoginInfo info) {
+		// 组装分页参数
+		Page<PayDetailResultBean> page = new Page<>();
+		page.setCurrent(pageForm.getCurrent());
+		page.setSize(pageForm.getSize());
+
+		if (ArrayUtils.isEmpty(pageForm.getAscs()) && ArrayUtils.isEmpty(pageForm.getDescs())) {
+			// page.setAsc(");
+		} else {
+			page.setAsc(pageForm.getAscs());
+			page.setDesc(pageForm.getDescs());
+		}
+		PageData<PayDetailResultBean, PayDetailResultBean> p = new PageData<>();
+		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
+		if (StringUtils.isEmpty(orgpos)) {
+			page.setTotal(0);
+			page.setRecords(null);
+			p.setPage(page);
+			return p;
+		}
+
+		if (StringUtils.isNotEmpty(date_start)) {
+			date_start = date_start + " 00:00:00";
+		}
+
+		if (StringUtils.isNotEmpty(date_end)) {
+			date_end = date_end + " 23:59:59";
+		}
+
+		List<PayDetailResultBean> records = iGprsCardMapper.getPayDetailPage(page, org_id, date_start, date_end, orgpos, orgpos.split(","));
+
+		if (CollectionUtils.isEmpty(records)) {
+			page.setTotal(0);
+			page.setRecords(null);
+			p.setPage(page);
+			return p;
+		}
+
+		page.setRecords(records);
+		p.setPage(page);
 
 		return p;
 	}

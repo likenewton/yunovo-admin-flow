@@ -8,12 +8,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
-import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcGprsPay;
 import cn.yunovo.iov.fc.model.result.OrgPayReportResultBean;
 import cn.yunovo.iov.fc.model.result.PayCountResultBean;
+import cn.yunovo.iov.fc.model.result.PayDetailResultBean;
+import cn.yunovo.iov.fc.model.result.PayListTotalResulBean;
+import cn.yunovo.iov.fc.service.ICcGprsCardService;
 import cn.yunovo.iov.fc.service.ICcGprsPayService;
 import cn.yunovo.iov.fc.web.controller.BaseController;
 import io.swagger.annotations.Api;
@@ -28,6 +30,9 @@ public class ReportController extends BaseController{
 
 	@Autowired
 	private ICcGprsPayService iCcGprsPayService;
+	
+	@Autowired
+	private ICcGprsCardService iCcGprsCardService;
 	
 	@ApiOperation(value = "财务报表-充值总额")
 	@ApiImplicitParams(value = {
@@ -73,9 +78,22 @@ public class ReportController extends BaseController{
 			@ApiImplicitParam(name = "org_id", value = "机构id", required = false, dataType = "int", paramType = "query")
 			})
 	@RequestMapping(path = "/getPayListPage", method = { RequestMethod.GET, RequestMethod.POST })
-	public Result<PageData<CcGprsPay, CcGprsPay>> getPayListPage(PageForm pageForm, Integer org_id, String pay_sn, String card_iccid, Integer card_type, String transfer_id, Double gprs_amount, String pay_from, Short pay_method, Short is_paid, String date_start, String date_end, String  paid_start, String paid_end) {
+	public Result<PageData<CcGprsPay, PayListTotalResulBean>> getPayListPage(PageForm pageForm, Integer org_id, String pay_sn, String card_iccid, Integer card_type, String transfer_id, Double gprs_amount, String pay_from, Short pay_method, Short is_paid, String date_start, String date_end, String  paid_start, String paid_end) {
 		
-		PageData<CcGprsPay, CcGprsPay>  data = iCcGprsPayService.getPayListPage(pageForm, org_id, pay_sn, card_iccid, null, card_type, transfer_id, gprs_amount, pay_from, pay_method, is_paid, date_start, date_end, paid_start, paid_end, this.getLoginBaseInfo());
+		PageData<CcGprsPay, PayListTotalResulBean>  data = iCcGprsPayService.getPayListPage(pageForm, org_id, pay_sn, card_iccid, null, card_type, transfer_id, gprs_amount, pay_from, pay_method, is_paid, date_start, date_end, paid_start, paid_end, this.getLoginBaseInfo());
+		return ResultUtil.success(data);
+	}
+	
+	@ApiOperation(value = "财务报表-机构充值明细")
+	@ApiImplicitParams(value = {
+			@ApiImplicitParam(name = "date_start", value = "开始日期 YYYY-MM-DD", required = false, dataType = "String", paramType = "query"),
+			@ApiImplicitParam(name = "date_end", value = "结束日期 YYYY-MM-DD", required = false, dataType = "String", paramType = "query"),
+			@ApiImplicitParam(name = "org_id", value = "机构id", required = false, dataType = "int", paramType = "query")
+			})
+	@RequestMapping(path = "/payDetail", method = { RequestMethod.GET, RequestMethod.POST })
+	public Result<PageData<PayDetailResultBean, PayDetailResultBean>> getPayDetailPage(PageForm pageForm, Integer org_id, String date_start, String date_end) {
+		
+		PageData<PayDetailResultBean, PayDetailResultBean>  data = iCcGprsCardService.getPayDetailPage(pageForm, org_id, date_start, date_end, this.getLoginBaseInfo());
 		return ResultUtil.success(data);
 	}
 	

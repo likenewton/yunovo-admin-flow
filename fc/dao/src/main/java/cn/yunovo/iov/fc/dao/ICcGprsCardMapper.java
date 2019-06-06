@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.SellPayResultBean;
 import cn.yunovo.iov.fc.model.result.CardUsedResultBean;
+import cn.yunovo.iov.fc.model.result.PayDetailResultBean;
 import cn.yunovo.iov.fc.model.result.UnicomStatResultBean;
 
 /**
@@ -72,4 +73,16 @@ public interface ICcGprsCardMapper extends BaseMapper<CcGprsCard> {
 	 * @return
 	 */
 	public UnicomStatResultBean getUnicomStatTotal(@Param("org_id")Integer org_id, @Param("date_start")String date_start, @Param("date_end")String date_end, @Param("jstart")String jstart, @Param("jend")String jend,  @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	
+	/**
+	 * 机构充值
+	 * @param page
+	 * @param org_id
+	 * @param date_start
+	 * @param date_end
+	 * @param orgpos
+	 * @param orgs
+	 * @return
+	 */
+	public List<PayDetailResultBean> getPayDetailPage(IPage<PayDetailResultBean> page, @Param("org_id")Integer org_id, @Param("date_start")String date_start, @Param("date_end")String date_end,  @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 }

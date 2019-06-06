@@ -6,6 +6,7 @@ import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.SellPayResultBean;
 import cn.yunovo.iov.fc.model.result.CardUsedResultBean;
+import cn.yunovo.iov.fc.model.result.PayDetailResultBean;
 import cn.yunovo.iov.fc.model.result.UnicomStatResultBean;
 
 import java.util.HashMap;
@@ -67,4 +68,20 @@ public interface ICcGprsCardService extends IService<CcGprsCard> {
 	 * @return
 	 */
 	public PageData<UnicomStatResultBean, UnicomStatResultBean> getUnicomStatPage(PageForm pageForm, Integer org_id, String date_start, String date_end, String jstart, String jend,LoginInfo info);
+	
+	/**
+	 * 统计分析-联通情况
+	 * @param pageForm
+	 * @param org_id
+	 * @param date_start
+	 * @param date_end
+	 * @param jstart
+	 * @param jend
+	 * @param info
+	 * @return
+	 */
+	public PageData<PayDetailResultBean, PayDetailResultBean> getPayDetailPage(PageForm pageForm, Integer org_id, String date_start, String date_end, LoginInfo info);
+	
+	
+	
 }

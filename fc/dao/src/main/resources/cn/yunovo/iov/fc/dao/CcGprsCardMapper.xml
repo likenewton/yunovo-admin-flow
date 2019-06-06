@@ -612,5 +612,48 @@
 		 
 		 ) t
 	</select>
+	
+	
+	<select id="getPayDetailPage" resultType="cn.yunovo.iov.fc.model.result.PayDetailResultBean">
+	
+		<![CDATA[
+			SELECT P.card_id, C.card_sn, C.card_iccid, COUNT(P.pay_id) AS pay_count, SUM(IF(P.gprs_amount < 9999999, gprs_amount, 0.1)) AS gprs_amount,
+			SUM(P.gprs_price) money_count, SUM(P.rebate_money) AS money_rebate
+			FROM cc_gprs_pay P LEFT JOIN cc_gprs_card C ON C.card_id = P.card_id WHERE P.is_paid = 1 AND P.pay_method > 0
+		]]>
+		
+		<choose>
+
+			<when test="org_id != null">
+				AND P.org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND P.org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+		
+		<if test="date_start != null">
+			<![CDATA[ AND P.time_paid >=  #{date_start} ]]>
+		</if>
+
+		<if test="date_end != null">
+			<![CDATA[ AND P.time_paid <= #{date_end} ]]>
+		</if>
+		
+		GROUP BY P.card_id
+	
+	</select>
 
 </mapper>

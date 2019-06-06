@@ -13,6 +13,7 @@ import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcGprsPay;
 import cn.yunovo.iov.fc.model.result.OrgPayReportResultBean;
 import cn.yunovo.iov.fc.model.result.PayCountResultBean;
+import cn.yunovo.iov.fc.model.result.PayListTotalResulBean;
 
 /**
  * <p>
@@ -30,6 +31,6 @@ public interface ICcGprsPayService extends IService<CcGprsPay> {
 
 	List<SelectBean> select();
 	
-	PageData<CcGprsPay, CcGprsPay> getPayListPage(PageForm pageForm, Integer org_id, String pay_sn, String card_iccid, Integer card_id, Integer card_type, String transfer_id, Double gprs_amount, String pay_from, Short pay_method, Short is_paid, String date_start, String date_end, String  paid_start, String paid_end, LoginInfo info);
+	PageData<CcGprsPay, PayListTotalResulBean> getPayListPage(PageForm pageForm, Integer org_id, String pay_sn, String card_iccid, Integer card_id, Integer card_type, String transfer_id, Double gprs_amount, String pay_from, Short pay_method, Short is_paid, String date_start, String date_end, String  paid_start, String paid_end, LoginInfo info);
 	
 }
