@@ -58,7 +58,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
   </div>
@@ -114,8 +114,9 @@ export default {
         url: _axios.ajaxAd.getOrgPayReport,
         cb: (res) => {
           let other = res.data.other || {}
-          if (this.list.data.length === 0) return
-          this.list.data.push(...[{
+          let data = this.list.data || []
+          if (data.length === 0) return
+          data.push(...[{
             sums: true,
             org_name: '总计',
             paid_amount: other.paid_amount,

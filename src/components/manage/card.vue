@@ -16,34 +16,32 @@
           </el-select>
         </el-form-item>
         <el-form-item label="激活状态">
-          <el-select v-model="formInline.active_status" placeholder="请选择">
-            <el-option label="已激活" value="0"></el-option>
-            <el-option label="未激活" value="1"></el-option>
+          <el-select v-model="formInline.active_status" filterable clearable placeholder="请选择">
+            <el-option v-for="(item, index) in activeSelect" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="过期时间">
-          <el-select v-model="formInline.exceed_time" placeholder="请选择">
-            <el-option label="已过期" value="0"></el-option>
-            <el-option label="未过期" value="1"></el-option>
+        <el-form-item label="是否过期">
+          <el-select v-model="formInline.time_expire" filterable clearable placeholder="请选择">
+            <el-option v-for="(item, index) in exceedSelect" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="激活时间">
-          <el-date-picker v-model="formInline.active_time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-          </el-date-picker>
+        <el-form-item label="激活日期">
+          <el-date-picker v-model="formInline.jstart" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
+          <el-date-picker v-model="formInline.jend" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="getData">查询</el-button>
-          <el-button type="warning" @click="formInline = {}">重置</el-button>
+          <el-button type="warning" @click="resetData">重置</el-button>
         </el-form-item>
       </el-form>
     </el-card>
-    <el-card class="box-card clearfix" shadow="never" v-loading="loadData">
+    <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
         <el-button size="mini" type="primary" @click="showEcharts">图表</el-button>
         <el-button size="mini" type="warning">导入</el-button>
         <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
-      <el-table ref="multipleTable" :data="list.data" @sort-change="handleSortChange" border size="mini">
+      <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" border resizable size="mini">
         <el-table-column fixed="left" label="卡ICCID" min-width="170">
           <template slot-scope="scope">
             <el-button type="text">{{scope.row.iccid}}</el-button>
@@ -69,7 +67,7 @@
         <el-table-column prop="excard_time" label="导卡时间" min-width="151" sortable="custom"></el-table-column>
         <el-table-column prop="active_time" label="激活时间" min-width="151" sortable="custom"></el-table-column>
         <el-table-column prop="eq_time" label="设备更新时间" min-width="151" sortable="custom"></el-table-column>
-        <el-table-column label="过期时间" min-width="215">
+        <el-table-column prop="exceed_time" label="过期时间" min-width="215" sortable="custom">
           <template slot-scope="scope">
             <div v-html="calcLeftTime(scope.row.exceed_time)"></div>
           </template>
@@ -91,7 +89,7 @@
     <el-dialog title="机构流量ICCID卡统计图表" :visible.sync="dialogChartVisible">
       <div slot class="clearfix" v-loading="dialogChartLoadData">
         <div id="myChart" style="width:100%; height:300px"></div>
-        <el-pagination @size-change="handleSizeChangeDetail" @current-change="handleCurrentChangeDetail" :current-page="currentPage" :page-sizes="pageSizes" :page-size="dialogList.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="dialogList.total" class="clearfix">
+        <el-pagination @size-change="handleSizeChangeDetail" @current-change="handleCurrentChangeDetail" :current-page="dialogList.currentPage" :page-sizes="pageSizes" :page-size="dialogList.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="dialogList.total" class="clearfix">
         </el-pagination>
       </div>
     </el-dialog>
@@ -119,7 +117,6 @@ export default {
       // 要展开的对话框的参数
       dialogPara: {},
       dialogList: {
-        loadData: true,
         data: [],
         pagesize: Api.STATIC.pageSizes[0],
         currentPage: 1,
@@ -131,7 +128,7 @@ export default {
       options: {
         xAxis: {
           type: 'category',
-          data: ['自营', '凯龙丁威特', '博毅', '天之眼', '湖南纽曼', '奇橙天下', '自营>云智易联', '自营', '凯龙丁威特', '博毅', '天之眼', '湖南纽曼', '奇橙天下', '自营>云智易联', '自营', '凯龙丁威特', '博毅', '天之眼', '湖南纽曼', '奇橙天下', '自营>云智易联'] // 1
+          data: [] // 1
         },
         yAxis: {
           type: 'value',
@@ -152,7 +149,7 @@ export default {
         toolbox: _echart.getOption().toolbox,
         series: [{
           name: '机构流量ICCID卡',
-          data: [120, 200, 150, 80, 70, 110, 130, 120, 200, 150, 80, 70, 110, 130, 120, 200, 150, 80, 70, 110, 130], // 2
+          data: [], // 2
           type: 'bar',
           itemStyle: {
             //通常情况下：
@@ -163,7 +160,7 @@ export default {
               },
               //每个柱子的颜色即为colorList数组里的每一项，如果柱子数目多于colorList的长度，则柱子颜色循环使用该数组
               color(params) {
-                return Api.UNITS.getColorList([], 40)[params.dataIndex]
+                return Api.UNITS.getColorList([], 60)[params.dataIndex]
               }
             },
             //鼠标悬停时：
@@ -196,7 +193,7 @@ export default {
       Api.UNITS.setSortSearch(val, this)
       this.getData()
     },
-    // dialog中的列表(图表)
+    // dialog(图表)中的分页
     handleSizeChangeDetail(val) {
       this.dialogList.pagesize = val
       this.getEchartsData()
@@ -205,24 +202,12 @@ export default {
       this.dialogList.currentPage = val
       this.getEchartsData()
     },
-    showEcharts() {
-      this.dialogChartVisible = true
-      setTimeout(() => {
-        // myChart因为是要放在dialog中所以必须要等到dialog展示之后才能展示
-        this.myChart = this.$echarts.init(document.getElementById('myChart'))
-        this.getEchartsData()
-      }, 0)
-    },
-    // 展示dialog iccid的详细
-    showDetail(scope) {
-      this.dialogPara = {
-        loadDialog: true,
-        isShowCancelBtn: false,
-        title: `详细信息(${scope.row.iccid})`,
-        content: '<div style="height: 100px"></div>'
-      }
-      this.SET_DIALOGVISIBLE({ dialogVisible: true })
-      this.getIccidDetailData(scope)
+    // 重置列表
+    resetData() {
+      this.formInline = {} // 1、重置查询表单
+      this.sort = {} // 2、重置排序
+      this.$refs.listTable.clearSort() // 3、清空排序样式
+      this.getData()
     },
     // 获取列表数据
     getData() {
@@ -251,17 +236,42 @@ export default {
         this.loadData = false
       }, 1000)
     },
+    showEcharts() {
+      this.dialogChartVisible = true
+      Vue.nextTick(() => {
+        // myChart因为是要放在dialog中所以必须要等到dialog展示之后才能展示
+        this.myChart = this.$echarts.init(document.getElementById('myChart'))
+        this.getEchartsData()
+      })
+    },
     // 获取图表数据
     getEchartsData() {
-      this.dialogChartLoadData = true
-      setTimeout(() => {
-        // this.dialogPara.loadDialog = false
-        // 这里拿到数据后要将数据保存到options中在调用setOption
-        // this.options.xAxis.data.push()
-        // this.options.series.data.push()
-        this.myChart.setOption(this.options)
-        this.dialogChartLoadData = false
-      }, 1000)
+      Api.UNITS.getListData({
+        vue: this,
+        url: _axios.ajaxAd.getCardUsed,
+        list: 'dialogList',
+        loadData: 'dialogChartLoadData',
+        cb: (res) => {
+          let labals = this.options.xAxis.data = []
+          let data = this.options.series[0].data = []
+          this.dialogList.data.forEach((v) => {
+            labals.push(v.org_name)
+            data.push(v.card_count)
+          })
+          this.myChart.setOption(this.options)
+        }
+      })
+    },
+    // 展示dialog iccid的详细
+    showDetail(scope) {
+      this.dialogPara = {
+        loadDialog: true,
+        isShowCancelBtn: false,
+        title: `详细信息(${scope.row.iccid})`,
+        content: '<div style="height: 100px"></div>'
+      }
+      this.SET_DIALOGVISIBLE({ dialogVisible: true })
+      this.getIccidDetailData(scope)
     },
     // 获取iccid详细信息
     getIccidDetailData(scope) {
@@ -306,7 +316,9 @@ export default {
     ...mapState({
       dialogVisible: 'dialogVisible',
       orgs: 'orgs',
-      cardTypes: 'cardTypes'
+      cardTypes: 'cardTypes',
+      exceedSelect: 'exceedSelect',
+      activeSelect: 'activeSelect'
     })
   }
 }

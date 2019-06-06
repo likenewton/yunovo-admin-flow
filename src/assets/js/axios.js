@@ -24,6 +24,7 @@ class AXIOS {
       getMonths: '/fc/api/select/api/select/stats/getMonths',
       getNotifySelect: '/fc/api/select/api/select/notifyFrom/select',
       getPayMethodSelect: '/fc/api/select/api/select/payMethod/select',
+      getComboFlow: '/fc/api/select/api/select/pack',
       // table列表
       getStats: '/fc/api/gprs/stats/',
       getHalt: '/fc/api/gprs/halt/',
@@ -36,10 +37,13 @@ class AXIOS {
       getNotifysFrom: '/fc/api/gprs/notifyFrom/',
       getOrgPayReport: '/fc/api/gprs/report/orgPayReport',
       getReport: '/fc/api/gprs/report/',
+      getPayListPage: '/fc/api/gprs/report/getPayListPage',
+      getpayPack: '/fc/api/gprs/report/payPack',
       // 明细
       getOnOffLogDetail: '/fc/api/gprs/onoffLog/detail',
       getNotifyFromOrg: '/fc/api/gprs/notifyFrom/org',
       getPayOnlineOrg: '/fc/api/gprs/payOnline/org',
+      getPayDetail: '/fc/api/gprs/report/payDetail',
       // 导出
       statsExport: '/fc/api/gprs/stats/export',
     }
@@ -60,7 +64,6 @@ class AXIOS {
       headers: data.headers
     }).then(res => {
       // 这里要根据状态码来对不同的响应状态做处理
-      // console.log(res)
       if (res.data.status === 401) {
         // 未登录状态跳转登录页
         location.replace(res.data.redirectUrl)

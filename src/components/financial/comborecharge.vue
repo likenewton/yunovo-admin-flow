@@ -8,7 +8,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="付款方式">
-          <el-select v-model="formInline.pay_way" placeholder="请选择">
+          <el-select v-model="formInline.pay_method" placeholder="请选择">
             <el-option v-for="(item, index) in payMethodSelect" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
@@ -24,38 +24,41 @@
     </el-card>
     <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border resizable size="mini">
-        <el-table-column prop="org_name" label="机构名称" min-width="200" sortable="custom">
+        <el-table-column prop="gprs_amount" label="套餐流量" min-width="110" sortable="custom">
           <template slot-scope="scope">
-            <span v-if="scope.row.sums">{{scope.row.org_name}}</span>
-            <span v-else class="btn-link">{{scope.row.org_name}}</span>
+            <span v-if="scope.row.sums">总计</span>
+            <div v-else v-html="formatComboFlow(scope.row.gprs_amount)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="combo_flow" label="套餐流量" min-width="110" sortable="custom">
+        <el-table-column prop="gprs_price" label="套餐金额" min-width="110" sortable="custom">
           <template slot-scope="scope">
-            <div v-html="formatFlowUnit(scope.row.combo_flow)"></div>
+            <div v-if="!scope.row.sums">￥{{scope.row.gprs_price|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="combo_money" label="套餐金额" min-width="110" sortable="custom">
+        <el-table-column prop="paid_count" label="已付次数" min-width="100" sortable="custom"></el-table-column>
+        <el-table-column prop="paid_money" label="已付金额" min-width="110" sortable="custom">
           <template slot-scope="scope">
-            <div>￥{{scope.row.combo_money|formatMoney}}</div>
+            <div>￥{{scope.row.paid_money|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="pay_count" label="已付次数" min-width="100" sortable="custom"></el-table-column>
-        <el-table-column porp="pay_money" label="已付金额" min-width="110" sortable="custom">
+        <el-table-column label="已付款率" min-width="100" sortable="custom">
           <template slot-scope="scope">
-            <div>￥{{scope.row.pay_money|formatMoney}}</div>
+            <span>{{(scope.row.paid_count/scope.row.pay_count*100).toFixed(3)}}%</span>
           </template>
         </el-table-column>
-        <el-table-column prop="pay_rate" label="已付款率" min-width="100" sortable="custom"></el-table-column>
-        <el-table-column prop="nopay_count" label="未付次数" min-width="100" sortable="custom"></el-table-column>
-        <el-table-column prop="nopay_money" label="未付金额" min-width="110" sortable="custom">
+        <el-table-column prop="nopaid_count" label="未付次数" min-width="100" sortable="custom"></el-table-column>
+        <el-table-column prop="nopaid_money" label="未付金额" min-width="110" sortable="custom">
           <template slot-scope="scope">
-            <div>￥{{scope.row.nopay_money|formatMoney}}</div>
+            <div>￥{{scope.row.nopaid_money|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="nopay_rate" label="未付款率" min-width="100" sortable="custom"></el-table-column>
+        <el-table-column label="未付款率" min-width="100">
+          <template slot-scope="scope">
+            <span>{{(scope.row.nopaid_count/scope.row.pay_count*100).toFixed(3)}}%</span>
+          </template>
+        </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
   </div>
@@ -77,6 +80,7 @@ export default {
         total: 0,
       },
       formInline: {},
+      sort: {},
       maxTableHeight: Api.UNITS.maxTableHeight(),
     }
   },
@@ -106,26 +110,29 @@ export default {
     },
     // 获取列表数据
     getData() {
-      setTimeout(() => {
-        // 数据请求成功
-        this.list.data = [{
-          id: 0,
-          org_name: '卡仕特-西格玛',
-          combo_flow: NaN,
-          combo_money: 653,
-          pay_count: 12,
-          pay_money: 23453.23,
-          pay_rate: '54.25%',
-          nopay_count: 12,
-          nopay_money: 2123,
-          nopay_rate: '25.52%'
-        }]
-        this.list.total = this.list.data.length
-        this.loadData = false
-      }, 1000)
+      Api.UNITS.getListData({
+        vue: this,
+        url: _axios.ajaxAd.getpayPack,
+        cb: (res) => {
+          let other = res.data.other || {}
+          let data = this.list.data || []
+          if (data.length === 0) return
+          data.push(...[{
+            sums: true,
+            gprs_amount: '总计',
+            gprs_price: other.gprs_price,
+            paid_count: other.paid_count,
+            paid_money: other.paid_money,
+            nopaid_count: other.nopaid_count,
+            nopaid_money: other.nopaid_money,
+            pay_count: other.pay_count
+          }])
+        }
+      })
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,
-    calcLeftTime: Api.UNITS.calcLeftTime
+    calcLeftTime: Api.UNITS.calcLeftTime,
+    formatComboFlow: Api.UNITS.formatComboFlow
   },
   computed: {
     ...mapState({

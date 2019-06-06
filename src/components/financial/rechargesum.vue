@@ -202,9 +202,10 @@ export default {
         url: _axios.ajaxAd.getReport,
         cb: (res) => {
           let other = res.data.other || {}
+          let data = this.list.data || []
           this.setOptionData()
-          if (this.list.data.length === 0) return
-          this.list.data.push(...[{
+          if (data.length === 0) return
+          data.push(...[{
             sums: true,
             org_name: '总计',
             gprs_amount: other.gprs_amount,

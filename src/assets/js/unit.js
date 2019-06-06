@@ -34,7 +34,9 @@ module.exports = {
     let sortFilterArr = {
       card_type_name: 'card_id',
       org_name: 'org_id',
-      ntf_type_name: 'ntf_type'
+      ntf_type_name: 'ntf_type',
+      pay_method_name: 'pay_method',
+      pay_from_name: 'pay_from',
     }
     if (sortFilterArr[sort.ascs]) {
       sort.ascs = sortFilterArr[sort.ascs]
@@ -132,13 +134,13 @@ module.exports = {
     let htmlStr = ''
     if (isHtmlStr) {
       if (isNaN(count)) {
-        htmlStr = `<span style="color:#e92322;font-weight:bold">无限制</span>`
+        htmlStr = `<span style="font-weight:bold" class="text_danger">无限制</span>`
       } else if (Math.abs(count / 1024) < 1) {
-        htmlStr = `<span>${count.toFixed(fix)}</span><span style="color:#008000;font-weight:bold">&nbsp;M</span>`
+        htmlStr = `<span>${count.toFixed(fix)}</span><span style="font-weight:bold" class="text_success">&nbsp;M</span>`
       } else if (Math.abs(count / 1024 / 1024) < 1) {
-        htmlStr = `<span>${(count / 1024).toFixed(fix)}</span><span style="color:#0000FF;font-weight:bold">&nbsp;G</span>`
+        htmlStr = `<span>${(count / 1024).toFixed(fix)}</span><span style="font-weight:bold" class="text_primary">&nbsp;G</span>`
       } else {
-        htmlStr = `<span>${(count / 1024 / 1024).toFixed(fix)}</span><span style="color:#e92322;font-weight:bold">&nbsp;T</span>`
+        htmlStr = `<span>${(count / 1024 / 1024).toFixed(fix)}</span><span style="font-weight:bold" class="text_danger">&nbsp;T</span>`
       }
     } else {
       if (Math.abs(count / 1024) < 1) {
@@ -164,6 +166,32 @@ module.exports = {
       value = value.split(".")[0]
     }
     return value
+  },
+  // 格式化流量套餐
+  formatComboFlow(val, isHtml = true) {
+    let htmlStr = ''
+    if (isHtml) {
+      if (val == '0.01') {
+        htmlStr = '<span style="font-weight:bold" class="text_purple">畅想无限</span>'
+      } else if (val == '0.02') {
+        htmlStr = '<span style="font-weight:bold" class="text_purple">定向无限</span>'
+      } else if (val == '99999999') {
+        htmlStr = '<span style="font-weight:bold" class="text_danger">无限制</span>'
+      } else {
+        htmlStr = this.formatFlowUnit(val, 0)
+      }
+    } else {
+      if (val == '0.01') {
+        htmlStr = '畅想无限'
+      } else if (val == '0.02') {
+        htmlStr = '定向无限'
+      } else if (val == '99999999') {
+        htmlStr = '无限制'
+      } else {
+        htmlStr = this.formatFlowUnit(val, 0, false)
+      }
+    }
+    return htmlStr
   },
   // 计算到期时间
   calcLeftTime(time) {

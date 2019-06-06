@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-card class="box-card" style="margin-bottom: 20px" shadow="never">
+    <el-card style="margin-bottom: 20px" shadow="never">
       <el-form class="search-form" :inline="true" :model="formInline" size="small">
         <el-form-item label="机构名称">
           <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择">
@@ -18,7 +18,7 @@
         </el-form-item>
       </el-form>
     </el-card>
-    <el-card class="box-card clearfix" style="margin-bottom: 20px" shadow="never" v-loading="loadData">
+    <el-card class="clearfix" style="margin-bottom: 20px" shadow="never" v-loading="loadData">
       <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column prop="org_name" label="机构名称" min-width="200" sortable="custom">
           <template slot-scope="scope">
@@ -50,7 +50,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
     <el-card class="box-card clearfix" shadow="never">
@@ -107,7 +107,7 @@ export default {
           legend: ['充值总金额', '返利总金额', '未付款总金额']
         },
       },
-      myChart: null,
+      myChart: null
     }
   },
   mounted() {
@@ -170,30 +170,37 @@ export default {
     setEchartOption() {
       const chartConst = this.chartConst[this.tabIndex]
       let series = []
+      let label = []
 
       if (this.tabIndex === '0') { // tab1
-        series = [{}, {}]
+        series = [{ data: [] }, { data: [] }]
         this.list.data.forEach((v) => {
-          series[0].data = v.pay_count
-          series[1].data = v.nopay_count
+          if (v.sums) return false
+          label.push(v.how_month + '')
+          series[0].data.push(v.pay_count)
+          series[1].data.push(v.nopay_count)
         })
       } else if (this.tabIndex === '1') { // tab2
-        series = [{}]
+        series = [{ data: [] }]
         this.list.data.forEach((v) => {
-          series[0].data = v.fptotal_flow
+          if (v.sums) return false
+          label.push(v.how_month + '')
+          series[0].data.push(v.month_unused)
         })
       } else if (this.tabIndex === '2') { // tab3
-        series = [{}, {}, {}]
+        series = [{ data: [] }, { data: [] }, { data: [] }]
         this.list.data.forEach((v) => {
-          series[0].data = v.recharge_total
-          series[0].data = v.repay_total
-          series[0].data = v.nopay_total
+          if (v.sums) return false
+          label.push(v.how_month + '')
+          series[0].data.push(v.recharge_total)
+          series[0].data.push(v.repay_total)
+          series[0].data.push(v.nopay_total)
         })
       }
       _echart.setOption({
         title: this.list.data[0].org_name,
         legend: chartConst.legend,
-        xAxis: { data: this.list.data.map((v) => v.how_month) },
+        xAxis: { data: label },
         series,
         formatter: this.formatter
       })

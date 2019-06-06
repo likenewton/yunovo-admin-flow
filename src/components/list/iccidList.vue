@@ -21,20 +21,20 @@
             <span class="btn-link">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="recharge_count" label="充值总次数" min-width="140" sortable="custom"></el-table-column>
-        <el-table-column label="分配总流量" min-width="140" sortable="custom">
+        <el-table-column prop="pay_count" label="充值总次数" min-width="140" sortable="custom"></el-table-column>
+        <el-table-column prop="gprs_amount" label="分配总流量" min-width="140" sortable="custom">
           <template slot-scope="scope">
-            <div v-html="formatFlowUnit(scope.row.fptotal_flow)"></div>
+            <div v-html="formatFlowUnit(scope.row.gprs_amount)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="recharge_money" label="充值总金额" min-width="140" sortable="custom">
+        <el-table-column prop="money_count" label="充值总金额" min-width="140" sortable="custom">
           <template slot-scope="scope">
-            <div>￥{{scope.row.recharge_money|formatMoney}}</div>
+            <div>￥{{scope.row.money_count|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="repay_money" label="返利总金额" min-width="140" sortable="custom">
+        <el-table-column prop="money_rebate" label="返利总金额" min-width="140" sortable="custom">
           <template slot-scope="scope">
-            <div>￥{{scope.row.repay_money|formatMoney}}</div>
+            <div>￥{{scope.row.money_rebate|formatMoney}}</div>
           </template>
         </el-table-column>
       </el-table>
@@ -93,20 +93,10 @@ export default {
     },
     // 获取列表数据
     getData() {
-      this.loadData = true
-      setTimeout(() => {
-        // 数据请求成功
-        this.list.data = [{
-          id: 0,
-          card_iccid: '89860617040000688970',
-          recharge_count: 12,
-          fptotal_flow: 548541,
-          recharge_money: 6545.3,
-          repay_money: 42.54
-        }]
-        this.list.total = this.list.data.length
-        this.loadData = false
-      }, 1000)
+      Api.UNITS.getListData({
+        vue: this,
+        url: _axios.ajaxAd.getPayDetail
+      })
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,
     calcLeftTime: Api.UNITS.calcLeftTime
