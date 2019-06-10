@@ -264,6 +264,17 @@ module.exports = {
   validatorPassword(value) {
     return /^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&*]+$)(?![a-zA-z\d]+$)(?![a-zA-z!@#$%^&*]+$)(?![\d!@#$%^&*]+$)[a-zA-Z\d!@#$%^&*]+$/.test(value) && value.length >= 6
   },
+  validatorNumMaxandMin(value, max=1, min=0, containMax=false, containMin=true) {
+    if (containMax && containMin) {
+      return value <= max && value >= 0
+    } else if (!containMax && !containMin) {
+      return value < max && value > 0
+    } else if (containMax && !containMin) {
+      return value <= max && value > 0
+    } else if (!containMax && containMin) {
+      return value < max && value >= 0
+    }
+  },
   getQuery(attr) {
     let href = location.href
     let queryStr = href.substr(href.indexOf('?') + 1)
@@ -277,8 +288,8 @@ module.exports = {
     else return queryObj
   },
   maxTableHeight() {
-    let height = $(window).height() - 500
-    if (height < 550) height = 550
+    let height = $(window).height() -  (250 + 300000 / ($(window).height() + 1000))
+    if (height < 400) height = 400
     return height
   },
   // 时间格式化

@@ -86,14 +86,8 @@ module.exports = {
     icon: 'el-icon-fontyonghu1',
     name: 'userauth',
     children: [{
-      title: '用户管理',
-      name: 'userManage'
-    }, {
       title: '机构管理',
       name: 'jgManage'
-    }, {
-      title: '权限设置',
-      name: 'authManage'
     }]
   }, {
     title: '系统设置',

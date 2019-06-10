@@ -50,7 +50,7 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="getData">查询</el-button>
+          <el-button type="primary" @click="searchData">查询</el-button>
           <el-button type="warning" @click="resetData">重置</el-button>
         </el-form-item>
       </el-form>
@@ -151,7 +151,7 @@ export default {
             dataView: {
               show: true,
               iconStyle: {
-                borderColor: '#9a83da'
+                borderColor: Api.UNITS.getColorList('purple')
               },
               emphasis: {
                 iconStyle: {
@@ -181,7 +181,7 @@ export default {
             restore: {
               show: true,
               iconStyle: {
-                borderColor: '#ffc367'
+                borderColor: Api.UNITS.getColorList('warning')
               },
               emphasis: {
                 iconStyle: {
@@ -192,7 +192,7 @@ export default {
             saveAsImage: {
               show: true,
               iconStyle: {
-                borderColor: '#3cb1ff'
+                borderColor: Api.UNITS.getColorList('primary')
               },
               emphasis: {
                 iconStyle: {
@@ -204,19 +204,14 @@ export default {
         },
         legend: {
           top: 40,
-          data: ['微信', '支付宝', '已付款', '未付款'],
+          data: [],
         },
         series: [{
           name: '支付方式',
           type: 'pie',
           radius: '60%',
           center: ['30%', '60%'],
-          data: [
-            { value: 500, name: '微信' },
-            { value: 310, name: '支付宝' },
-            { value: 0, name: '充值卡' },
-            { value: 0, name: '银行转账' }
-          ],
+          data: [],
           itemStyle: {
             normal: {
               color(params) {
@@ -234,10 +229,7 @@ export default {
           type: 'pie',
           radius: '60%',
           center: ['70%', '60%'],
-          data: [
-            { value: 200, name: '已付款' },
-            { value: 100, name: '未付款' }
-          ],
+          data: [],
           itemStyle: {
             normal: {
               color(params) {
@@ -275,8 +267,14 @@ export default {
       Api.UNITS.setSortSearch(val, this)
       this.getData()
     },
+    // 查询
+    searchData() {
+      this.list.currentPage = 1
+      this.getData()
+    },
     // 重置列表
     resetData() {
+      this.list.currentPage = 1
       this.formInline = {} // 1、重置查询表单
       this.sort = {} // 2、重置排序
       this.$refs.listTable.clearSort() // 3、清空排序样式

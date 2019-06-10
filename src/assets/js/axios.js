@@ -40,6 +40,7 @@ class AXIOS {
       getPayListPage: '/fc/api/gprs/report/getPayListPage',
       getpayPack: '/fc/api/gprs/report/payPack',
       getMonthReport: '/fc/api/gprs/report/monthReport',
+      getOrgList: '/fc/api/user/org/',
       // 明细
       getOnOffLogDetail: '/fc/api/gprs/onoffLog/detail',
       getNotifyFromOrg: '/fc/api/gprs/notifyFrom/org',
@@ -49,6 +50,10 @@ class AXIOS {
       statsExport: '/fc/api/gprs/stats/export',
       // 图表
       getPayPie: '/fc/api/gprs/report/paylog/chart',
+      // 表单提交
+      addOrg: '/fc/api/user/org/insert',
+      updateOrg: '/fc/api/user/org/update',
+      deleteOrg: '/fc/api/user/org/delete',
     }
   }
 
@@ -74,10 +79,10 @@ class AXIOS {
         // status === 0 为正常返回
         if (res.data.status === 0) {
           data.done && data.done(res.data)
-        } else if (res.data.status === 500) {
+        } else {
           Vue.prototype.$notify.error({
             title: '错误',
-            message: 'status: 500,' + res.data.msg
+            message: res.data.msg
           })
         }
       }

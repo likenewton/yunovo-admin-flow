@@ -7,7 +7,7 @@
           <el-date-picker v-model="formInline.date_end" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="getData">查询</el-button>
+          <el-button type="primary" @click="searchData">查询</el-button>
           <el-button type="warning" @click="resetData">重置</el-button>
           <el-button @click="$router.back()">返回</el-button>
         </el-form-item>
@@ -83,7 +83,12 @@ export default {
       Api.UNITS.setSortSearch(val, this)
       this.getData()
     },
+    searchData() {
+      this.list.currentPage = 1
+      this.getData()
+    },
     resetData() {
+      this.list.currentPage = 1
       this.formInline = {
         org_id: Api.UNITS.getQuery('org_id')
       } // 1、重置查询表单

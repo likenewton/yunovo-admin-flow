@@ -16,7 +16,7 @@
           <el-date-picker v-model="formInline.jend" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="getData">查询</el-button>
+          <el-button type="primary" @click="searchData">查询</el-button>
           <el-button type="warning" @click="resetData">重置</el-button>
         </el-form-item>
       </el-form>
@@ -196,8 +196,14 @@ export default {
       Api.UNITS.setSortSearch(val, this)
       this.getData()
     },
+    // 查询
+    searchData() {
+      this.list.currentPage = 1
+      this.getData()
+    },
     // 重置列表
     resetData() {
+      this.list.currentPage = 1
       this.formInline = {} // 1、重置查询表单
       this.sort = {} // 2、重置排序
       this.$refs.listTable.clearSort() // 3、清空排序样式
