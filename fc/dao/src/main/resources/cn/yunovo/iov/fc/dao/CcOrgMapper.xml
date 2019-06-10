@@ -13,5 +13,34 @@
 	<select id="getOrgidAndParentIdByParentid" resultType="cn.yunovo.iov.fc.model.entity.CcOrg">
 		SELECT org_id, parent_id FROM  cc_org  WHERE parent_id = #{parent_id}
 	</select>
+	
+	<select id="getList" resultType="cn.yunovo.iov.fc.model.entity.CcOrg">
+		
+		SELECT * FROM cc_org WHERE 1 = 1 
+		
+		<choose>
+
+			<when test="org_id != null">
+				AND org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+		
+		
+	</select>
 
 </mapper>
