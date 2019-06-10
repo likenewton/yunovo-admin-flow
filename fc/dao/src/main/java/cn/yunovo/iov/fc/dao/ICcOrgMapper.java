@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import cn.yunovo.iov.fc.model.entity.CcOrg;
 
@@ -24,4 +25,6 @@ public interface ICcOrgMapper extends BaseMapper<CcOrg> {
 	public CcOrg getNameAndByOrgid(@Param("org_id") Integer org_id);
 	
 	public List<CcOrg> getOrgidAndParentIdByParentid(@Param("parent_id")Integer parent_id);
+	
+	public List<CcOrg> getListPage(Page<CcOrg> page, Integer org_id, String name, String orgpos, String[] orgs);
 }

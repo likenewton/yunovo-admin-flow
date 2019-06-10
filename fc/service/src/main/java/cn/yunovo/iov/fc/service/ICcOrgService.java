@@ -1,5 +1,8 @@
 package cn.yunovo.iov.fc.service;
 
+import cn.yunovo.iov.fc.model.LoginInfo;
+import cn.yunovo.iov.fc.model.PageData;
+import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
 
@@ -29,4 +32,6 @@ public interface ICcOrgService extends IService<CcOrg> {
 	public List<SelectBean> select(Integer parent_id, String orgpos);
 	
 	public String getOrgpos(Integer orgid, String orgpos);
+	
+	public PageData<CcOrg, Object> getListPage(PageForm pageForm, Integer org_id, LoginInfo loginInfo);
 }

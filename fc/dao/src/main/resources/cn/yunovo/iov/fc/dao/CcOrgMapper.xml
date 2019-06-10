@@ -14,7 +14,7 @@
 		SELECT org_id, parent_id FROM  cc_org  WHERE parent_id = #{parent_id}
 	</select>
 	
-	<select id="getList" resultType="cn.yunovo.iov.fc.model.entity.CcOrg">
+	<select id="getListPage" resultType="cn.yunovo.iov.fc.model.entity.CcOrg">
 		
 		SELECT * FROM cc_org WHERE 1 = 1 
 		
@@ -40,6 +40,10 @@
 
 		</choose>
 		
+		<if test="name != null">
+			<bind name="org_name_bind" value="'%'name'%'" />
+			AND name = #{org_name_bind}
+		</if>
 		
 	</select>
 

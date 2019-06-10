@@ -1,10 +1,10 @@
 package cn.yunovo.iov.fc.model.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
-import java.time.LocalDateTime;
 import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -69,13 +69,22 @@ public class CcOrg implements Serializable {
 	private Integer user_total;
 
 	@ApiModelProperty(value = "增加时间")
-	private LocalDateTime time_added;
+	private String time_added;
 
 	@ApiModelProperty(value = "修改时间")
-	private LocalDateTime time_modify;
+	private String time_modify;
 	
 	@ApiModelProperty(value = "机构用户数")
+	@TableField(exist=false)
 	private Integer user_count;
+	
+	@TableField(exist=false)
+	@ApiModelProperty(value = "创建者中文名称")
+	private String create_by_name;
+
+	@TableField(exist=false)
+	@ApiModelProperty(value = "更改者中文名称")
+	private String update_by_name;
 	
 	public String getOrgIdStr() {
 		return String.valueOf(this.org_id);

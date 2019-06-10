@@ -3,14 +3,20 @@ package cn.yunovo.iov.fc.service.impl;
 import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
 import cn.yunovo.iov.fc.common.utils.Md5Util;
 import cn.yunovo.iov.fc.dao.ICcOrgMapper;
+import cn.yunovo.iov.fc.model.LoginInfo;
+import cn.yunovo.iov.fc.model.PageData;
+import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.SelectBean;
+import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
 import cn.yunovo.iov.fc.service.FcConstant;
 import cn.yunovo.iov.fc.service.ICcOrgService;
+import cn.yunovo.iov.fc.service.ICcUserService;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import java.util.ArrayList;
@@ -21,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,6 +50,10 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 	
 	@Autowired
 	private ICcOrgMapper iCcOrgMapper;
+	
+	@Autowired
+	private ICcUserService iCcUserService;
+	
 	
 	@Override
 	public Map<String, CcOrg>  getTree(final Integer parent_id, final String orgpos) {
@@ -209,6 +221,54 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 		}
 		
 		return opos;
+	}
+
+	@Override
+	public PageData<CcOrg, Object> getListPage(PageForm pageForm, Integer org_id, LoginInfo info) {
+		
+		// 组装分页参数
+		Page<CcOrg> page = new Page<>();
+		page.setCurrent(pageForm.getCurrent());
+		page.setSize(pageForm.getSize());
+
+		if (ArrayUtils.isEmpty(pageForm.getAscs()) && ArrayUtils.isEmpty(pageForm.getDescs())) {
+			page.setDesc("time_added");
+		} else {
+			page.setAsc(pageForm.getAscs());
+			page.setDesc(pageForm.getDescs());
+		}
+		PageData<CcOrg, Object> p = new PageData<>();
+		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
+		if (StringUtils.isEmpty(orgpos)) {
+			page.setTotal(0);
+			page.setRecords(null);
+			p.setPage(page);
+			return p;
+		}
+
+		List<CcOrg> records = iCcOrgMapper.getListPage(page, org_id, null, orgpos, orgpos.split(","));
+
+		if (CollectionUtils.isEmpty(records)) {
+			page.setTotal(0);
+			page.setRecords(null);
+			p.setPage(page);
+			return p;
+		}
+
+		Map<String, String> userMap = iCcUserService.userMap();
+		if(!CollectionUtils.isEmpty(userMap)) {
+			for (CcOrg ccOrg : records) {
+				
+				ccOrg.setCreate_by_name(userMap.get(String.valueOf(ccOrg.getUser_id())));
+				ccOrg.setUpdate_by_name(userMap.get(String.valueOf(ccOrg.getAlter_id())));
+			}
+		}
+
+		page.setRecords(records);
+		p.setPage(page);
+
+		return p;
+		
 	}
 	
 	
