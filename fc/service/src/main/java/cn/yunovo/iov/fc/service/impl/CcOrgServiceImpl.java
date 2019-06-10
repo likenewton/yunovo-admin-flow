@@ -3,6 +3,7 @@ package cn.yunovo.iov.fc.service.impl;
 import cn.yunovo.iov.fc.common.utils.BusinessException;
 import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
 import cn.yunovo.iov.fc.common.utils.Md5Util;
+import cn.yunovo.iov.fc.common.utils.PinYinUtil;
 import cn.yunovo.iov.fc.dao.ICcOrgMapper;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
@@ -14,6 +15,7 @@ import cn.yunovo.iov.fc.model.form.OrgForm;
 import cn.yunovo.iov.fc.service.FcConstant;
 import cn.yunovo.iov.fc.service.ICcOrgService;
 import cn.yunovo.iov.fc.service.ICcUserService;
+import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -323,6 +325,8 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 		
 		CcOrg ccOrg = new CcOrg();
 		BeanUtils.copyProperties(form, ccOrg);
+		
+		ccOrg.setSpell(PinYinUtil.getFirstSpell(ccOrg.getName(), HanyuPinyinCaseType.UPPERCASE));
 		ccOrg.setPartner_id(RandomStringUtils.randomAlphanumeric(15));
 		ccOrg.setPartner_key(Md5Util.getMD5String(RandomStringUtils.randomAlphanumeric(20)));
 		ccOrg.setTime_added(DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
@@ -355,9 +359,11 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 			throw new BusinessException(String.format("系统提示： 该【%s】机构已存在！", org.getName()));
 		}
 		
+		
+		
 		CcOrg ccOrg = new CcOrg();
 		BeanUtils.copyProperties(org, ccOrg);
-		
+		ccOrg.setSpell(PinYinUtil.getFirstSpell(ccOrg.getName(), HanyuPinyinCaseType.UPPERCASE));
 		ccOrg.setAlter_id(user.getUser_id());
 		ccOrg.setTime_modify(DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
 		
