@@ -82,13 +82,13 @@ public class OrgController extends BaseController{
 	
 	@ApiOperation(value="用户权限-机构删除")
 	@RequestMapping(path="/delete",method= {RequestMethod.POST})
-	public Result<Object> delete(@ApiParam(value="机构id数组")@RequestBody Integer[] orgs){
+	public Result<Object> delete(@RequestBody OrgForm org){
 		
-		int result = iCcOrgService.delete(orgs, this.getLoginBaseInfo());
+		int result = iCcOrgService.delete(org.getOrgs(), this.getLoginBaseInfo());
 		
 		if(result < 1) {
 			
-			log.warn("[OrgController.update][warn]params={},username={},msg={}", JSONObject.toJSONString(orgs), this.getLoginBaseInfo().getLoginName(),"机构信息删除失败");
+			log.warn("[OrgController.update][warn]params={},username={},msg={}", JSONObject.toJSONString(org), this.getLoginBaseInfo().getLoginName(),"机构信息删除失败");
 			return ResultUtil.build(-1, "删除失败");
 		}
 		

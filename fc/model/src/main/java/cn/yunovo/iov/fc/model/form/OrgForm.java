@@ -42,5 +42,9 @@ public class OrgForm  implements Serializable{
 	@ApiModelProperty("返利比率")
 	private Float rebate_value;
 	
+	@ApiModelProperty("需要被删的机构id")
+	private Integer[] orgs;
+	
+	
 	
 }

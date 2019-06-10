@@ -384,7 +384,7 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 				throw new BusinessException("系统提示：您无权删除该机构");
 			}
 			
-			if(o == user.getOrg_id()) {
+			if(o - user.getOrg_id() == 0) {
 				
 				throw new BusinessException("系统提示： 您不能删除自己所属机构！");
 			}
