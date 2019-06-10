@@ -26,6 +26,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -50,7 +51,7 @@ public class OrgController extends BaseController{
 	}
 	
 	@ApiOperation(value="用户权限-机构新增")
-	@RequestMapping(path="/insert",method= {RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(path="/insert",method= {RequestMethod.POST})
 	public Result<Object> insert(@RequestBody OrgForm org){
 		
 		int result = iCcOrgService.insert(org, this.getLoginBaseInfo());
@@ -61,7 +62,38 @@ public class OrgController extends BaseController{
 			return ResultUtil.build(-1, "新增失败");
 		}
 		
-		
 		return ResultUtil.build(0, "新增成功");
 	}
+	
+	@ApiOperation(value="用户权限-机构修改")
+	@RequestMapping(path="/update",method= {RequestMethod.POST})
+	public Result<Object> update(@RequestBody OrgForm org){
+		
+		int result = iCcOrgService.update(org, this.getLoginBaseInfo());
+		
+		if(result < 1) {
+			
+			log.warn("[OrgController.update][warn]params={},username={},msg={}", JSONObject.toJSONString(org), this.getLoginBaseInfo().getLoginName(),"机构信息修改失败");
+			return ResultUtil.build(-1, "修改失败");
+		}
+		
+		return ResultUtil.build(0, "修改成功");
+	}
+	
+	@ApiOperation(value="用户权限-机构删除")
+	@RequestMapping(path="/delete",method= {RequestMethod.POST})
+	public Result<Object> delete(@ApiParam(value="机构id数组")@RequestBody Integer[] orgs){
+		
+		int result = iCcOrgService.delete(orgs, this.getLoginBaseInfo());
+		
+		if(result < 1) {
+			
+			log.warn("[OrgController.update][warn]params={},username={},msg={}", JSONObject.toJSONString(orgs), this.getLoginBaseInfo().getLoginName(),"机构信息删除失败");
+			return ResultUtil.build(-1, "删除失败");
+		}
+		
+		return ResultUtil.build(0, "删除成功");
+	}
+	
+	
 }

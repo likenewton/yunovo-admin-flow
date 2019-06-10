@@ -22,6 +22,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
@@ -293,6 +294,35 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 		ccOrg.setTime_added(DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
 		ccOrg.setUser_id(user.getUser_id());
 		return iCcOrgMapper.insert(ccOrg);
+		
+	}
+
+	@Override
+	public int update(OrgForm org, LoginInfo info) {
+		
+		CcUser user = iCcUserService.findUserOrgAndOrgpos(info.getLoginName());
+		
+		if(user == null) {
+			throw new BusinessException("无效操作");
+		}
+		
+		//TODO 判断是否有删除权限
+		
+		CcOrg ccOrg = new CcOrg();
+		BeanUtils.copyProperties(org, ccOrg);
+		
+		ccOrg.setAlter_id(user.getUser_id());
+		ccOrg.setTime_modify(DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+		
+		return iCcOrgMapper.updateById(ccOrg);
+	}
+
+	@Override
+	public int delete(Integer[] orgs, LoginInfo loginBaseInfo) {
+		
+		//TODO 判断是否有删除权限
+		
+		return iCcOrgMapper.deleteBatchIds(Arrays.asList(orgs));
 		
 	}
 	

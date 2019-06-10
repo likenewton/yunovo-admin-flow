@@ -37,4 +37,8 @@ public interface ICcOrgService extends IService<CcOrg> {
 	public PageData<CcOrg, Object> getListPage(PageForm pageForm, Integer org_id, LoginInfo loginInfo);
 	
 	public int insert(OrgForm form, LoginInfo info);
+
+	public int update(OrgForm org, LoginInfo loginBaseInfo);
+
+	public int delete(Integer[] orgs, LoginInfo loginBaseInfo);
 }
