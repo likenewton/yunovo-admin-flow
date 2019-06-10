@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.yunovo.iov.cas.client.authentication.H5ClientAuthenticationFilter;
+import cn.yunovo.iov.fc.common.utils.BusinessException;
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
 import cn.yunovo.iov.fc.common.utils.web.WebRequestUtil;
@@ -28,6 +29,13 @@ public class BaseController {
 		
 		log.error("[][exception]params={},exception={}", JSONObject.toJSONString(WebRequestUtil.request().getParameterMap()), ExceptionUtils.getStackTrace(e));
 		return ResultUtil.exception();
+	}
+	
+	@ExceptionHandler(value=BusinessException.class)
+	public Result<?> exception(BusinessException e) {
+		
+		log.error("[][exception]params={},exception={}", JSONObject.toJSONString(WebRequestUtil.request().getParameterMap()), ExceptionUtils.getStackTrace(e));
+		return ResultUtil.build(e.getException_code(), e.getMessage());
 	}
 
 	public LoginInfo getLoginBaseInfo() {

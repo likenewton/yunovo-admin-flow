@@ -5,6 +5,7 @@ import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
+import cn.yunovo.iov.fc.model.form.OrgForm;
 
 import java.util.List;
 import java.util.Map;
@@ -34,4 +35,6 @@ public interface ICcOrgService extends IService<CcOrg> {
 	public String getOrgpos(Integer orgid, String orgpos);
 	
 	public PageData<CcOrg, Object> getListPage(PageForm pageForm, Integer org_id, LoginInfo loginInfo);
+	
+	public int insert(OrgForm form, LoginInfo info);
 }

@@ -7,30 +7,36 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.alibaba.fastjson.JSONObject;
 
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
+import cn.yunovo.iov.fc.model.form.OrgForm;
 import cn.yunovo.iov.fc.service.ICcOrgService;
 import cn.yunovo.iov.fc.web.controller.BaseController;
-import cn.yunovo.iov.fc.web.form.OrgForm;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Api(tags="用户权限-机构管理")
 @RequestMapping(path="/api/user/org", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+@Slf4j
 public class OrgController extends BaseController{
 
 	@Autowired
 	private ICcOrgService iCcOrgService;
+	
 	
 	@ApiOperation(value="用户权限-机构管理列表")
 	@ApiImplicitParams(value = { 
@@ -45,11 +51,17 @@ public class OrgController extends BaseController{
 	
 	@ApiOperation(value="用户权限-机构新增")
 	@RequestMapping(path="/insert",method= {RequestMethod.GET, RequestMethod.POST})
-	public Result<Object> insert(OrgForm org){
+	public Result<Object> insert(@RequestBody OrgForm org){
+		
+		int result = iCcOrgService.insert(org, this.getLoginBaseInfo());
+		
+		if(result < 1) {
+			
+			log.warn("[OrgController.insert][warn]params={},username={},msg={}", JSONObject.toJSONString(org), this.getLoginBaseInfo().getLoginName(),"机构新增失败");
+			return ResultUtil.build(-1, "新增失败");
+		}
 		
 		
-		
-		return null;
-		
+		return ResultUtil.build(0, "新增成功");
 	}
 }

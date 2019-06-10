@@ -1,5 +1,6 @@
 package cn.yunovo.iov.fc.service.impl;
 
+import cn.yunovo.iov.fc.common.utils.BusinessException;
 import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
 import cn.yunovo.iov.fc.common.utils.Md5Util;
 import cn.yunovo.iov.fc.dao.ICcOrgMapper;
@@ -7,8 +8,9 @@ import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.SelectBean;
-import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
+import cn.yunovo.iov.fc.model.entity.CcUser;
+import cn.yunovo.iov.fc.model.form.OrgForm;
 import cn.yunovo.iov.fc.service.FcConstant;
 import cn.yunovo.iov.fc.service.ICcOrgService;
 import cn.yunovo.iov.fc.service.ICcUserService;
@@ -21,6 +23,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -29,7 +32,11 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -268,6 +275,24 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 		p.setPage(page);
 
 		return p;
+		
+	}
+
+	@Override
+	public int insert(OrgForm form, LoginInfo info) {
+		
+		CcUser user = iCcUserService.findUserOrgAndOrgpos(info.getLoginName());
+		
+		if(user == null) {
+			throw new BusinessException("无效操作");
+		}
+		CcOrg ccOrg = new CcOrg();
+		BeanUtils.copyProperties(form, ccOrg);
+		ccOrg.setPartner_id(RandomStringUtils.randomAlphanumeric(15));
+		ccOrg.setPartner_key(Md5Util.getMD5String(RandomStringUtils.randomAlphanumeric(20)));
+		ccOrg.setTime_added(DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+		ccOrg.setUser_id(user.getUser_id());
+		return iCcOrgMapper.insert(ccOrg);
 		
 	}
 	
