@@ -18,6 +18,7 @@ import cn.yunovo.iov.fc.service.ICcUserService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -113,6 +114,13 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 		}
 		
 		return data;
+	}
+	
+	public CcOrg getByName(String name){
+		
+		QueryWrapper<CcOrg> queryWrapper = new QueryWrapper<>();
+		queryWrapper.eq("name", name);
+		return iCcOrgMapper.selectOne(queryWrapper);
 	}
 	
 	/**
@@ -308,6 +316,10 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 			throw new BusinessException("抱歉您无权限在此父机构下创建所属子机构!");
 		}
 		
+		if(this.getByName(form.getName()) != null) {
+			throw new BusinessException(String.format("系统提示： 该【%s】机构已存在！", form.getName()));
+		}
+		
 		CcOrg ccOrg = new CcOrg();
 		BeanUtils.copyProperties(form, ccOrg);
 		ccOrg.setPartner_id(RandomStringUtils.randomAlphanumeric(15));
@@ -337,6 +349,11 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 			throw new BusinessException("抱歉您无权限在此父机构下创建所属子机构");
 		}
 		
+		CcOrg orgInfo = this.getByName(org.getName());
+		if(orgInfo != null && orgInfo.getOrg_id() != org.getOrg_id()) {
+			throw new BusinessException(String.format("系统提示： 该【%s】机构已存在！", org.getName()));
+		}
+		
 		CcOrg ccOrg = new CcOrg();
 		BeanUtils.copyProperties(org, ccOrg);
 		
@@ -356,7 +373,7 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 		}
 		
 		if(orgs == null || orgs.length < 1) {
-			throw new BusinessException("请选择您需要删除的机构");
+			throw new BusinessException("系统提示：请选择您需要删除的机构");
 		}
 		
 		String orgpos = this.getOrgpos(user.getOrg_id(), user.getOrgpos());
