@@ -40,5 +40,5 @@ public class OrgForm implements Serializable{
 	private String tel;
 	
 	@ApiModelProperty("返利比率")
-	private Double rebate_value;
+	private Float rebate_value;
 }

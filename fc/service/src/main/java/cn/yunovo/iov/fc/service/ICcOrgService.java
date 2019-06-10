@@ -41,4 +41,12 @@ public interface ICcOrgService extends IService<CcOrg> {
 	public int update(OrgForm org, LoginInfo loginBaseInfo);
 
 	public int delete(Integer[] orgs, LoginInfo loginBaseInfo);
+
+	/**
+	 * 判断当前用户是否有对应机构的操作权
+	 * @param org_id 被操作的机构id
+	 * @param orgpos 当前用户可管理的机构id,多个逗号分割,*号代表可管理所有机构
+	 * @return true | false, true 表示拥有该机构的管理权，false 则表示没有权限
+	 */
+	boolean permission(Integer org_id, String orgpos);
 }
