@@ -1,7 +1,12 @@
 package cn.yunovo.iov.fc.web.controller.user;
 
+import javax.validation.constraints.NotEmpty;
+
+import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +18,7 @@ import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
 import cn.yunovo.iov.fc.service.ICcOrgService;
 import cn.yunovo.iov.fc.web.controller.BaseController;
+import cn.yunovo.iov.fc.web.form.OrgForm;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -37,5 +43,13 @@ public class OrgController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
-	
+	@ApiOperation(value="用户权限-机构新增")
+	@RequestMapping(path="/insert",method= {RequestMethod.GET, RequestMethod.POST})
+	public Result<Object> insert(OrgForm org){
+		
+		
+		
+		return null;
+		
+	}
 }

@@ -73,4 +73,17 @@ public class CcUserServiceImpl extends ServiceImpl<ICcUserMapper, CcUser> implem
 		return userMap;
 	}
 
+	@Override
+	public Map<Integer, String> userIdMap() {
+		List<CcUser> selectList = iCcUserMapper.selectList(new QueryWrapper<>());
+		if(CollectionUtils.isEmpty(selectList)) {
+			return null;
+		}
+		
+		Map<Integer, String> userMap = selectList.stream().collect(Collectors.toMap(CcUser::getUser_id, CcUser::getFirstname));
+		
+		
+		return userMap;
+	}
+
 }

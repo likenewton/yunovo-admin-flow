@@ -22,4 +22,6 @@ public interface ICcUserService extends IService<CcUser>  {
 	
 	public Map<String, String> userMap();
 	
+	public Map<Integer, String> userIdMap();
+	
 }

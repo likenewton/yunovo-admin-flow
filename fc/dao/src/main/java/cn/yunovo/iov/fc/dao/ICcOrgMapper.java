@@ -26,5 +26,5 @@ public interface ICcOrgMapper extends BaseMapper<CcOrg> {
 	
 	public List<CcOrg> getOrgidAndParentIdByParentid(@Param("parent_id")Integer parent_id);
 	
-	public List<CcOrg> getListPage(Page<CcOrg> page, Integer org_id, String name, String orgpos, String[] orgs);
+	public List<CcOrg> getListPage(Page<CcOrg> page, @Param("org_id")Integer org_id, @Param("name")String name, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 }
