@@ -36,6 +36,7 @@ import java.util.Set;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.BeanUtils;
@@ -313,7 +314,7 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 		String orgpos = this.getOrgpos(user.getOrg_id(), user.getOrgpos());
 		
 		if(!this.permission(form.getParent_id(), orgpos)) {
-			throw new BusinessException("抱歉您无权限在此父机构下创建所属子机构!");
+			throw new BusinessException(405,"抱歉您无权限在此父机构下创建所属子机构!");
 		}
 		
 		if(this.getByName(form.getName()) != null) {
@@ -350,7 +351,7 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 		}
 		
 		CcOrg orgInfo = this.getByName(org.getName());
-		if(orgInfo != null && orgInfo.getOrg_id() != org.getOrg_id()) {
+		if(orgInfo != null && (orgInfo.getOrg_id() - org.getOrg_id()!= 0)) {
 			throw new BusinessException(String.format("系统提示： 该【%s】机构已存在！", org.getName()));
 		}
 		

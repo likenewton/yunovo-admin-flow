@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @ApiModel
-public class OrgForm implements Serializable{
+public class OrgForm  implements Serializable{
 
 	/**
 	 * 
@@ -41,4 +41,6 @@ public class OrgForm implements Serializable{
 	
 	@ApiModelProperty("返利比率")
 	private Float rebate_value;
+	
+	
 }
