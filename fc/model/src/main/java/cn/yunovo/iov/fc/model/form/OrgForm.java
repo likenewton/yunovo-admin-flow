@@ -52,19 +52,19 @@ public class OrgForm  extends BaseForm implements Serializable{
 	
 	@ApiModelProperty("异步通知地址")
 	@NotEmpty(message="请填写异步通知地址", groups= {UpdateGroupValidate.class,InsertGroupValidate.class})
-	@URL(regexp="^([hH][tT]{2}[pP]:/*|[hH][tT]{2}[pP][sS]:/*|[fF][tT][pP]:/*)(([A-Za-z0-9-~]+).)+([A-Za-z0-9-~\\\\/])+(\\\\?{0,1}(([A-Za-z0-9-~]+\\\\={0,1})([A-Za-z0-9-~]*)\\\\&{0,1})*)$",message="请输入正确的异步通知地址！", groups= {UpdateGroupValidate.class,InsertGroupValidate.class})
+	@URL(regexp="^\\s$|^([hH][tT]{2}[pP]:/*|[hH][tT]{2}[pP][sS]:/*|[fF][tT][pP]:/*)(([A-Za-z0-9-~]+).)+([A-Za-z0-9-~\\\\/])+(\\\\?{0,1}(([A-Za-z0-9-~]+\\\\={0,1})([A-Za-z0-9-~]*)\\\\&{0,1})*)$",message="请输入正确的异步通知地址！", groups= {UpdateGroupValidate.class,InsertGroupValidate.class})
 	private String notify_url;
 	
 	@ApiModelProperty("机构描述")
-	@Size(max=255, min=1, message="机构备注必须在1至255个字符之间！", groups= {UpdateGroupValidate.class,InsertGroupValidate.class})
+	@Size(max=255, min=0, message="机构备注必须在1至255个字符之间！", groups= {UpdateGroupValidate.class,InsertGroupValidate.class})
 	private String memo; 
 	
-	@Email(regexp="^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$", groups= {UpdateGroupValidate.class,InsertGroupValidate.class}, message="请输入正确的邮箱！")
+	@Email(regexp="^\\s$|$^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$", groups= {UpdateGroupValidate.class,InsertGroupValidate.class}, message="请输入正确的邮箱！")
 	@ApiModelProperty("负责人邮箱")
 	private String email;
 	
 	@ApiModelProperty("负责人手机")
-	@Pattern(regexp="^(\\+86)?1[3,4,5,6,7,8,9](\\d{9})$", message="请输入正确的手机号码！", groups= {UpdateGroupValidate.class,InsertGroupValidate.class})
+	@Pattern(regexp="^\\s$|^(\\+86)?1[3,4,5,6,7,8,9](\\d{9})$", message="请输入正确的手机号码！", groups= {UpdateGroupValidate.class,InsertGroupValidate.class})
 	private String tel;
 	
 	@ApiModelProperty("返利比率")

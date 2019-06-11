@@ -12,6 +12,10 @@ public class ResultUtil {
 		return Result.build(SUCCESS, "ok", data);
 	}
 	
+	public static <T> Result<T> successCN(T data){
+		return Result.build(SUCCESS, "操作成功", data);
+	}
+	
 	public static <T> Result<T> build(Integer status, String msg, T data) {
 		return Result.build(status, msg, data);
 	}

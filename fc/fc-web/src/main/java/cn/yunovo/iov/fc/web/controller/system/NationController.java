@@ -74,7 +74,7 @@ public class NationController extends BaseController{
 		BeanUtils.copyProperties(form, entity);
 		
 		iCcNationService.save(entity);
-		return ResultUtil.success(null);
+		return ResultUtil.successCN(null);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -89,7 +89,7 @@ public class NationController extends BaseController{
 		entity.setParent(null);
 		
 		iCcNationService.updateById(entity);
-		return ResultUtil.success(null);
+		return ResultUtil.successCN(null);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -99,7 +99,7 @@ public class NationController extends BaseController{
 		
 		form.validate(DeleteGroupValidate.class);
 		iCcNationService.removeByIds(Arrays.asList(form.getNtids()));
-		return ResultUtil.success(null);
+		return ResultUtil.successCN(null);
 	}
 	
 	
