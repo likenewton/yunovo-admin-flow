@@ -2,12 +2,11 @@ package cn.yunovo.iov.fc.model.form;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 
 import cn.yunovo.iov.fc.model.BaseForm;
 import cn.yunovo.iov.fc.model.form.group.DeleteGroupValidate;
@@ -40,8 +39,9 @@ public class NationForm extends BaseForm implements Serializable{
 	@ApiModelProperty(value = "省份")
 	private String ntname;
 
-	@NotEmpty(message="系统提示： 邮政编码不能为空且必须在11个字符以下！", groups= {InsertGroupValidate.class, UpdateGroupValidate.class})
-	@Size(max = 10, message="系统提示： 邮政编码不能为空且必须在11个字符以下！", groups= {InsertGroupValidate.class, UpdateGroupValidate.class})
+	@NotNull(message="系统提示： 请输入邮政编码", groups= {InsertGroupValidate.class, UpdateGroupValidate.class})
+	@Max(value = 999999999, message="系统提示： 邮政编码不能为空且必须少于999999999", groups= {InsertGroupValidate.class, UpdateGroupValidate.class})
+	@Min(value = 0, message="系统提示： 邮政编码不能为空且必须大于0!")
 	@ApiModelProperty(value = "邮政编码")
 	private Integer zipcode;
 	

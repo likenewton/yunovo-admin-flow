@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jasig.cas.client.validation.Assertion;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.alibaba.fastjson.JSONObject;
@@ -28,7 +29,7 @@ public class BaseController {
 	@ExceptionHandler(value=Exception.class)
 	public Result<?> exception(Exception e) {
 		
-		log.error("[][exception]params={},exception={}", JSONObject.toJSONString(WebRequestUtil.request().getParameterMap()), ExceptionUtils.getStackTrace(e));
+		log.error("[exception][exception]params={},exception={}", JSONObject.toJSONString(WebRequestUtil.request().getParameterMap()), ExceptionUtils.getStackTrace(e));
 		return ResultUtil.exception();
 	}
 	
@@ -42,9 +43,18 @@ public class BaseController {
 	@ExceptionHandler(value=FormValidateException.class)
 	public Result<?> formValidateException(FormValidateException e) {
 		
-		log.error("[formValidateException][exception]params={},exception={}", JSONObject.toJSONString(WebRequestUtil.request().getParameterMap()), ExceptionUtils.getStackTrace(e));
+		log.error("[formValidateException][exception]params={},exception={}", e.getParams(), ExceptionUtils.getStackTrace(e));
 		return ResultUtil.build(e.getCode(), e.getMessage());
 	}
+	
+	@ExceptionHandler(value=HttpMessageNotReadableException.class)
+	public Result<?> httpMessageNotReadableException(HttpMessageNotReadableException e) {
+		
+		log.error("[httpMessageNotReadableException][exception]params={},exception={}", JSONObject.toJSONString(WebRequestUtil.request().getParameterMap()), ExceptionUtils.getStackTrace(e));
+		return ResultUtil.build(400, "请求参数有误");
+	}
+	
+	
 
 	public LoginInfo getLoginBaseInfo() {
 
