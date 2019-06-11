@@ -7,6 +7,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -61,7 +62,7 @@ public class NationController extends BaseController{
 	@SuppressWarnings("unchecked")
 	@RequestMapping(path="/nations/insert", method= {RequestMethod.POST})
 	@ApiOperation(value="系统设置-国家区域新增接口")
-	public Result<?> insert(NationForm form) {
+	public Result<?> insert(@RequestBody NationForm form) {
 		
 		form.validate(InsertGroupValidate.class);
 		
@@ -79,7 +80,7 @@ public class NationController extends BaseController{
 	@SuppressWarnings("unchecked")
 	@RequestMapping(path="/nations/update", method= {RequestMethod.POST})
 	@ApiOperation(value="系统设置-国家区域修改接口")
-	public Result<?> update(NationForm form) {
+	public Result<?> update(@RequestBody NationForm form) {
 		
 		form.validate(UpdateGroupValidate.class);
 		CcNation entity = new CcNation();
@@ -94,7 +95,7 @@ public class NationController extends BaseController{
 	@SuppressWarnings("unchecked")
 	@RequestMapping(path="/nations/delete", method= {RequestMethod.POST})
 	@ApiOperation(value="系统设置-国家区域删除接口")
-	public Result<?> delete(NationForm form) {
+	public Result<?> delete(@RequestBody NationForm form) {
 		
 		form.validate(DeleteGroupValidate.class);
 		iCcNationService.removeByIds(Arrays.asList(form.getNtids()));
