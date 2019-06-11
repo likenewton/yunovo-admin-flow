@@ -20,7 +20,7 @@
     </el-card>
     <el-card class="clearfix" style="margin-bottom: 20px" shadow="never" v-loading="loadData">
       <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" :default-sort="defaultSort" border resizable size="mini">
-        <el-table-column prop="org_name" label="机构名称" min-width="200" sortable="custom">
+        <el-table-column prop="org_id" label="机构名称" min-width="200" sortable="custom">
           <template slot-scope="scope">
             <span v-if="scope.row.sums">{{scope.row.org_name}}</span>
             <span v-else class="btn-link" @click="choiceOrgName(scope)">{{scope.row.org_name}}</span>
@@ -92,7 +92,7 @@ export default {
       // 查询表单数据
       formInline: {},
       sort: {},
-      defaultSort: { prop: 'org_name', order: 'ascending' },
+      defaultSort: { prop: 'org_id', order: 'ascending' },
       maxTableHeight: Api.UNITS.maxTableHeight(),
       chartConst: {
         '0': {

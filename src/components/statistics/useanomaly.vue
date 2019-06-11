@@ -41,8 +41,12 @@
             <span class="btn-link">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="card_type_name" label="卡商名称" min-width="150" sortable="custom"></el-table-column>
-        <el-table-column prop="org_name" label="机构名称" min-width="180" sortable="custom">
+        <el-table-column prop="card_id" label="卡商名称" min-width="150" sortable="custom">
+          <template slot-scope="scope">
+            <span>{{scope.row.card_type_name}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="org_id" label="机构名称" min-width="180" sortable="custom">
           <template slot-scope="scope">
             <span class="btn-link">{{scope.row.org_name}}</span>
           </template>
@@ -70,9 +74,9 @@
         <el-table-column prop="time_last" label="设备更新时间" min-width="155" sortable="custom"></el-table-column>
         <el-table-column fixed="right" prop='unicom_stop' label="操作" width="95">
           <template slot-scope="scope">
+            <el-button type="text">套餐</el-button>
             <el-button type="text" class="text_success" v-if="scope.row.unicom_stop == 1">启用</el-button>
             <el-button type="text" class="text_danger" v-else>停用</el-button>
-            <el-button type="text">套餐</el-button>
           </template>
         </el-table-column>
       </el-table>

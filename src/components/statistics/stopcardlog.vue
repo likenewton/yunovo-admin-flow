@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-card class="box-card" style="margin-bottom: 20px" shadow="never">
+    <el-card style="margin-bottom: 20px" shadow="never">
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item label="卡ICCID">
           <el-input v-model="formInline.card_iccid" placeholder="请输入卡的iccid"></el-input>
@@ -21,18 +21,22 @@
         </el-form-item>
       </el-form>
     </el-card>
-    <el-card class="box-card clearfix" shadow="never" v-loading="loadData">
+    <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
         <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
-        <el-table-column fixed="left" prop="card_iccid" label="卡ICCID" width="200">
+        <el-table-column fixed="left" prop="card_iccid" label="卡ICCID" width="200" sortable="custom">
           <template slot-scope="scope">
             <span class="btn-link" @click="checkRechargeDetail(scope.row.card_iccid)">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="card_type_name" label="卡商名称" min-width="140"></el-table-column>
-        <el-table-column prop="org_name" label="所属机构" min-width="140">
+        <el-table-column prop="card_id" label="卡商名称" min-width="140" sortable="custom">
+          <template slot-scope="scope">
+            <span>{{scope.row.card_type_name}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="org_id" label="所属机构" min-width="140" sortable="custom">
           <template slot-scope="scope">
             <span class="btn-link">{{scope.row.org_name}}</span>
           </template>
@@ -54,7 +58,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
     <el-dialog title="停卡详情列表" :visible.sync="dialogTableVisible">
@@ -111,9 +115,7 @@ export default {
       },
       curChoiceRow: {}, // iccid详情列表 当前选择项保存项(list.data中的某一项)
       sort: {},
-      formInline: {
-        org_id: '1'
-      },
+      formInline: {},
       maxTableHeight: Api.UNITS.maxTableHeight(),
       maxDialogHeight: $(window).height() / 2
     }

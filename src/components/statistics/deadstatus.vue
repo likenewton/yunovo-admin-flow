@@ -31,14 +31,18 @@
         <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
-        <el-table-column fixed="left" prop="card_iccid" label="卡ICCID" width="178">
+        <el-table-column fixed="left" prop="card_iccid" label="卡ICCID" width="178" sortable="custom">
           <template slot-scope="scope">
             <span v-if="scope.row.sums">{{scope.row.card_iccid}}</span>
             <span v-else class="btn-link">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="card_type_name" label="卡商名称" min-width="120"></el-table-column>
-        <el-table-column prop="org_name" label="所属机构" min-width="120">
+        <el-table-column prop="card_id" label="卡商名称" min-width="120" sortable="custom">
+          <template slot-scope="scope">
+            <span>{{scope.row.card_type_name}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="org_id" label="所属机构" min-width="120" sortable="custom">
           <template slot-scope="scope" prop="org_name">
             <span class="btn-link">{{scope.row.org_name}}</span>
           </template>
@@ -70,8 +74,8 @@
         <el-table-column fixed="right" label="操作" width="98">
           <template slot-scope="scope" v-if="!scope.row.sums">
             <el-button type="text">同步</el-button>
-            <el-button type="text" v-if="scope.row.is_op">停用</el-button>
-            <el-button type="text" v-else>启用</el-button>
+            <el-button type="text" class="text_success" v-if="scope.row.unicom_stop">开启</el-button>
+            <el-button type="text" class="text_danger" v-else>停用</el-button>
           </template>
         </el-table-column>
       </el-table>

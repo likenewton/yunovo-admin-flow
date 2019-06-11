@@ -26,7 +26,7 @@
         <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
       <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border size="mini" resizable>
-        <el-table-column fixed="left" prop="org_name" label="机构名称" min-width="180" sortable="custom">
+        <el-table-column fixed="left" prop="org_id" label="机构名称" min-width="180" sortable="custom">
           <template slot-scope="scope">
             <span v-if="scope.row.sums">{{scope.row.org_name}}</span>
             <span v-else class="btn-link">{{scope.row.org_name}}</span>
@@ -65,7 +65,7 @@
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
-    <el-card class="box-card clearfix" shadow="never" v-loading="echartLoadData">
+    <el-card class="box-card clearfix" shadow="never" v-loading="loadData">
       <div id="myChart_0" style="width:100%; height:380px"></div>
     </el-card>
   </div>
@@ -79,7 +79,6 @@ export default {
   data() {
     return {
       loadData: true,
-      echartLoadData: true,
       tabIndex: '0',
       pageSizes: Api.STATIC.pageSizes,
       // 列表数据
@@ -256,7 +255,6 @@ export default {
       })
       setTimeout(() => {
         this[`myChart_${this.tabIndex}`].setOption(option)
-        this.echartLoadData = false
       }, 0)
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,

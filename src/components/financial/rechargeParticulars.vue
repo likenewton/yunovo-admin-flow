@@ -69,14 +69,22 @@
             <span v-else class="btn-link">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="card_type_name" label="卡商名称" min-width="135" sortable="custom"></el-table-column>
-        <el-table-column prop="org_name" label="机构名称" min-width="135" sortable="custom">
+        <el-table-column prop="card_id" label="卡商名称" min-width="135" sortable="custom">
+          <template slot-scope="scope">
+            <span>{{scope.row.card_type_name}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="org_id" label="机构名称" min-width="135" sortable="custom">
           <template slot-scope="scope">
             <span v-if="scope.row.sums">{{scope.row.org_name}}</span>
             <span v-else class="btn-link">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="pay_method_name" label="付款方式" width="90" sortable="custom"></el-table-column>
+        <el-table-column prop="pay_method" label="付款方式" width="90" sortable="custom">
+          <template slot-scope="scope">
+            <span>{{scope.row.pay_method_name}}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="transfer_id" label="支付流水号" min-width="140" sortable="custom"></el-table-column>
         <el-table-column prop="gprs_amount" label="套餐流量" width="95" sortable="custom">
           <template slot-scope="scope">
@@ -101,7 +109,11 @@
           </template>
         </el-table-column>
         <el-table-column prop="time_paid" label="付款时间" width="153" sortable="custom"></el-table-column>
-        <el-table-column prop="pay_from_name" label="订单来源" width="90" sortable="custom"></el-table-column>
+        <el-table-column prop="pay_from" label="订单来源" width="90" sortable="custom">
+          <template slot-scope="scope">
+            <span>{{scope.row.pay_from_name}}</span>
+          </template>
+        </el-table-column>
       </el-table>
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>

@@ -95,10 +95,8 @@ export default {
     }
   },
   mounted() {
-    let isUpdate = this.$route.query.type === 'update'
-    if (isUpdate) {
-      // 如果是编辑就获取数据再展示
-      this.isUpdate = true
+    this.isUpdate = this.$route.query.type === 'update'
+    if (this.isUpdate) {
       this.getData()
     } else {
       this.loadData = false
@@ -147,7 +145,7 @@ export default {
     resetForm(formName) {
       // resetFields 只能重置需要验证的值
       this.$refs[formName].resetFields()
-      this.getData()
+      this.isUpdate && this.getData()
     },
     limitNumber: Api.UNITS.limitNumber,
     // 验证邮箱地址是否正确

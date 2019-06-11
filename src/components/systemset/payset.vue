@@ -1,12 +1,12 @@
 <template>
   <div class="pay_set">
-    <el-card class="box-card clearfix" shadow="never" v-loading="loadData">
+    <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="mini" type="danger" @click="deleteData">卸载</el-button>
+        <el-button size="mini" type="danger" @click="deleteDatas">卸载</el-button>
       </el-button-group>
-      <el-table class="payset_page" ref="listTable" @selection-change="handleSelectionChange" :data="list.data" border resizable size="mini">
+      <el-table class="payset_page" ref="listTable" @sort-change="handleSortChange" @selection-change="handleSelectionChange" :data="list.data" border resizable size="mini">
         <el-table-column type="selection" min-width="60"></el-table-column>
-        <el-table-column label="支付方式" min-width="150" sortable>
+        <el-table-column label="支付方式" min-width="150" sortable="custom">
           <template slot-scope="scope">
             <i :class="scope.row.icon" class="pay_icon"></i>
             <span class="pointer" @click="openPayLink(scope)">{{scope.row.pay_way}}</span>
@@ -14,8 +14,8 @@
         </el-table-column>
         <el-table-column label="管理" width="140">
           <template slot-scope="scope">
-            <el-button type="text" @click="editor(scope.row.id)">编辑</el-button>
-            <el-button type="text" @click="deleteSingle(scope.row.id)">卸载</el-button>
+            <el-button type="text" class="text_editor" @click="editor(scope.row.routeName)">编辑</el-button>
+            <el-button type="text" class="text_danger" @click="deleteData(scope)">卸载</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -58,18 +58,22 @@ export default {
       this.list.currentPage = val
       this.getData()
     },
-    // 处理列表多选
     handleSelectionChange(selectData) {
       this.selectData = selectData
+    },
+    handleSortChange(val = {}) {
+      Api.UNITS.setSortSearch(val, this)
+      this.getData()
     },
     editor(routeName) {
       this.$router.push({ name: routeName })
     },
-    deleteSingle(id) {
+    // 单独卸载
+    deleteData(scope) {
 
     },
     // 批量卸载
-    deleteData() {
+    deleteDatas() {
       if (this.selectData.length === 0) {
         this.$message.warning('请先勾选要卸载的项')
       } else {
@@ -95,12 +99,12 @@ export default {
       setTimeout(() => {
         // 数据请求成功
         this.list.data = [{
-          id: 'alipay',
+          routeName: 'alipay',
           pay_way: '支付宝支付',
           icon: 'el-icon-fontalipay',
           link: 'https://open.alipay.com/platform/home.htm'
         }, {
-          id: 'wechart',
+          routeName: 'wechart',
           pay_way: '微信支付',
           icon: 'el-icon-fontweixinzhifu1',
           link: 'https://pay.weixin.qq.com'

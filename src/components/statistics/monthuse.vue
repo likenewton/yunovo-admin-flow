@@ -31,14 +31,18 @@
         <el-button size="mini" type="warning" @click="exportExcel">导出</el-button>
       </el-button-group>
       <el-table class="list_table" ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border resizable size="mini">
-        <el-table-column fixed="left" label="卡ICCID" width="200">
+        <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" width="200">
           <template slot-scope="scope">
             <span v-if="scope.row.sums">{{scope.row.card_iccid}}</span>
             <span v-else class="btn-link">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="card_type_name" label="卡商名称" min-width="120" sortable="custom"></el-table-column>
-        <el-table-column prop="org_name" label="所属机构" min-width="160" sortable="custom">
+        <el-table-column prop="card_id" label="卡商名称" min-width="120" sortable="custom">
+          <template slot-scope="scope">
+            <span>{{scope.row.card_type_name}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="org_id" label="所属机构" min-width="160" sortable="custom">
           <template slot-scope="scope">
             <span class="btn-link">{{scope.row.org_name}}</span>
           </template>

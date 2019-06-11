@@ -30,20 +30,7 @@ module.exports = {
     let list = para.vue[para.list || 'list']
     let sort = para.vue[para.sort || 'sort']
     let formInline = para.vue[para.formInline || 'formInline']
-    // 某些排序的字段要换成另外的一个字段， 这里定制化一些字段
-    let sortFilterArr = {
-      card_type_name: 'card_id',
-      org_name: 'org_id',
-      ntf_type_name: 'ntf_type',
-      pay_method_name: 'pay_method',
-      pay_from_name: 'pay_from',
-    }
-    if (sortFilterArr[sort.ascs]) {
-      sort.ascs = sortFilterArr[sort.ascs]
-    } else if (sortFilterArr[sort.descs]) {
-      sort.descs = sortFilterArr[sort.descs]
-    }
-    // formInline表单中的起止时间为一个数组，要换成两个分开的字段
+    
     para.vue[para.loadData || 'loadData'] = true
     _axios.send({
       method: para.method || 'get',
@@ -288,7 +275,7 @@ module.exports = {
     else return queryObj
   },
   maxTableHeight() {
-    let height = $(window).height() -  (250 + 300000 / ($(window).height() + 1000))
+    let height = $(window).height() -  (220 + 300000 / ($(window).height() + 1000))
     if (height < 400) height = 400
     return height
   },

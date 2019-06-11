@@ -30,7 +30,7 @@
         <el-table-column prop="notify_url" label="异步通知地址" min-width="215" sortable="custom"></el-table-column>
         <el-table-column prop="user_total" label="可开账户数量" width="113" sortable="custom"></el-table-column>
         <el-table-column prop="email" label="负责人邮箱" min-width="105" sortable="custom"></el-table-column>
-        <el-table-column prop="tel" label="负责人手机" min-width="105" sortable="custom"></el-table-column>
+        <el-table-column prop="tel" label="负责人手机" min-width="108" sortable="custom"></el-table-column>
         <el-table-column prop="rebate_value" label="返利比率" width="87" sortable="custom"></el-table-column>
         <el-table-column prop="memo" label="机构描述" min-width="160" sortable="custom"></el-table-column>
         <el-table-column prop="user_id" label="创建者" min-width="80" sortable="custom">
@@ -45,8 +45,8 @@
         </el-table-column>
         <el-table-column fixed="right" label="管理" width="100">
           <template slot-scope="scope">
-            <el-button type="text" @click="$router.push({ name: 'createjg', query: { type: 'update', org_id: scope.row.org_id } })">编辑</el-button>
-            <el-button type="text" @click="deleteOrg(scope)">删除</el-button>
+            <el-button type="text" class="text_editor" @click="$router.push({ name: 'createjg', query: { type: 'update', org_id: scope.row.org_id } })">编辑</el-button>
+            <el-button type="text" class="text_danger" @click="deleteOrg(scope)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

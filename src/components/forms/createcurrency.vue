@@ -3,7 +3,7 @@
     <div slot="header" class="clearfix">
       <span>货币设置</span>
     </div>
-    <el-form v-loading="isLoadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="140px" size="small" :status-icon="true">
+    <el-form v-loading="loadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="140px" size="small" :status-icon="true">
       <el-form-item prop="currency_name">
         <span slot="label">货币名称：</span>
         <el-input v-model="formInline.currency_name" placeholder="请输入货币名称"></el-input>
@@ -40,7 +40,7 @@
       <el-form-item>
         <el-button @click="$router.back()">返回</el-button>
         <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
-        <el-button v-if="isCreate" type="warning" @click="resetForm('ruleForm')">重置</el-button>
+        <el-button type="warning" @click="resetForm('ruleForm')">重置</el-button>
       </el-form-item>
     </el-form>
   </el-card>
@@ -51,8 +51,8 @@ import Api from 'assets/js/api.js'
 export default {
   data() {
     return {
-      isLoadData: true,
-      isCreate: true,
+      loadData: true,
+      isUpdate: true,
       formInline: {
         fixed_count: 2,
         status: 0
@@ -86,17 +86,16 @@ export default {
     }
   },
   mounted() {
-    let isUpdate = this.$route.query.type === 'update'
-    if (isUpdate) {
-      this.isCreate = false
+    this.isUpdate = this.$route.query.type === 'update'
+    if (this.isUpdate) {
       this.getData()
     } else {
-      this.isLoadData = false
+      this.loadData = false
     }
   },
   methods: {
     getData() {
-      // 如果是编辑就获取数据再展示
+      this.loadData = true
       setTimeout(() => {
         this.formInline = {
           currency_name: 'Chinese RMB',
@@ -106,7 +105,7 @@ export default {
           rate: '1',
           status: 0
         }
-        this.isLoadData = false
+        this.loadData = false
       }, 1000)
     },
     // 连接iso 货币代码标准
@@ -127,8 +126,8 @@ export default {
     },
     // 重置表单
     resetForm(formName) {
-      // resetFields 只能重置需要验证的值
       this.$refs[formName].resetFields()
+      this.isUpdate && this.getData()
     },
     limitNumber: Api.UNITS.limitNumber
   }

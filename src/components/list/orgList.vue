@@ -19,7 +19,7 @@
         <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
       <el-table ref="listTable" @sort-change="handleSortChange" :max-height="maxTableHeight" :data="list.data" border resizable size="mini">
-        <el-table-column prop="org_name" fixed="left" label="机构名称" min-width="126" sortable="custom">
+        <el-table-column prop="org_id" fixed="left" label="机构名称" min-width="126" sortable="custom">
           <template slot-scope="scope">
             <span class="btn-link">{{scope.row.org_name}}</span>
           </template>

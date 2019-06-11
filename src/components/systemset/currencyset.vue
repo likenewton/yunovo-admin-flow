@@ -2,24 +2,24 @@
   <div class="currency_set">
     <el-card class="box-card clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="mini" type="success" @click="createCurrency">新增</el-button>
-        <el-button size="mini" type="danger" @click="deleteData">删除</el-button>
+        <el-button size="mini" type="success" @click="$router.push({ name: 'createcurrency' })">新增</el-button>
+        <el-button size="mini" type="danger" @click="deleteDatas">删除</el-button>
       </el-button-group>
-      <el-table ref="listTable" :data="list.data" @selection-change="handleSelectionChange" border resizable size="mini">
+      <el-table ref="listTable" :data="list.data" @selection-change="handleSelectionChange" @sort-change="handleSortChange" border resizable size="mini">
         <el-table-column type="selection" min-width="60"></el-table-column>
-        <el-table-column label="货币名称" min-width="150">
+        <el-table-column label="货币名称" min-width="150" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.currency_name}}</span>
             <span v-if="scope.row.isDefault" style="font-weight:bold">(默认)</span>
           </template>
         </el-table-column>
-        <el-table-column prop="code" label="代码" min-width="140"></el-table-column>
-        <el-table-column prop="rate" label="汇率" min-width="140" sortable></el-table-column>
-        <el-table-column prop="update" label="最近更新" min-width="140" sortable></el-table-column>
+        <el-table-column prop="code" label="代码" min-width="140" sortable="custom"></el-table-column>
+        <el-table-column prop="rate" label="汇率" min-width="140" sortable="custom"></el-table-column>
+        <el-table-column prop="update" label="最近更新" min-width="140" sortable="custom"></el-table-column>
         <el-table-column label="管理" width="140">
           <template slot-scope="scope">
-            <el-button type="text" @click="editor(scope.row.id)">编辑</el-button>
-            <el-button type="text" @click="deleteSingle(scope.row.id)">删除</el-button>
+            <el-button type="text" class="text_editor" @click="$router.push({ name: 'createcurrency', query: { type: 'update' } })">编辑</el-button>
+            <el-button type="text" class="text_danger" @click="deleteData(scope)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -62,21 +62,21 @@ export default {
       this.list.currentPage = val
       this.getData()
     },
-    // 处理列表多选
     handleSelectionChange(selectData) {
       this.selectData = selectData
     },
-    createCurrency() {
-      this.$router.push({ name: 'createcurrency' })
+    handleSortChange(val = {}) {
+      Api.UNITS.setSortSearch(val, this)
+      this.getData()
     },
     editor(id) {
       this.$router.push({ name: 'createcurrency', query: { type: 'update' } })
     },
-    deleteSingle(id) {
+    deleteData(scope) {
 
     },
     // 批量卸载
-    deleteData() {
+    deleteDatas() {
       if (this.selectData.length === 0) {
         this.$message.warning('请先勾选要删除的项')
       } else {

@@ -21,12 +21,16 @@
     </el-card>
     <el-card class="box-card clearfix" shadow="never" v-loading="loadData">
       <el-table ref="listTable" @sort-change="handleSortChange" :max-height="maxTableHeight" :data="list.data" border resizable size="mini">
-        <el-table-column prop="org_name" label="机构名称" min-width="220" sortable="custom">
+        <el-table-column prop="org_id" label="机构名称" min-width="220" sortable="custom">
           <template slot-scope="scope">
             <span class="btn-link">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="ntf_type_name" label="通知或来源" min-width="200" sortable="custom"></el-table-column>
+        <el-table-column prop="ntf_type" label="通知或来源" min-width="200" sortable="custom">
+          <template slot-scope="scope">
+            <span>{{scope.row.ntf_type_name}}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="ntf_succeed" label="通知成功数" min-width="100" sortable="custom"></el-table-column>
         <el-table-column prop="ntf_failed" label="通知失败数" min-width="100" sortable="custom"></el-table-column>
         <el-table-column prop="ntf_duration" label="通知时长值" min-width="130" sortable="custom">

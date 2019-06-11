@@ -41,11 +41,13 @@ class AXIOS {
       getpayPack: '/fc/api/gprs/report/payPack',
       getMonthReport: '/fc/api/gprs/report/monthReport',
       getOrgList: '/fc/api/user/org/',
+      getNations: '/fc/api/system/nations/',
       // 明细
       getOnOffLogDetail: '/fc/api/gprs/onoffLog/detail',
       getNotifyFromOrg: '/fc/api/gprs/notifyFrom/org',
       getPayOnlineOrg: '/fc/api/gprs/payOnline/org',
       getPayDetail: '/fc/api/gprs/report/payDetail',
+      getNationDetail: '/fc/api/system/nations/detail',
       // 导出
       statsExport: '/fc/api/gprs/stats/export',
       // 图表
@@ -54,6 +56,9 @@ class AXIOS {
       addOrg: '/fc/api/user/org/insert',
       updateOrg: '/fc/api/user/org/update',
       deleteOrg: '/fc/api/user/org/delete',
+      addNation: '/fc/api/system/nations/insert',
+      upDateNation: '/fc/api/system/nations/update',
+      deleteNation: '/fc/api/system/nations/delete',
     }
   }
 
@@ -74,7 +79,8 @@ class AXIOS {
       // 这里要根据状态码来对不同的响应状态做处理
       if (res.data.status === 401) {
         // 未登录状态跳转登录页
-        location.replace(res.data.redirectUrl)
+        location.replace(res.data.redirectUrl += '&target=' + encodeURIComponent(location.href))
+        // location.replace(res.data.redirectUrl)
       } else {
         // status === 0 为正常返回
         if (res.data.status === 0) {

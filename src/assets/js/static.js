@@ -97,9 +97,6 @@ module.exports = {
       title: '支付管理',
       name: 'paySet'
     }, {
-      title: '语言设置',
-      name: 'langset'
-    }, {
       title: '货币设置',
       name: 'currencyset'
     }, {
@@ -108,9 +105,6 @@ module.exports = {
     }, {
       title: '系统参数',
       name: 'sysparaset'
-    }, {
-      title: '数据维护',
-      name: 'datapreserve'
     }]
   }],
   // 必须、误删

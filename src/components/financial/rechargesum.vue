@@ -19,7 +19,7 @@
     </el-card>
     <el-card class="recharge_sum clearfix" style="margin-bottom: 20px" shadow="never" v-loading="loadData">
       <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border resizable size="mini">
-        <el-table-column label="机构名称" min-width="200" sortable="custom">
+        <el-table-column prop="org_id" label="机构名称" min-width="200" sortable="custom">
           <template slot-scope="scope">
             <span v-if="scope.row.sums">{{scope.row.org_name}}</span>
             <span v-else class="btn-link">{{scope.row.org_name}}</span>

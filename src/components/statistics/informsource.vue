@@ -24,7 +24,11 @@
             <span class="btn-link" @click="$router.push({ name: 'orgListDetail', query: { 'ntf_date': scope.row.ntf_date } })">{{scope.row.ntf_date}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="ntf_type_name" label="通知或来源" min-width="180" sortable="custom"></el-table-column>
+        <el-table-column prop="ntf_type" label="通知或来源" min-width="180" sortable="custom">
+          <template slot-scope="scope">
+            <span>{{scope.row.ntf_type_name}}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="ntf_succeed" label="通知成功数" min-width="110" sortable="custom"></el-table-column>
         <el-table-column prop="ntf_failed" label="通知失败数" min-width="110" sortable="custom"></el-table-column>
         <el-table-column prop="ntf_duration" label="通知时长" min-width="130" sortable="custom">
