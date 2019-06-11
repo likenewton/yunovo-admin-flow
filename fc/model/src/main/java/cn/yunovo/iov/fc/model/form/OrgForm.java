@@ -53,7 +53,7 @@ public class OrgForm  extends BaseForm implements Serializable{
 	
 	@ApiModelProperty("异步通知地址")
 	@NotEmpty(message="请填写异步通知地址", groups= {UpdateGroupValidate.class,InsertGroupValidate.class})
-	@URL(regexp="(^$)|(^([hH][tT]{2}[pP]:/*|[hH][tT]{2}[pP][sS]:/*|[fF][tT][pP]:/*)(([A-Za-z0-9-~]+).)+([A-Za-z0-9-~\\\\/])+(\\\\?{0,1}(([A-Za-z0-9-~]+\\\\={0,1})([A-Za-z0-9-~]*)\\\\&{0,1})*)$)",message="请输入正确的异步通知地址！", groups= {UpdateGroupValidate.class,InsertGroupValidate.class})
+	@URL(regexp="(^$)|(^([hH][tT]{2}[pP]:/*|[hH][tT]{2}[pP][sS]:/*|[fF][tT][pP]:/*)(([A-Za-z0-9-~]+).)+([A-Za-z0-9-~\\/])+(\\?{0,1}(([A-Za-z0-9-~]+\\={0,1})([A-Za-z0-9-~]*)\\&{0,1})*)$)",message="请输入正确的异步通知地址！", groups= {UpdateGroupValidate.class,InsertGroupValidate.class})
 	private String notify_url;
 	
 	@ApiModelProperty("机构描述")
@@ -65,7 +65,7 @@ public class OrgForm  extends BaseForm implements Serializable{
 	private String email;
 	
 	@ApiModelProperty("负责人手机")
-	@Pattern(regexp="(^$)|(^(\\\\+86)?1[3,4,5,6,7,8,9](\\\\d{9})$)", message="请输入正确的手机号码！", groups= {UpdateGroupValidate.class,InsertGroupValidate.class})
+	@Pattern(regexp="(^$)|(^(\\+86)?1[3,4,5,6,7,8,9](\\d{9})$)", message="请输入正确的手机号码！", groups= {UpdateGroupValidate.class,InsertGroupValidate.class})
 	private String tel;
 	
 	@ApiModelProperty("返利比率")
@@ -79,7 +79,7 @@ public class OrgForm  extends BaseForm implements Serializable{
 	
 	public static void main(String[] args) {
 		
-		boolean isMatch = java.util.regex.Pattern.matches("(^$)|(^(\\+86)?1[3,4,5,6,7,8,9](\\d{9})$)", "18888888888");
+		boolean isMatch = java.util.regex.Pattern.matches("(^$)|(^(\\+86)?1[3,4,5,6,7,8,9](\\d{9})$)", "13286320200");
 		System.out.println(isMatch);
 		
 	}
