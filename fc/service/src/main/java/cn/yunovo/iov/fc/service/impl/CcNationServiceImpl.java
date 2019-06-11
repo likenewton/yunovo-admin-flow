@@ -42,7 +42,8 @@ public class CcNationServiceImpl extends ServiceImpl<ICcNationMapper, CcNation> 
 			page.setAsc(pageForm.getAscs());
 			page.setDesc(pageForm.getDescs());
 		}
-		
+		page.setSize(pageForm.getSize());
+		page.setCurrent(pageForm.getCurrent());
 		QueryWrapper<CcNation> queryWrapper = new QueryWrapper<>();
 		queryWrapper.eq("parent", ntid == null ? 0 : ntid);
 		

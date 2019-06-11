@@ -141,7 +141,7 @@
 			AND card_type = #{card_type}
 		</if>
 		<if test="card_iccid != null">
-			<bind name="card_iccid_bind" value="'%'+card_iccid'%'" />
+			<bind name="card_iccid_bind" value="'%'+card_iccid+'%'" />
 			AND card_iccid LIKE #{card_iccid_bind}
 		</if>
 		<choose>

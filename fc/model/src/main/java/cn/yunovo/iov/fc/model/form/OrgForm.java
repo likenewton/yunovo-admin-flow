@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -15,12 +14,16 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.URL;
 
 import cn.yunovo.iov.fc.model.BaseForm;
-import cn.yunovo.iov.fc.model.ValidateGroup;
+import cn.yunovo.iov.fc.model.form.group.DeleteGroupValidate;
+import cn.yunovo.iov.fc.model.form.group.InsertGroupValidate;
+import cn.yunovo.iov.fc.model.form.group.UpdateGroupValidate;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper=false)
 @ApiModel
 public class OrgForm  extends BaseForm implements Serializable{
 
@@ -73,16 +76,5 @@ public class OrgForm  extends BaseForm implements Serializable{
 	@NotEmpty(message="系统提示：请选择您需要删除的机构", groups=DeleteGroupValidate.class)
 	private Integer[] orgs;
 	
-	public interface InsertGroupValidate extends ValidateGroup{
-		
-	}
-	
-	public interface UpdateGroupValidate extends ValidateGroup{
-		
-	}
-
-	public interface DeleteGroupValidate extends ValidateGroup{
-		
-	}
 
 }
