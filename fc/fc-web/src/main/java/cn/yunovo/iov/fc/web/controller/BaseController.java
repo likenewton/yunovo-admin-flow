@@ -14,6 +14,7 @@ import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
 import cn.yunovo.iov.fc.common.utils.web.WebRequestUtil;
 import cn.yunovo.iov.fc.model.LoginInfo;
+import cn.yunovo.iov.fc.model.exception.FormValidateException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -32,10 +33,17 @@ public class BaseController {
 	}
 	
 	@ExceptionHandler(value=BusinessException.class)
-	public Result<?> exception(BusinessException e) {
+	public Result<?> businessException(BusinessException e) {
 		
-		log.error("[][exception]params={},exception={}", JSONObject.toJSONString(WebRequestUtil.request().getParameterMap()), ExceptionUtils.getStackTrace(e));
+		log.error("[businessException][exception]params={},exception={}", JSONObject.toJSONString(WebRequestUtil.request().getParameterMap()), ExceptionUtils.getStackTrace(e));
 		return ResultUtil.build(e.getException_code(), e.getMessage());
+	}
+	
+	@ExceptionHandler(value=FormValidateException.class)
+	public Result<?> formValidateException(FormValidateException e) {
+		
+		log.error("[formValidateException][exception]params={},exception={}", JSONObject.toJSONString(WebRequestUtil.request().getParameterMap()), ExceptionUtils.getStackTrace(e));
+		return ResultUtil.build(e.getCode(), e.getMessage());
 	}
 
 	public LoginInfo getLoginBaseInfo() {

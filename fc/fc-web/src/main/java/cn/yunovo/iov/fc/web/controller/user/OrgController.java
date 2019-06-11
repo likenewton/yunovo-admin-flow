@@ -20,6 +20,9 @@ import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
 import cn.yunovo.iov.fc.model.form.OrgForm;
+import cn.yunovo.iov.fc.model.form.OrgForm.DeleteGroupValidate;
+import cn.yunovo.iov.fc.model.form.OrgForm.InsertGroupValidate;
+import cn.yunovo.iov.fc.model.form.OrgForm.UpdateGroupValidate;
 import cn.yunovo.iov.fc.service.ICcOrgService;
 import cn.yunovo.iov.fc.web.controller.BaseController;
 import io.swagger.annotations.Api;
@@ -50,9 +53,12 @@ public class OrgController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@ApiOperation(value="用户权限-机构新增")
 	@RequestMapping(path="/insert",method= {RequestMethod.POST})
 	public Result<Object> insert(@RequestBody OrgForm org){
+		
+		org.validate(InsertGroupValidate.class);
 		
 		int result = iCcOrgService.insert(org, this.getLoginBaseInfo());
 		
@@ -65,10 +71,12 @@ public class OrgController extends BaseController{
 		return ResultUtil.build(0, "新增成功");
 	}
 	
+	@SuppressWarnings("unchecked")
 	@ApiOperation(value="用户权限-机构修改")
 	@RequestMapping(path="/update",method= {RequestMethod.POST})
 	public Result<Object> update(@RequestBody OrgForm org){
 		
+		org.validate(UpdateGroupValidate.class);
 		int result = iCcOrgService.update(org, this.getLoginBaseInfo());
 		
 		if(result < 1) {
@@ -80,10 +88,12 @@ public class OrgController extends BaseController{
 		return ResultUtil.build(0, "修改成功");
 	}
 	
+	@SuppressWarnings("unchecked")
 	@ApiOperation(value="用户权限-机构删除")
 	@RequestMapping(path="/delete",method= {RequestMethod.POST})
 	public Result<Object> delete(@RequestBody OrgForm org){
 		
+		org.validate(DeleteGroupValidate.class);
 		int result = iCcOrgService.delete(org.getOrgs(), this.getLoginBaseInfo());
 		
 		if(result < 1) {
