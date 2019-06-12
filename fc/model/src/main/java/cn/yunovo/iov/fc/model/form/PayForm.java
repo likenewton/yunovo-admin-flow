@@ -102,9 +102,9 @@ public class PayForm extends BaseForm implements Serializable{
 	@SuppressWarnings("unchecked")
 	public void validate() {
 		
-		if(StringUtils.equals("alipay", this.type)) {
+		if(StringUtils.equals("alipay", this.type) || StringUtils.equals("other2", this.type)) {
 			super.validate(AlipayValidateGroup.class);
-		}else if(StringUtils.equals("wxpay", this.type)){
+		}else if(StringUtils.equals("wxpay", this.type) || StringUtils.equals("other3", this.type)){
 			super.validate(WxpayValidateGroup.class);
 		}
 		

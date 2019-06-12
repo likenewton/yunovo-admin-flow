@@ -43,7 +43,7 @@ public class CcSettingServiceImpl extends ServiceImpl<ICcSettingMapper, CcSettin
 			queryWrapper.eq("key", key);
 		}
 		
-		return this.getBaseMapper().selectList(queryWrapper);
+		return iCcSettingMapper.queryList(group, key);
 	}
 	
 	@Override

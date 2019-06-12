@@ -119,8 +119,8 @@ fc:
         icon_url: wxpay.png
         name: 开发测试1
       other2: 
-        link_url: https://pay.weixin.qq.com
-        form_url: wechart
+        link_url: https://open.alipay.com/platform/home.htm
+        form_url: alipay
         icon_url: alipay.png
         name: 开发测试2
       other3: 
