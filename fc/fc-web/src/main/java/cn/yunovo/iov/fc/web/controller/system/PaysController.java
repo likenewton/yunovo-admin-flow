@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,7 +42,7 @@ public class PaysController extends BaseController{
 	
 	@RequestMapping(path="/pays/install", method= {RequestMethod.POST})
 	@ApiOperation(value="系统设置-支付方式(安装)")
-	public Result<Object> install(PayForm form) {
+	public Result<Object> install(@RequestBody PayForm form) {
 		
 		if(StringUtils.isEmpty(form.getType())) {
 			return ResultUtil.build(400, "系统提示：请选择您要安装的支付方式");
@@ -53,7 +54,7 @@ public class PaysController extends BaseController{
 	
 	@RequestMapping(path="/pays/uninstall", method= {RequestMethod.POST})
 	@ApiOperation(value="系统设置-支付方式(卸载)")
-	public Result<Object> uninstall(PayForm form) {
+	public Result<Object> uninstall(@RequestBody PayForm form) {
 		if(StringUtils.isEmpty(form.getType())) {
 			return ResultUtil.build(400, "系统提示：请选择您要卸载的支付方式");
 		}
@@ -71,7 +72,7 @@ public class PaysController extends BaseController{
 	
 	@RequestMapping(path="/pays/edit", method= {RequestMethod.GET, RequestMethod.POST})
 	@ApiOperation(value="系统设置-支付方式(编辑)")
-	public void edit() {
+	public void edit(@RequestBody PayForm form) {
 		
 		
 	}
