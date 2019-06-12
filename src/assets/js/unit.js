@@ -30,7 +30,7 @@ module.exports = {
     let list = para.vue[para.list || 'list']
     let sort = para.vue[para.sort || 'sort']
     let formInline = para.vue[para.formInline || 'formInline']
-    
+
     para.vue[para.loadData || 'loadData'] = true
     _axios.send({
       method: para.method || 'get',
@@ -251,7 +251,7 @@ module.exports = {
   validatorPassword(value) {
     return /^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&*]+$)(?![a-zA-z\d]+$)(?![a-zA-z!@#$%^&*]+$)(?![\d!@#$%^&*]+$)[a-zA-Z\d!@#$%^&*]+$/.test(value) && value.length >= 6
   },
-  validatorNumMaxandMin(value, max=1, min=0, containMax=false, containMin=true) {
+  validatorNumMaxandMin(value, max = 1, min = 0, containMax = false, containMin = true) {
     if (containMax && containMin) {
       return value <= max && value >= 0
     } else if (!containMax && !containMin) {
@@ -275,7 +275,7 @@ module.exports = {
     else return queryObj
   },
   maxTableHeight() {
-    let height = $(window).height() -  (220 + 300000 / ($(window).height() + 1000))
+    let height = $(window).height() - (220 + 300000 / ($(window).height() + 1000))
     if (height < 400) height = 400
     return height
   },
@@ -309,5 +309,12 @@ module.exports = {
       }
     }
     return timeString;
+  },
+  showMsgBox(para = {}) {
+    Vue.prototype.$notify({
+      type: para.type || 'error',
+      title: para.title || '错误',
+      message: para.message || '提交的表单数据不符合规范！'
+    })
   }
 }

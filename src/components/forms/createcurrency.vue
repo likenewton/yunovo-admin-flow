@@ -4,37 +4,36 @@
       <span>货币设置</span>
     </div>
     <el-form v-loading="loadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="140px" size="small" :status-icon="true">
-      <el-form-item prop="currency_name">
+      <el-form-item prop="title">
         <span slot="label">货币名称：</span>
-        <el-input v-model="formInline.currency_name" placeholder="请输入货币名称"></el-input>
-      </el-form-item>      
+        <el-input v-model="formInline.title" placeholder="请输入货币名称"></el-input>
+      </el-form-item>
       <el-form-item prop="code">
         <span slot="label">代码：</span>
         <el-input v-model="formInline.code" placeholder="请输入ISO代码"></el-input>
-        <div class="annotation">如果这是您的默认货币请不要改变(必须是有效的<el-button type="text" @click="iso">ISO代码</el-button>)</div>
+        <div class="annotation">如果这是您的默认货币请不要改变(必须是有效的 <a class="text_primary" href="http://www.xe.com/iso4217.php" target="blank">ISO代码</a>)</div>
       </el-form-item>
-      <el-form-item prop="left_symbel">
+      <el-form-item prop="symbol_left">
         <span slot="label">左符号：</span>
-        <el-input v-model="formInline.left_symbel" placeholder="请输入货币左边符号"></el-input>
+        <el-input v-model="formInline.symbol_left" placeholder="请输入货币左边符号"></el-input>
       </el-form-item>
-      <el-form-item prop="right_symbel">
+      <el-form-item prop="symbol_right">
         <span slot="label">右符号：</span>
-        <el-input v-model="formInline.right_symbel" placeholder="请输入货币右边符号"></el-input>
+        <el-input v-model="formInline.symbol_right" placeholder="请输入货币右边符号"></el-input>
       </el-form-item>
-      <el-form-item prop="fixed_count">
+      <el-form-item prop="decimal_place">
         <span slot="label">小数位：</span>
-        <el-input v-model.number="formInline.fixed_count" placeholder="请输入货币小数位"></el-input>
+        <el-input v-model="formInline.decimal_place" @input="formInline.decimal_place = limitNumber(formInline.decimal_place, 1, 0)" placeholder="请输入货币小数位"></el-input>
       </el-form-item>
-      <el-form-item prop="rate">
+      <el-form-item prop="value">
         <span slot="label">汇率：</span>
-        <el-input v-model="formInline.rate" placeholder='请输入汇率'></el-input>
+        <el-input v-model="formInline.value" placeholder='请输入汇率'></el-input>
         <div class="annotation">如果这是您的默认货币，请将它设置为1.0</div>
       </el-form-item>
       <el-form-item prop="status">
         <span slot="label">状态：</span>
         <el-select v-model="formInline.status" placeholder="请选择">
-          <el-option label="启用" :value="0"></el-option>
-          <el-option label="停用" :value="1"></el-option>
+          <el-option v-for="(item, index) in statusSelect" :key="index" :label="item.label" :value="item.value"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -47,6 +46,7 @@
 </template>
 <script>
 import Api from 'assets/js/api.js'
+import { mapState } from 'vuex'
 
 export default {
   data() {
@@ -54,11 +54,10 @@ export default {
       loadData: true,
       isUpdate: true,
       formInline: {
-        fixed_count: 2,
-        status: 0
+        currency_id: Api.UNITS.getQuery('currency_id')
       },
       rules: {
-        currency_name: [{
+        title: [{
           required: true,
           message: '请输入货币名称',
           trigger: 'blur'
@@ -73,13 +72,9 @@ export default {
           message: '请选择启用状态',
           trigger: 'change'
         }],
-        fixed_count: [{
+        decimal_place: [{
           required: true,
           message: '请输入货币小数位',
-          trigger: 'blur'
-        }, {
-          type: 'number',
-          message: '输入的必须为数字',
           trigger: 'blur'
         }]
       }
@@ -96,21 +91,17 @@ export default {
   methods: {
     getData() {
       this.loadData = true
-      setTimeout(() => {
-        this.formInline = {
-          currency_name: 'Chinese RMB',
-          code: 'CNY',
-          left_symbel: '¥',
-          fixed_count: 2,
-          rate: '1',
-          status: 0
-        }
-        this.loadData = false
-      }, 1000)
-    },
-    // 连接iso 货币代码标准
-    iso() {
-      window.open('http://www.xe.com/iso4217.php')
+      _axios.send({
+        method: 'get',
+        url: _axios.ajaxAd.getCurrencyDetail,
+        params: {
+          currency_id: Api.UNITS.getQuery('currency_id')
+        },
+        done: ((res) => {
+          this.formInline = res.data
+          this.loadData = false
+        })
+      })
     },
     // 提交表单
     submitForm(formName) {
@@ -119,7 +110,7 @@ export default {
           // 验证通过
           console.log(this.formInline)
         } else {
-          console.log('valid')
+          Api.UNITS.showMsgBox()
           return false
         }
       });
@@ -130,6 +121,11 @@ export default {
       this.isUpdate && this.getData()
     },
     limitNumber: Api.UNITS.limitNumber
+  },
+  computed: {
+    ...mapState({
+      statusSelect: 'statusSelect',
+    })
   }
 }
 

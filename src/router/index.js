@@ -201,7 +201,7 @@ let router = new VueRouter({
       path: 'setting',
       name: 'setting',
       component: Blank,
-      redirect: '/asidemenu/systemset/payset',
+      redirect: '/asidemenu/setting/payset',
       children: [{
         path: 'paySet',
         name: 'paySet',

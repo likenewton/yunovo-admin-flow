@@ -1,29 +1,29 @@
 <template>
   <div class="currency_set">
-    <el-card class="box-card clearfix" shadow="never" v-loading="loadData">
+    <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="mini" type="success" @click="$router.push({ name: 'createcurrency' })">新增</el-button>
-        <el-button size="mini" type="danger" @click="deleteDatas">删除</el-button>
+        <el-button size="mini" type="success" @click="$router.push({ name: 'createcurrency' })" icon="el-icon-circle-plus-outline">新增</el-button>
+        <el-button size="mini" type="danger" @click="deleteDatas" icon="el-icon-delete">删除</el-button>
       </el-button-group>
       <el-table ref="listTable" :data="list.data" @selection-change="handleSelectionChange" @sort-change="handleSortChange" border resizable size="mini">
         <el-table-column type="selection" min-width="60"></el-table-column>
-        <el-table-column label="货币名称" min-width="150" sortable="custom">
+        <el-table-column prop="title" label="货币名称" min-width="150" sortable="custom">
           <template slot-scope="scope">
-            <span>{{scope.row.currency_name}}</span>
-            <span v-if="scope.row.isDefault" style="font-weight:bold">(默认)</span>
+            <span>{{scope.row.title}}</span>
+            <span v-if="scope.row.is_default" style="font-weight:bold">(默认)</span>
           </template>
         </el-table-column>
         <el-table-column prop="code" label="代码" min-width="140" sortable="custom"></el-table-column>
-        <el-table-column prop="rate" label="汇率" min-width="140" sortable="custom"></el-table-column>
-        <el-table-column prop="update" label="最近更新" min-width="140" sortable="custom"></el-table-column>
+        <el-table-column prop="value" label="汇率" min-width="140" sortable="custom"></el-table-column>
+        <el-table-column prop="date_modified" label="最近更新" min-width="140" sortable="custom"></el-table-column>
         <el-table-column label="管理" width="140">
           <template slot-scope="scope">
-            <el-button type="text" class="text_editor" @click="$router.push({ name: 'createcurrency', query: { type: 'update' } })">编辑</el-button>
+            <el-button type="text" class="text_editor" @click="editorData(scope)">编辑</el-button>
             <el-button type="text" class="text_danger" @click="deleteData(scope)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
   </div>
@@ -69,8 +69,14 @@ export default {
       Api.UNITS.setSortSearch(val, this)
       this.getData()
     },
-    editor(id) {
-      this.$router.push({ name: 'createcurrency', query: { type: 'update' } })
+    editorData(scope) {
+      this.$router.push({
+        name: 'createcurrency',
+        query: {
+          type: 'update',
+          currency_id: scope.row.currency_id
+        }
+      })
     },
     deleteData(scope) {
 
@@ -99,19 +105,10 @@ export default {
     },
     // 获取列表数据
     getData() {
-      setTimeout(() => {
-        // 数据请求成功
-        this.list.data = [{
-          id: 0,
-          currency_name: 'Chinese RMB',
-          code: 'CNY',
-          rate: 1,
-          update: '2019-02-25',
-          isDefault: true
-        }]
-        this.list.total = this.list.data.length
-        this.loadData = false
-      }, 1000)
+      Api.UNITS.getListData({
+        vue: this,
+        url: _axios.ajaxAd.getCurrency
+      })
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,
     calcLeftTime: Api.UNITS.calcLeftTime

@@ -103,6 +103,19 @@ export default {
     }
   },
   methods: {
+    getData() {
+      _axios.send({
+        method: 'get',
+        url: _axios.ajaxAd.getOrgList,
+        params: {
+          org_id: Api.UNITS.getQuery('org_id')
+        },
+        done: ((res) => {
+          this.loadData = false
+          this.formInline = res.data.page.records[0] || []
+        })
+      })
+    },
     // 提交表单
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
@@ -136,7 +149,7 @@ export default {
             })
           }
         } else {
-          console.log('valid')
+          Api.UNITS.showMsgBox()
           return false
         }
       });
@@ -171,19 +184,6 @@ export default {
       } else {
         callback(new Error('返利比率必须大于等于0，小于1'))
       }
-    },
-    getData() {
-      _axios.send({
-        method: 'get',
-        url: _axios.ajaxAd.getOrgList,
-        params: {
-          org_id: Api.UNITS.getQuery('org_id')
-        },
-        done: ((res) => {
-          this.loadData = false
-          this.formInline = res.data.page.records[0] || []
-        })
-      })
     }
   },
   computed: {

@@ -22,27 +22,22 @@
       </el-form-item>
       <el-form-item prop="jg_name">
         <span slot="label">机构名称：</span>
-        <el-select v-model="formInline.jg_name" placeholder="请选择机构名称">
-          <el-option label="机构1" :value="0"></el-option>
-          <el-option label="机构2" :value="1"></el-option>
-          <el-option label="机构3" :value="2"></el-option>
+        <el-select v-model="formInline.jg_name" filterable placeholder="请选择">
+          <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value - 0"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item prop="city">
         <span slot="label">销往地区：</span>
-        <el-cascader change-on-select :options="options" @change="handleCascaderChange" :props="props" v-model="formInline.city" clearable></el-cascader>
+        <el-cascader change-on-select :options="options" @change="handleCascaderChange" :props="props" v-model="formInline.city"></el-cascader>
       </el-form-item>
       <el-form-item prop="batch_clw">
         <span slot="label">车联网批次：</span>
         <el-input v-model="formInline.batch_clw" placeholder="请输入车联网批次"></el-input>
         <div class="annotation">若需将车联网设备中的卡归属到本批次初始化信息中，需关联车联网出货批次编号</div>
       </el-form-item>
-      <el-form-item prop="ks_name">
-        <span slot="label">流量卡商：</span>
-        <el-select v-model="formInline.ks_name" placeholder="请选择流量卡商">
-          <el-option label="卡商1" :value="0"></el-option>
-          <el-option label="卡商2" :value="1"></el-option>
-          <el-option label="卡商3" :value="2"></el-option>
+      <el-form-item label="流量卡商：">
+        <el-select v-model="formInline.ks_name" filterable clearable placeholder="请选择流量卡商">
+          <el-option v-for="(item, index) in cardTypes" :key="index" :label="item.label" :value="item.value"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item prop="tc_flow">
@@ -135,29 +130,12 @@
 </template>
 <script>
 import Api from 'assets/js/api.js'
+import { mapState } from 'vuex'
 
 export default {
   data() {
     return {
-      formInline: {
-        batch_code: '',
-        batch_name: '',
-        ks_name: '',
-        ex_name: '',
-        jg_name: '',
-        city: '',
-        tc_flow: '',
-        months: '',
-        yj_flow: '',
-        is_clear: '',
-        eff_period: '',
-        real_flow: '',
-        real_period: '',
-        perf_flow: '',
-        perf_period: '',
-        bind_flow: '',
-        bind_period: ''
-      },
+      formInline: {},
       fileList: [], // 文件上传列表
       rules: {
         batch_code: [{
@@ -220,22 +198,66 @@ export default {
         }]
       },
       // 地区选择的数据
-      options: [{
-        id: 1,
-        name: '湖南',
-        cities: []
-      }],
+      options: [],
       props: {
-        value: 'id', // 最后选取的值
-        label: 'name', // 值对应的名称
+        value: 'ntid', // 最后选取的值
+        label: 'ntname', // 值对应的名称
         children: 'cities'
       }
     }
   },
   mounted() {
-    // 一进入页面就先拿到省
+    this.getNations(1, (res) => {
+      let data = res.data.page.records || []
+      data.forEach((v) => { v.cities = [] })
+      // 要先添加cities属性，这样才能watch它的变化
+      this.options = data
+    })
   },
   methods: {
+    getNations(ntid = 1, cb) {
+      _axios.send({
+        method: 'get',
+        url: _axios.ajaxAd.getNations,
+        params: {
+          size: 9999,
+          ntid
+        },
+        done: ((res) => {
+          cb && cb(res)
+        })
+      })
+    },
+    // 联级选择触发值变化
+    handleCascaderChange(val) {
+      if (val.length === 1) {
+        this.options.forEach((v, i) => {
+          if (v.ntid === val[0]) {
+            if (v.cities.length === 0) {
+              this.getNations(v.ntid, (res) => {
+                let data = res.data.page.records || []
+                data.forEach((v1) => { v1.cities = [] })
+                v.cities = data
+              })
+            }
+          }
+        })
+      } else if (val.length === 2) {
+        this.options.forEach((v, i) => {
+          if (v.ntid === val[0]) {
+            v.cities.forEach((v1, i1) => {
+              if (v1.ntid === val[1]) {
+                if (v1.cities.length === 0) {
+                  this.getNations(v1.ntid, (res) => {
+                    v1.cities = res.data.page.records || []
+                  })
+                }
+              }
+            })
+          }
+        })
+      }
+    },
     // 提交表单
     submitForm(formName) {
       console.log(this.formInline)
@@ -244,6 +266,7 @@ export default {
         if (valid) {
           // 验证通过
         } else {
+          Api.UNITS.showMsgBox()
           return false;
         }
       });
@@ -252,28 +275,6 @@ export default {
     resetForm(formName) {
       // resetFields 只能重置需要验证的值
       this.$refs[formName].resetFields()
-    },
-    // 联级选择触发值变化
-    handleCascaderChange(val) {
-      console.log(val)
-      if (val.length === 1) {
-        if (val.includes(1) && !this.options[0].cities.length) {
-          // 这里掉接口拿市
-          this.options[0].cities = [{
-            id: 11,
-            name: '衡阳',
-            cities: []
-          }];
-        }
-      } else if (val.length === 2) {
-        if (val.includes(11) && !this.options[0].cities[0].cities.length) {
-          // 这里调接口拿区
-          this.options[0].cities[0].cities = [{
-            id: 111,
-            name: '蒸湘区'
-          }];
-        }
-      }
     },
     // 自定义验证城市选择（区为可选）
     validateCity(rule, value, callback) {
@@ -301,6 +302,12 @@ export default {
       this.$message.success('文件上传成功')
     },
     limitNumber: Api.UNITS.limitNumber
+  },
+  computed: {
+    ...mapState({
+      orgs: 'orgs',
+      cardTypes: 'cardTypes'
+    })
   }
 }
 

@@ -99,7 +99,7 @@ export default {
             })
           }
         } else {
-          console.log('valid')
+          Api.UNITS.showMsgBox()
           return false;
         }
       });

@@ -207,7 +207,7 @@ export default {
           // 验证通过
           console.log(this.formInline)
         } else {
-          console.log('valid')
+          Api.UNITS.showMsgBox()
           return false;
         }
       });

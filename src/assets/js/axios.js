@@ -42,12 +42,16 @@ class AXIOS {
       getMonthReport: '/fc/api/gprs/report/monthReport',
       getOrgList: '/fc/api/user/org/',
       getNations: '/fc/api/system/nations/',
+      getPays: '/fc/api/system/pays/',
+      getCurrency: '/fc/api/system/currency/',
       // 明细
       getOnOffLogDetail: '/fc/api/gprs/onoffLog/detail',
       getNotifyFromOrg: '/fc/api/gprs/notifyFrom/org',
       getPayOnlineOrg: '/fc/api/gprs/payOnline/org',
       getPayDetail: '/fc/api/gprs/report/payDetail',
       getNationDetail: '/fc/api/system/nations/detail',
+      getPayDetail: '/fc/api/system/pays/detail',
+      getCurrencyDetail: '/fc/api/system/currency/detail',
       // 导出
       statsExport: '/fc/api/gprs/stats/export',
       // 图表
@@ -59,6 +63,9 @@ class AXIOS {
       addNation: '/fc/api/system/nations/insert',
       upDateNation: '/fc/api/system/nations/update',
       deleteNation: '/fc/api/system/nations/delete',
+      installPay: '/fc/api/system/pays/install',
+      deletePay: '/fc/api/system/pays/uninstall',
+      updatePay: '/fc/api/system/pays/update',
     }
   }
 
@@ -96,7 +103,7 @@ class AXIOS {
       console.log(error)
       Vue.prototype.$notify.error({
         title: '错误',
-        message: '服务器异常'
+        message: '未连接到服务器'
       })
     })
   }

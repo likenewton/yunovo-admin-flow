@@ -173,6 +173,7 @@ export default {
         if (valid) {
           // 验证通过
         } else {
+          Api.UNITS.showMsgBox()
           return false;
         }
       });
