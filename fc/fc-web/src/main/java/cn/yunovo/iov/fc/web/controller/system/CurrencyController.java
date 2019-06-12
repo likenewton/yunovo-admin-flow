@@ -14,7 +14,10 @@ import cn.yunovo.iov.fc.model.entity.CcCurrency;
 import cn.yunovo.iov.fc.service.ICcCurrencyService;
 import cn.yunovo.iov.fc.web.controller.BaseController;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 @RestController
 @Api(tags="系统设置-货币管理")
@@ -33,6 +36,9 @@ public class CurrencyController extends BaseController{
 	}
 	
 	@RequestMapping(path="/currency/detail", method= {RequestMethod.GET, RequestMethod.POST})
+	@ApiImplicitParams(value = {
+			@ApiImplicitParam(name = "currency_id", value = "货币id", required = true, dataType = "int",paramType = "query")
+			})
 	@ApiOperation(value="系统设置-货币详情")
 	public Result<CcCurrency> detail(Integer currency_id) {
 		CcCurrency data  = iCcCurrencyService.detail(currency_id, this.getLoginBaseInfo());

@@ -1,6 +1,7 @@
 package cn.yunovo.iov.fc.model.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -45,7 +46,7 @@ public class CcCurrency implements Serializable {
 	private String symbol_right = "";
 
 	@ApiModelProperty(value="小数位")
-	private String decimal_place;
+	private Character decimal_place;
 
 	@ApiModelProperty(value="汇率")
 	private Float value = 0F;
@@ -56,6 +57,7 @@ public class CcCurrency implements Serializable {
 	@ApiModelProperty(value="最近更新时间")
 	private String date_modified;
 	
+	@TableField(exist=false)
 	@ApiModelProperty(value="是否默认货币,true 表示默认")
 	private Boolean is_default = false;
 
