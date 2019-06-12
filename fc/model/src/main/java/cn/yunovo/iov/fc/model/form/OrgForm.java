@@ -76,12 +76,5 @@ public class OrgForm  extends BaseForm implements Serializable{
 	@ApiModelProperty("需要被删的机构id")
 	@NotEmpty(message="系统提示：请选择您需要删除的机构", groups=DeleteGroupValidate.class)
 	private Integer[] orgs;
-	
-	public static void main(String[] args) {
-		
-		boolean isMatch = java.util.regex.Pattern.matches("(^$)|(^(\\+86)?1[3,4,5,6,7,8,9](\\d{9})$)", "13286320200");
-		System.out.println(isMatch);
-		
-	}
 
 }
