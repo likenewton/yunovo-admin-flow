@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.entity.CcExtension;
+import cn.yunovo.iov.fc.model.form.PayForm;
 import cn.yunovo.iov.fc.model.result.PayInfoBean;
 
 /**
@@ -28,5 +29,7 @@ public interface ICcExtensionService extends IService<CcExtension> {
 	int paymentUninstall(String type);
 
 	Map<String, String> paymentDetail(String type);
+
+	int paymentUpdate(PayForm form, LoginInfo loginBaseInfo);
 
 }

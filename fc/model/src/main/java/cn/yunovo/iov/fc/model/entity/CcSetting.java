@@ -7,8 +7,10 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
@@ -21,10 +23,21 @@ import lombok.experimental.Accessors;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
+@NoArgsConstructor
+@AllArgsConstructor
 @Accessors(chain = true)
 @ApiModel(value = "Cc_setting对象", description = "设置表")
 @TableName(value = "cc_setting")
 public class CcSetting implements Serializable {
+	
+	
+
+	public CcSetting(String group, String key, String value) {
+		super();
+		this.group = group;
+		this.key = key;
+		this.value = value;
+	}
 
 	private static final long serialVersionUID = 1L;
 

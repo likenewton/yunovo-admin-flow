@@ -18,8 +18,6 @@ import cn.yunovo.iov.fc.model.result.PayInfoBean;
 import cn.yunovo.iov.fc.service.ICcExtensionService;
 import cn.yunovo.iov.fc.web.controller.BaseController;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
@@ -70,10 +68,13 @@ public class PaysController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
-	@RequestMapping(path="/pays/edit", method= {RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(path="/pays/update", method= {RequestMethod.GET, RequestMethod.POST})
 	@ApiOperation(value="系统设置-支付方式(编辑)")
-	public void edit(@RequestBody PayForm form) {
+	public Result<Object> update(@RequestBody PayForm form) {
 		
+		form.validate();
+		iCcExtensionService.paymentUpdate(form,this.getLoginBaseInfo());
+		return ResultUtil.successCN(null);
 		
 	}
 }

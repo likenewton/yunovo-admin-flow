@@ -6,6 +6,7 @@ import cn.yunovo.iov.fc.dao.ICcSettingMapper;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.entity.CcExtension;
 import cn.yunovo.iov.fc.model.entity.CcSetting;
+import cn.yunovo.iov.fc.model.form.PayForm;
 import cn.yunovo.iov.fc.model.result.PayInfoBean;
 import cn.yunovo.iov.fc.service.ICcExtensionService;
 import cn.yunovo.iov.fc.service.ICcSettingService;
@@ -25,6 +26,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
@@ -173,6 +175,14 @@ public class CcExtensionServiceImpl extends ServiceImpl<ICcExtensionMapper, CcEx
 		}
 		
 		return setting;
+	}
+
+	@Override
+	@Transactional(rollbackFor=Exception.class, propagation=Propagation.REQUIRED,transactionManager="clwTransactionManager")
+	public int paymentUpdate(PayForm form, LoginInfo loginBaseInfo) {
+		
+		iCcSettingService.editSetting(form.getType(), form.build());
+		return 1;
 	}
 	
 	
