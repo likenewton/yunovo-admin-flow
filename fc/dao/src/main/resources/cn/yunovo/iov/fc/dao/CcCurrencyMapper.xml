@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.yunovo.iov.fc.dao.ICcCurrencyMapper">
+
+	<select id="getItemsPage" resultType="cn.yunovo.iov.fc.model.entity.CcCurrency">
+		SELECT * FROM cc_currency 
+	</select>
+
+</mapper>

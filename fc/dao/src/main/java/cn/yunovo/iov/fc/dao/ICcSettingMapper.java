@@ -22,7 +22,7 @@ public interface ICcSettingMapper extends BaseMapper<CcSetting> {
 	
 	public Integer insert(@Param("group")String group, @Param("key")String key, @Param("value")String value);
 	
-	public List<CcSetting> queryList(@Param("group")String group, @Param("key")String key);
+	public List<CcSetting> queryList(@Param("group")String group, @Param("key")String key, @Param("store_id")Integer store_id);
 	
 	public Integer deleteByGroup(@Param("group")String group);
 

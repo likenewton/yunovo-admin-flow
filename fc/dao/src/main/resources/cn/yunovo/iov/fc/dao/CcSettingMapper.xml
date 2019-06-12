@@ -12,6 +12,9 @@
 		<if test="key != null">
 			AND `key` = #{key}
 		</if>
+		<if test="store_id != null">
+			AND `store_id` = #{store_id}
+		</if>
 		
 		
 	</select>

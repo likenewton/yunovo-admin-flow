@@ -163,7 +163,7 @@ public class CcExtensionServiceImpl extends ServiceImpl<ICcExtensionMapper, CcEx
 		
 		QueryWrapper<CcSetting> queryWrapper = new QueryWrapper<>();
 		queryWrapper.eq("group", type);
-		List<CcSetting> selectList = iCcSettingMapper.queryList(type, null);
+		List<CcSetting> selectList = iCcSettingMapper.queryList(type, null, null);
 		
 		Map<String, String> setting = new HashMap<>();
 		if(CollectionUtils.isEmpty(selectList)) {

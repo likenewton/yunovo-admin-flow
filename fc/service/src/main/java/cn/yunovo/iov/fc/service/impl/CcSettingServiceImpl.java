@@ -1,14 +1,21 @@
 package cn.yunovo.iov.fc.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import cn.yunovo.iov.fc.common.utils.BusinessException;
+import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
+import cn.yunovo.iov.fc.common.utils.Md5Util;
 import cn.yunovo.iov.fc.dao.ICcSettingMapper;
 import cn.yunovo.iov.fc.model.entity.CcSetting;
+import cn.yunovo.iov.fc.service.FcConstant;
 import cn.yunovo.iov.fc.service.ICcSettingService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,19 +38,12 @@ public class CcSettingServiceImpl extends ServiceImpl<ICcSettingMapper, CcSettin
 	@Autowired
 	private ICcSettingMapper iCcSettingMapper;
 	
-	public List<CcSetting> getSettings(String group, String key) {
+	@Autowired
+	private JedisPoolUtil jedisPoolUtil;
+	
+	public List<CcSetting> getSettings(String group, String key, Integer store_id) {
 		
-		QueryWrapper<CcSetting> queryWrapper = new QueryWrapper<>();
-		
-		if(StringUtils.isNotEmpty(group)) {
-			queryWrapper.eq("group", group);
-		}
-		
-		if(StringUtils.isNotEmpty(key)) {
-			queryWrapper.eq("key", key);
-		}
-		
-		return iCcSettingMapper.queryList(group, key);
+		return iCcSettingMapper.queryList(group, key, store_id);
 	}
 	
 	@Override
@@ -64,7 +64,7 @@ public class CcSettingServiceImpl extends ServiceImpl<ICcSettingMapper, CcSettin
 			if(StringUtils.isEmpty(ccSetting.getKey())) {
 				continue;
 			}
-			temp = this.getSettings(group, ccSetting.getKey());
+			temp = this.getSettings(group, ccSetting.getKey(), null);
 			if(CollectionUtils.isEmpty(temp)) {
 				temp1 = new CcSetting();
 				temp1.setGroup(group);
@@ -78,6 +78,45 @@ public class CcSettingServiceImpl extends ServiceImpl<ICcSettingMapper, CcSettin
 		}
 		
 		return 1;
+	}
+
+	@Override
+	public List<CcSetting> systemSettings(Boolean noCache){
+		
+		noCache = noCache == null ? false : noCache;
+		
+		String cacheKey = "SELECT * FROM cc_setting WHERE store_id = 0";
+		cacheKey = FcConstant.CACHE_SQL_PREFIX+Md5Util.getMD5String(cacheKey);
+		String cache = null;
+		if(!noCache) {
+			cache = jedisPoolUtil.get(cacheKey);
+		}
+		
+		List<CcSetting> settings = null;
+		if(StringUtils.isEmpty(cache)) {
+			
+			settings = this.getSettings(null, null, 0);
+			if(!CollectionUtils.isEmpty(settings)) {
+				jedisPoolUtil.setEx(cacheKey, JSONArray.toJSONString(settings, SerializerFeature.WriteMapNullValue));
+			}
+		}else {
+			settings = JSONArray.parseArray(cache, CcSetting.class);
+		}
+		
+		return settings;
+	}
+	
+	@Override
+	public Map<String, String> systemConfigMap() {
+		
+		List<CcSetting> settings = this.systemSettings(null);
+		
+		Map<String, String> map = new HashMap<>();
+		for (CcSetting ccSetting : settings) {
+			map.put(ccSetting.getKey(), ccSetting.getValue());
+		}
+		
+		return map;
 	}
 
 }

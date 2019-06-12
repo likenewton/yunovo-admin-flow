@@ -2,6 +2,11 @@ package cn.yunovo.iov.fc.model;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.util.CollectionUtils;
+
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -38,5 +43,24 @@ public class PageForm implements Serializable {
      */
 	@ApiModelProperty(value="当前页码")
     private Integer current = 1;
+	
+	public <T> Page<T> build(Class<T> clazz,String defaultAsc, String defaultDesc){
+		
+		Page<T> page = new Page<>();
+		if(ArrayUtils.isEmpty(this.getAscs()) && ArrayUtils.isEmpty(this.getDescs())) {
+			
+			page.setAsc(defaultAsc);
+			page.setDesc(defaultDesc);
+		}else {
+			
+			page.setDesc(this.getDescs());
+			page.setAsc(this.getAscs());
+		}
+		
+		page.setPages(this.getCurrent());
+		page.setSize(this.getSize());
+		
+		return page;
+	}
 	
 }
