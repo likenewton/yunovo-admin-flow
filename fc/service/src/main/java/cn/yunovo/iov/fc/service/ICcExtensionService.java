@@ -23,4 +23,10 @@ public interface ICcExtensionService extends IService<CcExtension> {
 
 	List<PayInfoBean> getPaymentItems(LoginInfo info);
 
+	int paymentInstall(String type);
+
+	int paymentUninstall(String type);
+
+	Map<String, String> paymentDetail(String type);
+
 }

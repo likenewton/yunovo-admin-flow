@@ -14,4 +14,6 @@ import cn.yunovo.iov.fc.model.entity.CcSetting;
  */
 public interface ICcSettingService extends IService<CcSetting> {
 
+	
+	
 }

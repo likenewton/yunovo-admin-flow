@@ -1,7 +1,9 @@
 package cn.yunovo.iov.fc.web.controller.system;
 
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,4 +35,40 @@ public class PaysController extends BaseController{
 		
 	}
 	
+	@RequestMapping(path="/pays/install", method= {RequestMethod.POST})
+	@ApiOperation(value="系统设置-支付方式(安装)")
+	public Result<Object> install(String type) {
+		
+		if(StringUtils.isEmpty(type)) {
+			return ResultUtil.build(400, "系统提示：请选择您要安装的支付方式");
+		}
+		
+		iCcExtensionService.paymentInstall(type);
+		return ResultUtil.successCN(null);
+	}
+	
+	@RequestMapping(path="/pays/uninstall", method= {RequestMethod.POST})
+	@ApiOperation(value="系统设置-支付方式(卸载)")
+	public Result<Object> uninstall(String type) {
+		if(StringUtils.isEmpty(type)) {
+			return ResultUtil.build(400, "系统提示：请选择您要卸载的支付方式");
+		}
+		
+		iCcExtensionService.paymentUninstall(type);
+		return ResultUtil.successCN(null);
+	}
+	
+	@RequestMapping(path="/pays/detail", method= {RequestMethod.GET, RequestMethod.POST})
+	@ApiOperation(value="系统设置-支付方式(详情)")
+	public Result<Map<String, String>> detail(String type) {
+		Map<String, String> data = iCcExtensionService.paymentDetail(type);
+		return ResultUtil.success(data);
+	}
+	
+	@RequestMapping(path="/pays/edit", method= {RequestMethod.GET, RequestMethod.POST})
+	@ApiOperation(value="系统设置-支付方式(编辑)")
+	public void edit() {
+		
+		
+	}
 }
