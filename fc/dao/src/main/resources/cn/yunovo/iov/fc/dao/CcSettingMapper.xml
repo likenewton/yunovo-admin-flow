@@ -20,11 +20,11 @@
 	<update id="update">
 	
 		update cc_setting 
-		set value = #{value}
+		set `value` = #{value}
 		where 
-		group = #{group}
+		`group` = #{group}
 		AND 
-		key = #{key}
+		`key` = #{key}
 	</update>
 	
 	<insert id="insert">
