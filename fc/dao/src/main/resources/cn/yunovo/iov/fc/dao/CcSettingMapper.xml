@@ -30,5 +30,9 @@
 	<insert id="insert">
 		insert into cc_setting (`group`,`key`,`value`) values (#{group}, #{key}, #{value})
 	</insert>
+	
+	<delete id="deleteByGroup">
+		DELETE FROM cc_setting WHERE `group` = #{group}
+	</delete>
 
 </mapper>

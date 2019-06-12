@@ -108,8 +108,14 @@ public class CcExtensionServiceImpl extends ServiceImpl<ICcExtensionMapper, CcEx
 		QueryWrapper<CcExtension> queryWrapper = new QueryWrapper<>();
 		queryWrapper.eq("type", "payment");
 		queryWrapper.eq("code", type);
-				
+		
+		if(!pays.containsKey(type)) {
+			throw new BusinessException(-1, "系统提示：无效的支付方式");
+		}
+		
 		List<CcExtension> selectList = iCcExtensionMapper.selectList(queryWrapper);
+		
+		
 		if(!CollectionUtils.isEmpty(selectList)) {
 			throw new BusinessException(-1, "系统提示：该支付方式已安装, 请勿重复安装");
 		}
@@ -121,7 +127,7 @@ public class CcExtensionServiceImpl extends ServiceImpl<ICcExtensionMapper, CcEx
 	}
 
 	@Override
-	@Transactional(rollbackFor=Exception.class)
+	@Transactional(rollbackFor=Exception.class,transactionManager="clwTransactionManager")
 	public int paymentUninstall(String type) {
 		
 		if(type == null) {
@@ -145,7 +151,7 @@ public class CcExtensionServiceImpl extends ServiceImpl<ICcExtensionMapper, CcEx
 		
 		UpdateWrapper<CcSetting> deleteWrapper = new UpdateWrapper<>();
 		deleteWrapper.eq("group", type);
-		iCcSettingService.remove(deleteWrapper);
+		iCcSettingMapper.deleteByGroup(type);
 		
 		return 1;
 	}

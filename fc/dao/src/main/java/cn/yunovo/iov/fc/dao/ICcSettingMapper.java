@@ -24,6 +24,6 @@ public interface ICcSettingMapper extends BaseMapper<CcSetting> {
 	
 	public List<CcSetting> queryList(@Param("group")String group, @Param("key")String key);
 	
-	
+	public Integer deleteByGroup(@Param("group")String group);
 
 }

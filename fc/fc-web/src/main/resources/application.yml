@@ -116,17 +116,17 @@ fc:
       other1: 
         link_url: https://pay.weixin.qq.com
         form_url: wechart
-        icon_url: el-icon-fontweixinzhifu1
+        icon_url: wxpay.png
         name: 开发测试1
       other2: 
         link_url: https://pay.weixin.qq.com
         form_url: wechart
-        icon_url: el-icon-fontweixinzhifu1
+        icon_url: wxpay.png
         name: 开发测试2
       other3: 
         link_url: https://pay.weixin.qq.com
         form_url: wechart
-        icon_url: el-icon-fontweixinzhifu1
+        icon_url: wxpay.png
         name: 开发测试3
 #cas
 ---
