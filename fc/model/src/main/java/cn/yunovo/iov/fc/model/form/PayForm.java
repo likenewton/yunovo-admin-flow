@@ -73,7 +73,6 @@ public class PayForm extends BaseForm implements Serializable{
 			settings.add(new CcSetting(this.type,"alipay_key",this.alipay_key));
 			settings.add(new CcSetting(this.type,"alipay_seller_id",this.alipay_seller_id));
 			settings.add(new CcSetting(this.type,"alipay_partner",this.alipay_partner));
-			
 		}else if(StringUtils.equals("wxpay", this.type)){
 		
 			settings.add(new CcSetting(this.type,"wxpay_appid",this.wxpay_appid));
@@ -82,6 +81,19 @@ public class PayForm extends BaseForm implements Serializable{
 			settings.add(new CcSetting(this.type,"wxpay_appsecret",this.wxpay_appsecret));
 			settings.add(new CcSetting(this.type,"wxpay_sslcert_path",this.wxpay_sslcert_path));
 			settings.add(new CcSetting(this.type,"wxpay_sslkey_path",this.wxpay_sslkey_path));
+		}else if(StringUtils.equals("other3", this.type)){
+		
+			settings.add(new CcSetting(this.type,"wxpay_appid",this.wxpay_appid));
+			settings.add(new CcSetting(this.type,"wxpay_mchid",this.wxpay_mchid));
+			settings.add(new CcSetting(this.type,"wxpay_mchkey",this.wxpay_mchkey));
+			settings.add(new CcSetting(this.type,"wxpay_appsecret",this.wxpay_appsecret));
+			settings.add(new CcSetting(this.type,"wxpay_sslcert_path",this.wxpay_sslcert_path));
+			settings.add(new CcSetting(this.type,"wxpay_sslkey_path",this.wxpay_sslkey_path));
+		}else if(StringUtils.equals("other2", this.type)){
+		
+			settings.add(new CcSetting(this.type,"alipay_key",this.alipay_key));
+			settings.add(new CcSetting(this.type,"alipay_seller_id",this.alipay_seller_id));
+			settings.add(new CcSetting(this.type,"alipay_partner",this.alipay_partner));
 		}
 		
 		return settings;
