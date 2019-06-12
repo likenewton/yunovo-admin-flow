@@ -1,5 +1,7 @@
 package cn.yunovo.iov.fc.service;
 
+import java.util.List;
+
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import cn.yunovo.iov.fc.model.entity.CcSetting;
@@ -14,6 +16,6 @@ import cn.yunovo.iov.fc.model.entity.CcSetting;
  */
 public interface ICcSettingService extends IService<CcSetting> {
 
-	
+	public int editSetting(String group, List<CcSetting> settings);
 	
 }

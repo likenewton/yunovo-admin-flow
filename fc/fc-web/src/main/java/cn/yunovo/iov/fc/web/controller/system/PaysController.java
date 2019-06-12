@@ -12,11 +12,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
+import cn.yunovo.iov.fc.model.form.PayForm;
 import cn.yunovo.iov.fc.model.result.PayInfoBean;
 import cn.yunovo.iov.fc.service.ICcExtensionService;
 import cn.yunovo.iov.fc.web.controller.BaseController;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 @RestController
 @Api(tags="系统设置-支付方式")
@@ -37,30 +41,30 @@ public class PaysController extends BaseController{
 	
 	@RequestMapping(path="/pays/install", method= {RequestMethod.POST})
 	@ApiOperation(value="系统设置-支付方式(安装)")
-	public Result<Object> install(String type) {
+	public Result<Object> install(PayForm form) {
 		
-		if(StringUtils.isEmpty(type)) {
+		if(StringUtils.isEmpty(form.getType())) {
 			return ResultUtil.build(400, "系统提示：请选择您要安装的支付方式");
 		}
 		
-		iCcExtensionService.paymentInstall(type);
+		iCcExtensionService.paymentInstall(form.getType());
 		return ResultUtil.successCN(null);
 	}
 	
 	@RequestMapping(path="/pays/uninstall", method= {RequestMethod.POST})
 	@ApiOperation(value="系统设置-支付方式(卸载)")
-	public Result<Object> uninstall(String type) {
-		if(StringUtils.isEmpty(type)) {
+	public Result<Object> uninstall(PayForm form) {
+		if(StringUtils.isEmpty(form.getType())) {
 			return ResultUtil.build(400, "系统提示：请选择您要卸载的支付方式");
 		}
 		
-		iCcExtensionService.paymentUninstall(type);
+		iCcExtensionService.paymentUninstall(form.getType());
 		return ResultUtil.successCN(null);
 	}
 	
 	@RequestMapping(path="/pays/detail", method= {RequestMethod.GET, RequestMethod.POST})
 	@ApiOperation(value="系统设置-支付方式(详情)")
-	public Result<Map<String, String>> detail(String type) {
+	public Result<Map<String, String>> detail(@ApiParam(value="支付方式")String type) {
 		Map<String, String> data = iCcExtensionService.paymentDetail(type);
 		return ResultUtil.success(data);
 	}

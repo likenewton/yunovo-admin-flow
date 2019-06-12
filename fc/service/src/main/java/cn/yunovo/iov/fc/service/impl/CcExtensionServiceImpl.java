@@ -8,8 +8,8 @@ import cn.yunovo.iov.fc.model.entity.CcExtension;
 import cn.yunovo.iov.fc.model.entity.CcSetting;
 import cn.yunovo.iov.fc.model.result.PayInfoBean;
 import cn.yunovo.iov.fc.service.ICcExtensionService;
+import cn.yunovo.iov.fc.service.ICcSettingService;
 
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -43,6 +42,9 @@ public class CcExtensionServiceImpl extends ServiceImpl<ICcExtensionMapper, CcEx
 
 	@Autowired
 	private ICcExtensionMapper iCcExtensionMapper;
+	
+	@Autowired
+	private ICcSettingService iCcSettingService;
 	
 	@Autowired
 	private ICcSettingMapper iCcSettingMapper;
@@ -143,7 +145,7 @@ public class CcExtensionServiceImpl extends ServiceImpl<ICcExtensionMapper, CcEx
 		
 		UpdateWrapper<CcSetting> deleteWrapper = new UpdateWrapper<>();
 		deleteWrapper.eq("group", type);
-		iCcSettingMapper.delete(deleteWrapper);
+		iCcSettingService.remove(deleteWrapper);
 		
 		return 1;
 	}
@@ -153,7 +155,7 @@ public class CcExtensionServiceImpl extends ServiceImpl<ICcExtensionMapper, CcEx
 		
 		QueryWrapper<CcSetting> queryWrapper = new QueryWrapper<>();
 		queryWrapper.eq("group", type);
-		List<CcSetting> selectList = iCcSettingMapper.selectList(queryWrapper);
+		List<CcSetting> selectList = iCcSettingMapper.queryList(type, null);
 		
 		Map<String, String> setting = new HashMap<>();
 		if(CollectionUtils.isEmpty(selectList)) {

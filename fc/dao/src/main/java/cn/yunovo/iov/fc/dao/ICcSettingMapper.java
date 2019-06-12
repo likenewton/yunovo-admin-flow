@@ -1,5 +1,9 @@
 package cn.yunovo.iov.fc.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import cn.yunovo.iov.fc.model.entity.CcSetting;
@@ -13,5 +17,13 @@ import cn.yunovo.iov.fc.model.entity.CcSetting;
  * @since 2019-06-11
  */
 public interface ICcSettingMapper extends BaseMapper<CcSetting> {
+	
+	public Integer update(@Param("group")String group, @Param("key")String key, @Param("value")String value);
+	
+	public Integer insert(@Param("group")String group, @Param("key")String key, @Param("value")String value);
+	
+	public List<CcSetting> queryList(@Param("group")String group, @Param("key")String key);
+	
+	
 
 }
