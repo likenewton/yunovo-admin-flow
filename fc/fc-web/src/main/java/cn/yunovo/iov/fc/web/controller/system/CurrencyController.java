@@ -32,8 +32,11 @@ public class CurrencyController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
-	public void detail() {
-		
+	@RequestMapping(path="/currency/detail", method= {RequestMethod.GET, RequestMethod.POST})
+	@ApiOperation(value="系统设置-货币详情")
+	public Result<CcCurrency> detail(Integer currency_id) {
+		CcCurrency data  = iCcCurrencyService.detail(currency_id, this.getLoginBaseInfo());
+		return ResultUtil.success(data);
 	}
 	
 	public void insert() {

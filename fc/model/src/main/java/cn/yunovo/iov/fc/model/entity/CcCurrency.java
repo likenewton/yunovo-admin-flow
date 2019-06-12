@@ -57,6 +57,6 @@ public class CcCurrency implements Serializable {
 	private String date_modified;
 	
 	@ApiModelProperty(value="是否默认货币,true 表示默认")
-	private Boolean is_default;
+	private Boolean is_default = false;
 
 }

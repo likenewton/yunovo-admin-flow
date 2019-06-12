@@ -57,4 +57,16 @@ public class CcCurrencyServiceImpl extends ServiceImpl<ICcCurrencyMapper, CcCurr
 		return data;
 	}
 
+	@Override
+	public CcCurrency detail(Integer currency_id, LoginInfo loginBaseInfo) {
+		
+		if(currency_id == null) {
+			return null;
+		}
+		
+		CcCurrency ccCurrency = this.getById(currency_id);
+		
+		return ccCurrency;
+	}
+
 }

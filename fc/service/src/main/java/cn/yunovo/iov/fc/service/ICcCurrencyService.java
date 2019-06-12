@@ -18,5 +18,7 @@ import cn.yunovo.iov.fc.model.entity.CcCurrency;
 public interface ICcCurrencyService extends IService<CcCurrency> {
 
 	public PageData<CcCurrency, Object> getItemsPage(PageForm form, LoginInfo info);
+
+	public CcCurrency detail(Integer currency_id, LoginInfo loginBaseInfo);
 	
 }
