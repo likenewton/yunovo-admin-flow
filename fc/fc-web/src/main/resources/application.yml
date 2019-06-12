@@ -106,12 +106,12 @@ fc:
       alipay: 
         link_url: https://open.alipay.com/platform/home.htm
         form_url: alipay
-        icon_url: el-icon-fontalipay
+        icon_url: alipay.png
         name: 支付宝支付
       wxpay: 
         link_url: https://pay.weixin.qq.com
         form_url: wechart
-        icon_url: el-icon-fontweixinzhifu1
+        icon_url: wxpay.png
         name: 微信支付
       other1: 
         link_url: https://pay.weixin.qq.com
