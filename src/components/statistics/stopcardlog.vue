@@ -135,6 +135,7 @@ export default {
     // 列表
     handleSizeChange(val) {
       this.list.pagesize = val
+      this.list.currentPage = 1
       this.getData()
     },
     handleCurrentChange(val) {

@@ -43,8 +43,8 @@ module.exports = {
       }),
       done: (res) => {
         para.vue[para.loadData || 'loadData'] = false
-        list.data = res.data.page.records
-        list.total = res.data.page.total
+        list.data = res.data ? res.data.page.records : []
+        list.total = res.data ? res.data.page.total : 0
         para.cb && para.cb(res)
       }
     })
@@ -120,7 +120,7 @@ module.exports = {
     count -= 0
     let htmlStr = ''
     if (isHtmlStr) {
-      if (isNaN(count)) {
+      if (isNaN(count) || count == '99999999') {
         htmlStr = `<span style="font-weight:bold" class="text_danger">无限制</span>`
       } else if (Math.abs(count / 1024) < 1) {
         htmlStr = `<span>${count.toFixed(fix)}</span><span style="font-weight:bold" class="text_success">&nbsp;M</span>`
@@ -182,14 +182,18 @@ module.exports = {
   },
   // 计算到期时间
   calcLeftTime(time) {
-    let htmlStr = '<span style="color:#e92322;font-weight:bold">已过期</span>'
+    let htmlStr = ''
     let now = new Date().getTime()
     // ie 下兼容性问题
     if (time) {
       var a = new Date(time).getTime() || new Date(time.replace(/-/g, "/")).getTime()
+    } else {
+      return htmlStr
     }
     if (a - now > 0) {
-      htmlStr = `<span style="display:inline-block">${time}</span> <span style="display:inline-block;color:#008000;font-weight:bold"">(${Math.ceil((a - now) / 24 / 3600000)}天)</span>`
+      htmlStr = `<span style="display:inline-block">${time}</span> <span style="display:inline-block;color:#008000;font-weight:bold"">(${Math.floor((a - now) / 24 / 3600000)}天)</span>`
+    } else {
+      htmlStr = `<span style="display:inline-block">${time}</span> <span style="font-weight:bold" class="text_danger">(${Math.floor((a - now) / 24 / 3600000)}天)</span>`
     }
     return htmlStr
   },

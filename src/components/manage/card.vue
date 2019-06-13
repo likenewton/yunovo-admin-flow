@@ -16,7 +16,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="激活状态">
-          <el-select v-model="formInline.active_status" filterable clearable placeholder="请选择">
+          <el-select v-model="formInline.status" filterable clearable placeholder="请选择">
             <el-option v-for="(item, index) in activeSelect" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
@@ -25,12 +25,18 @@
             <el-option v-for="(item, index) in exceedSelect" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="运行状态">
+          <el-select v-model="formInline.unicom_stop" filterable clearable placeholder="请选择">
+            <el-option label="正常运行" value="0"></el-option>
+            <el-option label="已停卡" value="1"></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="激活日期">
-          <el-date-picker v-model="formInline.jstart" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
-          <el-date-picker v-model="formInline.jend" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
+          <el-date-picker v-model="formInline.date_start" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
+          <el-date-picker v-model="formInline.date_end" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="getData">查询</el-button>
+          <el-button type="primary" @click="searchData">查询</el-button>
           <el-button type="warning" @click="resetData">重置</el-button>
         </el-form-item>
       </el-form>
@@ -41,44 +47,63 @@
         <el-button size="mini" type="warning">导入</el-button>
         <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
-      <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" border resizable size="mini">
-        <el-table-column fixed="left" label="卡ICCID" min-width="170">
+      <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
+        <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" min-width="170" sortable="custom">
           <template slot-scope="scope">
-            <el-button type="text">{{scope.row.iccid}}</el-button>
+            <span class="btn-link">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="ks_name" label="卡商名称" min-width="120"></el-table-column>
-        <el-table-column prop="jg_name" label="机构名称" min-width="120"></el-table-column>
-        <el-table-column label="当月用量" min-width="93">
+        <el-table-column prop="card_type" label="卡商名称" min-width="120" sortable="custom">
           <template slot-scope="scope">
-            <div v-html="formatFlowUnit(scope.row.m_use)"></div>
+            <span>{{scope.row.card_type_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="累计用量" min-width="93">
+        <el-table-column prop="org_id" label="机构名称" min-width="135" sortable="custom">
           <template slot-scope="scope">
-            <div v-html="formatFlowUnit(scope.row.total_use)"></div>
+            <span>{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="剩余用量" min-width="93">
+        <el-table-column prop="unicom_month" label="当月用量" min-width="93" sortable="custom">
           <template slot-scope="scope">
-            <div v-html="formatFlowUnit(scope.row.left_use)"></div>
+            <div v-html="formatFlowUnit(scope.row.unicom_month)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="excard_time" label="导卡时间" min-width="151" sortable="custom"></el-table-column>
-        <el-table-column prop="active_time" label="激活时间" min-width="151" sortable="custom"></el-table-column>
-        <el-table-column prop="eq_time" label="设备更新时间" min-width="151" sortable="custom"></el-table-column>
-        <el-table-column prop="exceed_time" label="过期时间" min-width="215" sortable="custom">
+        <el-table-column prop="unicom_total" label="累计用量" min-width="93" sortable="custom">
           <template slot-scope="scope">
-            <div v-html="calcLeftTime(scope.row.exceed_time)"></div>
+            <div v-html="formatFlowUnit(scope.row.unicom_total)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="op_status" label="运行状态" min-width="70"></el-table-column>
-        <el-table-column prop="active_status" label="激活状态" min-width="70"></el-table-column>
+        <el-table-column prop="unicom_unused" label="剩余用量" min-width="93" sortable="custom">
+          <template slot-scope="scope">
+            <div v-html="formatFlowUnit(scope.row.unicom_unused)"></div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="time_added" label="导卡时间" min-width="151" sortable="custom"></el-table-column>
+        <el-table-column prop="time_active" label="激活时间" min-width="151" sortable="custom"></el-table-column>
+        <el-table-column prop="time_last" label="设备更新时间" min-width="151" sortable="custom"></el-table-column>
+        <el-table-column prop="time_expire" label="过期时间" min-width="215" sortable="custom">
+          <template slot-scope="scope">
+            <div v-html="calcLeftTime(scope.row.time_expire)"></div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="unicom_stop" label="运行状态" min-width="80">
+          <template slot-scope="scope">
+            <span class="text_success bold" v-if="scope.row.unicom_stop==0">正常运行</span>
+            <span class="text_danger bold" v-else>已停卡</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="激活状态" min-width="70">
+          <template slot-scope="scope">
+            <span v-if="scope.row.time_active">已激活</span>
+            <span v-else>未激活</span>
+          </template>
+        </el-table-column>
         <el-table-column fixed="right" label="操作" min-width="140">
           <template slot-scope="scope">
             <el-button type="text" @click="showDetail(scope)">同步</el-button>
-            <el-button type="text">停用</el-button>
             <el-button type="text">套餐</el-button>
+            <el-button type="text" class="text_danger" v-if="scope.row.unicom_stop==0">停用</el-button>
+            <el-button type="text" class="text_success" v-else>启用</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -86,7 +111,7 @@
       </el-pagination>
     </el-card>
     <v-dialog :dialogPara="dialogPara"></v-dialog>
-    <el-dialog title="机构流量ICCID卡统计图表" :visible.sync="dialogChartVisible">
+    <el-dialog title="机构流量ICCID卡统计" :visible.sync="dialogChartVisible" width="70%" center>
       <div slot class="clearfix" v-loading="dialogChartLoadData">
         <div id="myChart" style="width:100%; height:300px"></div>
         <el-pagination @size-change="handleSizeChangeDetail" @current-change="handleCurrentChangeDetail" :current-page="dialogList.currentPage" :page-sizes="pageSizes" :page-size="dialogList.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="dialogList.total" class="clearfix">
@@ -114,6 +139,7 @@ export default {
       },
       sort: {},
       formInline: {},
+      maxTableHeight: Api.UNITS.maxTableHeight(),
       // 要展开的对话框的参数
       dialogPara: {},
       dialogList: {
@@ -183,6 +209,7 @@ export default {
     ]),
     handleSizeChange(val) {
       this.list.pagesize = val
+      this.list.currentPage = 1
       this.getData()
     },
     handleCurrentChange(val) {
@@ -196,6 +223,7 @@ export default {
     // dialog(图表)中的分页
     handleSizeChangeDetail(val) {
       this.dialogList.pagesize = val
+      this.dialogList.currentPage = 1
       this.getEchartsData()
     },
     handleCurrentChangeDetail(val) {
@@ -204,37 +232,22 @@ export default {
     },
     // 重置列表
     resetData() {
+      this.list.currentPage = 1
       this.formInline = {} // 1、重置查询表单
       this.sort = {} // 2、重置排序
       this.$refs.listTable.clearSort() // 3、清空排序样式
       this.getData()
     },
+    searchData() {
+      this.list.currentPage = 1
+      this.getData()
+    },
     // 获取列表数据
     getData() {
-      // Api.UNITS.getListData({
-      //   vue: this,
-      //   url: _axios.ajaxAd.getStats
-      // })
-      setTimeout(() => {
-        // 数据请求成功
-        this.list.data = [{
-          id: 0,
-          iccid: '8986011670901045280',
-          ks_name: '智网吉林11位卡',
-          jg_name: '卡仕特-西格玛',
-          m_use: 564,
-          total_use: 6462,
-          left_use: NaN,
-          excard_time: '2019-04-15 12:54:14',
-          active_time: '2019-04-15 12:54:14',
-          eq_time: '2019-04-15 12:54:14',
-          exceed_time: '2020-04-15 12:54:14',
-          op_status: 1,
-          active_status: 0
-        }]
-        this.list.total = this.list.data.length
-        this.loadData = false
-      }, 1000)
+      Api.UNITS.getListData({
+        vue: this,
+        url: _axios.ajaxAd.getCards
+      })
     },
     showEcharts() {
       this.dialogChartVisible = true
@@ -254,7 +267,8 @@ export default {
         cb: (res) => {
           let labals = this.options.xAxis.data = []
           let data = this.options.series[0].data = []
-          this.dialogList.data.forEach((v) => {
+          let dialogListData = this.dialogList.data || []
+          dialogListData.forEach((v) => {
             labals.push(v.org_name)
             data.push(v.card_count)
           })

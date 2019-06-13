@@ -230,7 +230,6 @@
 </template>
 <script>
 import Api from 'assets/js/api.js'
-import { mapState } from 'vuex'
 
 export default {
   data() {
@@ -245,6 +244,7 @@ export default {
         'formInline_4': 'tab-server',
       },
       currencySelect: [], // 货币的下拉列表
+      langSelect: [], // 语言
       formInline_0: {},
       formInline_1: {},
       formInline_2: {},
@@ -319,6 +319,7 @@ export default {
   },
   mounted() {
     this.getCurrencySelect()
+    this.getLangSelect()
     this.getData()
   },
   methods: {
@@ -347,6 +348,15 @@ export default {
         url: _axios.ajaxAd.getCurrencySelect,
         done: ((res) => {
           this.currencySelect = res.data
+        })
+      })
+    },
+    getLangSelect() {
+      _axios.send({
+        method: 'get',
+        url: _axios.ajaxAd.getLangSelect,
+        done: ((res) => {
+          this.langSelect = res.data
         })
       })
     },
@@ -405,11 +415,6 @@ export default {
         callback()
       }
     }
-  },
-  computed: {
-    ...mapState({
-      langSelect: 'langSelect',
-    })
   }
 }
 

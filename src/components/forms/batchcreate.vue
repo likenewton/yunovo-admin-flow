@@ -200,29 +200,26 @@ export default {
       // 地区选择的数据
       options: [],
       props: {
-        value: 'ntid', // 最后选取的值
-        label: 'ntname', // 值对应的名称
+        value: 'value', // 最后选取的值
+        label: 'label', // 值对应的名称
         children: 'cities'
       }
     }
   },
   mounted() {
     this.getNations(1, (res) => {
-      let data = res.data.page.records || []
+      let data = res.data || []
       data.forEach((v) => { v.cities = [] })
       // 要先添加cities属性，这样才能watch它的变化
       this.options = data
     })
   },
   methods: {
-    getNations(ntid = 1, cb) {
+    getNations(parent = 1, cb) {
       _axios.send({
         method: 'get',
-        url: _axios.ajaxAd.getNations,
-        params: {
-          size: 9999,
-          ntid
-        },
+        url: _axios.ajaxAd.getNationSelect,
+        params: { parent },
         done: ((res) => {
           cb && cb(res)
         })
@@ -232,10 +229,10 @@ export default {
     handleCascaderChange(val) {
       if (val.length === 1) {
         this.options.forEach((v, i) => {
-          if (v.ntid === val[0]) {
+          if (v.value === val[0]) {
             if (v.cities.length === 0) {
-              this.getNations(v.ntid, (res) => {
-                let data = res.data.page.records || []
+              this.getNations(v.value, (res) => {
+                let data = res.data || []
                 data.forEach((v1) => { v1.cities = [] })
                 v.cities = data
               })
@@ -244,12 +241,12 @@ export default {
         })
       } else if (val.length === 2) {
         this.options.forEach((v, i) => {
-          if (v.ntid === val[0]) {
+          if (v.value === val[0]) {
             v.cities.forEach((v1, i1) => {
-              if (v1.ntid === val[1]) {
+              if (v1.value === val[1]) {
                 if (v1.cities.length === 0) {
-                  this.getNations(v1.ntid, (res) => {
-                    v1.cities = res.data.page.records || []
+                  this.getNations(v1.value, (res) => {
+                    v1.cities = res.data || []
                   })
                 }
               }

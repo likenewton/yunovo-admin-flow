@@ -119,6 +119,7 @@ export default {
   padding-top: 30px;
   background: $asideBackgroundColor;
   color: #333;
+  overflow-x: hidden;
 
   * {
     background: $asideBackgroundColor;

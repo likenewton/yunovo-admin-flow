@@ -3,7 +3,7 @@ class AXIOS {
     this.data = {
       method: 'get',
       params: null,
-      timeout: 30000,
+      timeout: 50000,
       data: null, // 请求体所带的参数
       done: null, // 接口请求成功回调函数
       headers: {
@@ -26,6 +26,8 @@ class AXIOS {
       getPayMethodSelect: '/fc/api/select/api/select/payMethod/select',
       getComboFlow: '/fc/api/select/api/select/pack',
       getCurrencySelect: '/fc/api/select/api/select/currency',
+      getLangSelect: '/fc/api/select/api/select/language',
+      getNationSelect: '/fc/api/select/api/select/nation',
       // table列表
       getStats: '/fc/api/gprs/stats/',
       getHalt: '/fc/api/gprs/halt/',
@@ -45,6 +47,8 @@ class AXIOS {
       getNations: '/fc/api/system/nations/',
       getPays: '/fc/api/system/pays/',
       getCurrency: '/fc/api/system/currency/',
+      getCards: '/fc/api/gprs/card/',
+      getCardReset: '/fc/api/card/reset/',
       // 明细
       getOnOffLogDetail: '/fc/api/gprs/onoffLog/detail',
       getNotifyFromOrg: '/fc/api/gprs/notifyFrom/org',

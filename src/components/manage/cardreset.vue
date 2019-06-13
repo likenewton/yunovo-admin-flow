@@ -1,66 +1,69 @@
 <template>
-  <div>
-    <el-card class="reset-card" shadow="never">
+  <div class="card_reset">
+    <el-card shadow="never">
       <el-tabs @tab-click="changeTab">
         <el-tab-pane>
           <span slot="label">重置操作</span>
-          <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="126px" class="search-form" size="small">
-            <el-form-item prop="iccid">
+          <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="126px" size="small">
+            <el-form-item prop="iccid_list">
               <span slot="label">卡ICCID列表：</span>
-              <el-input type="textarea" v-model="ruleForm.iccid" rows="8"></el-input>
+              <el-input type="textarea" v-model="ruleForm.iccid_list" rows="8"></el-input>
+              <div class="annotation">一行代表一个ICCID，多行代表多个ICCID，建议不超过100个ICCID</div>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary">保存</el-button>
-              <el-button type="warning">重置</el-button>
+              <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+              <el-button type="warning" @click="resetForm('ruleForm')">重置</el-button>
             </el-form-item>
           </el-form>
         </el-tab-pane>
-        <el-tab-pane>
+        <el-tab-pane v-loading="loadData">
           <span slot="label"></i>重置历史</span>
-          <el-form class="search-form" :inline="true" :model="formInline" size="small">
+          <el-form :inline="true" :model="formInline" size="small">
             <el-form-item label="卡ICCID">
               <el-input v-model="formInline.iccid" placeholder="请输入"></el-input>
             </el-form-item>
             <el-form-item label="机构名称">
-              <el-select v-model="formInline.jg_name" placeholder="请选择">
-                <el-option label="机构1" value="0"></el-option>
-                <el-option label="机构2" value="1"></el-option>
-                <el-option label="机构3" value="2"></el-option>
+              <el-select v-model="formInline.org_id" filterable placeholder="请选择">
+                <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="重置时间">
-              <el-date-picker v-model="formInline.reset_time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-              </el-date-picker>
+              <el-date-picker v-model="formInline.date_start" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
+              <el-date-picker v-model="formInline.date_end" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
             </el-form-item>
             <el-form-item>
-              <el-button size="small" type="primary">查询</el-button>
-              <el-button size="small" type="warning">重置</el-button>
+              <el-button size="small" type="primary" @click="searchData">查询</el-button>
+              <el-button size="small" type="warning" @click="resetData">重置</el-button>
             </el-form-item>
           </el-form>
-          <el-table v-loading="loadTab1Data" ref="multipleTable" :data="curTableData" border :default-sort="{prop: 'ex_time', order: 'descending'}" size="mini">
-            <el-table-column fixed="left" show-overflow-tooltip label="卡ICCID" min-width="170">
+          <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
+            <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" min-width="170" sortable="custom">
               <template slot-scope="scope">
-                <el-button type="text">{{scope.row.iccid}}</el-button>
+                <span class="btn-link">{{scope.row.card_iccid}}</span>
               </template>
             </el-table-column>
-            <el-table-column show-overflow-tooltip prop="jg_name" label="机构名称" min-width="140"></el-table-column>
-            <el-table-column label="已用流量" show-overflow-tooltip min-width="95" sortable>
+            <el-table-column prop="org_id" label="机构名称" min-width="140">
+              <template slot-scope="scope">
+                <span>{{scope.row.org_name}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="right_use" label="已用流量" min-width="95" sortable="custom">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.right_use)"></div>
               </template>
             </el-table-column>
-            <el-table-column label="剩余流量" show-overflow-tooltip min-width="95" sortable>
+            <el-table-column prop="left_use" label="剩余流量" min-width="95" sortable="custom">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.left_use)"></div>
               </template>
             </el-table-column>
-            <el-table-column prop="card_status" label="卡状态" show-overflow-tooltip min-width="95" sortable></el-table-column>
-            <el-table-column prop="real_ide" label="实名认证" show-overflow-tooltip min-width="95" sortable></el-table-column>
-            <el-table-column prop="op_p" label="操作者" show-overflow-tooltip min-width="120" sortable></el-table-column>
-            <el-table-column prop="ex_time" label="出货时间" show-overflow-tooltip min-width="155" sortable></el-table-column>
-            <el-table-column prop="reset_time" label="重置时间" show-overflow-tooltip min-width="155" sortable></el-table-column>
+            <el-table-column prop="card_status" label="卡状态" min-width="95" sortable="custom"></el-table-column>
+            <el-table-column prop="real_ide" label="实名认证" min-width="95" sortable="custom"></el-table-column>
+            <el-table-column prop="op_p" label="操作者" min-width="120" sortable="custom"></el-table-column>
+            <el-table-column prop="ex_time" label="出货时间" min-width="155" sortable="custom"></el-table-column>
+            <el-table-column prop="reset_time" label="重置时间" min-width="155" sortable="custom"></el-table-column>
           </el-table>
-          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="tableData.length">
+          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
           </el-pagination>
         </el-tab-pane>
       </el-tabs>
@@ -69,25 +72,26 @@
 </template>
 <script>
 import Api from 'assets/js/api.js'
+import { mapState } from 'vuex'
 
 export default {
   data() {
     return {
-      routeName: this.$route.name,
-      currentDate: new Date(),
-      tableData: [],
-      pageSizes: Api.STATIC.pageSizes,
-      pagesize: Api.STATIC.pageSizes[1],
-      currentPage: 1,
-      loadTab1Data: true,
+      loadData: true,
       tabIndex: '0',
-      formInline: {
-        doi: '',
-        status: ''
+      pageSizes: Api.STATIC.pageSizes,
+      maxTableHeight: Api.UNITS.maxTableHeight(),
+      list: {
+        data: [],
+        pagesize: Api.STATIC.pageSizes[1],
+        currentPage: 1,
+        total: 0,
       },
       ruleForm: {},
+      formInline: {},
+      sort: {},
       rules: {
-        iccid: [{
+        iccid_list: [{
           required: true,
           message: '请输入您需要重置的流量卡ICCID号',
           trigger: 'blur'
@@ -95,70 +99,92 @@ export default {
       }
     }
   },
-  mounted() {
-
-  },
+  mounted() {},
   methods: {
     handleSizeChange(val) {
-      this.pagesize = val
+      this.list.pagesize = val
+      this.list.currentPage = 1
+      this.getData()
     },
     handleCurrentChange(val) {
-      this.currentPage = val
+      this.list.currentPage = val
+      this.getData()
+    },
+    handleSortChange(val) {
+      Api.UNITS.setSortSearch(val, this)
+      this.getData()
     },
     changeTab(para) {
       this.tabIndex = para.index
-      // 当切换tab栏到'1'的时候，要加载数据
       if (this.tabIndex === '1') {
-        // 这里应当是ajax请求数据
-        if (this.tableData.length === 0) {
-          this.getTab1Data()
+        // 重置历史查询
+        if (this.list.data.length === 0) {
+          this.getData()
         } else {
-          this.loadTab1Data = false
+          this.loadData = false
         }
       }
     },
-    getTab1Data() {
-      setTimeout(() => {
-        this.tableData = [{
-          id: 0,
-          iccid: '8986011670901045280',
-          jg_name: '卡仕特-西格玛',
-          right_use: 214,
-          left_use: 6542,
-          card_status: 0,
-          real_ide: 1,
-          op_p: 'Newton',
-          ex_time: '2019-01-21 09:58:45',
-          reset_time: '2019-02-03 21:01:03'
-        }]
-        this.loadTab1Data = false
-      }, 1000)
+    // 重置列表
+    resetData() {
+      this.list.currentPage = 1
+      this.formInline = {} // 1、重置查询表单
+      this.sort = {} // 2、重置排序
+      this.$refs.listTable.clearSort() // 3、清空排序样式
+      this.getData()
+    },
+    searchData() {
+      this.list.currentPage = 1
+      this.getData()
+    },
+    getData() {
+      Api.UNITS.getListData({
+        vue: this,
+        url: _axios.ajaxAd.getCardReset
+      })
+    },
+    // 提交表单
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          // 验证通过
+        } else {
+          Api.UNITS.showMsgBox()
+          return false;
+        }
+      })
+    },
+    // 重置表单
+    resetForm(formName) {
+      this.$refs[formName].resetFields()
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit
   },
   computed: {
-    curTableData() {
-      return this.tableData.slice((this.currentPage - 1) * this.pagesize, this.currentPage * this.pagesize)
-    }
+    ...mapState({
+      orgs: 'orgs',
+      cardTypes: 'cardTypes'
+    })
   }
 }
 
 </script>
 <style lang="scss">
-.el-pagination {
-  float: right;
-  margin: 25px 40px 0 0;
-}
-
-.el-card__body {
-  img {
-    width: 100%;
+.card_reset {
+  .el-pagination {
+    float: right;
+    margin: 25px 40px 0 0;
   }
 
-  .small {
-    font-size: 12px;
-  }
+  .el-card__body {
+    img {
+      width: 100%;
+    }
 
+    .small {
+      font-size: 12px;
+    }
+  }
 }
 
 </style>
