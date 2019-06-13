@@ -45,12 +45,12 @@ public class CurrencyForm extends BaseForm implements Serializable {
 
 	@ApiModelProperty(value="货币名称")
 	@NotEmpty(message="请输入货币名称", groups= {InsertGroupValidate.class, UpdateGroupValidate.class})
-	@Length(max=32,min=3,groups= {InsertGroupValidate.class, UpdateGroupValidate.class},message="货币名称必须在3至32个字符之间！")
+	@Size(max=32,min=3,groups= {InsertGroupValidate.class, UpdateGroupValidate.class},message="货币名称必须在3至32个字符之间！")
 	private String title = "";
 
 	@ApiModelProperty(value="货币代码")
 	@NotEmpty(message="请输入货币代码", groups= {InsertGroupValidate.class, UpdateGroupValidate.class})
-	@Length(max=3,min=3,groups= {InsertGroupValidate.class, UpdateGroupValidate.class},message="货币代码必须是3个字符！")
+	@Size(max=3,min=3,groups= {InsertGroupValidate.class, UpdateGroupValidate.class},message="货币代码必须是3个字符！")
 	private String code = "";
 
 	@ApiModelProperty(value="左符号")
