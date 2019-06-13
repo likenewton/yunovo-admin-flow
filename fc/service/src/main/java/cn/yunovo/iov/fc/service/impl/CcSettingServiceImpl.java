@@ -3,7 +3,6 @@ package cn.yunovo.iov.fc.service.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import cn.yunovo.iov.fc.common.utils.BusinessException;
@@ -12,7 +11,6 @@ import cn.yunovo.iov.fc.common.utils.Md5Util;
 import cn.yunovo.iov.fc.dao.ICcSettingMapper;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.entity.CcSetting;
-import cn.yunovo.iov.fc.model.form.PayForm;
 import cn.yunovo.iov.fc.model.form.SystemParamsForm;
 import cn.yunovo.iov.fc.service.FcConstant;
 import cn.yunovo.iov.fc.service.ICcSettingService;
@@ -22,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -147,7 +144,7 @@ public class CcSettingServiceImpl extends ServiceImpl<ICcSettingMapper, CcSettin
 
 	@Override
 	@Transactional(rollbackFor=Exception.class, propagation=Propagation.REQUIRED, transactionManager="clwTransactionManager")
-	public int updateSystemParams(PayForm form, LoginInfo loginBaseInfo) {
+	public int updateSystemParams(SystemParamsForm form, LoginInfo loginBaseInfo) {
 		
 		List<CcSetting> data = form.build();
 		if(CollectionUtils.isEmpty(data)) {

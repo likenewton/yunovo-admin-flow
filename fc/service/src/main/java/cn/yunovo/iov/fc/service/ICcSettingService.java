@@ -34,6 +34,6 @@ public interface ICcSettingService extends IService<CcSetting> {
 
 	SystemParamsForm systemParams();
 
-	public int updateSystemParams(PayForm form, LoginInfo loginBaseInfo);
+	public int updateSystemParams(SystemParamsForm form, LoginInfo loginBaseInfo);
 	
 }

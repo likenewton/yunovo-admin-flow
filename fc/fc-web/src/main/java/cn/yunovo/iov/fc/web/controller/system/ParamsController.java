@@ -31,9 +31,9 @@ public class ParamsController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
-	@RequestMapping(path="/params/update", method= {RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(path="/params/update", method= {RequestMethod.POST})
 	@ApiOperation(value="系统设置-系统参数详情编辑")
-	public Result<Object> update(@RequestBody PayForm form) {
+	public Result<Object> update(@RequestBody SystemParamsForm form) {
 		
 		form.validate();
 		iCcSettingService.updateSystemParams(form, this.getLoginBaseInfo());
