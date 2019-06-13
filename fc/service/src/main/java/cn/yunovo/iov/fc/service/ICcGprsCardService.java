@@ -30,6 +30,17 @@ public interface ICcGprsCardService extends IService<CcGprsCard> {
 	public PageData<CcGprsCard, HashMap<String, Double>> getHaltPage(PageForm pageForm, String card_iccid,
 			Integer card_type, Integer org_id, Integer time_expire, LoginInfo info);
 	
+	/**
+	 * 用量异常查询接口
+	 * @param pageForm
+	 * @param card_iccid
+	 * @param card_type
+	 * @param org_id
+	 * @param max_unused
+	 * @param unicom_diff
+	 * @param info
+	 * @return
+	 */
 	public PageData<CcGprsCard, Object>  getItemsPage(PageForm pageForm, String card_iccid,
 			Integer card_type, Integer org_id, Integer max_unused, Integer unicom_diff, LoginInfo info);
 	
@@ -81,6 +92,24 @@ public interface ICcGprsCardService extends IService<CcGprsCard> {
 	 * @return
 	 */
 	public PageData<PayDetailResultBean, PayDetailResultBean> getPayDetailPage(PageForm pageForm, Integer org_id, String date_start, String date_end, LoginInfo info);
+
+	/**
+	 * 业务管理-流量卡列表接口
+	 * @param form
+	 * @param card_iccid
+	 * @param org_id
+	 * @param date_start
+	 * @param date_end
+	 * @param time_expire
+	 * @param unicom_stop
+	 * @param status
+	 * @param info
+	 * @param card_type
+	 * @return
+	 */
+	PageData<CcGprsCard, Object> queryCardListPage(PageForm form, String card_iccid, Integer org_id, String date_start,
+			String date_end, Integer time_expire, Integer unicom_stop, Integer status, LoginInfo info,
+			Integer card_type);
 	
 	
 	

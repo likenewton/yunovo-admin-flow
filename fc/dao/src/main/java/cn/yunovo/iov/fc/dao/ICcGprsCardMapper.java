@@ -85,4 +85,21 @@ public interface ICcGprsCardMapper extends BaseMapper<CcGprsCard> {
 	 * @return
 	 */
 	public List<PayDetailResultBean> getPayDetailPage(IPage<PayDetailResultBean> page, @Param("org_id")Integer org_id, @Param("date_start")String date_start, @Param("date_end")String date_end,  @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	
+	/**
+	 * 流量卡列表查询
+	 * @param page
+	 * @param card_iccid 
+	 * @param card_type
+	 * @param org_id
+	 * @param date_start
+	 * @param date_end
+	 * @param time_expire
+	 * @param unicom_stop
+	 * @param status
+	 * @param orgpos
+	 * @param orgs
+	 * @return
+	 */
+	public List<CcGprsCard> queryCardListPage(IPage<CcGprsCard> page, @Param("card_iccid")String card_iccid, @Param("card_type")Integer card_type, @Param("org_id")Integer org_id, @Param("date_start")String date_start, @Param("date_end")String date_end, @Param("time_expire")Integer time_expire, @Param("unicom_stop")Integer unicom_stop, @Param("status")Integer status, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 }

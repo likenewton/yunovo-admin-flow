@@ -48,5 +48,5 @@ public interface ICcOrgService extends IService<CcOrg> {
 	 * @param orgpos 当前用户可管理的机构id,多个逗号分割,*号代表可管理所有机构
 	 * @return true | false, true 表示拥有该机构的管理权，false 则表示没有权限
 	 */
-	boolean permission(Integer org_id, String orgpos);
+	boolean hasPermission(Integer org_id, String orgpos);
 }

@@ -291,7 +291,7 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 	}
 	
 	@Override
-	public boolean permission(Integer org_id, String orgpos) {
+	public boolean hasPermission(Integer org_id, String orgpos) {
 		
 		if(org_id == null || org_id < 0 || StringUtils.isEmpty(orgpos)) {
 			return false;
@@ -315,7 +315,7 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 		
 		String orgpos = this.getOrgpos(user.getOrg_id(), user.getOrgpos());
 		
-		if(!this.permission(form.getParent_id(), orgpos)) {
+		if(!this.hasPermission(form.getParent_id(), orgpos)) {
 			throw new BusinessException(405,"抱歉您无权限在此父机构下创建所属子机构!");
 		}
 		
@@ -346,11 +346,11 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 		
 		String orgpos = this.getOrgpos(user.getOrg_id(), user.getOrgpos());
 		
-		if(!this.permission(org.getOrg_id(), orgpos)) {
+		if(!this.hasPermission(org.getOrg_id(), orgpos)) {
 			throw new BusinessException("系统提示：您无权限修改该机构信息");
 		}
 		
-		if(!this.permission(org.getParent_id(), orgpos)) {
+		if(!this.hasPermission(org.getParent_id(), orgpos)) {
 			throw new BusinessException("抱歉您无权限在此父机构下创建所属子机构");
 		}
 		
@@ -386,7 +386,7 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 		String orgpos = this.getOrgpos(user.getOrg_id(), user.getOrgpos());
 		for (Integer o : orgs) {
 			
-			if(!this.permission(o, orgpos)) {
+			if(!this.hasPermission(o, orgpos)) {
 				throw new BusinessException("系统提示：您无权删除该机构");
 			}
 			

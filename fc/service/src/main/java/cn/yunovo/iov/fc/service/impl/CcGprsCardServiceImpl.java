@@ -52,14 +52,14 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 	@Autowired
 	private ICcOrgService iCcOrgService;
 
-	private Map<String, String> card_type;
+	private Map<String, String> array_card_type;
 
 	public Map<String, String> getCard_type() {
-		return card_type;
+		return array_card_type;
 	}
 
 	public void setCard_type(Map<String, String> card_type) {
-		this.card_type = card_type;
+		this.array_card_type = card_type;
 	}
 
 	@Override
@@ -92,14 +92,6 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 		// 获取总使用流量
 		HashMap<String, Double> total = iGprsCardMapper.getHaltTotal(card_iccid, card_type, org_id, time_expire, orgpos,
 				orgpos.split(","));
-		/*
-		 * if (total == null) { usedTotal = 0L; }
-		 */
-
-		/*
-		 * Map<String, Object> other = new HashMap<>(1); other.put("usedTotal",
-		 * usedTotal);
-		 */
 
 		if (CollectionUtils.isEmpty(records)) {
 			page.setTotal(0);
@@ -114,11 +106,7 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 			ccGprsCard.setOrg_name(orgs.get(String.valueOf(ccGprsCard.getOrg_id())).getName());
 			ccGprsCard.setCard_type_name(cardTypes.get(String.valueOf(ccGprsCard.getCard_type())));
 		}
-
-		//Long count = iGprsCardMapper.getHaltPageCount(card_iccid, card_type, org_id, time_expire, orgpos,
-		//		orgpos.split(","));
 		page.setRecords(records);
-		//page.setTotal(count);
 		p.setPage(page);
 		p.setOther(total);
 
@@ -395,6 +383,50 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 		p.setPage(page);
 
 		return p;
+	}
+	
+	@Override
+	public PageData<CcGprsCard, Object> queryCardListPage(PageForm form, String card_iccid, Integer org_id, String date_start, String date_end, Integer time_expire, Integer unicom_stop, Integer status, LoginInfo info, Integer card_type) {
+		
+		Page<CcGprsCard> page = form.build(CcGprsCard.class, "card_iccid", null);
+		
+		PageData<CcGprsCard, Object> returnData = new PageData<>();
+		
+		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
+		if (StringUtils.isEmpty(orgpos)) {
+			page.setTotal(0);
+			page.setRecords(null);
+			returnData.setPage(page);
+			return returnData;
+		}
+
+		if(org_id != null && iCcOrgService.hasPermission(org_id, orgpos)) {
+			
+			page.setTotal(0);
+			page.setRecords(null);
+			returnData.setPage(page);
+			return returnData;
+		}
+		if (StringUtils.isNotEmpty(date_start)) {
+			date_start = date_start + " 00:00:00";
+		}
+
+		if (StringUtils.isNotEmpty(date_end)) {
+			date_end = date_end + " 23:59:59";
+		}
+		
+		List<CcGprsCard> records = iGprsCardMapper.queryCardListPage(page, card_iccid, card_type, org_id, date_start, date_end, time_expire, unicom_stop, status, orgpos, orgpos.split(","));
+		if(!CollectionUtils.isEmpty(records)) {
+			Map<String, String> cardTypes = getCard_type();
+			Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
+			for (CcGprsCard ccGprsCard : records) {
+				ccGprsCard.setOrg_name(orgs.get(String.valueOf(ccGprsCard.getOrg_id())).getName());
+				ccGprsCard.setCard_type_name(cardTypes.get(String.valueOf(ccGprsCard.getCard_type())));
+			}
+		}
+		page.setRecords(records);
+		returnData.setPage(page);
+		return returnData;
 	}
 
 }
