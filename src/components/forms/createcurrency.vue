@@ -27,7 +27,7 @@
       </el-form-item>
       <el-form-item prop="value">
         <span slot="label">汇率：</span>
-        <el-input v-model="formInline.value" placeholder='请输入汇率'></el-input>
+        <el-input v-model="formInline.value" @input="formInline.value = limitNumber(formInline.value, 4, 4)" placeholder='请输入汇率'></el-input>
         <div class="annotation">如果这是您的默认货币，请将它设置为1.0</div>
       </el-form-item>
       <el-form-item prop="status">
@@ -65,6 +65,11 @@ export default {
         code: [{
           required: true,
           message: '请输入代码',
+          trigger: 'blur'
+        }, {
+          min: 3,
+          max: 3,
+          message: '货币代码必须是3个字符',
           trigger: 'blur'
         }],
         status: [{
@@ -108,7 +113,31 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           // 验证通过
-          console.log(this.formInline)
+          if (this.isUpdate) {
+            _axios.send({
+              method: 'post',
+              url: _axios.ajaxAd.updateCurrency,
+              data: this.formInline,
+              done: ((res) => {
+                this.$router.push({ name: 'currencyset' })
+                setTimeout(() => {
+                  this.$message.success(res.msg || '操作成功')
+                }, 150)
+              })
+            })
+          } else {
+            _axios.send({
+              method: 'post',
+              url: _axios.ajaxAd.addCurrency,
+              data: this.formInline,
+              done: ((res) => {
+                this.$router.push({ name: 'currencyset' })
+                setTimeout(() => {
+                  this.$message.success(res.msg || '操作成功')
+                }, 150)
+              })
+            })
+          }
         } else {
           Api.UNITS.showMsgBox()
           return false

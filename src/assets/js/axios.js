@@ -25,6 +25,7 @@ class AXIOS {
       getNotifySelect: '/fc/api/select/api/select/notifyFrom/select',
       getPayMethodSelect: '/fc/api/select/api/select/payMethod/select',
       getComboFlow: '/fc/api/select/api/select/pack',
+      getCurrencySelect: '/fc/api/select/api/select/currency',
       // table列表
       getStats: '/fc/api/gprs/stats/',
       getHalt: '/fc/api/gprs/halt/',
@@ -52,6 +53,7 @@ class AXIOS {
       getNationDetail: '/fc/api/system/nations/detail',
       getPayDetail: '/fc/api/system/pays/detail',
       getCurrencyDetail: '/fc/api/system/currency/detail',
+      getSystemParams: '/fc/api/system/params/',
       // 导出
       statsExport: '/fc/api/gprs/stats/export',
       // 图表
@@ -66,6 +68,9 @@ class AXIOS {
       installPay: '/fc/api/system/pays/install',
       deletePay: '/fc/api/system/pays/uninstall',
       updatePay: '/fc/api/system/pays/update',
+      addCurrency: '/fc/api/system/currency/insert',
+      updateCurrency: '/fc/api/system/currency/update',
+      updateSystemParams: '/fc/api/system/params/update',
     }
   }
 

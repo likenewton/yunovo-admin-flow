@@ -121,7 +121,6 @@ export default {
           type: 'category',
           data: [], //要设置的
           axisLabel: {
-            interval: 0,
             textStyle: {
               fontSize: 12
             }
