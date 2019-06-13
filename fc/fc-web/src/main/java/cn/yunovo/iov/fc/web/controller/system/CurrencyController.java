@@ -13,7 +13,6 @@ import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcCurrency;
 import cn.yunovo.iov.fc.model.form.CurrencyForm;
-import cn.yunovo.iov.fc.model.form.group.DeleteGroupValidate;
 import cn.yunovo.iov.fc.model.form.group.InsertGroupValidate;
 import cn.yunovo.iov.fc.model.form.group.UpdateGroupValidate;
 import cn.yunovo.iov.fc.service.ICcCurrencyService;
@@ -22,7 +21,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 
 @RestController
 @Api(tags="系统设置-货币管理")
@@ -50,7 +48,7 @@ public class CurrencyController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
-	@RequestMapping(path="/currency/insert", method= {RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(path="/currency/insert", method= {RequestMethod.POST})
 	@ApiOperation(value="系统设置-货币新增")
 	@SuppressWarnings("unchecked")
 	public Result<Object> insert(@RequestBody CurrencyForm form) {
@@ -60,7 +58,7 @@ public class CurrencyController extends BaseController{
 		return ResultUtil.successCN(null);
 	}
 	
-	@RequestMapping(path="/currency/update", method= {RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(path="/currency/update", method= {RequestMethod.POST})
 	@ApiOperation(value="系统设置-货币修改")
 	public Result<Object> update(@RequestBody CurrencyForm form) {
 		

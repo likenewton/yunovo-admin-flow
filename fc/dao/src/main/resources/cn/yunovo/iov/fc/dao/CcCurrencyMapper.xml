@@ -10,7 +10,7 @@
 	
 		UPDATE cc_currency 
 		SET title = #{info.title}, code = #{info.code}, symbol_left = #{info.symbol_left}, symbol_right = #{info.symbol_right}, decimal_place = #{info.decimal_place}, value = #{info.value}, status = #{info.status}, date_modified = NOW() 
-		WHERE currency_id = #{info.id}
+		WHERE currency_id = #{info.currency_id}
 	</update>
 
 </mapper>
