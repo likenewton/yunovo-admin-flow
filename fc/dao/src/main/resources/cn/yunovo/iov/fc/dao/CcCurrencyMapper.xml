@@ -6,4 +6,11 @@
 		SELECT * FROM cc_currency 
 	</select>
 
+	<update id="updateInfo" parameterType="cn.yunovo.iov.fc.model.entity.CcCurrency">
+	
+		UPDATE cc_currency 
+		SET title = #{info.title}, code = #{info.code}, symbol_left = #{info.symbol_left}, symbol_right = #{info.symbol_right}, decimal_place = #{info.decimal_place}, value = #{info.value}, status = #{info.status}, date_modified = NOW() 
+		WHERE currency_id = #{info.id}
+	</update>
+
 </mapper>

@@ -11,6 +11,10 @@ import cn.yunovo.iov.fc.common.utils.ResultUtil;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcCurrency;
+import cn.yunovo.iov.fc.model.form.CurrencyForm;
+import cn.yunovo.iov.fc.model.form.group.DeleteGroupValidate;
+import cn.yunovo.iov.fc.model.form.group.InsertGroupValidate;
+import cn.yunovo.iov.fc.model.form.group.UpdateGroupValidate;
 import cn.yunovo.iov.fc.service.ICcCurrencyService;
 import cn.yunovo.iov.fc.web.controller.BaseController;
 import io.swagger.annotations.Api;
@@ -45,16 +49,30 @@ public class CurrencyController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
-	public void insert() {
+	@RequestMapping(path="/currency/insert", method= {RequestMethod.GET, RequestMethod.POST})
+	@ApiOperation(value="系统设置-货币新增")
+	@SuppressWarnings("unchecked")
+	public Result<Object> insert(CurrencyForm form) {
 		
+		form.validate(InsertGroupValidate.class);
+		iCcCurrencyService.insert(form, this.getLoginBaseInfo());
+		return ResultUtil.successCN(null);
 	}
 	
-	public void update() {
+	@RequestMapping(path="/currency/update", method= {RequestMethod.GET, RequestMethod.POST})
+	@ApiOperation(value="系统设置-货币修改")
+	public Result<Object> update(CurrencyForm form) {
 		
+		form.validate(UpdateGroupValidate.class);
+		iCcCurrencyService.update(form, this.getLoginBaseInfo());
+		return ResultUtil.successCN(null);
 	}
 	
-	public void delete() {
+	/*public Result<Object> delete(CurrencyForm form) {
 		
-	}
+		form.validate(DeleteGroupValidate.class);
+		iCcCurrencyService.delete(form, this.getLoginBaseInfo());
+		return ResultUtil.successCN(null);
+	}*/
 	
 }

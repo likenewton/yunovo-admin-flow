@@ -4,6 +4,8 @@ import cn.yunovo.iov.fc.model.entity.CcCurrency;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
@@ -18,5 +20,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 public interface ICcCurrencyMapper extends BaseMapper<CcCurrency> {
 
 	public List<CcCurrency> getItemsPage(IPage<CcCurrency> page);
+	
+	public Integer updateInfo(@Param("info")CcCurrency info);
 	
 }

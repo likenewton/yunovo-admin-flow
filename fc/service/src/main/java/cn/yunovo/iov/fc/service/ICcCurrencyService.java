@@ -6,6 +6,7 @@ import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcCurrency;
+import cn.yunovo.iov.fc.model.form.CurrencyForm;
 
 /**
  * <p>
@@ -20,5 +21,11 @@ public interface ICcCurrencyService extends IService<CcCurrency> {
 	public PageData<CcCurrency, Object> getItemsPage(PageForm form, LoginInfo info);
 
 	public CcCurrency detail(Integer currency_id, LoginInfo loginBaseInfo);
+
+	int insert(CurrencyForm form, LoginInfo info);
+
+	public int update(CurrencyForm form, LoginInfo loginBaseInfo);
+
+	public int delete(CurrencyForm form, LoginInfo loginBaseInfo);
 	
 }
