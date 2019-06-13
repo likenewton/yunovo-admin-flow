@@ -521,8 +521,6 @@
 		<if test="status == 1">
 			 AND time_active IS NOT NULL
 		</if>
-		
-		
 	</select>
 
 </mapper>

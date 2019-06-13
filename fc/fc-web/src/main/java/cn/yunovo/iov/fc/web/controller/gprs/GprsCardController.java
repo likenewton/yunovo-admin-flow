@@ -33,7 +33,7 @@ public class GprsCardController extends BaseController{
 			@ApiImplicitParam(name = "card_iccid", value = "卡iccid", required = false, dataType = "String",paramType = "query"),
 			@ApiImplicitParam(name = "date_start", value = "激活时间-开始日期（YYYY-MM-DD）", required = false, dataType = "String",paramType = "query"),
 			@ApiImplicitParam(name = "date_end", value = "激活时间-结束日期（YYYY-MM-DD）", required = false, dataType = "String",paramType = "query"),
-			@ApiImplicitParam(name = "time_expire", value = "是否已过期,1(已过期) 2(未过期)", required = false, dataType = "int",paramType = "query"),
+			@ApiImplicitParam(name = "time_expire", value = "是否已过期,0(已过期) 1(未过期)", required = false, dataType = "int",paramType = "query"),
 			@ApiImplicitParam(name = "unicom_stop", value = "是否在联通已停卡0（正常）1（停用）", required = false, dataType = "int",paramType = "query"),
 			@ApiImplicitParam(name = "status", value = "激活状态0（未激活）1（已激活）", required = false, dataType = "int",paramType = "query")})
 	@RequestMapping(path="/",method= {RequestMethod.GET, RequestMethod.POST})
