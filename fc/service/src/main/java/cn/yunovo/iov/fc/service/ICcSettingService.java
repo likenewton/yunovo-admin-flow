@@ -5,7 +5,10 @@ import java.util.Map;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.entity.CcSetting;
+import cn.yunovo.iov.fc.model.form.PayForm;
+import cn.yunovo.iov.fc.model.form.SystemParamsForm;
 
 /**
  * <p>
@@ -28,5 +31,9 @@ public interface ICcSettingService extends IService<CcSetting> {
 	 * @return
 	 */
 	List<CcSetting> systemSettings(Boolean noCache);
+
+	SystemParamsForm systemParams();
+
+	public int updateSystemParams(PayForm form, LoginInfo loginBaseInfo);
 	
 }
