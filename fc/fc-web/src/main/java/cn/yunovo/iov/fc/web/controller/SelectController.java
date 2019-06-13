@@ -15,8 +15,11 @@ import cn.yunovo.iov.fc.common.utils.ResultUtil;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcUser;
+import cn.yunovo.iov.fc.service.ICcCurrencyService;
 import cn.yunovo.iov.fc.service.ICcGprsPackService;
 import cn.yunovo.iov.fc.service.ICcGprsPayService;
+import cn.yunovo.iov.fc.service.ICcLanguageService;
+import cn.yunovo.iov.fc.service.ICcNationService;
 import cn.yunovo.iov.fc.service.ICcNotifyService;
 import cn.yunovo.iov.fc.service.ICcOrgService;
 import cn.yunovo.iov.fc.service.ICcStatsMonthService;
@@ -46,6 +49,15 @@ public class SelectController extends BaseController{
 	
 	@Autowired
 	private ICcGprsPackService iCcGprsPackService;
+	
+	@Autowired
+	private ICcCurrencyService iCcCurrencyService;
+	
+	@Autowired
+	private ICcLanguageService iCcLanguageService;
+	
+	@Autowired
+	private ICcNationService iCcNationService;
 	
 	public static List<SelectBean> CARD_TYPES = new ArrayList<>();
 	
@@ -130,5 +142,29 @@ public class SelectController extends BaseController{
 		
 		List<SelectBean> months = iCcGprsPackService.select(this.getLoginBaseInfo());
 		return ResultUtil.success("ok", months);
+	}
+	
+	@ApiOperation(notes="系统设置-货币下拉", value = "系统设置-货币下拉")
+	@RequestMapping(path="/api/select/currency", method= {RequestMethod.GET})
+	public Result<List<SelectBean>> currency() {
+		
+		List<SelectBean> currency = iCcCurrencyService.select();
+		return ResultUtil.success("ok", currency);
+	}
+	
+	@ApiOperation(notes="系统设置-系统语言下拉", value = "系统设置-系统语言")
+	@RequestMapping(path="/api/select/language", method= {RequestMethod.GET})
+	public Result<List<SelectBean>> language() {
+		
+		List<SelectBean> currency = iCcLanguageService.select();
+		return ResultUtil.success("ok", currency);
+	}
+	
+	@ApiOperation(notes="系统设置-国家区域下拉", value = "系统设置-国家区域下拉")
+	@RequestMapping(path="/api/select/nation", method= {RequestMethod.GET})
+	public Result<List<SelectBean>> nation(Integer parent) {
+		
+		List<SelectBean> nation = iCcNationService.select(parent);
+		return ResultUtil.success("ok", nation);
 	}
 }

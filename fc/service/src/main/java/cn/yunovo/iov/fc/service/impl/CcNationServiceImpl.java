@@ -4,6 +4,7 @@ import cn.yunovo.iov.fc.dao.ICcNationMapper;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
+import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcNation;
 import cn.yunovo.iov.fc.service.ICcNationService;
 
@@ -16,7 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 /**
  * <p>
@@ -29,6 +32,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class CcNationServiceImpl extends ServiceImpl<ICcNationMapper, CcNation> implements ICcNationService {
 
+	@Autowired
+	private ICcNationMapper iCcNationMapper;
+	
 	@Override
 	public PageData<CcNation, List<CcNation>> getNationsPage(PageForm pageForm, Integer ntid, LoginInfo loginInfo) {
 		
@@ -90,4 +96,22 @@ public class CcNationServiceImpl extends ServiceImpl<ICcNationMapper, CcNation> 
 		
 	}
 
+	@Override
+	public List<SelectBean> select(Integer parent){
+		
+		List<CcNation> data  = iCcNationMapper.queryListByParent(parent);
+		
+		if(CollectionUtils.isEmpty(data)) {
+			return null;
+		}
+		
+		List<SelectBean> select = new ArrayList<>();
+		for (CcNation ccNation : data) {
+			
+			select.add(new SelectBean(ccNation.getNtname(),ccNation.getNtid()));
+		}
+		
+		return select;
+	}
+	
 }

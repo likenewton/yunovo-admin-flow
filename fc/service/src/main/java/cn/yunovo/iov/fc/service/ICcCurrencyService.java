@@ -1,10 +1,13 @@
 package cn.yunovo.iov.fc.service;
 
+import java.util.List;
+
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
+import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcCurrency;
 import cn.yunovo.iov.fc.model.form.CurrencyForm;
 
@@ -27,5 +30,7 @@ public interface ICcCurrencyService extends IService<CcCurrency> {
 	public int update(CurrencyForm form, LoginInfo loginBaseInfo);
 
 	public int delete(CurrencyForm form, LoginInfo loginBaseInfo);
+
+	List<SelectBean> select();
 	
 }

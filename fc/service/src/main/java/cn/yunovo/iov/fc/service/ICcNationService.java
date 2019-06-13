@@ -3,6 +3,7 @@ package cn.yunovo.iov.fc.service;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
+import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcNation;
 
 import java.util.List;
@@ -24,5 +25,7 @@ public interface ICcNationService extends IService<CcNation> {
 	CcNation getById(Integer ntid);
 
 	List<CcNation> getNation(Integer ntid);
+
+	List<SelectBean> select(Integer parent);
 	
 }

@@ -1,21 +1,32 @@
 package cn.yunovo.iov.fc.service.impl;
 
 import cn.yunovo.iov.fc.common.utils.BusinessException;
+import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
 import cn.yunovo.iov.fc.dao.ICcCurrencyMapper;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
+import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcCurrency;
 import cn.yunovo.iov.fc.model.form.CurrencyForm;
+import cn.yunovo.iov.fc.service.FcConstant;
 import cn.yunovo.iov.fc.service.ICcCurrencyService;
 import cn.yunovo.iov.fc.service.ICcSettingService;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
+import static org.junit.Assert.assertNotNull;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -40,6 +51,9 @@ public class CcCurrencyServiceImpl extends ServiceImpl<ICcCurrencyMapper, CcCurr
 	
 	@Autowired
 	public ICcSettingService iCcSettingService;
+	
+	@Autowired
+	private JedisPoolUtil jedisPoolUtil;
 	
 	@Override
 	public PageData<CcCurrency, Object> getItemsPage(PageForm form, LoginInfo info) {
@@ -110,6 +124,60 @@ public class CcCurrencyServiceImpl extends ServiceImpl<ICcCurrencyMapper, CcCurr
 			
 		}
 		return 0;
+	}
+	
+	public List<CcCurrency> getCurrencies(){
+		
+		return iCcCurrencyMapper.getItemsPage(null);
+	}
+	
+	public JSONObject currenciesMap(Boolean noCache) {
+		
+		noCache = noCache == null ? false : noCache;
+		List<CcCurrency> temp1= null;
+		
+		String cache = null, cacheKey = FcConstant.memResKey("currency");
+		JSONObject result = null;
+		if(!noCache) {
+			cache = jedisPoolUtil.get(cacheKey);
+		}
+		if(StringUtils.isEmpty(cache)) {
+			result = new JSONObject();
+			temp1 = this.getCurrencies();
+			if(CollectionUtils.isEmpty(temp1)) {
+				return result;
+			}
+			
+			for (CcCurrency ccCurrency : temp1) {
+				
+				result.put(ccCurrency.getCode(), ccCurrency);
+			}
+			
+			jedisPoolUtil.setEx(cacheKey, JSONObject.toJSONString(result, SerializerFeature.WriteMapNullValue));
+		}else {
+			result = JSONObject.parseObject(cache);
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public List<SelectBean> select(){
+		
+		JSONObject data = this.currenciesMap(null);
+		if(CollectionUtils.isEmpty(data)) {
+			return null;
+		}
+		
+		Set<Entry<String, Object>> entrySet = data.entrySet();
+		Iterator<Entry<String, Object>> it = entrySet.iterator();
+		Entry<String, Object> temp = null;
+		List<SelectBean> select = new ArrayList<>();
+		while(it.hasNext()) {
+			temp = it.next();
+			select.add(new SelectBean(data.getJSONObject(temp.getKey()).getString("title"), temp.getKey()));
+		}
+		return select;
 	}
 
 }

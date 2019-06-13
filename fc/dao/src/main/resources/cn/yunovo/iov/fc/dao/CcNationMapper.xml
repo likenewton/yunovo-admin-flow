@@ -2,4 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.yunovo.iov.fc.dao.ICcNationMapper">
 
+	<select id="queryListByParent" resultType="cn.yunovo.iov.fc.model.entity.CcNation">
+		SELECT ntid, ntname FROM cc_nation WHERE parent = #{parent}
+	</select>
+
 </mapper>
