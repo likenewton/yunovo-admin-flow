@@ -2,6 +2,7 @@ package cn.yunovo.iov.fc.web.controller.system;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,7 +53,7 @@ public class CurrencyController extends BaseController{
 	@RequestMapping(path="/currency/insert", method= {RequestMethod.GET, RequestMethod.POST})
 	@ApiOperation(value="系统设置-货币新增")
 	@SuppressWarnings("unchecked")
-	public Result<Object> insert(CurrencyForm form) {
+	public Result<Object> insert(@RequestBody CurrencyForm form) {
 		
 		form.validate(InsertGroupValidate.class);
 		iCcCurrencyService.insert(form, this.getLoginBaseInfo());
@@ -61,7 +62,7 @@ public class CurrencyController extends BaseController{
 	
 	@RequestMapping(path="/currency/update", method= {RequestMethod.GET, RequestMethod.POST})
 	@ApiOperation(value="系统设置-货币修改")
-	public Result<Object> update(CurrencyForm form) {
+	public Result<Object> update(@RequestBody CurrencyForm form) {
 		
 		form.validate(UpdateGroupValidate.class);
 		iCcCurrencyService.update(form, this.getLoginBaseInfo());
