@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
-import cn.yunovo.iov.fc.model.form.PayForm;
 import cn.yunovo.iov.fc.model.form.SystemParamsForm;
 import cn.yunovo.iov.fc.service.ICcSettingService;
 import cn.yunovo.iov.fc.web.controller.BaseController;

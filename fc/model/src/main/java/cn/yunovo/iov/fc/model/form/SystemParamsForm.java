@@ -1,7 +1,13 @@
 package cn.yunovo.iov.fc.model.form;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -10,6 +16,8 @@ import cn.yunovo.iov.fc.model.ValidateGroup;
 import cn.yunovo.iov.fc.model.entity.CcSetting;
 import cn.yunovo.iov.fc.model.form.PayForm.AlipayValidateGroup;
 import cn.yunovo.iov.fc.model.form.PayForm.WxpayValidateGroup;
+import cn.yunovo.iov.fc.model.form.group.InsertGroupValidate;
+import cn.yunovo.iov.fc.model.form.group.UpdateGroupValidate;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -18,25 +26,39 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper=false)
 @ApiModel
-public class SystemParamsForm extends BaseForm{
+public class SystemParamsForm extends BaseForm implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private static final String GROUP = "config";
 
 	@ApiModelProperty("当前编辑标签页,编辑项目(tab-general)、系统设置(tab-store)、本地化配置(tab-local)、邮件协议(tab-mail)、服务器设置(tab-server)")
 	private String tabName;
 	
+	@NotEmpty(message="请输入系统名称",groups=TabGeneralValidateGroup.class)
+	@Size(max=32, min=2, message="系统名称必须在2至32个字符之间！",groups=TabGeneralValidateGroup.class)
 	@ApiModelProperty("编辑项目-系统名称")
 	private String config_name;
 	
+	@NotEmpty(message="请输入系统拥有者",groups=TabGeneralValidateGroup.class)
+	@Size(max=64, min=3, message="系统拥有者必须在3至64个字符之间！",groups=TabGeneralValidateGroup.class)
 	@ApiModelProperty("编辑项目-系统拥有者")
 	private String config_owner;
 	
+	@NotEmpty(message="请输入联系地址",groups=TabGeneralValidateGroup.class)
+	@Size(max=256, min=10, message="联系地址必须在10到256个字符之间！",groups=TabGeneralValidateGroup.class)
 	@ApiModelProperty("编辑项目-联系地址")
 	private String config_address;
 	
+	@NotEmpty(message="请输入电子邮箱",groups=TabGeneralValidateGroup.class)
+	@Email(regexp="(^$)|(^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$)", groups= {TabGeneralValidateGroup.class}, message="无效的电子邮箱！")
 	@ApiModelProperty("编辑项目-电子邮箱")
 	private String config_email;
 	
+	@NotEmpty(message="请输入联系电话",groups=TabGeneralValidateGroup.class)
 	@ApiModelProperty("编辑项目-联系电话")
 	private String config_telephone;
 	
@@ -44,6 +66,8 @@ public class SystemParamsForm extends BaseForm{
 	private String config_fax;
 	
 	//--------------------------------------------
+	@NotEmpty(message="请输入首页标题",groups=TabStoreValidateGroup.class)
+	@Size(max=32, min=2, message="首页标题必须在2至32个字符之间！",groups=TabStoreValidateGroup.class)
 	@ApiModelProperty("系统设置-首页标题")
 	private String config_title;
 	
@@ -66,9 +90,13 @@ public class SystemParamsForm extends BaseForm{
 	@ApiModelProperty("本地化设置-货币更新")
 	private String config_currency_auto;
 	
+	@NotEmpty(message="请输入每页默认产品数量 (前台管理)", groups=TabLocalValidateGroup.class)
+	@Pattern(regexp="^\\d+$", message="每页默认产品数量 (前台管理)该字段必须是一个正整数", groups=TabLocalValidateGroup.class)
 	@ApiModelProperty("本地化设置-每页默认产品数量 (前台管理)")
 	private String config_catalog_limit;
 	
+	@NotEmpty(message="请输入每页默认产品数量 (后台管理)", groups=TabLocalValidateGroup.class)
+	@Pattern(regexp="^\\d+$", message="每页默认产品数量 (后台管理)该字段必须是一个正整数", groups=TabLocalValidateGroup.class)
 	@ApiModelProperty("本地化设置-每页默认产品数量 (后台管理)")
 	private String config_admin_limit;
 	
@@ -125,6 +153,7 @@ public class SystemParamsForm extends BaseForm{
 	@ApiModelProperty("服务器设置-日志错误")
 	private String config_error_log;
 	
+	@NotEmpty(message="请输入错误日志文件名",groups=TabServerValidateGroup.class)
 	@ApiModelProperty("服务器设置-错误日志文件名")
 	private String config_error_filename;
 	
