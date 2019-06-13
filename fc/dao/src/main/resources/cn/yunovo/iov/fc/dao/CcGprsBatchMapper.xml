@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.yunovo.iov.fc.dao.ICcGprsBatchMapper">
+
+	<select id="getItemsPage" resultType="cn.yunovo.iov.fc.model.entity.CcGprsBatch" >
+		
+		SELECT
+			batch_id,batch_sn,batch_name,batch_memo,batch_shipper,card_amount,org_id,
+			user_id,alter_id,province_id,city_id,district_id,clw_batch_id,gprs_amount,
+			allot_month,allot_value,allot_reset,live_month,give_value,give_live_month,
+			wszl_value,wszl_live_month,bind_value,bind_live_month,time_added,time_modify
+		FROM
+			cc_gprs_batch
+		WHERE
+		    1=1
+		<choose>
+
+			<when test="org_id != null">
+				AND org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+		
+		<if test="batch_sn != null">
+			<bind name="batch_sn_bind" value="'%'+batch_sn+'%'" />
+			AND batch_sn LIKE #{batch_sn_bind}
+		</if>
+		
+		<if test="date_start != null">
+			<![CDATA[  AND time_added >= #{date_start} ]]>
+		</if>
+
+		<if test="date_end != null">
+			<![CDATA[ AND time_added <= #{date_end} ]]>
+		</if>
+	</select>
+	
+</mapper>

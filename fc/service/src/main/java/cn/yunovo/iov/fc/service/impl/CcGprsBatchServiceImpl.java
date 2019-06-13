@@ -1,13 +1,15 @@
 package cn.yunovo.iov.fc.service.impl;
 
-import cn.yunovo.iov.fc.dao.ICcResetLogMapper;
+import cn.yunovo.iov.fc.dao.ICcGprsBatchMapper;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
+import cn.yunovo.iov.fc.model.entity.CcGprsBatch;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
 import cn.yunovo.iov.fc.model.entity.CcResetLog;
+import cn.yunovo.iov.fc.service.ICcGprsBatchService;
+import cn.yunovo.iov.fc.service.ICcNationService;
 import cn.yunovo.iov.fc.service.ICcOrgService;
-import cn.yunovo.iov.fc.service.ICcResetLogService;
 import cn.yunovo.iov.fc.service.ICcUserService;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -23,29 +25,33 @@ import org.springframework.util.CollectionUtils;
 
 /**
  * <p>
- * 重置流量卡日志 服务实现类
+ * 流量卡发货批次表 服务实现类
  * </p>
  *
  * @author bill
  * @since 2019-06-13
  */
 @Service
-public class CcResetLogServiceImpl extends ServiceImpl<ICcResetLogMapper, CcResetLog> implements ICcResetLogService {
+public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGprsBatch> implements ICcGprsBatchService {
 
-	@Autowired
-	private ICcResetLogMapper iCcResetLogMapper;
-	
 	@Autowired
 	private ICcUserService iCcUserService;
 	
 	@Autowired
 	private ICcOrgService iCcOrgService;
 	
+	@Autowired
+	private ICcGprsBatchMapper iCcGprsBatchMapper;
+	
+	@Autowired
+	private ICcNationService iCcNationService;
+	
 	@Override
-	public PageData<CcResetLog, Object> getItemsPage(PageForm form, Integer org_id, String card_iccid, String date_start, String date_end, LoginInfo info) {
+	public PageData<CcGprsBatch, Object> getItemsPage(PageForm form, Integer org_id, String batch_sn, String date_start,
+			String date_end, LoginInfo info) {
 		
-		Page<CcResetLog> page = form.build(CcResetLog.class, null, "time_added");
-		PageData<CcResetLog, Object> returnData = new PageData<>();
+		Page<CcGprsBatch> page = form.build(CcGprsBatch.class, null, "time_added");
+		PageData<CcGprsBatch, Object> returnData = new PageData<>();
 		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
 		if (StringUtils.isEmpty(orgpos)) {
 			page.setTotal(0);
@@ -69,22 +75,23 @@ public class CcResetLogServiceImpl extends ServiceImpl<ICcResetLogMapper, CcRese
 			date_end = date_end + " 23:59:59";
 		}
 		
-		List<CcResetLog> records = iCcResetLogMapper.getItemsPage(page, org_id, card_iccid, date_start, date_end, orgpos, orgpos.split(","));
+		List<CcGprsBatch> records = iCcGprsBatchMapper.getItemsPage(page, org_id, batch_sn, date_start, date_end, orgpos, orgpos.split(","));
 		
 		if(!CollectionUtils.isEmpty(records)) {
 			
 			Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
-			Map<String, String> userMap = iCcUserService.userMap();
-			for (CcResetLog ccResetLog : records) {
+			Map<Integer, String> userMap = iCcUserService.userIdMap();
+			for (CcGprsBatch ccGprsBatch : records) {
 
-				ccResetLog.setOrg_name(orgs.get(String.valueOf(ccResetLog.getOrg_id())).getName());
-				ccResetLog.setFirst_name(StringUtils.defaultIfEmpty(userMap.get(ccResetLog.getUser_name()),ccResetLog.getUser_name()));
+				ccGprsBatch.setOrg_name(orgs.get(String.valueOf(ccGprsBatch.getOrg_id())).getName());
+				ccGprsBatch.setFirst_name(StringUtils.defaultIfEmpty(userMap.get(ccGprsBatch.getUser_id()), String.valueOf(ccGprsBatch.getUser_id())));
 			}
 		}
 		
 		page.setRecords(records);
 		returnData.setPage(page);
+		
 		return returnData;
 	}
-	
+
 }

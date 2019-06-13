@@ -8,6 +8,7 @@ import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcNation;
 import cn.yunovo.iov.fc.service.ICcNationService;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -15,6 +16,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,6 +114,13 @@ public class CcNationServiceImpl extends ServiceImpl<ICcNationMapper, CcNation> 
 		}
 		
 		return select;
+	}
+	
+	public JSONObject nationMap() {
+		
+		String sql = "SELECT ntid, ntname FROM cc_nation";
+		
+		return null;
 	}
 	
 }
