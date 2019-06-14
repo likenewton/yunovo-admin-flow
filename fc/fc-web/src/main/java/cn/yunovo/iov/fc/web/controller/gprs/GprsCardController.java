@@ -12,9 +12,12 @@ import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.CcGprsPay;
+import cn.yunovo.iov.fc.model.result.GprsAllotResultBean;
 import cn.yunovo.iov.fc.model.result.PayListTotalResulBean;
+import cn.yunovo.iov.fc.service.ICcGprsAllotService;
 import cn.yunovo.iov.fc.service.ICcGprsCardService;
 import cn.yunovo.iov.fc.service.ICcGprsPayService;
+import cn.yunovo.iov.fc.service.ICcGprsValueService;
 import cn.yunovo.iov.fc.web.controller.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -31,6 +34,9 @@ public class GprsCardController extends BaseController{
 	
 	@Autowired
 	private ICcGprsPayService iCcGprsPayService;
+	
+	@Autowired
+	private ICcGprsValueService iCcGprsValueService;
 	
 	@ApiOperation(value="业务管理-流量卡列表")
 	@ApiImplicitParams(value = { 
@@ -70,6 +76,21 @@ public class GprsCardController extends BaseController{
 			return ResultUtil.build(-1, "请选择您要查询的流量卡");
 		}
 		data = iCcGprsPayService.getPayListPage(pageForm, null, null, null, card_id, null, null, null, pay_from, pay_method, is_paid, date_start, date_end, paid_start, paid_end, this.getLoginBaseInfo());
+		return ResultUtil.success(data);
+	}
+	
+	@ApiOperation(value = "业务管理-流量分配详情")
+	@ApiImplicitParams(value = {
+			@ApiImplicitParam(name = "card_id", value = "流量卡id", required = true, dataType = "int", paramType = "query")
+	})
+	@RequestMapping(path="/gprsAllotList",method= {RequestMethod.GET, RequestMethod.POST})
+	public Result<PageData<GprsAllotResultBean, Object>> gprsAllotList(PageForm pageForm, Integer card_id) {
+		
+		PageData<GprsAllotResultBean, Object>  data = null;
+		if(card_id == null) {
+			return ResultUtil.build(-1, "请选择您要查询的流量卡");
+		}
+		data = iCcGprsValueService.getAllotPage(pageForm, card_id, this.getLoginBaseInfo());
 		return ResultUtil.success(data);
 	}
 	

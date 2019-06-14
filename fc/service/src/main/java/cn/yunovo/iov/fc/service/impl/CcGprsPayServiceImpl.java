@@ -245,11 +245,11 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 		}
 		
 		if (StringUtils.isNotEmpty(paid_start)) {
-			paid_start = date_start + " 00:00:00";
+			paid_start = paid_start + " 00:00:00";
 		}
 
 		if (StringUtils.isNotEmpty(paid_end)) {
-			paid_end = date_end + " 23:59:59";
+			paid_end = paid_end + " 23:59:59";
 		}
 
 		List<CcGprsPay> records = iCcGprsPayMapper.getPayListPage(page, org_id, pay_sn, card_iccid, card_id, card_type, transfer_id, gprs_amount, pay_from, pay_method, is_paid, date_start, date_end, paid_start, paid_end, orgpos, orgpos.split(","));

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.yunovo.iov.fc.dao.ICcGprsValueMapper">
+
+	<select id="getAllotPage" resultType="cn.yunovo.iov.fc.model.result.GprsAllotResultBean">
+	
+		SELECT V.gprs_vid,V.card_id,V.allot_id,V.how_month,V.gprs_value,V.balance_dval,V.balance_value,
+			V.time_added,V.time_modify,V.time_expire,A.allot_id,A.allot_month,A.allot_value,
+			A.allot_reset,A.assigned_month
+		FROM
+		cc_gprs_value AS V
+			LEFT JOIN cc_gprs_allot A ON V.allot_id = A.allot_id
+		WHERE
+		V.card_id = #{card_id}
+	</select>
+</mapper>
