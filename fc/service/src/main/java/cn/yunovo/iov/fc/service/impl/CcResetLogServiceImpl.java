@@ -54,7 +54,7 @@ public class CcResetLogServiceImpl extends ServiceImpl<ICcResetLogMapper, CcRese
 			return returnData;
 		}
 
-		if(org_id != null && iCcOrgService.hasPermission(org_id, orgpos)) {
+		if(org_id != null && !iCcOrgService.hasPermission(org_id, orgpos)) {
 			
 			page.setTotal(0);
 			page.setRecords(null);
