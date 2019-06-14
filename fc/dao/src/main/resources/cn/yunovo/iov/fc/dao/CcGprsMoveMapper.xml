@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.yunovo.iov.fc.dao.ICcGprsMoveMapper">
+	
+	<select id="getItemsPage" resultType="cn.yunovo.iov.fc.model.entity.CcGprsMove">
+	
+		SELECT move_id,user_id,old_cardid,new_cardid,old_iccid,
+			new_iccid,old_orgid,new_orgid,move_memo,time_added
+		FROM
+			cc_gprs_move
+		WHERE
+			1 = 1
+	
+		<choose>
+
+			<when test="org_id != null">
+				AND new_orgid = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND new_orgid IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+		
+		<if test="old_card_iccid != null">
+			<bind name="old_card_iccid_bind" value="'%'+old_card_iccid+'%'" />
+			AND old_iccid LIKE #{old_card_iccid_bind}
+		</if>
+		
+		<if test="card_iccid != null">
+			<bind name="card_iccid_bind" value="'%'+card_iccid+'%'" />
+			AND new_iccid LIKE #{card_iccid_bind}
+		</if>
+		
+		<if test="date_start != null">
+			<![CDATA[  AND time_added >= #{date_start} ]]>
+		</if>
+
+		<if test="date_end != null">
+			<![CDATA[ AND time_added <= #{date_end} ]]>
+		</if>
+		
+	</select>
+
+</mapper>
