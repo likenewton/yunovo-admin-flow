@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,6 +15,7 @@ import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcUser;
 import cn.yunovo.iov.fc.service.ICcCurrencyService;
+import cn.yunovo.iov.fc.service.ICcGprsBatchService;
 import cn.yunovo.iov.fc.service.ICcGprsPackService;
 import cn.yunovo.iov.fc.service.ICcGprsPayService;
 import cn.yunovo.iov.fc.service.ICcLanguageService;
@@ -58,6 +58,9 @@ public class SelectController extends BaseController{
 	
 	@Autowired
 	private ICcNationService iCcNationService;
+	
+	@Autowired
+	private ICcGprsBatchService iCcGprsBatchService;
 	
 	public static List<SelectBean> CARD_TYPES = new ArrayList<>();
 	
@@ -165,6 +168,14 @@ public class SelectController extends BaseController{
 	public Result<List<SelectBean>> nation(Integer parent) {
 		
 		List<SelectBean> nation = iCcNationService.select(parent);
+		return ResultUtil.success("ok", nation);
+	}
+	
+	@ApiOperation(notes="有效周期下拉", value = "有效周期下拉")
+	@RequestMapping(path="/api/select/liveMonth", method= {RequestMethod.GET})
+	public Result<List<SelectBean>> liveMonth(Integer parent) {
+		
+		List<SelectBean> nation = iCcGprsBatchService.select();
 		return ResultUtil.success("ok", nation);
 	}
 }

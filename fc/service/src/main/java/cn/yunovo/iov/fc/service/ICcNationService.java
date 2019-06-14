@@ -8,6 +8,7 @@ import cn.yunovo.iov.fc.model.entity.CcNation;
 
 import java.util.List;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -27,5 +28,7 @@ public interface ICcNationService extends IService<CcNation> {
 	List<CcNation> getNation(Integer ntid);
 
 	List<SelectBean> select(Integer parent);
+
+	JSONObject nationMap();
 	
 }

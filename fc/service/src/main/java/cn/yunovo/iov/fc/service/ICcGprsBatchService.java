@@ -3,7 +3,10 @@ package cn.yunovo.iov.fc.service;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
+import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcGprsBatch;
+
+import java.util.List;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -30,5 +33,7 @@ public interface ICcGprsBatchService extends IService<CcGprsBatch> {
 	 */
 	PageData<CcGprsBatch, Object> getItemsPage(PageForm form, Integer org_id, String batch_sn, String date_start,
 			String date_end, LoginInfo info);
+
+	List<SelectBean> select();
 	
 }

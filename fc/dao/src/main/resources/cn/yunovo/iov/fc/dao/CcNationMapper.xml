@@ -5,5 +5,9 @@
 	<select id="queryListByParent" resultType="cn.yunovo.iov.fc.model.entity.CcNation">
 		SELECT ntid, ntname FROM cc_nation WHERE parent = #{parent}
 	</select>
+	
+	<select id="queryList" resultType="cn.yunovo.iov.fc.model.entity.CcNation">
+		SELECT ntid, ntname FROM cc_nation
+	</select>
 
 </mapper>

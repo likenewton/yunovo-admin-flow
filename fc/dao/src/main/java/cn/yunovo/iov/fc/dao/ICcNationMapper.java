@@ -19,4 +19,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 public interface ICcNationMapper extends BaseMapper<CcNation> {
 
 	public List<CcNation> queryListByParent(@Param("parent")Integer parent);
+	
+	public List<CcNation> queryList();
 }

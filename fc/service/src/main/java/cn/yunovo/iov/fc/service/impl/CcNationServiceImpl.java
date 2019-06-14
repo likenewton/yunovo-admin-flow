@@ -1,11 +1,13 @@
 package cn.yunovo.iov.fc.service.impl;
 
+import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
 import cn.yunovo.iov.fc.dao.ICcNationMapper;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcNation;
+import cn.yunovo.iov.fc.service.FcConstant;
 import cn.yunovo.iov.fc.service.ICcNationService;
 
 import com.alibaba.fastjson.JSONObject;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -36,6 +39,9 @@ public class CcNationServiceImpl extends ServiceImpl<ICcNationMapper, CcNation> 
 
 	@Autowired
 	private ICcNationMapper iCcNationMapper;
+	
+	@Autowired
+	private JedisPoolUtil jedisPoolUtil;
 	
 	@Override
 	public PageData<CcNation, List<CcNation>> getNationsPage(PageForm pageForm, Integer ntid, LoginInfo loginInfo) {
@@ -116,11 +122,31 @@ public class CcNationServiceImpl extends ServiceImpl<ICcNationMapper, CcNation> 
 		return select;
 	}
 	
+	@Override
 	public JSONObject nationMap() {
 		
 		String sql = "SELECT ntid, ntname FROM cc_nation";
-		
-		return null;
+		String cacheKey = FcConstant.memSqlKey(sql);
+		JSONObject returnData = null;
+		String cache = jedisPoolUtil.get(cacheKey);
+		List<CcNation> temp = null;
+		if(StringUtils.isEmpty(cache)) {
+			
+			returnData = new JSONObject();
+			temp = iCcNationMapper.queryList();
+			if(CollectionUtils.isEmpty(temp)) {
+				return returnData;
+			}
+			
+			for (CcNation ccNation : temp) {
+				returnData.put(ccNation.getNtid().toString(), ccNation.getNtname());
+			}
+			
+			jedisPoolUtil.setEx(cacheKey, returnData.toJSONString());
+		}else {
+			returnData = JSONObject.parseObject(cache);
+		}
+		return returnData;
 	}
 	
 }
