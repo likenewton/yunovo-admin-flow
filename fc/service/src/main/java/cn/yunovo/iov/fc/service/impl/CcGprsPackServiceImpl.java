@@ -96,7 +96,7 @@ public class CcGprsPackServiceImpl extends ServiceImpl<ICcGprsPackMapper, CcGprs
 			Map<Integer, String> userMap = iCcUserService.userIdMap();
 			for (CcGprsPack ccGprsPack : records) {
 
-				ccGprsPack.setOrg_name(orgs.get(String.valueOf(ccGprsPack.getOrg_id())).getName());
+				ccGprsPack.setOrg_name(getGprsPackOrg(ccGprsPack.getOrg_id(), orgs));
 				ccGprsPack.setFirst_name(userMap.get(ccGprsPack.getUser_id()));
 				ccGprsPack.setAlter_name(userMap.get(ccGprsPack.getAlter_id()));
 			}
@@ -105,6 +105,21 @@ public class CcGprsPackServiceImpl extends ServiceImpl<ICcGprsPackMapper, CcGprs
 		page.setRecords(records);
 		returnData.setPage(page);
 		return returnData;
+	}
+	
+	public String getGprsPackOrg(Integer org_id, Map<String, CcOrg> orgs) {
+		
+		if(org_id == null) {
+			return "";
+		}
+		
+		if(org_id == 0) {
+			return "公共套餐";
+		}
+		
+		CcOrg org = orgs.get(String.valueOf(org_id));
+		
+		return org == null ? "":org.getName();
 	}
 
 }
