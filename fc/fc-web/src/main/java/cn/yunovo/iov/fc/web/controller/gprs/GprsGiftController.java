@@ -20,7 +20,7 @@ import io.swagger.annotations.ApiOperation;
 
 @RestController
 @Api(tags="业务管理-流量赠送接口列表")
-@RequestMapping(path="/api/card/reset", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(path="/api/gprs/gift", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class GprsGiftController extends BaseController{
 
 	@Autowired
