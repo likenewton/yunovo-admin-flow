@@ -1,13 +1,13 @@
 <template>
-  <div>
+  <div class="flow_gift">
     <el-card class="reset-card" shadow="never">
       <el-tabs @tab-click="changeTab">
         <el-tab-pane>
           <span slot="label">赠送流量</span>
-          <el-form :model="formInline" :rules="rules" ref="ruleForm" label-width="126px" class="search-form" size="small" :status-icon="true">
-            <el-form-item prop="iccid">
+          <el-form :model="formInline" :rules="rules" ref="ruleForm" label-width="126px" size="small" :status-icon="true">
+            <el-form-item prop="card_iccid">
               <span slot="label">卡ICCID列表：</span>
-              <el-input type="textarea" v-model="formInline.iccid" rows="4" placeholder="请输入卡ICCID"></el-input>
+              <el-input type="textarea" v-model="formInline.card_iccid" rows="4" placeholder="请输入卡ICCID"></el-input>
               <div class="annotation">一行代表一个ICCID，多行代表多个ICCID，建议不超过200个ICCID</div>
             </el-form-item>
             <el-form-item prop="model">
@@ -25,12 +25,10 @@
               <el-radio v-model="formInline.is_clear" label="1">不清零</el-radio>
               <el-radio v-model="formInline.is_clear" label="2">会清零</el-radio>
             </el-form-item>
-            <el-form-item prop="eff_pro">
+            <el-form-item prop="live_month">
               <span slot="label">有效周期：</span>
-              <el-select v-model="formInline.eff_pro" placeholder="请选择有效周期">
-                <el-option label="1个月" :value="0"></el-option>
-                <el-option label="2个月" :value="1"></el-option>
-                <el-option label="3个月" :value="2"></el-option>
+              <el-select v-model="formInline.live_month" placeholder="请选择有效周期">
+                <el-option v-for="(item, index) in liveMonthSelect" :key="index" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item prop="donator_remark">
@@ -47,50 +45,77 @@
           <span slot="label"></i>历史赠送</span>
           <el-form class="search-form" :inline="true" :model="searchForm" size="small">
             <el-form-item label="卡ICCID">
-              <el-input v-model="searchForm.iccid" placeholder="请输入"></el-input>
+              <el-input v-model="searchForm.card_iccid" placeholder="请输入"></el-input>
             </el-form-item>
             <el-form-item label="机构名称">
-              <el-select v-model="searchForm.jg_name" placeholder="请选择">
-                <el-option label="机构1" value="0"></el-option>
-                <el-option label="机构2" value="1"></el-option>
-                <el-option label="机构3" value="2"></el-option>
+              <el-select v-model="searchForm.org_id" filterable placeholder="请选择">
+                <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="添加时间">
-              <el-date-picker v-model="searchForm.add_time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-              </el-date-picker>
+              <el-date-picker v-model="searchForm.date_start" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
+              <el-date-picker v-model="searchForm.date_end" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
             </el-form-item>
             <el-form-item>
-              <el-button size="small" type="primary">查询</el-button>
-              <el-button size="small" type="warning">重置</el-button>
+              <el-button type="primary" @click="searchData">查询</el-button>
+              <el-button type="warning" @click="resetData">重置</el-button>
             </el-form-item>
           </el-form>
-          <el-table v-loading="loadTab1Data" ref="multipleTable" :data="curTableData" border :default-sort="{prop: 'ex_time', order: 'descending'}" size="mini">
-            <el-table-column fixed="left" show-overflow-tooltip label="卡ICCID" min-width="170">
+          <el-table v-loading="loadData" ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
+            <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" width="180" sortable="custom">
               <template slot-scope="scope">
-                <el-button type="text" @click="checkRechargeDetail(scope.row.iccid)">{{scope.row.iccid}}</el-button>
+                <span class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
               </template>
             </el-table-column>
-            <el-table-column show-overflow-tooltip prop="jg_name" label="机构名称" min-width="140"></el-table-column>
-            <el-table-column show-overflow-tooltip label="套餐流量" min-width="95" sortable>
+            <el-table-column prop="org_id" label="机构名称" min-width="140" sortable="custom">
               <template slot-scope="scope">
-                <div v-html="formatFlowUnit(scope.row.tc_flow)"></div>
+                <span class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
               </template>
             </el-table-column>
-            <el-table-column show-overflow-tooltip prop="fp_month" label="分配月数" min-width="95" sortable></el-table-column>
-            <el-table-column show-overflow-tooltip label="月均流量" min-width="95" sortable>
+            <el-table-column prop="gprs_amount" label="套餐流量" width="95" sortable="custom">
               <template slot-scope="scope">
-                <div v-html="formatFlowUnit(scope.row.tc_flow/scope.row.fp_month)"></div>
+                <div v-html="formatComboFlow(scope.row.gprs_amount)"></div>
               </template>
             </el-table-column>
-            <el-table-column prop="is_clear" label="是否清零" show-overflow-tooltip min-width="80"></el-table-column>
-            <el-table-column prop="eff_pri" label="有效周期" show-overflow-tooltip min-width="80"></el-table-column>
-            <el-table-column prop="donator_remark" label="赠者&备注" show-overflow-tooltip min-width="120"></el-table-column>
-            <el-table-column prop="op_p" label="操作者" show-overflow-tooltip min-width="120" sortable></el-table-column>
-            <el-table-column prop="add_time" label="添加时间" show-overflow-tooltip min-width="155" sortable></el-table-column>
-            <el-table-column prop="ex_time" label="过期时间" show-overflow-tooltip min-width="155" sortable></el-table-column>
+            <el-table-column prop="allot_month" label="分配月数" width="95" sortable="custom">
+              <template slot-scope="scope">
+                <div>{{getLiveMonthAlias(scope.row.allot_month)}}</div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="allot_value" label="月均流量" width="95" sortable="custom">
+              <template slot-scope="scope">
+                <div v-html="formatComboFlow(scope.row.allot_value)"></div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="allot_reset" label="是否清零" width="90" sortable="custom">
+              <template slot-scope="scope">
+                <span v-if="scope.row.allot_reset==1">会清零</span>
+                <span v-else>不清零</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="live_month" label="有效周期" width="120" sortable="custom">
+              <template slot-scope="scope">
+                <div>{{getLiveMonthAlias(scope.row.live_month)}}</div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="gift_name" label="赠者&备注" min-width="160" sortable="custom">
+              <template slot-scope="scope">
+                <span v-html="scope.row.gift_name"></span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="user_id" label="操作者" width="100" sortable="custom">
+              <template slot-scope="scope">
+                <span>{{scope.row.first_name}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="time_added" label="添加时间" width="155" sortable="custom"></el-table-column>
+            <el-table-column prop="time_expire" label="过期时间" width="210" sortable="custom">
+              <template slot-scope="scope">
+                <span v-html="calcLeftTime(scope.row.time_expire)"></span>
+              </template>
+            </el-table-column>
           </el-table>
-          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="tableData.length">
+          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total">
           </el-pagination>
         </el-tab-pane>
       </el-tabs>
@@ -99,25 +124,26 @@
 </template>
 <script>
 import Api from 'assets/js/api.js'
+import { mapState } from 'vuex'
 
 export default {
   data() {
     return {
-      routeName: this.$route.name,
-      currentDate: new Date(),
-      tableData: [],
       pageSizes: Api.STATIC.pageSizes,
-      pagesize: Api.STATIC.pageSizes[1],
-      currentPage: 1,
       tabIndex: '0',
-      loadTab1Data: true,
-      formInline: {
-        model: '1',
-        is_clear: '1'
+      loadData: true,
+      maxTableHeight: Api.UNITS.maxTableHeight(),
+      list: {
+        data: [],
+        pagesize: Api.STATIC.pageSizes[1],
+        currentPage: 1,
+        total: 0,
       },
+      sort: {},
+      formInline: {},
       searchForm: {},
       rules: {
-        iccid: [{
+        card_iccid: [{
           required: true,
           message: '请输入您需要重置的流量卡ICCID号',
           trigger: 'blur'
@@ -137,7 +163,7 @@ export default {
           message: '请选择是否清零',
           trigger: 'change'
         }],
-        eff_pro: [{
+        live_month: [{
           required: true,
           message: '请选择有效周期',
           trigger: 'change'
@@ -150,91 +176,101 @@ export default {
       }
     }
   },
-  mounted() {
-
-  },
+  mounted() {},
   methods: {
+    changeTab(para) {
+      this.tabIndex = para.index
+      if (this.tabIndex === '1') {
+        // 历史赠送
+        if (this.list.data.length === 0) {
+          this.getData()
+        } else {
+          this.loadData = false
+        }
+      }
+    },
+    handleSizeChange(val) {
+      this.list.pagesize = val
+      this.list.currentPage = 1
+      this.getData()
+    },
+    handleCurrentChange(val) {
+      this.list.currentPage = val
+      this.getData()
+    },
+    handleSortChange(val) {
+      Api.UNITS.setSortSearch(val, this)
+      this.getData()
+    },
+    // 重置列表
+    resetData() {
+      this.list.currentPage = 1
+      this.searchForm = {} // 1、重置查询表单
+      this.sort = {} // 2、重置排序
+      this.$refs.listTable.clearSort() // 3、清空排序样式
+      this.getData()
+    },
+    searchData() {
+      this.list.currentPage = 1
+      this.getData()
+    },
     // 提交表单
     submitForm(formName) {
-      console.log(this.formInline)
       this.$refs[formName].validate((valid) => {
         if (valid) {
           // 验证通过
         } else {
-           Api.UNITS.showMsgBox()
+          Api.UNITS.showMsgBox()
           return false;
         }
       });
     },
     // 重置表单
     resetForm(formName) {
-      // resetFields 只能重置需要验证的值
       this.$refs[formName].resetFields()
     },
-    handleSizeChange(val) {
-      this.pagesize = val
+    checkRechargeDetail(scope) {
+      this.$router.push({ name: 'rechargeDetail', query: { card_iccid: scope.row.card_iccid } })
     },
-    handleCurrentChange(val) {
-      this.currentPage = val
+    getData() {
+      Api.UNITS.getListData({
+        vue: this,
+        url: _axios.ajaxAd.getGift,
+        formInline: 'searchForm'
+      })
     },
-    changeTab(para) {
-      this.tabIndex = para.index
-      // 当切换tab栏到'1'的时候，要加载数据
-      if (this.tabIndex === '1') {
-        // 这里应当是ajax请求数据
-        if (this.tableData.length === 0) {
-          this.getTab1Data()
-        } else {
-          this.loadTab1Data = false
-        }
-      }
-    },
-    checkRechargeDetail(iccid) {
-      this.$router.push({ name: 'rechargeDetail', query: { iccid } })
-    },
-    getTab1Data() {
-      setTimeout(() => {
-        this.tableData = [{
-          id: 0,
-          iccid: '8986011670901045280',
-          jg_name: '卡仕特-西格玛',
-          tc_flow: 65421,
-          fp_month: 12,
-          month_flow: 0,
-          is_clear: 1,
-          eff_pri: '1个月',
-          donator_remark: 'Newton',
-          op_p: 'Lucy',
-          add_time: '2019-02-03 21:01:03',
-          ex_time: '2019-01-21 09:58:45'
-        }]
-        this.loadTab1Data = false
-      }, 1000)
+    getLiveMonthAlias(value) {
+      let item = this.liveMonthSelect.filter((v) => v.value == value)[0]
+      return item ? item.label : ''
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,
     limitNumber: Api.UNITS.limitNumber,
+    formatComboFlow: Api.UNITS.formatComboFlow,
+    calcLeftTime: Api.UNITS.calcLeftTime,
   },
   computed: {
-    curTableData() {
-      return this.tableData.slice((this.currentPage - 1) * this.pagesize, this.currentPage * this.pagesize)
-    }
+    ...mapState({
+      orgs: 'orgs',
+      liveMonthSelect: 'liveMonthSelect'
+    })
   }
 }
 
 </script>
 <style lang="scss">
-.el-pagination {
-  float: right;
-  margin: 25px 40px 0 0;
-}
-
-.el-card__body {
-  img {
-    width: 100%;
+.flow_gift {
+  .el-pagination {
+    float: right;
+    margin: 25px 40px 0 0;
   }
 
-  .small {
-    font-size: 12px;
+  .el-table {
+
+    td {
+      * {
+        font-size: 14px;
+      }
+    }
   }
 
 }

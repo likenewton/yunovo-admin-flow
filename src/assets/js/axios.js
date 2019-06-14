@@ -28,6 +28,7 @@ class AXIOS {
       getCurrencySelect: '/fc/api/select/api/select/currency',
       getLangSelect: '/fc/api/select/api/select/language',
       getNationSelect: '/fc/api/select/api/select/nation',
+      getLiveMonth: '/fc/api/select/api/select/liveMonth',
       // table列表
       getStats: '/fc/api/gprs/stats/',
       getHalt: '/fc/api/gprs/halt/',
@@ -49,6 +50,11 @@ class AXIOS {
       getCurrency: '/fc/api/system/currency/',
       getCards: '/fc/api/gprs/card/',
       getCardReset: '/fc/api/card/reset/',
+      getBatchs: '/fc/api/gprs/batch/',
+      getPacks: '/fc/api/gprs/pack/',
+      getGift: '/fc/api/gprs/gift/',
+      getMoves: '/fc/api/gprs/move/',
+      getRealNames: '/fc/api/realname/',
       // 明细
       getOnOffLogDetail: '/fc/api/gprs/onoffLog/detail',
       getNotifyFromOrg: '/fc/api/gprs/notifyFrom/org',
@@ -58,6 +64,8 @@ class AXIOS {
       getPayDetail: '/fc/api/system/pays/detail',
       getCurrencyDetail: '/fc/api/system/currency/detail',
       getSystemParams: '/fc/api/system/params/',
+      getPayDetail: '/fc/api/gprs/card/payDetail',
+      getGprsAllotList: '/fc/api/gprs/card/gprsAllotList',
       // 导出
       statsExport: '/fc/api/gprs/stats/export',
       // 图表

@@ -66,7 +66,7 @@
         <el-table-column prop="card_iccid" label="ICCID卡" min-width="180" sortable="custom">
           <template slot-scope="scope">
             <span v-if="scope.row.sums">{{scope.row.card_iccid}}</span>
-            <span v-else class="btn-link">{{scope.row.card_iccid}}</span>
+            <span v-else class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="card_id" label="卡商名称" min-width="135" sortable="custom">
@@ -77,7 +77,7 @@
         <el-table-column prop="org_id" label="机构名称" min-width="135" sortable="custom">
           <template slot-scope="scope">
             <span v-if="scope.row.sums">{{scope.row.org_name}}</span>
-            <span v-else class="btn-link">{{scope.row.org_name}}</span>
+            <span v-else class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="pay_method" label="付款方式" width="90" sortable="custom">
@@ -139,7 +139,9 @@ export default {
         currentPage: 1,
         total: 0,
       },
-      formInline: {},
+      formInline: {
+        org_id: Api.UNITS.getQuery('org_id')
+      },
       sort: {},
       maxTableHeight: Api.UNITS.maxTableHeight(),
       // 要展开的对话框的参数
@@ -287,7 +289,9 @@ export default {
     // 重置列表
     resetData() {
       this.list.currentPage = 1
-      this.formInline = {} // 1、重置查询表单
+      this.formInline = {
+        org_id: Api.UNITS.getQuery('org_id')
+      } // 1、重置查询表单
       this.sort = {} // 2、重置排序
       this.$refs.listTable.clearSort() // 3、清空排序样式
       this.getData()

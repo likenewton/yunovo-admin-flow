@@ -29,7 +29,7 @@ module.exports = {
     let para = paras
     let list = para.vue[para.list || 'list']
     let sort = para.vue[para.sort || 'sort']
-    let formInline = para.vue[para.formInline || 'formInline']
+    let formInline = para.vue[para.formInline || 'formInline'] || []
 
     para.vue[para.loadData || 'loadData'] = true
     _axios.send({
@@ -191,7 +191,7 @@ module.exports = {
       return htmlStr
     }
     if (a - now > 0) {
-      htmlStr = `<span style="display:inline-block">${time}</span> <span style="display:inline-block;color:#008000;font-weight:bold"">(${Math.floor((a - now) / 24 / 3600000)}天)</span>`
+      htmlStr = `<span style="display:inline-block">${time}</span> <span style="display:inline-block;font-weight:bold" class="text_success">(${Math.floor((a - now) / 24 / 3600000)}天)</span>`
     } else {
       htmlStr = `<span style="display:inline-block">${time}</span> <span style="font-weight:bold" class="text_danger">(${Math.floor((a - now) / 24 / 3600000)}天)</span>`
     }

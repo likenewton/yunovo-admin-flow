@@ -16,6 +16,7 @@ export default {
     if (this.notifysFrom.length === 0) this.getNotifySelect()
     if (this.months.length === 0) this.getMonths()
     if (this.payMethodSelect.length === 0) this.getPayMethodSelect()
+    if (this.liveMonthSelect.length === 0) this.getLiveMonth()
   },
   methods: {
     ...mapActions([
@@ -24,6 +25,7 @@ export default {
       'getNotifySelect',
       'getMonths',
       'getPayMethodSelect',
+      'getLiveMonth',
     ])
   },
   computed: {
@@ -33,6 +35,7 @@ export default {
       notifysFrom: 'notifysFrom', // 通知来源
       months: 'months', // 月份
       payMethodSelect: 'payMethodSelect', // 支付方式
+      liveMonthSelect: 'liveMonthSelect', // 有效周期
     })
   }
 }

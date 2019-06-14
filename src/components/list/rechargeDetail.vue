@@ -13,25 +13,24 @@
         <!-- 充值详情列表 -->
         <el-tab-pane v-loading="loadData">
           <span slot="label"></i>充值详情列表</span>
-          <el-form class="search-form" :inline="true" :model="formInline" size="small">
+          <el-form class="search-form" :inline="true" :model="formInline_0" size="small">
             <el-form-item label="付款方式">
-              <el-select v-model="formInline.pay" placeholder="请选择">
-                <el-option v-for="(item, index) in paySelect" :key="index" :label="item.label" :value="item.value"></el-option>
+              <el-select v-model="formInline_0.pay_method" placeholder="请选择">
+                <el-option v-for="(item, index) in payMethodSelect" :key="index" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="支付状态">
-              <el-select v-model="formInline.pay_status" placeholder="请选择">
-                <el-option label="未付款" value="0"></el-option>
-                <el-option label="已付款" value="1"></el-option>
+              <el-select v-model="formInline_0.is_paid" placeholder="请选择">
+                <el-option v-for="(item, index) in paySelect" :key="index" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="充值日期">
-              <el-date-picker v-model="formInline.date_start" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
-              <el-date-picker v-model="formInline.date_end" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
+              <el-date-picker v-model="formInline_0.date_start" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
+              <el-date-picker v-model="formInline_0.date_end" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
             </el-form-item>
             <el-form-item label="付款日期">
-              <el-date-picker v-model="formInline.date_start" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
-              <el-date-picker v-model="formInline.date_end" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
+              <el-date-picker v-model="formInline_0.paid_start" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
+              <el-date-picker v-model="formInline_0.paid_end" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
             </el-form-item>
             <el-form-item>
               <el-button size="small" type="primary" @click="searchData">查询</el-button>
@@ -39,24 +38,41 @@
             </el-form-item>
           </el-form>
           <el-table ref="listTable" @sort-change="handleSortChange" :data="list_0.data" :max-height="maxTableHeight" border resizable size="mini">
-            <el-table-column prop="total_flow" label="分配总流量" min-width="100" sortable="custom">
+            <el-table-column prop="gprs_amount" label="分配总流量" min-width="100" sortable="custom">
               <template slot-scope="scope">
-                <div v-html="formatFlowUnit(scope.row.total_flow)"></div>
+                <div v-html="formatFlowUnit(scope.row.gprs_amount)"></div>
               </template>
             </el-table-column>
-            <el-table-column prop="flow_price" label="流量价格" min-width="95" sortable="custom"></el-table-column>
-            <el-table-column prop="pay_way" label="付款方式" min-width="94" sortable="custom"></el-table-column>
-            <el-table-column prop="pay_status" label="支付状态" min-width="94" sortable="custom"></el-table-column>
-            <el-table-column prop="pay_code" label="支付流水号" min-width="110" sortable="custom"></el-table-column>
-            <el-table-column prop="recharge_remark" label="充值备注" min-width="150" sortable="custom"></el-table-column>
-            <el-table-column prop="recharge_time" label="充值时间" width="153" sortable="custom"></el-table-column>
-            <el-table-column prop="pay_time" label="付款时间" width="153" sortable="custom"></el-table-column>
-            <el-table-column prop="ex_time" label="过期时间" width="210" sortable="custom">
+            <el-table-column prop="gprs_price" label="流量价格" min-width="95" sortable="custom">
               <template slot-scope="scope">
-                <div v-html="calcLeftTime(scope.row.ex_time)"></div>
+                <span>￥{{formatMoney(scope.row.gprs_price)}}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="order_resource" label="订单来源" min-width="100" sortable="custom"></el-table-column>
+            <el-table-column prop="pay_method" label="付款方式" min-width="94" sortable="custom">
+              <template slot-scope="scope">
+                <span>{{scope.row.pay_method_name}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="is_paid" label="支付状态" min-width="94" sortable="custom">
+              <template slot-scope="scope">
+                <span v-if="scope.row.is_paid==1">已付款</span>
+                <span v-else>未付款</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="transfer_id" label="支付流水号" min-width="110" sortable="custom"></el-table-column>
+            <el-table-column prop="pay_memo" label="充值备注" show-overflow-tooltip min-width="150" sortable="custom"></el-table-column>
+            <el-table-column prop="time_added" label="充值时间" width="153" sortable="custom"></el-table-column>
+            <el-table-column prop="time_paid" label="付款时间" width="153" sortable="custom"></el-table-column>
+            <el-table-column prop="time_expire" label="过期时间" width="210" sortable="custom">
+              <template slot-scope="scope">
+                <div v-html="calcLeftTime(scope.row.time_expire)"></div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="pay_from" label="订单来源" min-width="100" sortable="custom">
+              <template slot-scope="scope">
+                <span>{{scope.row.pay_from_name}}</span>
+              </template>
+            </el-table-column>
           </el-table>
           <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list_0.currentPage" :page-sizes="pageSizes" :page-size="list_0.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list_0.total">
           </el-pagination>
@@ -65,15 +81,15 @@
         <el-tab-pane v-loading="loadData">
           <span slot="label">流量分配详情</span>
           <el-table @sort-change="handleSortChange" :data="list_1.data" :max-height="maxTableHeight" border resizable size="mini">
-            <el-table-column prop="month" label="月份" min-width="85" sortable="custom"></el-table-column>
-            <el-table-column prop="tc_flow" label="套餐流量" min-width="95" sortable="custom">
+            <el-table-column prop="how_month" label="月份" min-width="85" sortable="custom"></el-table-column>
+            <el-table-column prop="gprs_amount" label="套餐流量" min-width="95" sortable="custom">
               <template slot-scope="scope">
-                <div v-html="formatFlowUnit(scope.row.tc_flow)"></div>
+                <div v-html="formatFlowUnit(scope.row.gprs_amount)"></div>
               </template>
             </el-table-column>
-            <el-table-column prop="eqleft_flow" label="设备剩余流量" min-width="120" sortable="custom">
+            <el-table-column prop="balance_dval" label="设备剩余流量" min-width="120" sortable="custom">
               <template slot-scope="scope">
-                <div v-html="formatFlowUnit(scope.row.eqleft_flow)"></div>
+                <div v-html="formatFlowUnit(scope.row.balance_dval)"></div>
               </template>
             </el-table-column>
             <el-table-column prop="ltleft_flow" label="联通剩余流量" min-width="120" sortable="custom">
@@ -83,7 +99,11 @@
             </el-table-column>
             <el-table-column prop="tc_type" label="套餐类型" min-width="100" sortable="custom"></el-table-column>
             <el-table-column prop="is_clear" label="是否清零" min-width="100" sortable="custom"></el-table-column>
-            <el-table-column prop="fp_month" label="分配月数" min-width="100" sortable="custom"></el-table-column>
+            <el-table-column prop="allot_month" label="分配月数" min-width="100" sortable="custom">
+              <template slot-scope="scope">
+                <span>{{getLiveMonthAlias(scope.row.allot_month)}}</span>
+              </template>
+            </el-table-column>
             <el-table-column prop="month_flow" label="月均流量" min-width="95">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.month_flow)"></div>
@@ -213,7 +233,11 @@ export default {
         total: 0
       },
       // 查询表单数据
-      formInline: {},
+      formInline_0: { card_id: Api.UNITS.getQuery('card_id') },
+      formInline_1: { card_id: Api.UNITS.getQuery('card_id') },
+      formInline_2: { card_id: Api.UNITS.getQuery('card_id') },
+      formInline_3: { card_id: Api.UNITS.getQuery('card_id') },
+      formInline_4: { card_id: Api.UNITS.getQuery('card_id') },
       sort_0: {},
       sort_1: {},
       sort_2: {},
@@ -228,13 +252,11 @@ export default {
   methods: {
     changeTab(para) {
       this.tabIndex = para.index
-      if (this[`list_${this.tabIndex}`].data.length === 0) {
-        // 如果当前的列表没有数据
-        this.getData()
-      }
+      if (this[`list_${this.tabIndex}`].data.length === 0) this.getData()
     },
     // 处理多个pagination的情况
     handleSizeChange(val) {
+      this[`list_${this.tabIndex}`].currentPage = 1
       this[`list_${this.tabIndex}`].pagesize = val
       this.getData()
     },
@@ -253,99 +275,53 @@ export default {
     // 重置列表
     resetData() {
       this.list_0.currentPage = 1
-      this.formInline = {} // 1、重置查询表单
+      this.formInline_0 = {
+        card_id: Api.UNITS.getQuery('card_id')
+      } // 1、重置查询表单
       this.sort_0 = {} // 2、重置排序
       this.$refs.listTable.clearSort() // 3、清空排序样式
       this.getData()
     },
     getData() {
-      this.loadData = true
+      this.loadData = false
       // 根据 tabIndex, pagesize, currentpage来请求数据
       let tabIndex = this.tabIndex
       let list = this[`list_${tabIndex}`]
       // 一下针对不同的列表请求不同的资源
       if (tabIndex === '0') {
-        setTimeout(() => {
-          list.data = [{
-            id: 0,
-            total_flow: 30,
-            flow_price: '￥0.01',
-            pay_way: '系统赠送',
-            pay_status: '已付款',
-            pay_code: ' system-give',
-            recharge_remark: '系统赠送',
-            recharge_time: '2019-01-21 09:58:45',
-            pay_time: '2019-01-21 09:58:45',
-            ex_time: '2020-01-21 09:58:45',
-            order_resource: '未知来源'
-          }]
-          list.total = list.data.length
-          this.loadData = false
-        }, 1000)
+        Api.UNITS.getListData({
+          vue: this,
+          url: _axios.ajaxAd.getPayDetail,
+          list: 'list_0',
+          sort: 'sort_0',
+          formInline: 'formInline_0'
+        })
       } else if (tabIndex === '1') {
-        setTimeout(() => {
-          list.data = [{
-            id: 0,
-            month: '2019-05',
-            tc_flow: 200,
-            eqleft_flow: 90,
-            ltleft_flow: 120,
-            tc_type: '固定套餐',
-            is_clear: 0,
-            fp_month: 12,
-            month_flow: 30,
-            fp_time: '20219-11-21 09:58:45',
-            ex_time: '2020-11-21 09:58:45'
-          }]
-          list.total = list.data.length
-          this.loadData = false
-        }, 1000)
-      } else if (tabIndex === '2') {
-        setTimeout(() => {
-          list.data = [{
-            id: 0,
-            log_time: '2019-05-21 15:56:85',
-            log_type: '流量卡入库',
-            log_desc: '从机构 “陆风-待用” 变更到 “云智测试” 机构，初始流量10M 有效周期21天'
-          }]
-          list.total = list.data.length
-          this.loadData = false
-        }, 1000)
-      } else if (tabIndex === '3') {
-        setTimeout(() => {
-          list.data = [{
-            id: 0,
-            statistics_date: '2019-05-21',
-            day_use: 125,
-            day_exceed: 0,
-            yesday_leftflow: 1452,
-            day_leftflow: 1521.325
-          }]
-          list.total = list.data.length
-          this.loadData = false
-        }, 1000)
-      } else if (tabIndex === '4') {
-        setTimeout(() => {
-          list.data = [{
-            id: 0,
-            statistics_month: '2019-05',
-            month_use: 125,
-            month_left: 5645.654,
-            month_exceed: 0
-          }]
-          list.total = list.data.length
-          this.loadData = false
-        }, 1000)
+        Api.UNITS.getListData({
+          vue: this,
+          url: _axios.ajaxAd.getGprsAllotList,
+          list: 'list_1',
+          sort: 'sort_1',
+          formInline: 'formInline_1'
+        })
       }
+    },
+    getLiveMonthAlias(value) {
+      let item = this.liveMonthSelect.filter((v) => v.value == value)[0]
+      return item ? item.label : ''
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit, // 格式化流量单位
     limitNumber: Api.UNITS.limitNumber, // 限制数字类型位数
-    calcLeftTime: Api.UNITS.calcLeftTime // 计算剩余时间
+    calcLeftTime: Api.UNITS.calcLeftTime, // 计算剩余时间
+    formatComboFlow: Api.UNITS.formatComboFlow,
+    formatMoney: Api.UNITS.formatMoney,
   },
   computed: {
     // 模拟分页
     ...mapState({
       paySelect: 'paySelect',
+      payMethodSelect: 'payMethodSelect',
+      liveMonthSelect: 'liveMonthSelect',
     })
   }
 }
@@ -368,15 +344,10 @@ export default {
     margin: 25px 40px 0 0;
   }
 
-  .el-card__body {
-    img {
-      width: 100%;
+  td {
+    * {
+      font-size: 14px;
     }
-
-    .small {
-      font-size: 12px;
-    }
-
   }
 }
 

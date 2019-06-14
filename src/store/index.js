@@ -15,6 +15,7 @@ const state = {
   months: [], // 月份列表
   notifysFrom: [], // 通知来源
   payMethodSelect: [], // 付款方式
+  liveMonthSelect: [], // 有效周期
   exceedSelect: [{ value: '1', label: '未过期' }, { value: '0', label: '已过期' }], // 下拉选择是否过期
   activeSelect: [{ value: '1', label: '未激活' }, { value: '0', label: '已激活' }], // 下拉选择激活状态
   statusSelect: [{ value: 1, label: '启用' }, { value: 0, label: '停用' }], // 下拉选择启用状态

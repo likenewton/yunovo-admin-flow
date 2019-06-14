@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="card">
     <el-card class="box-card" style="margin-bottom: 20px" shadow="never">
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item label="卡ICCID">
@@ -48,7 +48,7 @@
         <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
-        <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" min-width="170" sortable="custom">
+        <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" min-width="180" sortable="custom">
           <template slot-scope="scope">
             <span class="btn-link">{{scope.row.card_iccid}}</span>
           </template>
@@ -138,7 +138,9 @@ export default {
         total: 0,
       },
       sort: {},
-      formInline: {},
+      formInline: {
+        org_id: Api.UNITS.getQuery('org_id')
+      },
       maxTableHeight: Api.UNITS.maxTableHeight(),
       // 要展开的对话框的参数
       dialogPara: {},
@@ -233,7 +235,9 @@ export default {
     // 重置列表
     resetData() {
       this.list.currentPage = 1
-      this.formInline = {} // 1、重置查询表单
+      this.formInline = {
+        org_id: Api.UNITS.getQuery('org_id')
+      } // 1、重置查询表单
       this.sort = {} // 2、重置排序
       this.$refs.listTable.clearSort() // 3、清空排序样式
       this.getData()
@@ -339,33 +343,34 @@ export default {
 
 </script>
 <style lang="scss">
-.el-pagination {
-  float: right;
-  margin: 25px 40px 0 0;
-}
+.card {
+  .el-pagination {
+    float: right;
+    margin: 25px 40px 0 0;
+  }
 
-.el-table {
-  .table-head {}
+  .el-table {
 
-  td {
-    * {
-      font-size: 14px;
+    td {
+      * {
+        font-size: 14px;
+      }
     }
   }
-}
 
-.iccid_detail {
-  .item {
-    height: 30px;
-    line-height: 30px;
+  .iccid_detail {
+    .item {
+      height: 30px;
+      line-height: 30px;
 
-    >span {
-      padding: 0 10px;
-      text-align: center;
-    }
+      >span {
+        padding: 0 10px;
+        text-align: center;
+      }
 
-    .fbs-left {
-      width: 50%;
+      .fbs-left {
+        width: 50%;
+      }
     }
   }
 }

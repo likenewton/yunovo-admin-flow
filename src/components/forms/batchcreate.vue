@@ -65,12 +65,10 @@
           <el-option label="清零" :value="1"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item prop="eff_period">
+      <el-form-item prop="live_month">
         <span slot="label">有效周期：</span>
-        <el-select v-model="formInline.eff_period" placeholder="请选择有效周期">
-          <el-option label="1个月" :value="0"></el-option>
-          <el-option label="2个月" :value="1"></el-option>
-          <el-option label="3个月" :value="2"></el-option>
+        <el-select v-model="formInline.live_month" placeholder="请选择有效周期">
+          <el-option v-for="(item, index) in liveMonthSelect" :key="index" :label="item.label" :value="item.value"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item prop="real_flow">
@@ -80,10 +78,8 @@
       </el-form-item>
       <el-form-item prop="real_period">
         <span slot="label">实名认证成功赠送流量有效周期：</span>
-        <el-select v-model="formInline.real_period" placeholder="请选择">
-          <el-option label="1个月" :value="0"></el-option>
-          <el-option label="2个月" :value="1"></el-option>
-          <el-option label="3个月" :value="2"></el-option>
+        <el-select v-model="formInline.live_month" placeholder="请选择有效周期">
+          <el-option v-for="(item, index) in liveMonthSelect" :key="index" :label="item.label" :value="item.value"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item prop="perf_flow">
@@ -93,10 +89,8 @@
       </el-form-item>
       <el-form-item prop="perf_period">
         <span slot="label">完善资料成功赠送流量有效周期：</span>
-        <el-select v-model="formInline.perf_period" placeholder="请选择">
-          <el-option label="1个月" :value="0"></el-option>
-          <el-option label="2个月" :value="1"></el-option>
-          <el-option label="3个月" :value="2"></el-option>
+        <el-select v-model="formInline.live_month" placeholder="请选择有效周期">
+          <el-option v-for="(item, index) in liveMonthSelect" :key="index" :label="item.label" :value="item.value"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item prop="bind_flow">
@@ -106,10 +100,8 @@
       </el-form-item>
       <el-form-item prop="bind_period">
         <span slot="label">绑定设备成功赠送流量有效周期：</span>
-        <el-select v-model="formInline.bind_period" placeholder="请选择">
-          <el-option label="1个月" :value="0"></el-option>
-          <el-option label="2个月" :value="1"></el-option>
-          <el-option label="3个月" :value="2"></el-option>
+        <el-select v-model="formInline.live_month" placeholder="请选择有效周期">
+          <el-option v-for="(item, index) in liveMonthSelect" :key="index" :label="item.label" :value="item.value"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -191,7 +183,7 @@ export default {
           message: '请选择是否清零',
           trigger: 'change'
         }],
-        eff_period: [{
+        live_month: [{
           required: true,
           message: '请选择有效周期',
           trigger: 'change'
@@ -303,7 +295,9 @@ export default {
   computed: {
     ...mapState({
       orgs: 'orgs',
-      cardTypes: 'cardTypes'
+      cardTypes: 'cardTypes',
+      liveMonthSelect: 'liveMonthSelect',
+      months: 'months'
     })
   }
 }

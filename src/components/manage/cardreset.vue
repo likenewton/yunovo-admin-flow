@@ -20,7 +20,7 @@
           <span slot="label"></i>重置历史</span>
           <el-form :inline="true" :model="formInline" size="small">
             <el-form-item label="卡ICCID">
-              <el-input v-model="formInline.iccid" placeholder="请输入"></el-input>
+              <el-input v-model="formInline.card_iccid" placeholder="请输入"></el-input>
             </el-form-item>
             <el-form-item label="机构名称">
               <el-select v-model="formInline.org_id" filterable placeholder="请选择">
@@ -37,33 +37,48 @@
             </el-form-item>
           </el-form>
           <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
-            <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" min-width="170" sortable="custom">
+            <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" width="180" sortable="custom">
               <template slot-scope="scope">
-                <span class="btn-link">{{scope.row.card_iccid}}</span>
+                <span class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="org_id" label="机构名称" min-width="140">
+            <el-table-column prop="org_id" label="机构名称" min-width="200">
               <template slot-scope="scope">
                 <span>{{scope.row.org_name}}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="right_use" label="已用流量" min-width="95" sortable="custom">
+            <el-table-column prop="card_used" label="已用流量" min-width="95" sortable="custom">
               <template slot-scope="scope">
-                <div v-html="formatFlowUnit(scope.row.right_use)"></div>
+                <div v-html="formatFlowUnit(scope.row.card_used)"></div>
               </template>
             </el-table-column>
-            <el-table-column prop="left_use" label="剩余流量" min-width="95" sortable="custom">
+            <el-table-column prop="card_unused" label="剩余流量" min-width="95" sortable="custom">
               <template slot-scope="scope">
-                <div v-html="formatFlowUnit(scope.row.left_use)"></div>
+                <div v-html="formatFlowUnit(scope.row.card_unused)"></div>
               </template>
             </el-table-column>
-            <el-table-column prop="card_status" label="卡状态" min-width="95" sortable="custom"></el-table-column>
-            <el-table-column prop="real_ide" label="实名认证" min-width="95" sortable="custom"></el-table-column>
-            <el-table-column prop="op_p" label="操作者" min-width="120" sortable="custom"></el-table-column>
-            <el-table-column prop="ex_time" label="出货时间" min-width="155" sortable="custom"></el-table-column>
-            <el-table-column prop="reset_time" label="重置时间" min-width="155" sortable="custom"></el-table-column>
+            <el-table-column prop="card_status" label="卡状态" min-width="95" sortable="custom">
+              <template slot-scope="scope">
+                <span v-if="scope.row.card_status==0">未激活</span>
+                <span v-else-if="scope.row.card_status==1">正常</span>
+                <span v-else>停卡</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="owner_real" label="实名认证" min-width="95" sortable="custom">
+              <template slot-scope="scope">
+                <span v-if="scope.row.owner_real==1">已实名</span>
+                <span v-else>未实名</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="user_id" label="操作者" min-width="120" sortable="custom">
+              <template slot-scope="scope">
+                <span>{{scope.row.user_name}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="batch_time" label="出货时间" min-width="155" sortable="custom"></el-table-column>
+            <el-table-column prop="time_added" label="重置时间" min-width="155" sortable="custom"></el-table-column>
           </el-table>
-          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
+          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
           </el-pagination>
         </el-tab-pane>
       </el-tabs>
@@ -176,13 +191,12 @@ export default {
     margin: 25px 40px 0 0;
   }
 
-  .el-card__body {
-    img {
-      width: 100%;
-    }
+  .el-table {
 
-    .small {
-      font-size: 12px;
+    td {
+      * {
+        font-size: 14px;
+      }
     }
   }
 }

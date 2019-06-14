@@ -23,9 +23,6 @@ module.exports = {
       title: '流量迁移',
       name: 'flowmigration'
     }, {
-      title: '流量预警',
-      name: 'flowwarning'
-    }, {
       title: '卡实名制',
       name: 'cardauth'
     }]

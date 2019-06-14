@@ -48,5 +48,15 @@ export default {
         context.commit('SET_PAYMETHODSELECT', { payMethodSelect: res.data })
       }
     })
+  },
+  // 有效周期
+  getLiveMonth(context) {
+    _axios.send({
+      method: 'get',
+      url: _axios.ajaxAd.getLiveMonth,
+      done: (res) => {
+        context.commit('SET_LIVEMONTHSELECT', { liveMonthSelect: res.data })
+      }
+    })
   }
 }

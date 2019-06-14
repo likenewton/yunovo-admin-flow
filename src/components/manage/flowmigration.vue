@@ -1,10 +1,10 @@
 <template>
-  <div>
-    <el-card class="reset-card" shadow="never">
+  <div class="flow_migration">
+    <el-card shadow="never">
       <el-tabs @tab-click="changeTab">
         <el-tab-pane>
           <span slot="label">流量迁移</span>
-          <el-form :model="formInline" :rules="rules" ref="ruleForm" label-width="126px" class="search-form" size="small" :status-icon="true">
+          <el-form :model="formInline" :rules="rules" ref="ruleForm" label-width="126px" size="small" :status-icon="true">
             <el-form-item prop="old_iccid">
               <span slot="label">旧卡ICCID：</span>
               <el-input v-model="formInline.old_iccid" placeholder="请输入旧卡ICCID"></el-input>
@@ -27,45 +27,55 @@
           <span slot="label"></i>历史迁移</span>
           <el-form class="search-form" :inline="true" :model="searchForm" size="small">
             <el-form-item label="旧卡ICCID">
-              <el-input v-model="searchForm.old_iccid" placeholder="请输入旧卡ICCID"></el-input>
+              <el-input v-model="searchForm.old_card_iccid" placeholder="请输入旧卡ICCID"></el-input>
             </el-form-item>
             <el-form-item label="新卡ICCID">
-              <el-input v-model="searchForm.new_iccid" placeholder="请输入新卡ICCID"></el-input>
+              <el-input v-model="searchForm.card_iccid" placeholder="请输入新卡ICCID"></el-input>
             </el-form-item>
             <el-form-item label="新卡机构">
-              <el-select v-model="searchForm.jg_name" placeholder="请选择">
-                <el-option label="机构1" value="0"></el-option>
-                <el-option label="机构2" value="1"></el-option>
-                <el-option label="机构3" value="2"></el-option>
+              <el-select v-model="searchForm.org_id" filterable placeholder="请选择">
+                <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="迁移时间">
-              <el-date-picker v-model="searchForm.migration_time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-              </el-date-picker>
+              <el-date-picker v-model="searchForm.date_start" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
+              <el-date-picker v-model="searchForm.date_end" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
             </el-form-item>
             <el-form-item>
-              <el-button size="small" type="primary">查询</el-button>
-              <el-button size="small" type="warning">重置</el-button>
+              <el-button type="primary" @click="searchData">查询</el-button>
+              <el-button type="warning" @click="resetData">重置</el-button>
             </el-form-item>
           </el-form>
-          <el-table v-loading="loadTab1Data" ref="multipleTable" :data="curTableData" border :default-sort="{prop: 'migration_time', order: 'descending'}" size="mini">
-            <el-table-column show-overflow-tooltip label="旧卡ICCID" min-width="170">
+          <el-table v-loading="loadData" ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
+            <el-table-column prop="old_iccid" label="旧卡ICCID" min-width="180" sortable="custom">
               <template slot-scope="scope">
-                <el-button type="text" @click="checkRechargeDetail(scope.row.old_iccid)">{{scope.row.old_iccid}}</el-button>
+                <span class="btn-link" @click="toUnicomLink(scope.row.old_iccid)">{{scope.row.old_iccid}}</span>
               </template>
             </el-table-column>
-            <el-table-column show-overflow-tooltip prop="oldjg_name" label="旧卡机构名称" min-width="160"></el-table-column>
-            <el-table-column show-overflow-tooltip label="新卡ICCID" min-width="170">
+            <el-table-column prop="old_orgid" label="旧卡机构名称" min-width="160" sortable="custom">
               <template slot-scope="scope">
-                <el-button type="text" @click="checkRechargeDetail(scope.row.new_iccid)">{{scope.row.new_iccid}}</el-button>
+                <span>{{scope.row.old_org_name}}</span>
               </template>
             </el-table-column>
-            <el-table-column show-overflow-tooltip prop="newjg_name" label="新卡机构名称" min-width="160"></el-table-column>
-            <el-table-column show-overflow-tooltip prop="migration_remark" label="迁移备注" min-width="160"></el-table-column>
-            <el-table-column show-overflow-tooltip prop="op_p" label="操作者" min-width="80"></el-table-column>
-            <el-table-column show-overflow-tooltip prop="migration_time" label="迁移时间" min-width="155" sortable></el-table-column>
+            <el-table-column prop="new_iccid" label="新卡ICCID" min-width="180" sortable="custom">
+              <template slot-scope="scope">
+                <span class="btn-link"  @click="toUnicomLink(scope.row.new_iccid)">{{scope.row.new_iccid}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="new_orgid" label="新卡机构名称" min-width="160" sortable="custom">
+              <template slot-scope="scope">
+                <span>{{scope.row.org_name}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="move_memo" label="迁移备注" min-width="160" sortable="custom"></el-table-column>
+            <el-table-column prop="user_id" label="操作者" min-width="80" sortable="custom">
+              <template slot-scope="scope">
+                <span>{{scope.row.first_name}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="time_added" label="迁移时间" min-width="155" sortable="custom"></el-table-column>
           </el-table>
-          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="tableData.length">
+          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total">
           </el-pagination>
         </el-tab-pane>
       </el-tabs>
@@ -74,20 +84,24 @@
 </template>
 <script>
 import Api from 'assets/js/api.js'
+import { mapState } from 'vuex'
 
 export default {
   data() {
     return {
-      routeName: this.$route.name,
-      currentDate: new Date(),
       pageSizes: Api.STATIC.pageSizes,
-      pagesize: Api.STATIC.pageSizes[1],
-      currentPage: 1,
       tabIndex: '0',
-      loadTab1Data: true,
-      tableData: [], // tab1中列表数据
-      formInline: {}, // tab0中表单数据
-      searchForm: {}, // tab0中查询表单数据
+      loadData: true,
+      maxTableHeight: Api.UNITS.maxTableHeight(),
+      list: {
+        data: [],
+        pagesize: Api.STATIC.pageSizes[1],
+        currentPage: 1,
+        total: 0,
+      },
+      sort: {},
+      formInline: {},
+      searchForm: {},
       rules: {
         old_iccid: [{
           required: true,
@@ -102,86 +116,98 @@ export default {
       }
     }
   },
-  mounted() {
-
-  },
+  mounted() {},
   methods: {
+    changeTab(para) {
+      this.tabIndex = para.index
+      // 当切换tab栏到'1'的时候，如果没有数据要加载数据
+      if (this.tabIndex === '1') {
+        // 这里应当是ajax请求数据
+        if (this.list.data.length === 0) {
+          this.getData()
+        } else {
+          this.loadData = false
+        }
+      }
+    },
+    handleSizeChange(val) {
+      this.list.pagesize = val
+      this.list.currentPage = 1
+      this.getData()
+    },
+    handleCurrentChange(val) {
+      this.list.currentPage = val
+      this.getData()
+    },
+    handleSortChange(val) {
+      Api.UNITS.setSortSearch(val, this)
+      this.getData()
+    },
+    // 重置列表
+    resetData() {
+      this.list.currentPage = 1
+      this.searchForm = {} // 1、重置查询表单
+      this.sort = {} // 2、重置排序
+      this.$refs.listTable.clearSort() // 3、清空排序样式
+      this.getData()
+    },
+    searchData() {
+      this.list.currentPage = 1
+      this.getData()
+    },
     // 提交表单
     submitForm(formName) {
-      console.log(this.formInline)
       this.$refs[formName].validate((valid) => {
         if (valid) {
           // 验证通过
         } else {
+          Api.UNITS.showMsgBox()
           return false;
         }
       });
     },
     // 重置表单
     resetForm(formName) {
-      // resetFields 只能重置需要验证的值
       this.$refs[formName].resetFields()
     },
-    changeTab(para) {
-      this.tabIndex = para.index
-      // 当切换tab栏到'1'的时候，如果没有数据要加载数据
-      if (this.tabIndex === '1') {
-        // 这里应当是ajax请求数据
-        if (this.tableData.length === 0) {
-          this.getTab1Data()
-        } else {
-          this.loadTab1Data = false
-        }
-      }
+    checkRechargeDetail(scope) {
+      this.$router.push({ name: 'rechargeDetail', query: { card_iccid: scope.row.card_iccid } })
     },
-    handleSizeChange(val) {
-      this.pagesize = val
-    },
-    handleCurrentChange(val) {
-      this.currentPage = val
-    },
-    checkRechargeDetail(iccid) {
-      this.$router.push({ name: 'rechargeDetail', query: { iccid } })
-    },
-    getTab1Data() {
-      setTimeout(() => {
-        this.tableData = [{
-          id: 0,
-          old_iccid: '8986011670901045280',
-          oldjg_name: '卡仕特-西格玛',
-          new_iccid: '8986011670901045281',
-          newjg_name: '威仕特 > 威仕特定向流量',
-          migration_remark: 'Newton',
-          op_p: 'Lucy',
-          migration_time: '2019-01-21 09:58:45'
-        }]
-        this.loadTab1Data = false
-      }, 1000)
+    getData() {
+      Api.UNITS.getListData({
+        vue: this,
+        url: _axios.ajaxAd.getMoves,
+        formInline: 'searchForm'
+      })
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,
     limitNumber: Api.UNITS.limitNumber,
+    toUnicomLink(iccid) {
+      window.open(`http://t.gprs.yunovo.cn/app/main/info?iccid=${iccid}`)
+    }
   },
   computed: {
-    curTableData() {
-      return this.tableData.slice((this.currentPage - 1) * this.pagesize, this.currentPage * this.pagesize)
-    }
+    ...mapState({
+      orgs: 'orgs',
+    })
   }
 }
 
 </script>
 <style lang="scss">
-.el-pagination {
-  float: right;
-  margin: 25px 40px 0 0;
-}
-
-.el-card__body {
-  img {
-    width: 100%;
+.flow_migration {
+  .el-pagination {
+    float: right;
+    margin: 25px 40px 0 0;
   }
 
-  .small {
-    font-size: 12px;
+  .el-table {
+
+    td {
+      * {
+        font-size: 14px;
+      }
+    }
   }
 
 }
