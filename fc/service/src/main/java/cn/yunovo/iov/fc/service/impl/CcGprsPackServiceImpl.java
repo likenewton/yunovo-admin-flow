@@ -1,16 +1,22 @@
 package cn.yunovo.iov.fc.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import cn.yunovo.iov.fc.dao.ICcGprsPackMapper;
 import cn.yunovo.iov.fc.model.LoginInfo;
+import cn.yunovo.iov.fc.model.PageData;
+import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcGprsPack;
+import cn.yunovo.iov.fc.model.entity.CcOrg;
 import cn.yunovo.iov.fc.service.ICcGprsPackService;
+import cn.yunovo.iov.fc.service.ICcOrgService;
 import cn.yunovo.iov.fc.service.ICcUserService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +40,9 @@ public class CcGprsPackServiceImpl extends ServiceImpl<ICcGprsPackMapper, CcGprs
 	@Autowired
 	private ICcUserService iCcUserService;
 	
+	@Autowired
+	private ICcOrgService iCcOrgService;
+	
 	@Override
 	public List<SelectBean> select(LoginInfo info) {
 		
@@ -54,6 +63,48 @@ public class CcGprsPackServiceImpl extends ServiceImpl<ICcGprsPackMapper, CcGprs
 		}
 		
 		return result;
+	}
+	
+	
+
+	@Override
+	public PageData<CcGprsPack, Object> getItemsPage(PageForm form, Integer org_id, LoginInfo info) {
+		
+		Page<CcGprsPack> page = form.build(CcGprsPack.class, null, "time_added");
+		PageData<CcGprsPack, Object> returnData = new PageData<>();
+		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
+		if (StringUtils.isEmpty(orgpos)) {
+			page.setTotal(0);
+			page.setRecords(null);
+			returnData.setPage(page);
+			return returnData;
+		}
+
+		if(org_id != null && !iCcOrgService.hasPermission(org_id, orgpos)) {
+			
+			page.setTotal(0);
+			page.setRecords(null);
+			returnData.setPage(page);
+			return returnData;
+		}
+
+		List<CcGprsPack> records = iCcGprsPackMapper.getItemsPage(page, org_id, orgpos, orgpos.split(","));
+		
+		if(!CollectionUtils.isEmpty(records)) {
+			
+			Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
+			Map<Integer, String> userMap = iCcUserService.userIdMap();
+			for (CcGprsPack ccGprsPack : records) {
+
+				ccGprsPack.setOrg_name(orgs.get(String.valueOf(ccGprsPack.getOrg_id())).getName());
+				ccGprsPack.setFirst_name(ccGprsPack.getUser_id() == null ? "" : StringUtils.defaultIfEmpty(userMap.get(ccGprsPack.getUser_id()),ccGprsPack.getUser_id().toString()));
+				ccGprsPack.setAlter_name(ccGprsPack.getAlter_id() == null ? "" : StringUtils.defaultIfEmpty(userMap.get(ccGprsPack.getAlter_id()),ccGprsPack.getAlter_id().toString()));
+			}
+		}
+		
+		page.setRecords(records);
+		returnData.setPage(page);
+		return returnData;
 	}
 
 }

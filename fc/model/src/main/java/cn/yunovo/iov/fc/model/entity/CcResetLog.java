@@ -80,5 +80,7 @@ public class CcResetLog implements Serializable {
 	@TableField(exist=false)
 	@ApiModelProperty(value = "操作者姓名(CN)")
 	private String first_name;
+	
+	
 
 }

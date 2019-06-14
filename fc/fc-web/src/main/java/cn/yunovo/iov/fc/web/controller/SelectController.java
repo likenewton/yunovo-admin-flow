@@ -173,7 +173,7 @@ public class SelectController extends BaseController{
 	
 	@ApiOperation(notes="有效周期下拉", value = "有效周期下拉")
 	@RequestMapping(path="/api/select/liveMonth", method= {RequestMethod.GET})
-	public Result<List<SelectBean>> liveMonth(Integer parent) {
+	public Result<List<SelectBean>> liveMonth() {
 		
 		List<SelectBean> nation = iCcGprsBatchService.select();
 		return ResultUtil.success("ok", nation);

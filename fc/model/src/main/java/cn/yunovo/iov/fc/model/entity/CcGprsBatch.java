@@ -125,4 +125,8 @@ public class CcGprsBatch implements Serializable {
 	@ApiModelProperty(value = "销区县编号CN")
 	private String district_name;
 	
+	@TableField(exist=false)
+	@ApiModelProperty(value = "更改者编号")
+	private String alter_name;
+	
 }

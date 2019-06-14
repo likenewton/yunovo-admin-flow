@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import cn.yunovo.iov.fc.model.entity.CcGprsPack;
 
@@ -19,4 +20,6 @@ import cn.yunovo.iov.fc.model.entity.CcGprsPack;
 public interface ICcGprsPackMapper extends BaseMapper<CcGprsPack> {
 
 	public List<CcGprsPack> getPack(@Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	
+	public List<CcGprsPack> getItemsPage(Page<CcGprsPack> page, @Param("org_id")Integer org_id, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 }

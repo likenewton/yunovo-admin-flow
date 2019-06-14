@@ -2,6 +2,7 @@ package cn.yunovo.iov.fc.model.entity;
 
 import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
@@ -90,5 +91,17 @@ public class CcGprsPack implements Serializable {
 
 	@ApiModelProperty(value = "修改时间")
 	private String time_modify;
+	
+	@TableField(exist=false)
+	@ApiModelProperty(value = "机构名称")
+	private String org_name;
+	
+	@TableField(exist=false)
+	@ApiModelProperty(value = "操作者姓名(CN)")
+	private String first_name;
+
+	@TableField(exist=false)
+	@ApiModelProperty(value = "更改者编号")
+	private String alter_name;
 
 }

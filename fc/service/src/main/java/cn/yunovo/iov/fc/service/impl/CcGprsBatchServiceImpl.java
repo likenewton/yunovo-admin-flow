@@ -100,6 +100,7 @@ public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGp
 				ccGprsBatch.setProvince_name(ccGprsBatch.getProvince_id() == null ? "": StringUtils.defaultIfEmpty(nation.getString(ccGprsBatch.getProvince_id().toString()),ccGprsBatch.getProvince_id().toString()));
 				ccGprsBatch.setDistrict_name(ccGprsBatch.getDistrict_id() == null ? "": StringUtils.defaultIfEmpty(nation.getString(ccGprsBatch.getDistrict_id().toString()),ccGprsBatch.getDistrict_id().toString()));
 				ccGprsBatch.setCity_name(ccGprsBatch.getCity_id() == null ? "": StringUtils.defaultIfEmpty(nation.getString(ccGprsBatch.getCity_id().toString()),ccGprsBatch.getCity_id().toString()));
+				ccGprsBatch.setAlter_name(ccGprsBatch.getAlter_id() == null ? "" : StringUtils.defaultIfEmpty(userMap.get(ccGprsBatch.getAlter_id()),ccGprsBatch.getAlter_id().toString()));
 			}
 		}
 		
