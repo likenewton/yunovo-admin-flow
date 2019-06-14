@@ -57,7 +57,7 @@ public class PageForm implements Serializable {
 			page.setAsc(this.getAscs());
 		}
 		
-		page.setPages(this.getCurrent());
+		page.setCurrent(this.getCurrent());
 		page.setSize(this.getSize());
 		
 		return page;

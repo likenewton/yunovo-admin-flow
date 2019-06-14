@@ -113,21 +113,37 @@ fc:
         form_url: wechart
         icon_url: wxpay.png
         name: 微信支付
-      other1: 
-        link_url: https://pay.weixin.qq.com
-        form_url: wechart
-        icon_url: wxpay.png
-        name: 开发测试1
-      other2: 
-        link_url: https://open.alipay.com/platform/home.htm
-        form_url: alipay
-        icon_url: alipay.png
-        name: 开发测试2
-      other3: 
-        link_url: https://pay.weixin.qq.com
-        form_url: wechart
-        icon_url: wxpay.png
-        name: 开发测试3
+      arr_live_month: 
+        "0": "无周期"
+        "0.01": "1天"
+        "0.02": "2天"
+        "0.03": "3天"
+        "0.05": "5天"
+        "0.07": "7天(一周)"
+        "0.1": "10天"
+        "0.14": "14天(二周)"
+        "0.15": "15天"
+        "0.21": "21天(3周)"
+        "1": "1个月"
+        "2": "2个月"
+        "3": "3个月(一季)"
+        "4": "4个月"
+        "5": "5个月"
+        "6": "6个月(半年)"
+        "7": "7个月"
+        "8": "8个月"
+        "9": "9个月(三季)"
+        "10": "10个月"
+        "11": "11个月"
+        "12": "12个月(一年)"
+        "16": "16个月"
+        "18": "18个月(一年半)"
+        "24": "24个月(二年)"
+        "30": "30个月(二年半)"
+        "36": "36个月(三年)"
+        "42": "42个月(三年半)"
+        "48": "48个月(四年)"
+        "999": "无限期"
 #cas
 ---
 spring: 
