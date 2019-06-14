@@ -97,8 +97,8 @@ public class CcGprsPackServiceImpl extends ServiceImpl<ICcGprsPackMapper, CcGprs
 			for (CcGprsPack ccGprsPack : records) {
 
 				ccGprsPack.setOrg_name(orgs.get(String.valueOf(ccGprsPack.getOrg_id())).getName());
-				ccGprsPack.setFirst_name(ccGprsPack.getUser_id() == null ? "" : StringUtils.defaultIfEmpty(userMap.get(ccGprsPack.getUser_id()),ccGprsPack.getUser_id().toString()));
-				ccGprsPack.setAlter_name(ccGprsPack.getAlter_id() == null ? "" : StringUtils.defaultIfEmpty(userMap.get(ccGprsPack.getAlter_id()),ccGprsPack.getAlter_id().toString()));
+				ccGprsPack.setFirst_name(userMap.get(ccGprsPack.getUser_id()));
+				ccGprsPack.setAlter_name(userMap.get(ccGprsPack.getAlter_id()));
 			}
 		}
 		
