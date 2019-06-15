@@ -12,6 +12,7 @@ import cn.yunovo.iov.fc.model.result.PayDetailResultBean;
 import cn.yunovo.iov.fc.model.result.UnicomStatResultBean;
 import cn.yunovo.iov.fc.service.ICcGprsCardService;
 import cn.yunovo.iov.fc.service.ICcOrgService;
+import cn.yunovo.iov.fc.service.ICcStatsMonthService;
 import cn.yunovo.iov.fc.service.ICcUserService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,6 +52,9 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 
 	@Autowired
 	private ICcOrgService iCcOrgService;
+	
+	@Autowired
+	private ICcStatsMonthService iCcStatsMonthService;
 
 	private Map<String, String> array_card_type;
 
@@ -427,6 +431,18 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 		page.setRecords(records);
 		returnData.setPage(page);
 		return returnData;
+	}
+	
+	public String detailByCardId(Integer card_id) {
+		
+		CcGprsCard card = this.getById(card_id);
+		if(card == null) {
+			return null;
+		}
+		
+		iCcStatsMonthService.getWlistTotalByCardId(card_id);
+		
+		return null;
 	}
 
 }

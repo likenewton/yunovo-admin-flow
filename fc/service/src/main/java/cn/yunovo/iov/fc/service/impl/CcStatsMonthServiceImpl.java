@@ -249,7 +249,7 @@ public class CcStatsMonthServiceImpl extends ServiceImpl<ICcStatsMonthMapper, Cc
 			returnData.setPage(page);
 			
 			if(!CollectionUtils.isEmpty(records)) {
-				jedisPoolUtil.setEx(cacheKey, returnData);
+				jedisPoolUtil.setEx(cacheKey, JSONObject.toJSONString(returnData));
 			}
 		}else {
 			returnData = JSONObject.parseObject(cache, PageData.class);

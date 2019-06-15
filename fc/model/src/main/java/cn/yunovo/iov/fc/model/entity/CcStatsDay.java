@@ -26,7 +26,7 @@ public class CcStatsDay implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@ApiModelProperty(value = "统计日期:2016-01-01")
-	private LocalDate stats_date;
+	private String stats_date;
 
 	@ApiModelProperty(value = "流量卡编号")
 	private Integer card_id;
@@ -47,6 +47,6 @@ public class CcStatsDay implements Serializable {
 	private Double today_unused;
 
 	@ApiModelProperty(value = "修改时间")
-	private LocalDateTime time_modify;
+	private String time_modify;
 
 }
