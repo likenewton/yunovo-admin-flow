@@ -2,6 +2,7 @@ package cn.yunovo.iov.fc.model.entity;
 
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -117,9 +118,11 @@ public class CcGprsCard implements Serializable {
 	@ApiModelProperty(value = "过期时间")
 	private String time_expire;
 	
+	@TableField(exist=false)
 	@ApiModelProperty(value = "卡类型中文名称")
 	private String card_type_name;
 	
+	@TableField(exist=false)
 	@ApiModelProperty(value = "机构名称")
 	private String org_name;
 
