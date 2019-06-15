@@ -2,6 +2,7 @@ package cn.yunovo.iov.fc.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
@@ -46,5 +47,9 @@ public class CcCardLog implements Serializable {
 
 	@ApiModelProperty(value = "增加时间")
 	private String time_added;
+	
+	@TableField(exist=false)
+	@ApiModelProperty(value = "日志类型CN")
+	private String log_type_name;
 
 }
