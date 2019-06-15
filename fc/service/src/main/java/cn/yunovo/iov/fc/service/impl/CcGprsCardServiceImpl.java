@@ -7,6 +7,7 @@ import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
 import cn.yunovo.iov.fc.model.entity.SellPayResultBean;
+import cn.yunovo.iov.fc.model.result.CardDetailInfoBean;
 import cn.yunovo.iov.fc.model.result.CardUsedResultBean;
 import cn.yunovo.iov.fc.model.result.PayDetailResultBean;
 import cn.yunovo.iov.fc.model.result.UnicomStatResultBean;
@@ -26,6 +27,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
@@ -433,16 +435,21 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 		return returnData;
 	}
 	
-	public String detailByCardId(Integer card_id) {
+	@Override
+	public CardDetailInfoBean detailByCardId(Integer card_id) {
 		
 		CcGprsCard card = this.getById(card_id);
 		if(card == null) {
 			return null;
 		}
 		
-		iCcStatsMonthService.getWlistTotalByCardId(card_id);
+		CardDetailInfoBean detail = new CardDetailInfoBean();
+		BeanUtils.copyProperties(card, detail);
 		
-		return null;
+		Double total = iCcStatsMonthService.getWlistTotalByCardId(card_id);
+		detail.setWlistTotal(total);
+		
+		return detail;
 	}
 
 }

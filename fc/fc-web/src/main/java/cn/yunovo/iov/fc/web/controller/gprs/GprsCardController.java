@@ -14,6 +14,7 @@ import cn.yunovo.iov.fc.model.entity.CcCardLog;
 import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.CcGprsPay;
 import cn.yunovo.iov.fc.model.entity.CcStatsDay;
+import cn.yunovo.iov.fc.model.result.CardDetailInfoBean;
 import cn.yunovo.iov.fc.model.result.GprsAllotResultBean;
 import cn.yunovo.iov.fc.model.result.PayListTotalResulBean;
 import cn.yunovo.iov.fc.service.ICcCardLogService;
@@ -131,6 +132,21 @@ public class GprsCardController extends BaseController{
 			return ResultUtil.build(-1, "请选择您要查询的流量卡");
 		}
 		data = iCcStatsDayService.getDayUsePage(pageForm, card_id, this.getLoginBaseInfo());
+		return ResultUtil.success(data);
+	}
+	
+	@ApiOperation(value = "业务管理-流量卡基本信息")
+	@ApiImplicitParams(value = {
+			@ApiImplicitParam(name = "card_id", value = "流量卡id", required = true, dataType = "int", paramType = "query")
+	})
+	@RequestMapping(path="/detail",method= {RequestMethod.GET, RequestMethod.POST})
+	public Result<CardDetailInfoBean> detail(PageForm pageForm, Integer card_id) {
+		
+		CardDetailInfoBean  data = null;
+		if(card_id == null) {
+			return ResultUtil.build(-1, "请选择您要查询的流量卡");
+		}
+		data = iCcGprsCardService.detailByCardId(card_id);
 		return ResultUtil.success(data);
 	}
 	

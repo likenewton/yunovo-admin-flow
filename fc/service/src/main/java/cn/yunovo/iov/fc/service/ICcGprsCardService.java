@@ -5,6 +5,7 @@ import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.SellPayResultBean;
+import cn.yunovo.iov.fc.model.result.CardDetailInfoBean;
 import cn.yunovo.iov.fc.model.result.CardUsedResultBean;
 import cn.yunovo.iov.fc.model.result.PayDetailResultBean;
 import cn.yunovo.iov.fc.model.result.UnicomStatResultBean;
@@ -110,6 +111,14 @@ public interface ICcGprsCardService extends IService<CcGprsCard> {
 	PageData<CcGprsCard, Object> queryCardListPage(PageForm form, String card_iccid, Integer org_id, String date_start,
 			String date_end, Integer time_expire, Integer unicom_stop, Integer status, LoginInfo info,
 			Integer card_type);
+
+	
+	/**
+	 * 流量卡基本信息
+	 * @param card_id
+	 * @return
+	 */
+	CardDetailInfoBean detailByCardId(Integer card_id);
 	
 	
 	
