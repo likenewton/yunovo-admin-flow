@@ -45,6 +45,6 @@ public class CcCardLog implements Serializable {
 	private String log_url;
 
 	@ApiModelProperty(value = "增加时间")
-	private LocalDateTime time_added;
+	private String time_added;
 
 }

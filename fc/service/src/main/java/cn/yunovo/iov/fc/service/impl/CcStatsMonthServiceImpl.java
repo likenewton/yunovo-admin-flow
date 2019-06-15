@@ -38,6 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -254,6 +255,25 @@ public class CcStatsMonthServiceImpl extends ServiceImpl<ICcStatsMonthMapper, Cc
 			returnData = JSONObject.parseObject(cache, PageData.class);
 		}
 		return returnData;
+	}
+
+	@Override
+	public Double getWlistTotalByCardId(Integer card_id) {
+		
+		String cacheKey = String.format(FcConstant.CARD_MONTH_WLIST_TOTAL_CACHEKEY, card_id);
+		cacheKey = FcConstant.memResKey(cacheKey);
+		String cache = jedisPoolUtil.get(cacheKey);
+		Double total = null;
+		if(StringUtils.isEmpty(cache)) {
+			
+			total = iCcStatsMonthMapper.getWlistTotalByCardId(card_id);
+			if(total != null) {
+				jedisPoolUtil.setEx(cacheKey, String.valueOf(total));
+			}
+		}else {
+			total = NumberUtils.toDouble(cache);
+		}
+		return total;
 	}
 
 }

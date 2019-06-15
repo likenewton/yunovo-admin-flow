@@ -32,4 +32,13 @@ public interface ICcStatsMonthService extends IService<CcStatsMonth> {
 	public void export(Integer org_id, Integer card_type, String card_iccid, String mdate, LoginInfo info) throws IOException;
 	
 	public PageData<CcStatsMonth, Object> getMonthUsePage(PageForm pageForm, Integer card_id, LoginInfo info);
+	
+	/**
+	 * 
+	 * 通过流量卡id 获取apn流量消耗总数
+	 * @param card_id
+	 * @return 
+	 */
+	public Double getWlistTotalByCardId(Integer card_id);
+	
 }

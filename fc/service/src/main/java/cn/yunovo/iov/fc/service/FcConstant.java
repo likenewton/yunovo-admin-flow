@@ -11,6 +11,8 @@ public class FcConstant {
 	
 	public final static String CARD_MONTH_USE_CACHEKEY = "CARD-MONTHUSE#%s#%s#%s";
 	
+	public final static String CARD_MONTH_WLIST_TOTAL_CACHEKEY = "CARD#MonthWlistTotal#%s";
+	
 	public static String memResKey(String key) {
 		
 		return CACHE_RESOURCE_PREFIX + key;

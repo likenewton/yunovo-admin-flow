@@ -160,5 +160,9 @@
 			card_id = #{card_id}
 		
 	</select>
+	
+	<select id="getWlistTotalByCardId" resultType="Double">
+		SELECT SUM(month_wlist) FROM `cc_stats_month` WHERE card_id = #{card_id}
+	</select>
 
 </mapper>

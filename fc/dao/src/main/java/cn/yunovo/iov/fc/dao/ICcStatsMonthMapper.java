@@ -29,4 +29,6 @@ public interface ICcStatsMonthMapper extends BaseMapper<CcStatsMonth> {
 	public Long usedTotal(@Param("org_id")Integer org_id, @Param("card_type")Integer card_type, @Param("card_iccid")String card_iccid, @Param("mdate")String mdate, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 	
 	public List<CcStatsMonth> getMonthUsePage(IPage<CcStatsMonth> page, @Param("card_id")Integer card_id);
+	
+	public Double getWlistTotalByCardId(@Param("card_id")Integer card_id);
 }
