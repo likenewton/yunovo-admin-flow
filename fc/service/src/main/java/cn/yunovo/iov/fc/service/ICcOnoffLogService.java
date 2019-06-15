@@ -22,7 +22,7 @@ public interface ICcOnoffLogService extends IService<CcOnoffLog> {
 
 	
 	public PageData<CcOnoffLog, Object> getItems(PageForm pageForm, String card_iccid,
-			Integer card_type, Integer org_id, LoginInfo info);
+			Integer card_type, Integer org_id, Integer card_id, LoginInfo info);
 	
 	public List<CcOnoffLog> stopDetail(Integer card_id, String card_iccid, LoginInfo info);
 }

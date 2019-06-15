@@ -6,6 +6,7 @@ import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.SellPayResultBean;
 import cn.yunovo.iov.fc.model.result.CardDetailInfoBean;
+import cn.yunovo.iov.fc.model.result.CardTotalByOrgidInfoBean;
 import cn.yunovo.iov.fc.model.result.CardUsedResultBean;
 import cn.yunovo.iov.fc.model.result.PayDetailResultBean;
 import cn.yunovo.iov.fc.model.result.UnicomStatResultBean;
@@ -119,6 +120,14 @@ public interface ICcGprsCardService extends IService<CcGprsCard> {
 	 * @return
 	 */
 	CardDetailInfoBean detailByCardId(Integer card_id);
+	
+	/**
+	 * 统计机构流量卡数
+	 * @param form
+	 * @param info
+	 * @return
+	 */
+	PageData<CardTotalByOrgidInfoBean, Object> cardTotalByOrgidGroupPage(PageForm form, LoginInfo info);
 	
 	
 	

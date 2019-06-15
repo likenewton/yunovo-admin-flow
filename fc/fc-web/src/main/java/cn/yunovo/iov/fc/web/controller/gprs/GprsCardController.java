@@ -14,7 +14,9 @@ import cn.yunovo.iov.fc.model.entity.CcCardLog;
 import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.CcGprsPay;
 import cn.yunovo.iov.fc.model.entity.CcStatsDay;
+import cn.yunovo.iov.fc.model.entity.CcStatsMonth;
 import cn.yunovo.iov.fc.model.result.CardDetailInfoBean;
+import cn.yunovo.iov.fc.model.result.CardTotalByOrgidInfoBean;
 import cn.yunovo.iov.fc.model.result.GprsAllotResultBean;
 import cn.yunovo.iov.fc.model.result.PayListTotalResulBean;
 import cn.yunovo.iov.fc.service.ICcCardLogService;
@@ -23,6 +25,7 @@ import cn.yunovo.iov.fc.service.ICcGprsCardService;
 import cn.yunovo.iov.fc.service.ICcGprsPayService;
 import cn.yunovo.iov.fc.service.ICcGprsValueService;
 import cn.yunovo.iov.fc.service.ICcStatsDayService;
+import cn.yunovo.iov.fc.service.ICcStatsMonthService;
 import cn.yunovo.iov.fc.web.controller.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -48,6 +51,9 @@ public class GprsCardController extends BaseController{
 	
 	@Autowired
 	private ICcStatsDayService iCcStatsDayService;
+	
+	@Autowired
+	private ICcStatsMonthService iCcStatsMonthService;
 	
 	@ApiOperation(value="业务管理-流量卡列表")
 	@ApiImplicitParams(value = { 
@@ -135,6 +141,21 @@ public class GprsCardController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
+	@ApiOperation(value = "业务管理-流量卡月使用情况")
+	@ApiImplicitParams(value = {
+			@ApiImplicitParam(name = "card_id", value = "流量卡id", required = true, dataType = "int", paramType = "query")
+	})
+	@RequestMapping(path="/monthUse",method= {RequestMethod.GET, RequestMethod.POST})
+	public Result<PageData<CcStatsMonth, Object>> monthUsePage(PageForm pageForm, Integer card_id) {
+		
+		PageData<CcStatsMonth, Object>  data = null;
+		if(card_id == null) {
+			return ResultUtil.build(-1, "请选择您要查询的流量卡");
+		}
+		data = iCcStatsMonthService.getMonthUsePage(pageForm, card_id, this.getLoginBaseInfo());
+		return ResultUtil.success(data);
+	}
+	
 	@ApiOperation(value = "业务管理-流量卡基本信息")
 	@ApiImplicitParams(value = {
 			@ApiImplicitParam(name = "card_id", value = "流量卡id", required = true, dataType = "int", paramType = "query")
@@ -147,6 +168,14 @@ public class GprsCardController extends BaseController{
 			return ResultUtil.build(-1, "请选择您要查询的流量卡");
 		}
 		data = iCcGprsCardService.detailByCardId(card_id);
+		return ResultUtil.success(data);
+	}
+	
+	@ApiOperation(value = "业务管理-机构流量卡统计")
+	@RequestMapping(path="/cardTotalByOrgidGroup",method= {RequestMethod.GET, RequestMethod.POST})
+	public Result<PageData<CardTotalByOrgidInfoBean, Object>> cardTotalByOrgidGroupPage(PageForm pageForm) {
+		
+		PageData<CardTotalByOrgidInfoBean, Object> data = iCcGprsCardService.cardTotalByOrgidGroupPage(pageForm, this.getLoginBaseInfo());
 		return ResultUtil.success(data);
 	}
 	

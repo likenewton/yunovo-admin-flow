@@ -56,7 +56,7 @@ public class CcOnoffLogServiceImpl extends ServiceImpl<ICcOnoffLogMapper, CcOnof
 	
 	@Override
 	public PageData<CcOnoffLog, Object> getItems(PageForm pageForm, String card_iccid, Integer card_type,
-			Integer org_id, LoginInfo info) {
+			Integer org_id, Integer card_id, LoginInfo info) {
 		
 		// 组装分页参数
 		Page<CcOnoffLog> page = new Page<>();
@@ -78,7 +78,7 @@ public class CcOnoffLogServiceImpl extends ServiceImpl<ICcOnoffLogMapper, CcOnof
 			return p;
 		}
 
-		List<CcOnoffLog> records = iCcOnoffLogMapper.getItemsPage(page, card_iccid, card_type, org_id, orgpos, orgpos.split(","));
+		List<CcOnoffLog> records = iCcOnoffLogMapper.getItemsPage(page, card_id, card_iccid, card_type, org_id, orgpos, orgpos.split(","));
 		
 		if(CollectionUtils.isEmpty(records)) {
 			page.setTotal(0);

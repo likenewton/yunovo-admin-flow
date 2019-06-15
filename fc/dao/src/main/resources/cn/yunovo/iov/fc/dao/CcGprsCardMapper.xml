@@ -522,5 +522,28 @@
 			 AND time_active IS NOT NULL
 		</if>
 	</select>
+	
+	<select id="cardTotalByOrgidGroup" resultType="cn.yunovo.iov.fc.model.result.CardTotalByOrgidInfoBean">
+		
+		SELECT COUNT(*) AS total, org_id FROM cc_gprs_card 
+		WHERE 1 = 1
+		
+		<choose>
+			<when test='orgpos == "*"'>
+
+			</when>
+			<otherwise>
+				AND org_id IN
+				<foreach collection="orgs" item="id" index="index"
+					open="(" close=")" separator=",">
+					#{id}
+				</foreach>
+			</otherwise>
+		</choose>
+
+		
+		 GROUP BY org_id
+	</select>
+	
 
 </mapper>

@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.SellPayResultBean;
+import cn.yunovo.iov.fc.model.result.CardTotalByOrgidInfoBean;
 import cn.yunovo.iov.fc.model.result.CardUsedResultBean;
 import cn.yunovo.iov.fc.model.result.PayDetailResultBean;
 import cn.yunovo.iov.fc.model.result.UnicomStatResultBean;
@@ -102,4 +103,14 @@ public interface ICcGprsCardMapper extends BaseMapper<CcGprsCard> {
 	 * @return
 	 */
 	public List<CcGprsCard> queryCardListPage(IPage<CcGprsCard> page, @Param("card_iccid")String card_iccid, @Param("card_type")Integer card_type, @Param("org_id")Integer org_id, @Param("date_start")String date_start, @Param("date_end")String date_end, @Param("time_expire")Integer time_expire, @Param("unicom_stop")Integer unicom_stop, @Param("status")Integer status, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	
+	
+	/**
+	 * 机构流量卡数据统计
+	 * @param page
+	 * @param orgpos
+	 * @param orgs
+	 * @return
+	 */
+	public List<CardTotalByOrgidInfoBean> cardTotalByOrgidGroup(IPage<CardTotalByOrgidInfoBean> page, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 }

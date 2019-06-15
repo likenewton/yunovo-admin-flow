@@ -8,6 +8,7 @@ import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
 import cn.yunovo.iov.fc.model.entity.SellPayResultBean;
 import cn.yunovo.iov.fc.model.result.CardDetailInfoBean;
+import cn.yunovo.iov.fc.model.result.CardTotalByOrgidInfoBean;
 import cn.yunovo.iov.fc.model.result.CardUsedResultBean;
 import cn.yunovo.iov.fc.model.result.PayDetailResultBean;
 import cn.yunovo.iov.fc.model.result.UnicomStatResultBean;
@@ -450,6 +451,34 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 		detail.setWlistTotal(total);
 		
 		return detail;
+	}
+
+	@Override
+	public PageData<CardTotalByOrgidInfoBean, Object> cardTotalByOrgidGroupPage(PageForm form, LoginInfo info) {
+
+		Page<CardTotalByOrgidInfoBean> page = form.build(CardTotalByOrgidInfoBean.class, null, null);
+		page.setAsc(null);
+		page.setDesc(null);
+		PageData<CardTotalByOrgidInfoBean, Object> returnData = new PageData<>();
+		
+		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
+		if (StringUtils.isEmpty(orgpos)) {
+			page.setTotal(0);
+			page.setRecords(null);
+			returnData.setPage(page);
+			return returnData;
+		}
+		
+		List<CardTotalByOrgidInfoBean> records = iGprsCardMapper.cardTotalByOrgidGroup(page, orgpos, orgpos.split(","));
+		if(!CollectionUtils.isEmpty(records)) {
+			Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
+			for (CardTotalByOrgidInfoBean ccGprsCard : records) {
+				ccGprsCard.setOrg_name(orgs.get(String.valueOf(ccGprsCard.getOrg_id())).getName());
+			}
+		}
+		page.setRecords(records);
+		returnData.setPage(page);
+		return returnData;
 	}
 
 }

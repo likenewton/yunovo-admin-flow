@@ -33,11 +33,12 @@ public class OnoffLogController extends BaseController{
 	@ApiImplicitParams(value = { 
 			@ApiImplicitParam(name = "org_id", value = "机构id", required = false, dataType = "int",paramType = "query"),
 			@ApiImplicitParam(name = "card_type", value = "卡商类型id", required = false, dataType = "int",paramType = "query"),
+			@ApiImplicitParam(name = "card_id", value = "流量卡id", required = false, dataType = "int",paramType = "query"),
 			@ApiImplicitParam(name = "card_iccid", value = "卡iccid", required = false, dataType = "String",paramType = "query")})
 	@RequestMapping(path="/",method= {RequestMethod.GET, RequestMethod.POST})
-	public Result<PageData<CcOnoffLog, Object>> onoffLogs(Integer org_id, Integer card_type, String card_iccid, PageForm page){
+	public Result<PageData<CcOnoffLog, Object>> onoffLogs(Integer org_id, Integer card_type, String card_iccid, PageForm page, Integer card_id){
 	
-		PageData<CcOnoffLog, Object>  result = iCcOnoffLogService.getItems(page, card_iccid, card_type, org_id, this.getLoginBaseInfo());
+		PageData<CcOnoffLog, Object>  result = iCcOnoffLogService.getItems(page, card_iccid, card_type, org_id, card_id, this.getLoginBaseInfo());
 		return ResultUtil.success(result);
 	}
 	
