@@ -38,7 +38,7 @@ public class CcGprsValueServiceImpl extends ServiceImpl<ICcGprsValueMapper, CcGp
 	@Override
 	public PageData<GprsAllotResultBean, Object> getAllotPage(PageForm pageForm, Integer card_id, LoginInfo info) {
 
-		Page<GprsAllotResultBean> page = pageForm.build(GprsAllotResultBean.class, null, "time_added");
+		Page<GprsAllotResultBean> page = pageForm.build(GprsAllotResultBean.class, null, "V.time_added");
 		PageData<GprsAllotResultBean, Object> returnData = new PageData<>();
 		List<GprsAllotResultBean> records = iCcGprsValueMapper.getAllotPage(page, card_id);
 		page.setRecords(records);

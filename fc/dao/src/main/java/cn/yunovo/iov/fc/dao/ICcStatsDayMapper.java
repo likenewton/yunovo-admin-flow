@@ -1,6 +1,11 @@
 package cn.yunovo.iov.fc.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import cn.yunovo.iov.fc.model.entity.CcStatsDay;
 
@@ -14,4 +19,6 @@ import cn.yunovo.iov.fc.model.entity.CcStatsDay;
  */
 public interface ICcStatsDayMapper extends BaseMapper<CcStatsDay> {
 
+	public List<CcStatsDay> getDayUsePage(IPage<CcStatsDay> page, @Param("card_id")Integer card_id);
+	
 }

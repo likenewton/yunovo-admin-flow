@@ -10,14 +10,18 @@ import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
+import cn.yunovo.iov.fc.model.entity.CcCardLog;
 import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.CcGprsPay;
+import cn.yunovo.iov.fc.model.entity.CcStatsDay;
 import cn.yunovo.iov.fc.model.result.GprsAllotResultBean;
 import cn.yunovo.iov.fc.model.result.PayListTotalResulBean;
+import cn.yunovo.iov.fc.service.ICcCardLogService;
 import cn.yunovo.iov.fc.service.ICcGprsAllotService;
 import cn.yunovo.iov.fc.service.ICcGprsCardService;
 import cn.yunovo.iov.fc.service.ICcGprsPayService;
 import cn.yunovo.iov.fc.service.ICcGprsValueService;
+import cn.yunovo.iov.fc.service.ICcStatsDayService;
 import cn.yunovo.iov.fc.web.controller.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -37,6 +41,12 @@ public class GprsCardController extends BaseController{
 	
 	@Autowired
 	private ICcGprsValueService iCcGprsValueService;
+	
+	@Autowired
+	private ICcCardLogService iCcCardLogService;
+	
+	@Autowired
+	private ICcStatsDayService iCcStatsDayService;
 	
 	@ApiOperation(value="业务管理-流量卡列表")
 	@ApiImplicitParams(value = { 
@@ -91,6 +101,36 @@ public class GprsCardController extends BaseController{
 			return ResultUtil.build(-1, "请选择您要查询的流量卡");
 		}
 		data = iCcGprsValueService.getAllotPage(pageForm, card_id, this.getLoginBaseInfo());
+		return ResultUtil.success(data);
+	}
+	
+	@ApiOperation(value = "业务管理-流量卡生命周期日志")
+	@ApiImplicitParams(value = {
+			@ApiImplicitParam(name = "card_id", value = "流量卡id", required = true, dataType = "int", paramType = "query")
+	})
+	@RequestMapping(path="/logList",method= {RequestMethod.GET, RequestMethod.POST})
+	public Result<PageData<CcCardLog, Object>> logList(PageForm pageForm, Integer card_id) {
+		
+		PageData<CcCardLog, Object>  data = null;
+		if(card_id == null) {
+			return ResultUtil.build(-1, "请选择您要查询的流量卡");
+		}
+		data = iCcCardLogService.logList(pageForm, card_id, this.getLoginBaseInfo());
+		return ResultUtil.success(data);
+	}
+	
+	@ApiOperation(value = "业务管理-流量卡日使用情况")
+	@ApiImplicitParams(value = {
+			@ApiImplicitParam(name = "card_id", value = "流量卡id", required = true, dataType = "int", paramType = "query")
+	})
+	@RequestMapping(path="/dayUse",method= {RequestMethod.GET, RequestMethod.POST})
+	public Result<PageData<CcStatsDay, Object>> dayUsePage(PageForm pageForm, Integer card_id) {
+		
+		PageData<CcStatsDay, Object>  data = null;
+		if(card_id == null) {
+			return ResultUtil.build(-1, "请选择您要查询的流量卡");
+		}
+		data = iCcStatsDayService.getDayUsePage(pageForm, card_id, this.getLoginBaseInfo());
 		return ResultUtil.success(data);
 	}
 	
