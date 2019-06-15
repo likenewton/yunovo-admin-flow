@@ -140,6 +140,7 @@ export default {
         total: 0,
       },
       formInline: {
+        pay_sn: Api.UNITS.getQuery('pay_sn'),
         org_id: Api.UNITS.getQuery('org_id')
       },
       sort: {},
@@ -290,6 +291,7 @@ export default {
     resetData() {
       this.list.currentPage = 1
       this.formInline = {
+        pay_sn: Api.UNITS.getQuery('pay_sn'),
         org_id: Api.UNITS.getQuery('org_id')
       } // 1、重置查询表单
       this.sort = {} // 2、重置排序

@@ -139,6 +139,7 @@ export default {
       },
       sort: {},
       formInline: {
+        card_id: Api.UNITS.getQuery('card_id'),
         org_id: Api.UNITS.getQuery('org_id')
       },
       maxTableHeight: Api.UNITS.maxTableHeight(),
@@ -236,6 +237,7 @@ export default {
     resetData() {
       this.list.currentPage = 1
       this.formInline = {
+        card_id: Api.UNITS.getQuery('card_id'),
         org_id: Api.UNITS.getQuery('org_id')
       } // 1、重置查询表单
       this.sort = {} // 2、重置排序
@@ -265,7 +267,7 @@ export default {
     getEchartsData() {
       Api.UNITS.getListData({
         vue: this,
-        url: _axios.ajaxAd.getCardUsed,
+        url: _axios.ajaxAd.getCardBar,
         list: 'dialogList',
         loadData: 'dialogChartLoadData',
         cb: (res) => {
@@ -274,7 +276,7 @@ export default {
           let dialogListData = this.dialogList.data || []
           dialogListData.forEach((v) => {
             labals.push(v.org_name)
-            data.push(v.card_count)
+            data.push(v.total)
           })
           this.myChart.setOption(this.options)
         }

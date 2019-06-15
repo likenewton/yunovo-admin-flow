@@ -96,7 +96,9 @@ export default {
         total: 0,
       },
       sort: {},
-      formInline: {},
+      formInline: {
+        card_iccid: Api.UNITS.getQuery('card_iccid')
+      },
       dialogPara: {
         title: '流量卡实名审核',
         content: '<div id="cardauto" style="width:100%; height:300px"></div>'
@@ -126,7 +128,9 @@ export default {
     // 重置列表
     resetData() {
       this.list.currentPage = 1
-      this.formInline = {} // 1、重置查询表单
+      this.formInline = {
+        card_iccid: Api.UNITS.getQuery('card_iccid')
+      } // 1、重置查询表单
       this.sort = {} // 2、重置排序
       this.$refs.listTable.clearSort() // 3、清空排序样式
       this.getData()

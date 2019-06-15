@@ -1,7 +1,7 @@
 <template>
   <div class="flow_migration">
     <el-card shadow="never">
-      <el-tabs @tab-click="changeTab">
+      <el-tabs @tab-click="changeTab" v-model="tabIndex">
         <el-tab-pane>
           <span slot="label">流量迁移</span>
           <el-form :model="formInline" :rules="rules" ref="ruleForm" label-width="126px" size="small" :status-icon="true">
@@ -90,7 +90,7 @@ export default {
   data() {
     return {
       pageSizes: Api.STATIC.pageSizes,
-      tabIndex: '0',
+      tabIndex: Api.UNITS.getQuery('tabIndex') || '0',
       loadData: true,
       maxTableHeight: Api.UNITS.maxTableHeight(),
       list: {
@@ -101,7 +101,10 @@ export default {
       },
       sort: {},
       formInline: {},
-      searchForm: {},
+      searchForm: {
+        old_card_iccid: Api.UNITS.getQuery('old_card_iccid'),
+        card_iccid: Api.UNITS.getQuery('card_iccid')
+      },
       rules: {
         old_iccid: [{
           required: true,
@@ -116,10 +119,11 @@ export default {
       }
     }
   },
-  mounted() {},
+  mounted() {
+    this.getData()
+  },
   methods: {
     changeTab(para) {
-      this.tabIndex = para.index
       // 当切换tab栏到'1'的时候，如果没有数据要加载数据
       if (this.tabIndex === '1') {
         // 这里应当是ajax请求数据
@@ -146,7 +150,10 @@ export default {
     // 重置列表
     resetData() {
       this.list.currentPage = 1
-      this.searchForm = {} // 1、重置查询表单
+      this.searchForm = {
+        old_card_iccid: Api.UNITS.getQuery('old_card_iccid'),
+        card_iccid: Api.UNITS.getQuery('card_iccid')
+      } // 1、重置查询表单
       this.sort = {} // 2、重置排序
       this.$refs.listTable.clearSort() // 3、清空排序样式
       this.getData()

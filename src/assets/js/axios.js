@@ -66,10 +66,15 @@ class AXIOS {
       getSystemParams: '/fc/api/system/params/',
       getPayDetail: '/fc/api/gprs/card/payDetail',
       getGprsAllotList: '/fc/api/gprs/card/gprsAllotList',
+      getLogList: '/fc/api/gprs/card/logList',
+      getDayUse: '/fc/api/gprs/card/dayUse',
+      getMonthUse: '/fc/api/gprs/card/monthUse',
+      getCardDetail: '/fc/api/gprs/card/detail',
       // 导出
       statsExport: '/fc/api/gprs/stats/export',
       // 图表
       getPayPie: '/fc/api/gprs/report/paylog/chart',
+      getCardBar: '/fc/api/gprs/card/cardTotalByOrgidGroup',
       // 表单提交
       addOrg: '/fc/api/user/org/insert',
       updateOrg: '/fc/api/user/org/update',

@@ -115,7 +115,9 @@ export default {
       },
       curChoiceRow: {}, // iccid详情列表 当前选择项保存项(list.data中的某一项)
       sort: {},
-      formInline: {},
+      formInline: {
+        card_id: Api.UNITS.getQuery('card_id')
+      },
       maxTableHeight: Api.UNITS.maxTableHeight(),
       maxDialogHeight: $(window).height() / 2
     }
@@ -166,7 +168,9 @@ export default {
     },
     resetData() {
       this.list.currentPage = 1
-      this.formInline = {} // 1、重置查询表单
+      this.formInline = {
+        card_id: Api.UNITS.getQuery('card_id')
+      } // 1、重置查询表单
       this.sort = {} // 2、重置排序
       this.$refs.listTable.clearSort() // 3、清空排序样式
       this.getData()
