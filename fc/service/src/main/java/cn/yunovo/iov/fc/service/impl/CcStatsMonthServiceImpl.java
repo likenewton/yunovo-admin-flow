@@ -1,5 +1,6 @@
 package cn.yunovo.iov.fc.service.impl;
 
+import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
 import cn.yunovo.iov.fc.common.utils.web.WebRequestUtil;
 import cn.yunovo.iov.fc.dao.ICcStatsMonthMapper;
 import cn.yunovo.iov.fc.model.LoginInfo;
@@ -7,8 +8,10 @@ import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
+import cn.yunovo.iov.fc.model.entity.CcStatsDay;
 import cn.yunovo.iov.fc.model.entity.CcStatsMonth;
 import cn.yunovo.iov.fc.model.entity.CcUser;
+import cn.yunovo.iov.fc.service.FcConstant;
 import cn.yunovo.iov.fc.service.ICcGprsCardService;
 import cn.yunovo.iov.fc.service.ICcOrgService;
 import cn.yunovo.iov.fc.service.ICcStatsMonthService;
@@ -17,6 +20,7 @@ import cn.yunovo.iov.fc.service.ICcUserService;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -61,6 +65,9 @@ public class CcStatsMonthServiceImpl extends ServiceImpl<ICcStatsMonthMapper, Cc
 
 	@Autowired
 	private ICcStatsMonthMapper iCcStatsMonthMapper;
+	
+	@Autowired
+	private JedisPoolUtil jedisPoolUtil;
 
 	@Override
 	public List<String> getMonths(LoginInfo info) {
@@ -219,6 +226,34 @@ public class CcStatsMonthServiceImpl extends ServiceImpl<ICcStatsMonthMapper, Cc
 
 		out.flush();
 
+	}
+
+	@Override
+	public PageData<CcStatsMonth, Object> getMonthUsePage(PageForm pageForm, Integer card_id, LoginInfo info) {
+		
+		Page<CcStatsMonth> page = pageForm.build(CcStatsMonth.class, null, null);
+		page.setDesc("how_month");
+		String cacheKey = String.format(FcConstant.CARD_MONTH_USE_CACHEKEY, card_id,page.getCurrent(),page.getSize());
+		cacheKey = FcConstant.memResKey(cacheKey);
+		PageData<CcStatsMonth, Object> returnData = null;
+		
+		//先从缓存总获取，如果未命中缓存则溯源
+		String cache = jedisPoolUtil.get(cacheKey);
+		
+		if(StringUtils.isEmpty(cache)) {
+			
+			returnData = new PageData<>();
+			List<CcStatsMonth> records = iCcStatsMonthMapper.getMonthUsePage(page, card_id);
+			page.setRecords(records);
+			returnData.setPage(page);
+			
+			if(!CollectionUtils.isEmpty(records)) {
+				jedisPoolUtil.setEx(cacheKey, returnData);
+			}
+		}else {
+			returnData = JSONObject.parseObject(cache, PageData.class);
+		}
+		return returnData;
 	}
 
 }

@@ -5,7 +5,6 @@ import cn.yunovo.iov.fc.dao.ICcStatsDayMapper;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
-import cn.yunovo.iov.fc.model.entity.CcCardLog;
 import cn.yunovo.iov.fc.model.entity.CcStatsDay;
 import cn.yunovo.iov.fc.service.FcConstant;
 import cn.yunovo.iov.fc.service.ICcStatsDayService;
@@ -35,7 +34,6 @@ public class CcStatsDayServiceImpl extends ServiceImpl<ICcStatsDayMapper, CcStat
 	@Autowired
 	private ICcStatsDayMapper ICcStatsDayMapper;
 	
-	private final String CARD_DAY_USE_CACHEKEY = "CARD-DAYUSE#%s#%s#%s";
 	
 	@Autowired
 	private JedisPoolUtil jedisPoolUtil;
@@ -45,7 +43,7 @@ public class CcStatsDayServiceImpl extends ServiceImpl<ICcStatsDayMapper, CcStat
 		
 		Page<CcStatsDay> page = pageForm.build(CcStatsDay.class, null, null);
 		page.setDesc("stats_date");
-		String cacheKey = String.format(CARD_DAY_USE_CACHEKEY, card_id,page.getCurrent(),page.getSize());
+		String cacheKey = String.format(FcConstant.CARD_DAY_USE_CACHEKEY, card_id,page.getCurrent(),page.getSize());
 		cacheKey = FcConstant.memResKey(cacheKey);
 		PageData<CcStatsDay, Object> returnData = null;
 		

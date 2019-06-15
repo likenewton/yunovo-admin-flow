@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import cn.yunovo.iov.fc.model.entity.CcStatsMonth;
@@ -26,4 +27,6 @@ public interface ICcStatsMonthMapper extends BaseMapper<CcStatsMonth> {
 	public List<CcStatsMonth> queryItemsPage(Page<CcStatsMonth> page, @Param("org_id")Integer org_id, @Param("card_type")Integer card_type, @Param("card_iccid")String card_iccid, @Param("mdate")String mdate, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 	
 	public Long usedTotal(@Param("org_id")Integer org_id, @Param("card_type")Integer card_type, @Param("card_iccid")String card_iccid, @Param("mdate")String mdate, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	
+	public List<CcStatsMonth> getMonthUsePage(IPage<CcStatsMonth> page, @Param("card_id")Integer card_id);
 }

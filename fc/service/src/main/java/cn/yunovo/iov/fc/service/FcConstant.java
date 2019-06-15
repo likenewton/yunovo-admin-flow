@@ -7,6 +7,10 @@ public class FcConstant {
 	public final static String CACHE_RESOURCE_PREFIX = "GPRS-MEM-RES-";
 	public final static String CACHE_SQL_PREFIX = "GPRS-MEM-SQL-";
 	
+	public final static String CARD_DAY_USE_CACHEKEY = "CARD-DAYUSE#%s#%s#%s";
+	
+	public final static String CARD_MONTH_USE_CACHEKEY = "CARD-MONTHUSE#%s#%s#%s";
+	
 	public static String memResKey(String key) {
 		
 		return CACHE_RESOURCE_PREFIX + key;

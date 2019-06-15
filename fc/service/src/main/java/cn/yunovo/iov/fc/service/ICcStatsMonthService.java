@@ -4,6 +4,7 @@ import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.SelectBean;
+import cn.yunovo.iov.fc.model.entity.CcStatsDay;
 import cn.yunovo.iov.fc.model.entity.CcStatsMonth;
 
 import java.io.IOException;
@@ -30,4 +31,5 @@ public interface ICcStatsMonthService extends IService<CcStatsMonth> {
 	
 	public void export(Integer org_id, Integer card_type, String card_iccid, String mdate, LoginInfo info) throws IOException;
 	
+	public PageData<CcStatsMonth, Object> getMonthUsePage(PageForm pageForm, Integer card_id, LoginInfo info);
 }

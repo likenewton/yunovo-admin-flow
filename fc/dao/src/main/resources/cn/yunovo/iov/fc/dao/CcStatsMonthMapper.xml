@@ -150,5 +150,15 @@
 			AND s.how_month = #{mdate}
 		</if>
 	</select>
+	
+	<select id="getMonthUsePage" resultType="cn.yunovo.iov.fc.model.entity.CcStatsMonth">
+	
+		SELECT how_month,card_id,month_used,month_unused,month_over,month_wlist,time_modify
+		FROM
+			cc_stats_month
+		WHERE
+			card_id = #{card_id}
+		
+	</select>
 
 </mapper>
