@@ -21,5 +21,5 @@ public interface ICcRealnameMapper extends BaseMapper<CcRealname> {
 
 	List<CcRealname> getItemsPage(IPage<CcRealname> page, @Param("org_id")Integer org_id, @Param("card_iccid")String card_iccid, @Param("date_start")String date_start, @Param("date_end")String date_end, @Param("status")Integer status, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 	
-	public Long getRlnameTotal(@Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	public Integer getRlnameTotalByStatus(@Param("cdi_status")Integer cdi_status, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 }

@@ -3,6 +3,7 @@ package cn.yunovo.iov.fc.service.impl;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -17,9 +18,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import cn.yunovo.iov.fc.dao.ICcGprsCardMapper;
+import cn.yunovo.iov.fc.dao.ICcGprsPackMapper;
 import cn.yunovo.iov.fc.dao.ICcGprsPayMapper;
 import cn.yunovo.iov.fc.dao.ICcOnoffLogMapper;
 import cn.yunovo.iov.fc.dao.ICcRealnameMapper;
@@ -49,6 +52,9 @@ public class HomeServiceImpl implements IHomeService{
 	
 	@Autowired
 	private ICcRealnameMapper iCcRealnameMapper;
+	
+	@Autowired
+	private ICcGprsPackMapper iCcGprsPackMapper;
 	
 	@Override
 	public HashMap<String, HashMap<String, Object>> getData(LoginInfo loginInfo) throws InterruptedException, ExecutionException{
@@ -196,11 +202,11 @@ public class HomeServiceImpl implements IHomeService{
 		exc.execute(data1);
 		
 		//获取机构下的充值与返利情况
-		FutureTask<Long> data2 = new FutureTask<>(new Callable<Long>() {
+		FutureTask<Integer> data2 = new FutureTask<>(new Callable<Integer>() {
 
 			@Override
-			public Long call() throws Exception {
-				Long data = iCcGprsCardMapper.getUnicomTotal(orgpos, orgpos.split(","));
+			public Integer call() throws Exception {
+				Integer data = iCcGprsCardMapper.getUnicomTotal(orgpos, orgpos.split(","));
 				return data;
 			}
 			
@@ -208,11 +214,11 @@ public class HomeServiceImpl implements IHomeService{
 		exc.execute(data2);
 		
 		//获取今日激活数量
-		FutureTask<Long> data3 = new FutureTask<>(new Callable<Long>() {
+		FutureTask<Integer> data3 = new FutureTask<>(new Callable<Integer>() {
 
 			@Override
-			public Long call() throws Exception {
-				return iCcRealnameMapper.getRlnameTotal(orgpos, orgpos.split(","));
+			public Integer call() throws Exception {
+				return iCcRealnameMapper.getRlnameTotalByStatus(2, orgpos, orgpos.split(","));
 			}
 			
 		});
@@ -225,6 +231,26 @@ public class HomeServiceImpl implements IHomeService{
 		stats.setRlname_total(data3.get());
 		
 		return stats;
+	}
+	
+	@Override
+	public 	Map<String, Integer> rl2pack(LoginInfo info) {
+		
+		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
+		if (StringUtils.isEmpty(orgpos)) {
+			
+			return null;
+		}
+		//待实名数
+		Integer rlnameTotal = iCcRealnameMapper.getRlnameTotalByStatus(0, orgpos, orgpos.split(","));
+		
+		//套餐数
+		Integer packNum = iCcGprsPackMapper.getPackNum(orgpos, orgpos.split(","));
+		
+		Map<String, Integer> data = new HashMap<>();
+		data.put("rlname_num", rlnameTotal);
+		data.put("pack_num", packNum);
+		return data;
 	}
 	
 }

@@ -22,4 +22,12 @@ public interface ICcGprsPackMapper extends BaseMapper<CcGprsPack> {
 	public List<CcGprsPack> getPack(@Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 	
 	public List<CcGprsPack> getItemsPage(Page<CcGprsPack> page, @Param("org_id")Integer org_id, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	
+	/**
+	 * 获取套餐数
+	 * @param orgpos
+	 * @param orgs
+	 * @return
+	 */
+	public Integer getPackNum(@Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 }

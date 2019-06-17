@@ -1,6 +1,7 @@
 package cn.yunovo.iov.fc.web.controller;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -36,6 +37,14 @@ public class HomeController extends BaseController{
 	public Result<CcStats> siminfo() throws Exception {
 		
 		CcStats data = homeService.siminfo(this.getLoginBaseInfo());
+		return ResultUtil.success(data);
+	}
+	
+	@ApiOperation(notes="首页-数据总览", value = "首页-数据总览")
+	@RequestMapping(path="/rl2pack", method= {RequestMethod.GET})
+	public Result<Map<String, Integer>> rl2pack() throws Exception {
+		
+		Map<String, Integer> data = homeService.rl2pack(this.getLoginBaseInfo());
 		return ResultUtil.success(data);
 	}
 	

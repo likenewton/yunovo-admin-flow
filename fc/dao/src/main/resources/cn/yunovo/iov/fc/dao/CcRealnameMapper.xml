@@ -56,9 +56,9 @@
 	</select>
 	
 	<!-- 获取实名卡数 -->
-	<select id="getRlnameTotal" resultType="Long">
+	<select id="getRlnameTotalByStatus" resultType="Integer">
 		
-		SELECT COUNT(RL.card_id) FROM cc_realname RL INNER JOIN cc_gprs_card GC ON GC.card_id = RL.card_id WHERE RL.cdi_status = 2
+		SELECT COUNT(RL.card_id) FROM cc_realname RL INNER JOIN cc_gprs_card GC ON GC.card_id = RL.card_id WHERE RL.cdi_status = #{cdi_status}
 		
 		<choose>
 			<when test='orgpos == "*"'>
@@ -74,6 +74,7 @@
 		</choose>
 	
 	</select>
+
 	
 	
 </mapper>

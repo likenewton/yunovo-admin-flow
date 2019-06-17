@@ -54,5 +54,24 @@
 
 		</choose>
 	</select>
+	
+	<select id="getPackNum" resultType="Integer">
+	
+		SELECT COUNT(GC.pack_id) FROM cc_gprs_pack GC WHERE 1 = 1
+		
+		<choose>
+			<when test='orgpos == "*"'>
+
+			</when>
+			<otherwise>
+				AND org_id IN
+				<foreach collection="orgs" item="id" index="index"
+					open="(" close=")" separator=",">
+					#{id}
+				</foreach>
+			</otherwise>
+		</choose>
+		
+	</select>
 
 </mapper>

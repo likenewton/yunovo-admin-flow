@@ -567,7 +567,7 @@
 	
 	</select>
 	
-	<select id="getUnicomTotal" resultType="Long">
+	<select id="getUnicomTotal" resultType="Integer">
 	
 		SELECT COUNT(GC.card_id) FROM cc_gprs_card GC WHERE GC.time_active IS NOT NULL AND GC.time_last IS NULL 
 		<choose>

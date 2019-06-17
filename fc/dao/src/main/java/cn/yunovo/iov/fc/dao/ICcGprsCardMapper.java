@@ -122,5 +122,5 @@ public interface ICcGprsCardMapper extends BaseMapper<CcGprsCard> {
 	 */
 	public HashMap<String, Object> getCardCase(@Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 	
-	public Long getUnicomTotal(@Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	public Integer getUnicomTotal(@Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 }

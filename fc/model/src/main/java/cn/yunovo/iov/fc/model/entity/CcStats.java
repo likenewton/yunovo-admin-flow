@@ -127,11 +127,11 @@ public class CcStats implements Serializable {
 	
 	@TableField(exist=false)
 	@ApiModelProperty(value = "已实名成功数")
-	private Long rlname_total;
+	private Integer rlname_total;
 	
 	@TableField(exist=false)
 	@ApiModelProperty(value = "非云智设备激活")
-	private Long unicom_total;
+	private Integer unicom_total;
 	
 
 }
