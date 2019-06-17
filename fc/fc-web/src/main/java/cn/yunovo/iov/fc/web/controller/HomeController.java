@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
-import cn.yunovo.iov.fc.service.HomeService;
+import cn.yunovo.iov.fc.model.entity.CcStats;
+import cn.yunovo.iov.fc.service.IHomeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -20,13 +21,21 @@ import io.swagger.annotations.ApiOperation;
 public class HomeController extends BaseController{
 
 	@Autowired
-	private HomeService homeService;
+	private IHomeService homeService;
 	
 	@ApiOperation(notes="获取数据看板数据接口", value = "获取数据看板数据接口")
 	@RequestMapping(path="/payCase", method= {RequestMethod.GET})
 	public Result<HashMap<String, HashMap<String, Object>>> getPayDetail() throws Exception {
 		
 		HashMap<String, HashMap<String, Object>> data = homeService.getData(this.getLoginBaseInfo());
+		return ResultUtil.success(data);
+	}
+	
+	@ApiOperation(notes="首页-SIM卡统计", value = "首页-SIM卡统计")
+	@RequestMapping(path="/siminfo", method= {RequestMethod.GET})
+	public Result<CcStats> siminfo() throws Exception {
+		
+		CcStats data = homeService.siminfo(this.getLoginBaseInfo());
 		return ResultUtil.success(data);
 	}
 	

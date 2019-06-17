@@ -1,7 +1,8 @@
-package cn.yunovo.iov.fc.service;
+package cn.yunovo.iov.fc.service.impl;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -9,18 +10,27 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import cn.yunovo.iov.fc.dao.ICcGprsCardMapper;
 import cn.yunovo.iov.fc.dao.ICcGprsPayMapper;
 import cn.yunovo.iov.fc.dao.ICcOnoffLogMapper;
+import cn.yunovo.iov.fc.dao.ICcRealnameMapper;
+import cn.yunovo.iov.fc.dao.ICcStatsMapper;
 import cn.yunovo.iov.fc.model.LoginInfo;
+import cn.yunovo.iov.fc.model.entity.CcStats;
+import cn.yunovo.iov.fc.service.ICcUserService;
+import cn.yunovo.iov.fc.service.IHomeService;
 
 @Service
-public class HomeService {
+public class HomeServiceImpl implements IHomeService{
 
 	@Autowired
 	public ICcOnoffLogMapper iCcOnoffLogMapper;
@@ -34,6 +44,13 @@ public class HomeService {
 	@Autowired
 	private ICcUserService iCcUserService;
 	
+	@Autowired
+	private ICcStatsMapper iCcStatsMapper;
+	
+	@Autowired
+	private ICcRealnameMapper iCcRealnameMapper;
+	
+	@Override
 	public HashMap<String, HashMap<String, Object>> getData(LoginInfo loginInfo) throws InterruptedException, ExecutionException{
 		
 		String orgpos = iCcUserService.getOrgpos(loginInfo.getLoginName());
@@ -43,7 +60,7 @@ public class HomeService {
 		}
 		
 		////获取今日停卡数量
-		ExecutorService exc = Executors.newFixedThreadPool(8);
+		ExecutorService exc = Executors.newFixedThreadPool(7);
 		FutureTask<HashMap<String, Object>> data1 = new FutureTask<>(new Callable<HashMap<String, Object>>() {
 			@Override
 			public HashMap<String, Object> call() throws Exception {
@@ -146,6 +163,65 @@ public class HomeService {
 		returnData.put("sy_pres",data7.get());
 		
 		return returnData;
+	}
+	
+	@Override
+	public CcStats siminfo(LoginInfo info) throws Exception {
+		
+		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
+		if (StringUtils.isEmpty(orgpos)) {
+			
+			return null;
+		}
+		Page<CcStats> page = new Page<>(1, 1);
+		page.setSearchCount(false);
+		List<CcStats> data = iCcStatsMapper.getItemsPage(page, null, null, null, orgpos, orgpos.split(","));
+		
+		////获取今日停卡数量
+		ExecutorService exc = Executors.newFixedThreadPool(7);
+		FutureTask<CcStats> data1 = new FutureTask<>(new Callable<CcStats>() {
+			@Override
+			public CcStats call() throws Exception {
+				
+				List<CcStats> items = iCcStatsMapper.getItemsPage(page, null, null, null, orgpos, orgpos.split(","));
+				if(CollectionUtils.isEmpty(items)) {
+					return new CcStats();
+				}else {
+					return items.get(0);
+				}
+			}
+			
+		});
+		exc.execute(data1);
+		
+		//获取机构下的充值与返利情况
+		FutureTask<Long> data2 = new FutureTask<>(new Callable<Long>() {
+
+			@Override
+			public Long call() throws Exception {
+				Long data = iCcGprsCardMapper.getUnicomTotal(orgpos, orgpos.split(","));
+				return data;
+			}
+			
+		});
+		exc.execute(data2);
+		
+		//获取今日激活数量
+		FutureTask<Long> data3 = new FutureTask<>(new Callable<Long>() {
+
+			@Override
+			public Long call() throws Exception {
+				return iCcRealnameMapper.getRlnameTotal(orgpos, orgpos.split(","));
+			}
+			
+		});
+		exc.execute(data3);
+		CcStats stats = data1.get();	
+		
+		stats.setUnicom_total(data2.get());
+		stats.setRlname_total(data3.get());
+		
+		return stats;
 	}
 	
 }

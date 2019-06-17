@@ -1,6 +1,5 @@
 package cn.yunovo.iov.fc.dao;
 
-import cn.yunovo.iov.fc.model.entity.CcGprsGift;
 import cn.yunovo.iov.fc.model.entity.CcRealname;
 
 import java.util.List;
@@ -21,4 +20,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 public interface ICcRealnameMapper extends BaseMapper<CcRealname> {
 
 	List<CcRealname> getItemsPage(IPage<CcRealname> page, @Param("org_id")Integer org_id, @Param("card_iccid")String card_iccid, @Param("date_start")String date_start, @Param("date_end")String date_end, @Param("status")Integer status, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	
+	public Long getRlnameTotal(@Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 }

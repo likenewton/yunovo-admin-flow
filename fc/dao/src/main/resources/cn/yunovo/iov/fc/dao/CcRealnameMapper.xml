@@ -55,4 +55,25 @@
 		
 	</select>
 	
+	<!-- 获取实名卡数 -->
+	<select id="getRlnameTotal" resultType="Long">
+		
+		SELECT COUNT(RL.card_id) FROM cc_realname RL INNER JOIN cc_gprs_card GC ON GC.card_id = RL.card_id WHERE RL.cdi_status = 2
+		
+		<choose>
+			<when test='orgpos == "*"'>
+
+			</when>
+			<otherwise>
+				AND GC.org_id IN
+				<foreach collection="orgs" item="id" index="index"
+					open="(" close=")" separator=",">
+					#{id}
+				</foreach>
+			</otherwise>
+		</choose>
+	
+	</select>
+	
+	
 </mapper>
