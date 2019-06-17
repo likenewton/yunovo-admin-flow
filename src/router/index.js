@@ -1,10 +1,7 @@
 
 // 按需加载路由
 // [chunk1](公共页面)
-const Login = r => require.ensure([], () => r(require('@/components/login.vue')), 'chunk1')
 const Home = r => require.ensure([], () => r(require('@/components/home.vue')), 'chunk1')
-const Sysmenu = r => require.ensure([], () => r(require('@/components/sysmenu.vue')), 'chunk1')
-const Logout = r => require.ensure([], () => r(require('@/components/logout.vue')), 'chunk1')
 
 // [chunk2](侧边栏菜单动态路由)
 const Asidemenu = r => require.ensure([], () => r(require('@/components/aside/index.vue')), 'chunk2')
@@ -308,18 +305,6 @@ let router = new VueRouter({
       name: 'home',
       component: Home
     }]
-  }, {
-    path: '/login',
-    name: 'login',
-    component: Login
-  }, {
-    path: '/sysmenu',
-    name: 'sysmenu',
-    component: Sysmenu
-  }, {
-    path: '/logout',
-    name: 'logout',
-    component: Logout
   }]
 })
 

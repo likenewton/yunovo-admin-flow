@@ -69,14 +69,35 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="115">
           <template slot-scope="scope">
-            <el-button type="text" @click="showDialog">审核实名证件</el-button>
+            <el-button type="text" @click="showDialog(scope)">审核实名证件</el-button>
           </template>
         </el-table-column>
       </el-table>
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
-    <v-dialog :dialogPara="dialogPara"></v-dialog>
+    <el-dialog title="机构卡实名审核" :visible.sync="authDialogVisible">
+      <div slot class="auth_dialog">
+        <div class="content" :style="{'maxHeight': winHeight/2 + 'px'}">
+          <div class="item">
+            <div class="title">身份证正面图</div>
+            <img src="../../assets/images/no-image-800x500.jpg" height="224" width="224">
+          </div>
+          <div class="item">
+            <div class="title">身份证背面图</div>
+            <img src="../../assets/images/no-image-800x500.jpg" height="224" width="224">
+          </div>
+          <div class="item">
+            <div class="title">手持身份证照</div>
+            <img src="../../assets/images/no-image-800x500.jpg" height="224" width="224">
+          </div>
+        </div>
+      </div>
+      <div slot="footer">
+        <el-button size="small" type="danger">实名信息无效</el-button>
+        <el-button size="small" type="success">实名信息通过</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -99,10 +120,8 @@ export default {
       formInline: {
         card_iccid: Api.UNITS.getQuery('card_iccid')
       },
-      dialogPara: {
-        title: '流量卡实名审核',
-        content: '<div id="cardauto" style="width:100%; height:300px"></div>'
-      },
+      winHeight: 0,
+      authDialogVisible: false
     }
   },
   mounted() {
@@ -146,16 +165,16 @@ export default {
         url: _axios.ajaxAd.getRealNames
       })
     },
-    showDialog() {
-      this.SET_DIALOGVISIBLE({ dialogVisible: true })
+    showDialog(scope) {
+      this.winHeight = $(window).height()
+      this.authDialogVisible = true
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,
     calcLeftTime: Api.UNITS.calcLeftTime
   },
   computed: {
     ...mapState({
-      orgs: 'orgs',
-      dialogVisible: 'dialogVisible',
+      orgs: 'orgs'
     })
   }
 }
@@ -176,6 +195,20 @@ export default {
 
   .el-date-editor .el-range-separator {
     width: auto;
+  }
+
+  .auth_dialog {
+    overflow: auto;
+
+    .item {
+      text-align: center;
+
+      .title {
+        line-height: 20px;
+        margin: 20px 0;
+        font-size: 18px;
+      }
+    }
   }
 }
 

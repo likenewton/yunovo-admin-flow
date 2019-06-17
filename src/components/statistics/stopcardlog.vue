@@ -28,7 +28,7 @@
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column fixed="left" prop="card_iccid" label="卡ICCID" width="200" sortable="custom">
           <template slot-scope="scope">
-            <span class="btn-link" @click="checkRechargeDetail(scope.row.card_iccid)">{{scope.row.card_iccid}}</span>
+            <span class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="card_id" label="卡商名称" min-width="140" sortable="custom">
@@ -38,7 +38,7 @@
         </el-table-column>
         <el-table-column prop="org_id" label="所属机构" min-width="140" sortable="custom">
           <template slot-scope="scope">
-            <span class="btn-link">{{scope.row.org_name}}</span>
+            <span class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="pay_count" label="充值次数" min-width="95" sortable="custom"></el-table-column>
@@ -54,7 +54,7 @@
         <el-table-column fixed="right" label="操作" width="110">
           <template slot-scope="scope">
             <el-button type="text" @click="showStopCardDetail(scope.row)">详情</el-button>
-            <el-button type="text">套餐</el-button>
+            <el-button type="text" @click="toUnicomLink(scope.row.card_iccid)">套餐</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -64,17 +64,13 @@
     <el-dialog title="停卡详情列表" :visible.sync="dialogTableVisible">
       <div slot class="clearfix">
         <el-table v-loading="dialogList.loadData" :data="curTableData" :max-height="maxDialogHeight" border size="mini">
-          <el-table-column fixed="left" prop="card_iccid" label="卡ICCID" width="180">
-            <template slot-scope="scope">
-              <el-button type="text" @click="checkRechargeDetail(scope.row.card_iccid)">{{scope.row.card_iccid}}</el-button>
-            </template>
-          </el-table-column>
+          <el-table-column fixed="left" prop="card_iccid" label="卡ICCID" width="180"></el-table-column>
           <el-table-column prop="balance_value" label="剩余流量" width="105">
             <template slot-scope="scope">
               <div v-html="formatFlowUnit(scope.row.balance_value)"></div>
             </template>
           </el-table-column>
-          <el-table-column prop="user_name" label="操作说明" min-width="200"></el-table-column>
+          <el-table-column prop="user_name" show-overflow-tooltip label="操作说明" min-width="200"></el-table-column>
           <el-table-column prop="time_added" label="停卡时间" width="155"></el-table-column>
           <el-table-column prop="exec_status" label="执行结果" width="75">
             <template slot-scope="scope">
@@ -157,10 +153,6 @@ export default {
       this.dialogTableVisible = true
       this.getDetailData()
     },
-    // iccid 连接跳转
-    checkRechargeDetail(card_iccid) {
-      this.$router.push({ name: 'rechargeDetail', query: { card_iccid } })
-    },
     // 查询
     searchData() {
       this.list.currentPage = 1
@@ -203,7 +195,8 @@ export default {
     },
     // 过滤器
     formatFlowUnit: Api.UNITS.formatFlowUnit,
-    calcLeftTime: Api.UNITS.calcLeftTime
+    calcLeftTime: Api.UNITS.calcLeftTime,
+    toUnicomLink: Api.UNITS.toUnicomLink
   },
   computed: {
     ...mapState({

@@ -50,7 +50,7 @@
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" min-width="180" sortable="custom">
           <template slot-scope="scope">
-            <span class="btn-link">{{scope.row.card_iccid}}</span>
+            <span class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="card_type" label="卡商名称" min-width="120" sortable="custom">
@@ -101,7 +101,7 @@
         <el-table-column fixed="right" label="操作" min-width="140">
           <template slot-scope="scope">
             <el-button type="text" @click="showDetail(scope)">同步</el-button>
-            <el-button type="text">套餐</el-button>
+            <el-button type="text" @click="toUnicomLink(scope.row.card_iccid)">套餐</el-button>
             <el-button type="text" class="text_danger" v-if="scope.row.unicom_stop==0">停用</el-button>
             <el-button type="text" class="text_success" v-else>启用</el-button>
           </template>
@@ -330,7 +330,8 @@ export default {
       }, 1000)
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,
-    calcLeftTime: Api.UNITS.calcLeftTime
+    calcLeftTime: Api.UNITS.calcLeftTime,
+    toUnicomLink: Api.UNITS.toUnicomLink
   },
   computed: {
     ...mapState({

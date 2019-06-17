@@ -1,7 +1,7 @@
 <template>
   <div class="card_reset">
     <el-card shadow="never">
-      <el-tabs @tab-click="changeTab">
+      <el-tabs @tab-click="changeTab" v-model="tabIndex">
         <el-tab-pane>
           <span slot="label">重置操作</span>
           <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="126px" size="small">
@@ -93,7 +93,7 @@ export default {
   data() {
     return {
       loadData: true,
-      tabIndex: '0',
+      tabIndex: '1',
       pageSizes: Api.STATIC.pageSizes,
       maxTableHeight: Api.UNITS.maxTableHeight(),
       list: {
@@ -114,7 +114,9 @@ export default {
       }
     }
   },
-  mounted() {},
+  mounted() {
+    this.getData()
+  },
   methods: {
     handleSizeChange(val) {
       this.list.pagesize = val
@@ -130,7 +132,6 @@ export default {
       this.getData()
     },
     changeTab(para) {
-      this.tabIndex = para.index
       if (this.tabIndex === '1') {
         // 重置历史查询
         if (this.list.data.length === 0) {

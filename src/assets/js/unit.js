@@ -140,8 +140,11 @@ module.exports = {
     }
     return htmlStr
   },
-  formatMoney(value, type) {
-    if (!value) return '0.00'
+  formatMoney(value, type = 2) {
+    if (!value) {
+      if (type === 0) return '0'
+      else return '0.' + '0'.repeat(type)
+    }
     value = value.toString().replace(/^(\d*)$/, "$1.")
     value = (value + "00").replace(/(\d*\.\d\d)\d*/, "$1")
     value = value.replace(".", ",")
@@ -320,5 +323,11 @@ module.exports = {
       title: para.title || '错误',
       message: para.message || '提交的表单数据不符合规范！'
     })
+  },
+  toUnicomLink(iccid) {
+    window.open(`http://t.gprs.yunovo.cn/app/main/info?iccid=${iccid}`)
+  },
+  toFixed(value, total, count = 2) {
+    return (value / total * 100).toFixed(count) + '%'
   }
 }

@@ -10,7 +10,7 @@
     <el-dropdown trigger="click" class="pointer fr" @command="handleCommand">
       <span class="el-dropdown-link">{{userInfo.userName}}<i class="el-icon-caret-bottom el-icon--right"></i></span>
       <el-dropdown-menu slot="dropdown" style="">
-        <el-dropdown-item command="modify" icon="el-icon-fontxiugaimima1">修改密码</el-dropdown-item>
+        <!-- <el-dropdown-item command="modify" icon="el-icon-fontxiugaimima1">修改密码</el-dropdown-item> -->
         <el-dropdown-item command="quit" icon="el-icon-fonticon-tuichu">退出</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>

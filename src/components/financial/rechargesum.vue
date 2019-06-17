@@ -22,7 +22,7 @@
         <el-table-column prop="org_id" label="机构名称" min-width="200" sortable="custom">
           <template slot-scope="scope">
             <span v-if="scope.row.sums">{{scope.row.org_name}}</span>
-            <span v-else class="btn-link">{{scope.row.org_name}}</span>
+            <span v-else class="btn-link" @click="$router.push({name: 'jgrecharge', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="pay_count" label="充值次数" min-width="110" sortable="custom"></el-table-column>
@@ -43,7 +43,7 @@
         </el-table-column>
         <el-table-column label="操作" min-width="80">
           <template slot-scope="scope">
-            <el-button v-if="!scope.row.sums" type="text" @click="$router.push({ name: 'iccidList', query: { 'org_id': scope.row.org_id } })">详情</el-button>
+            <el-button v-if="!scope.row.sums" type="text" @click="$router.push({ name: 'iccidList', query: { org_id: scope.row.org_id } })">详情</el-button>
           </template>
         </el-table-column>
       </el-table>

@@ -1,71 +1,71 @@
 <template>
   <div class="home-container">
     <el-row :gutter="20">
-      <el-col :span="11">
+      <el-col :span="11" v-loading="colorCardLoadData">
         <el-card class="color_card" shadow="never" :body-style="{background: getColorList('success')}">
           <div class="card_item">
             <div class="card_title">今日订单数</div>
-            <div class="card_value">265</div>
+            <div class="card_value">{{formatMoney(colorCardData.tres.pay_count, 0)}}</div>
           </div>
           <div class="card_item">
             <div class="card_title">今日续费</div>
-            <div class="card_value">￥2650</div>
+            <div class="card_value">￥{{formatMoney(colorCardData.tres.pay_money || 0)}}</div>
           </div>
           <div class="card_item">
             <div class="card_title">今日返利</div>
-            <div class="card_value">￥2650</div>
+            <div class="card_value">￥{{formatMoney(colorCardData.tres.rebate_money || 0)}}</div>
           </div>
           <div class="card_item">
-            <div class="card_title">当日激活卡数</div>
-            <div class="card_value">265</div>
+            <div class="card_title">今日激活卡数</div>
+            <div class="card_value">{{formatMoney(colorCardData.tres.active_today, 0)}}</div>
           </div>
           <div class="card_item">
             <div class="card_title">今日停卡数</div>
-            <div class="card_value">265</div>
+            <div class="card_value">{{formatMoney(colorCardData.tres.stop_today, 0)}}</div>
           </div>
         </el-card>
         <el-card class="color_card" shadow="never" :body-style="{background: getColorList('primary')}">
           <div class="card_item">
             <div class="card_title">当月订单数</div>
-            <div class="card_value">265</div>
+            <div class="card_value">{{formatMoney(colorCardData.dy_pres.pay_count, 0)}}</div>
           </div>
           <div class="card_item">
             <div class="card_title">当月续费</div>
-            <div class="card_value">￥26500</div>
+            <div class="card_value">￥{{formatMoney(colorCardData.dy_pres.pay_money)}}</div>
           </div>
           <div class="card_item">
             <div class="card_title">当月返利</div>
-            <div class="card_value">￥26500</div>
+            <div class="card_value">￥{{formatMoney(colorCardData.dy_pres.rebate_money)}}</div>
           </div>
           <div class="card_item">
             <div class="card_title">当月激活卡数</div>
-            <div class="card_value">265</div>
+            <div class="card_value">{{formatMoney(colorCardData.tres.active_month, 0)}}</div>
           </div>
           <div class="card_item">
             <div class="card_title">当月停卡数</div>
-            <div class="card_value">265</div>
+            <div class="card_value">{{formatMoney(colorCardData.tres.stop_month, 0)}}</div>
           </div>
         </el-card>
-        <el-card class="color_card" shadow="never" :body-style="{background: getColorList('warning')}">
+        <el-card class="color_card" shadow="never" :body-style="{background: getColorList('warning')}" style="margin-bottom: 0">
           <div class="card_item">
             <div class="card_title">累计订单</div>
-            <div class="card_value">265</div>
+            <div class="card_value">{{formatMoney(colorCardData.pres.pay_count, 0)}}</div>
           </div>
           <div class="card_item">
             <div class="card_title">累计续费</div>
-            <div class="card_value">￥26500.32</div>
+            <div class="card_value">￥{{formatMoney(colorCardData.pres.pay_money)}}</div>
           </div>
           <div class="card_item">
             <div class="card_title">累计返利</div>
-            <div class="card_value">￥26500.32</div>
+            <div class="card_value">￥{{formatMoney(colorCardData.pres.rebate_money)}}</div>
           </div>
         </el-card>
       </el-col>
       <el-col :span="13">
-        <el-card class="pie-card" shadow="never" :style="{height: '335px'}">
+        <el-card class="pie-card" shadow="never" :style="{height: '336px'}" v-loading="pieCardLoadData">
           <div class="header">SIM卡统计</div>
           <el-row>
-            <el-tabs @tab-click="changeTab_1">
+            <el-tabs @tab-click="changeTab_1" v-model="tabIndex_1">
               <el-tab-pane label="卡状态">
                 <el-row>
                   <div class="pie_left">
@@ -85,7 +85,7 @@
                           </div>
                         </template>
                       </el-table-column>
-                      <el-table-column prop="percent" label="占比%" min-width="60" align="center"></el-table-column>
+                      <el-table-column prop="percent" label="占比" min-width="60" align="center"></el-table-column>
                       <el-table-column prop="card_num" label="卡数" min-width="60" align="center"></el-table-column>
                     </el-table>
                   </div>
@@ -147,36 +147,23 @@
       </el-col>
     </el-row>
     <el-row :gutter="20" style="margin-top: 20px">
-      <el-col :span="11">
-        <el-card class="middle_card_left" shadow="never">
+      <el-col :span="24">
+        <el-card class="middle_card_left" shadow="never" v-loading="middleCardLoadData">
           <div class="header">数据总览</div>
           <el-row class="content" :gutter="8">
             <el-col :span="12">
-              <el-card shadow="hover" style="border: none" class="pointer">
-                <div class="value">12</div>
+              <el-card shadow="hover" style="border: none" class="pointer" @click.native="$router.push({name: 'cardauth'})">
+                <div class="value">{{middleCardData.rlname_num}}</div>
                 <div class="key">实名待审核数</div>
               </el-card>
             </el-col>
             <el-col :span="12">
-              <el-card shadow="hover" style="border: none" class="pointer">
-                <div class="value">152</div>
+              <el-card shadow="hover" style="border: none" class="pointer" @click.native="$router.push({name: 'cardcombo'})">
+                <div class="value">{{middleCardData.pack_num}}</div>
                 <div class="key">流量套餐总数</div>
               </el-card>
             </el-col>
           </el-row>
-        </el-card>
-      </el-col>
-      <el-col :span="13">
-        <el-card class="middle_card_right" shadow="never">
-          <div class="fbs-left avatar">
-            <img src="../assets/images/shouquan.png">
-          </div>
-          <div class="fbs-right infos">
-            <div class="title">Hi，深圳市云智易联科技有限公司</div>
-            <div><span class="dot"></span><span class="grey">本次登录：</span>2017-07-03 14:36:21</div>
-            <div><span class="dot"></span><span class="grey">登录地区：</span>广东省深圳市 （IP：183.14.135.1）</div>
-            <div><span class="dot"></span><span class="grey">当前版本：</span>v1.2.0</div>
-          </div>
         </el-card>
       </el-col>
     </el-row>
@@ -188,7 +175,7 @@
           </el-date-picker>
         </div>
         <el-row>
-          <el-tabs @tab-click="changeTab_2">
+          <el-tabs @tab-click="changeTab_2" v-model="tabIndex_2">
             <el-tab-pane label="续费趋势">
               <el-row :gutter="20">
                 <el-col :span="15">
@@ -196,7 +183,7 @@
                 </el-col>
                 <el-col :span="8" class="rank-list">
                   <el-row class="title">机构续费排名</el-row>
-                  <el-row v-for="(item, index) in rankData" :key="index" class="rank-item" :gutter="5">
+                  <el-row v-for="(item, index) in rankData_2_0" :key="index" class="rank-item" :gutter="5">
                     <el-col :class="'a_' + index" :span="3">{{index + 1}}</el-col>
                     <el-col :span="12">{{item.name}}</el-col>
                     <el-col :span="8">￥{{formatMoney(item.value)}}</el-col>
@@ -249,65 +236,40 @@ export default {
       tabIndex_2: '0',
       myChart_1: null,
       myChart_2: null,
-      tableData_1_0: [{
+      colorCardLoadData: true,
+      pieCardLoadData: true,
+      middleCardLoadData: true,
+      colorCardData: {
+        pres: {}, // 累计
+        tres: {}, // 今日
+        dy_pres: {}, // 当月
+      },
+      pieCardData: null, // pie原始诗句
+      middleCardData: {
+        rlname_num: 0,
+        pack_num: 0
+      },
+      tableData_1_0: [{ // 字段名_第几个tab_tabIndex对应值
         color: Api.UNITS.getColorList('success'),
         status: '已激活',
-        percent: '66.66%',
-        card_num: 4320
+        percent: '0.00%',
+        card_num: 0
       }, {
         color: Api.UNITS.getColorList('warning'),
         status: '未激活',
-        percent: '20%',
-        card_num: 521
+        percent: '0.00%',
+        card_num: 0
       }, {
         color: Api.UNITS.getColorList('danger'),
         status: '已停卡',
-        percent: '14%',
-        card_num: 120
+        percent: '0.00%',
+        card_num: 0
       }],
-      tableData_1_1: [{
-        color: Api.UNITS.getColorList('success'),
-        status: '已实名',
-        percent: '66.66%',
-        card_num: 4320
-      }, {
-        color: Api.UNITS.getColorList('warning'),
-        status: '未实名',
-        percent: '30%',
-        card_num: 521
-      }],
-      tableData_1_2: [{
-        color: Api.UNITS.getColorList('success'),
-        status: '云智设备激活',
-        percent: '66.66%',
-        card_num: 4320
-      }, {
-        color: Api.UNITS.getColorList('warning'),
-        status: '其它设备激活',
-        percent: '30%',
-        card_num: 521
-      }],
-      rankData: [{
+      tableData_1_1: [],
+      tableData_1_2: [],
+      rankData_2_0: [{
         name: '云智易联-测试环境',
         value: 365225.35
-      }, {
-        name: '云智易联',
-        value: 36525.35
-      }, {
-        name: '云智易联',
-        value: 36525.35
-      }, {
-        name: '云智易联',
-        value: 36525.35
-      }, {
-        name: '云智易联',
-        value: 36525.35
-      }, {
-        name: '云智易联',
-        value: 36525.35
-      }, {
-        name: '云智易联',
-        value: 36525.35
       }],
       bottomCardDate: '',
       pickerOptions: {
@@ -346,13 +308,7 @@ export default {
             normal: {
               show: true,
               position: 'center',
-              formatter(serise) {
-                if (serise.dataIndex === 0) {
-                  return `{a|SIM卡总数}\n{b|123,224}`
-                } else {
-                  return ''
-                }
-              },
+              formatter: '',
               rich: {
                 a: {
                   color: '#909399',
@@ -380,34 +336,96 @@ export default {
     }
   },
   mounted() {
+    this.getColorCardData()
+    this.getEl2pack()
     this.changeTab_1({ index: '0' })
     this.changeTab_2({ index: '0' })
   },
   methods: {
     changeTab_1(para) {
-      this.tabIndex_1 = para.index
       this.myChart_1 = this.$echarts.init(document.getElementById(`canvas_1_${para.index}`))
-      this.getTab1Data()
+      if (this.pieCardData) {
+        this.showPie()
+      } else {
+        this.getSiminfo()
+      }
     },
     changeTab_2(para) {
-      this.tabIndex_2 = para.index
       setTimeout(() => {
         this.myChart_2 = this.$echarts.init(document.getElementById(`canvas_2_${para.index}`))
-        // tab切换的时候都重新修正一下尺寸
         this.myChart_2.resize()
       }, 0)
       this.getTab2Data()
     },
-    getTab1Data() {
-      let serise = this.option_1.series[0]
-      if (this.tabIndex_1 === '0') {
-        serise.data = [4320, 2587, 965]
-      } else if (this.tabIndex_1 === '1') {
-        serise.data = [4320, 5882]
-      } else if (this.tabIndex_1 === '2') {
-        serise.data = [4320, 1205]
-      }
-      this.myChart_1.setOption(this.option_1)
+    // 数据总览
+    getEl2pack() {
+      _axios.send({
+        method: 'get',
+        url: _axios.ajaxAd.getEl2pack,
+        done: ((res) => {
+          this.middleCardLoadData = false
+          this.middleCardData = res.data
+        })
+      })
+    },
+    getColorCardData() {
+      _axios.send({
+        method: 'get',
+        url: _axios.ajaxAd.getPayCase,
+        done: ((res) => {
+          this.colorCardLoadData = false
+          this.colorCardData = res.data
+        })
+      })
+    },
+    getSiminfo() {
+      _axios.send({
+        method: 'get',
+        url: _axios.ajaxAd.getSiminfo,
+        done: ((res) => {
+          this.pieCardLoadData = false
+          this.pieCardData = res.data
+          this.tableData_1_0 = [{ // card_total
+            color: Api.UNITS.getColorList('success'),
+            status: '已激活',
+            percent: this.toFixed(res.data.active_total - res.data.stop_total, res.data.card_total),
+            card_num: res.data.active_total - res.data.stop_total
+          }, {
+            color: Api.UNITS.getColorList('warning'),
+            status: '未激活',
+            percent: this.toFixed(res.data.card_total - res.data.active_total, res.data.card_total),
+            card_num: res.data.card_total - res.data.active_total
+          }, {
+            color: Api.UNITS.getColorList('danger'),
+            status: '已停卡',
+            percent: this.toFixed(res.data.stop_total, res.data.card_total),
+            card_num: res.data.stop_total
+          }]
+          this.tableData_1_1 = [{
+            color: Api.UNITS.getColorList('success'),
+            status: '已实名',
+            percent: this.toFixed(res.data.rlname_total, res.data.card_total),
+            card_num: res.data.rlname_total
+          }, {
+            color: Api.UNITS.getColorList('warning'),
+            status: '未实名',
+            percent: this.toFixed(res.data.card_total - res.data.rlname_total, res.data.card_total),
+            card_num: res.data.card_total - res.data.rlname_total
+          }]
+          this.tableData_1_2 = [{
+            color: Api.UNITS.getColorList('success'),
+            status: '云智设备激活',
+            percent: this.toFixed(res.data.active_total - res.data.unicom_total, res.data.active_total),
+            card_num: res.data.active_total - res.data.unicom_total
+          }, {
+            color: Api.UNITS.getColorList('warning'),
+            status: '其它设备激活',
+            percent: this.toFixed(res.data.unicom_total, res.data.active_total),
+            card_num: res.data.unicom_total
+          }]
+          this.showPie()
+        })
+      })
     },
     getTab2Data() {
       let tabIndex = this.tabIndex_2
@@ -497,8 +515,15 @@ export default {
         }, 0)
       }
     },
+    showPie() {
+      this.option_1.series[0].data = this[`tableData_1_${this.tabIndex_1}`].map((v) => v.card_num)
+      this.option_1.series[0].label.normal.formatter = this.formatterPie
+      this.myChart_1.setOption(this.option_1)
+    },
+    formatFlowUnit: Api.UNITS.formatFlowUnit,
     getColorList: Api.UNITS.getColorList,
     formatMoney: Api.UNITS.formatMoney,
+    toFixed: Api.UNITS.toFixed,
     formatterDealFn(data) {
       let variable = {
         // 数字对应的是tabIndex_2中的值
@@ -558,6 +583,15 @@ export default {
           return str
         }()}
       </div>`
+    },
+    formatterPie(series) {
+      if (this.tabIndex_1 === '0' || this.tabIndex_1 === '1') {
+        if (series.dataIndex === 0) return `{a|SIM卡总数}\n{b|${this.formatMoney(this.pieCardData.card_total, 0)}}`
+        else return ''
+      } else {
+        if (series.dataIndex === 0) return `{a|激活卡总数}\n{b|${this.formatMoney(this.pieCardData.active_total, 0)}}`
+        else return ''
+      }
     }
   },
   computed: {
@@ -567,7 +601,6 @@ export default {
   },
   watch: {
     asideCollapse(val, oldVal) {
-      // 监听侧边栏的折叠变化，一旦发生变化要重新调整ecarts尺寸
       setTimeout(() => {
         this.myChart_2.resize()
       }, 300)
@@ -580,10 +613,6 @@ export default {
 .home-container {
   .color_card {
     margin-bottom: 15px;
-
-    &:last-of-type {
-      margin-bottom: 0;
-    }
 
     * {
       color: #fff;
@@ -688,58 +717,6 @@ export default {
           line-height: 35px;
         }
       }
-    }
-  }
-
-  .middle_card_right {
-    height: 201px;
-
-    .el-card__body {
-      height: 100%;
-    }
-
-    .avatar {
-      width: 140px;
-      padding: 30px 10px;
-
-      img {
-        float: right;
-        overflow: hidden;
-        border-radius: 50%;
-        width: 80px;
-      }
-    }
-
-    .infos {
-      height: 100%;
-      padding: 15px 10px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-around;
-
-      .title {
-        font-size: 20px;
-        color: #999;
-      }
-
-      div {
-        font-size: 14px;
-        color: #666;
-
-        .grey {
-          color: #a1a1a1;
-        }
-
-        .dot {
-          display: inline-block;
-          background: #a1a1a1;
-          width: 5px;
-          height: 5px;
-          border-radius: 50%;
-          margin: 3px 5px;
-        }
-      }
-
     }
   }
 

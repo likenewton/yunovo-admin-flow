@@ -90,7 +90,7 @@ export default {
   data() {
     return {
       pageSizes: Api.STATIC.pageSizes,
-      tabIndex: Api.UNITS.getQuery('tabIndex') || '0',
+      tabIndex: Api.UNITS.getQuery('tabIndex') || '1',
       loadData: true,
       maxTableHeight: Api.UNITS.maxTableHeight(),
       list: {
@@ -189,9 +189,7 @@ export default {
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,
     limitNumber: Api.UNITS.limitNumber,
-    toUnicomLink(iccid) {
-      window.open(`http://t.gprs.yunovo.cn/app/main/info?iccid=${iccid}`)
-    }
+    toUnicomLink: Api.UNITS.toUnicomLink
   },
   computed: {
     ...mapState({

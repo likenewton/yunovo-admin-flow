@@ -8,7 +8,7 @@
         <span class="item">当月用量：<span v-html="formatFlowUnit(cardDetail.used_month)"></span></span>
         <span class="item">累记充值量：<span v-html="formatFlowUnit(cardDetail.pay_total)"></span></span>
         <span class="item">剩余流量：<span v-html="formatFlowUnit(cardDetail.max_unused)"></span></span>
-        <span class="item text_danger">设备更新时间：{{cardDetail.time_last}}</span>
+        <span class="item text_danger">设备更新时间：{{cardDetail.time_last || '暂无数据'}}</span>
       </el-row>
       <el-tabs @tab-click="changeTab" v-model="tabIndex">
         <!-- 充值详情列表 -->
@@ -272,7 +272,7 @@ export default {
       sort_3: {},
       sort_4: {},
       ajaxData: {
-        '0': 'getPayDetail',
+        '0': 'getCardPayDetail',
         '1': 'getGprsAllotList',
         '2': 'getLogList',
         '3': 'getDayUse',

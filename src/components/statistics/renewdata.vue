@@ -24,7 +24,7 @@
       <el-table ref="listTable" @sort-change="handleSortChange" :max-height="maxTableHeight" :data="list.data" border resizable size="mini">
         <el-table-column prop="org_id" label="机构名称" min-width="180" sortable="custom">
           <template slot-scope="scope">
-            <span class="btn-link">{{scope.row.org_name}}</span>
+            <span class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="card_count" label="售卡数量" min-width="100" sortable="custom"></el-table-column>

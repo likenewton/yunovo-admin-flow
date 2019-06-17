@@ -18,7 +18,7 @@
       <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" min-width="200" sortable="custom">
           <template slot-scope="scope">
-            <span class="btn-link">{{scope.row.card_iccid}}</span>
+            <span class="btn-link" @click="$router.push({name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="pay_count" label="充值总次数" min-width="140" sortable="custom"></el-table-column>
@@ -100,7 +100,7 @@ export default {
     getData() {
       Api.UNITS.getListData({
         vue: this,
-        url: _axios.ajaxAd.getPayDetail
+        url: _axios.ajaxAd.getReportPayDetail
       })
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,

@@ -1,7 +1,7 @@
 <template>
   <div class="flow_gift">
     <el-card class="reset-card" shadow="never">
-      <el-tabs @tab-click="changeTab">
+      <el-tabs @tab-click="changeTab" v-model="tabIndex">
         <el-tab-pane>
           <span slot="label">赠送流量</span>
           <el-form :model="formInline" :rules="rules" ref="ruleForm" label-width="126px" size="small" :status-icon="true">
@@ -130,7 +130,7 @@ export default {
   data() {
     return {
       pageSizes: Api.STATIC.pageSizes,
-      tabIndex: '0',
+      tabIndex: '1',
       loadData: true,
       maxTableHeight: Api.UNITS.maxTableHeight(),
       list: {
@@ -176,7 +176,9 @@ export default {
       }
     }
   },
-  mounted() {},
+  mounted() {
+    this.getData()
+  },
   methods: {
     changeTab(para) {
       this.tabIndex = para.index

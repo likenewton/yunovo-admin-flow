@@ -20,13 +20,13 @@
       </el-button-group>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" @selection-change="handleSelectionChange" :row-key="getRowKeys" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column fixed="left" type="selection" :reserve-selection="true" min-width="60"></el-table-column>
-        <el-table-column prop="org_id" fixed="left" label="机构名称" min-width="140" sortable="custom">
+        <el-table-column prop="org_id" fixed="left" label="机构名称" min-width="160" sortable="custom">
           <template slot-scope="scope">
-            <span class="btn-link">{{scope.row.name}}</span>
+            <span class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.name}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="partner_id" label="合作编号" min-width="140" sortable="custom"></el-table-column>
-        <el-table-column prop="partner_key" label="合作秘钥" min-width="240" sortable="custom"></el-table-column>
+        <el-table-column prop="partner_key" label="合作秘钥" min-width="200" sortable="custom"></el-table-column>
         <el-table-column prop="notify_url" label="异步通知地址" min-width="215" sortable="custom"></el-table-column>
         <el-table-column prop="user_total" label="可开账户数量" width="113" sortable="custom"></el-table-column>
         <el-table-column prop="email" label="负责人邮箱" min-width="105" sortable="custom"></el-table-column>

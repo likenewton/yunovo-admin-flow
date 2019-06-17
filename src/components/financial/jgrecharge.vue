@@ -79,7 +79,9 @@ export default {
         total: 0,
       },
       sort: {},
-      formInline: {},
+      formInline: {
+        org_id: Api.UNITS.getQuery('org_id')
+      },
       maxTableHeight: Api.UNITS.maxTableHeight(),
     }
   },
@@ -108,7 +110,9 @@ export default {
     // 重置列表
     resetData() {
       this.list.currentPage = 1
-      this.formInline = {} // 1、重置查询表单
+      this.formInline = {
+        org_id: Api.UNITS.getQuery('org_id')
+      } // 1、重置查询表单
       this.sort = {} // 2、重置排序
       this.$refs.listTable.clearSort() // 3、清空排序样式
       this.getData()

@@ -56,15 +56,15 @@ class AXIOS {
       getMoves: '/fc/api/gprs/move/',
       getRealNames: '/fc/api/realname/',
       // 明细
+      getReportPayDetail: '/fc/api/gprs/report/payDetail',
+      getPayDetail: '/fc/api/system/pays/detail',
+      getCardPayDetail: '/fc/api/gprs/card/payDetail',
       getOnOffLogDetail: '/fc/api/gprs/onoffLog/detail',
       getNotifyFromOrg: '/fc/api/gprs/notifyFrom/org',
       getPayOnlineOrg: '/fc/api/gprs/payOnline/org',
-      getPayDetail: '/fc/api/gprs/report/payDetail',
       getNationDetail: '/fc/api/system/nations/detail',
-      getPayDetail: '/fc/api/system/pays/detail',
       getCurrencyDetail: '/fc/api/system/currency/detail',
       getSystemParams: '/fc/api/system/params/',
-      getPayDetail: '/fc/api/gprs/card/payDetail',
       getGprsAllotList: '/fc/api/gprs/card/gprsAllotList',
       getLogList: '/fc/api/gprs/card/logList',
       getDayUse: '/fc/api/gprs/card/dayUse',
@@ -88,6 +88,10 @@ class AXIOS {
       addCurrency: '/fc/api/system/currency/insert',
       updateCurrency: '/fc/api/system/currency/update',
       updateSystemParams: '/fc/api/system/params/update',
+      // 首页
+      getPayCase: '/fc/api/home/payCase', // 数据看板
+      getSiminfo: '/fc/api/home/siminfo', // 获取pie-card数据
+      getEl2pack: '/fc/api/home/rl2pack', // 数据总览
     }
   }
 

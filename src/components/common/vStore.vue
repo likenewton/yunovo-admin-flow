@@ -11,6 +11,7 @@ export default {
     return {}
   },
   mounted() {
+    // 首页不加载
     if (this.cardTypes.length === 0) this.getCardTypes()
     if (this.orgs.length === 0) this.getOrgs()
     if (this.notifysFrom.length === 0) this.getNotifySelect()

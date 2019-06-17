@@ -23,7 +23,7 @@
       <el-table ref="listTable" @sort-change="handleSortChange" :max-height="maxTableHeight" :data="list.data" border resizable size="mini">
         <el-table-column prop="org_id" label="机构名称" min-width="220" sortable="custom">
           <template slot-scope="scope">
-            <span class="btn-link">{{scope.row.org_name}}</span>
+            <span class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="ntf_type" label="通知或来源" min-width="200" sortable="custom">

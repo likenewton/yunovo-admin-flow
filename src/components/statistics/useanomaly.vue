@@ -38,7 +38,7 @@
       <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column fixed="left" prop="card_iccid" label="卡ICCID" width="180">
           <template slot-scope="scope">
-            <span class="btn-link">{{scope.row.card_iccid}}</span>
+            <span class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="card_id" label="卡商名称" min-width="150" sortable="custom">
@@ -48,7 +48,7 @@
         </el-table-column>
         <el-table-column prop="org_id" label="机构名称" min-width="180" sortable="custom">
           <template slot-scope="scope">
-            <span class="btn-link">{{scope.row.org_name}}</span>
+            <span class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="unicom_diff" label="日差异流量" min-width="105" sortable="custom">
@@ -74,7 +74,7 @@
         <el-table-column prop="time_last" label="设备更新时间" min-width="155" sortable="custom"></el-table-column>
         <el-table-column fixed="right" prop='unicom_stop' label="操作" width="95">
           <template slot-scope="scope">
-            <el-button type="text">套餐</el-button>
+            <el-button type="text" @click="toUnicomLink(scope.row.card_iccid)">套餐</el-button>
             <el-button type="text" class="text_success" v-if="scope.row.unicom_stop == 1">启用</el-button>
             <el-button type="text" class="text_danger" v-else>停用</el-button>
           </template>
@@ -142,7 +142,8 @@ export default {
       })
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,
-    calcLeftTime: Api.UNITS.calcLeftTime
+    calcLeftTime: Api.UNITS.calcLeftTime,
+    toUnicomLink: Api.UNITS.toUnicomLink
   },
   computed: {
     ...mapState({

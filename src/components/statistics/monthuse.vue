@@ -34,7 +34,7 @@
         <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" width="200">
           <template slot-scope="scope">
             <span v-if="scope.row.sums">{{scope.row.card_iccid}}</span>
-            <span v-else class="btn-link">{{scope.row.card_iccid}}</span>
+            <span v-else class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="card_id" label="卡商名称" min-width="120" sortable="custom">
@@ -44,7 +44,7 @@
         </el-table-column>
         <el-table-column prop="org_id" label="所属机构" min-width="160" sortable="custom">
           <template slot-scope="scope">
-            <span class="btn-link">{{scope.row.org_name}}</span>
+            <span class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="time_active" label="卡激活时间" width="158" sortable="custom"></el-table-column>
