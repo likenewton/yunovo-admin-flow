@@ -72,5 +72,28 @@
 	
 	</select>
 
+	<!-- 首页停卡数据 -->
+	<select id="getStopData" resultType="java.util.HashMap">
+	
+		SELECT COUNT(C.card_id) AS stop_month, SUM(IF(DATE(C.time_added) = DATE(NOW()), 1, 0)) AS stop_today FROM cc_onoff_log O INNER JOIN cc_gprs_card C ON C.card_id = O.card_id
+		WHERE 1 = 1
+		
+		<choose>
+			<when test='orgpos == "*"'>
+
+			</when>
+			<otherwise>
+				AND C.org_id IN
+				<foreach collection="orgs" item="id" index="index"
+					open="(" close=")" separator=",">
+					#{id}
+				</foreach>
+			</otherwise>
+		</choose>
+		
+		<![CDATA[ 	
+			AND O.time_added >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND O.time_added <= NOW() AND O.onoff_type = 1 AND O.exec_status = 1
+		]]>
+	</select>
 
 </mapper>

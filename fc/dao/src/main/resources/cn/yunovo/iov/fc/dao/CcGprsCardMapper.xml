@@ -545,5 +545,26 @@
 		 GROUP BY org_id
 	</select>
 	
+	<!-- 获取机构下的流量卡统计 -->
+	<select id="getCardCase" resultType="java.util.HashMap">
+	
+		SELECT COUNT(*) AS total, SUM(IF(time_active IS NOT NULL, 1, 0)) AS actived,
+		SUM(IF(unicom_stop = 1, 1, 0)) AS stoped, SUM(IF(time_paid IS NOT NULL, 1, 0)) AS paid
+		FROM cc_gprs_card WHERE 1 =1 
+		
+		<choose>
+			<when test='orgpos == "*"'>
+
+			</when>
+			<otherwise>
+				AND org_id IN
+				<foreach collection="orgs" item="id" index="index"
+					open="(" close=")" separator=",">
+					#{id}
+				</foreach>
+			</otherwise>
+		</choose>
+	
+	</select>
 
 </mapper>

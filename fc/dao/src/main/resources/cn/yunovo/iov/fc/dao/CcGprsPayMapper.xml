@@ -684,5 +684,127 @@
 		</if>
 		
 	</select>
+	
+	<!-- 获取机构下的充值与返利情况 -->
+	<select id="getPayCase" resultType="java.util.HashMap">
+	
+	SELECT COUNT(*) AS pay_count, SUM(gprs_price) AS pay_money, SUM(rebate_money) AS rebate_money
+		FROM cc_gprs_pay WHERE 1 = 1 
+		
+		
+		<choose>
+			<when test='orgpos == "*"'>
+
+			</when>
+			<otherwise>
+				AND org_id IN
+				<foreach collection="orgs" item="id" index="index"
+					open="(" close=")" separator=",">
+					#{id}
+				</foreach>
+			</otherwise>
+		</choose>
+		
+		
+		AND is_paid = 1 AND pay_method > 0
+		
+		<if test="date_start != null">
+			 AND time_paid >= #{date_start}
+		</if>
+		
+		<if test="date_end != null">
+			<![CDATA[  AND time_paid <= #{date_end} ]]>
+		</if>
+	
+	</select>
+	
+	<!-- 获取今日机构下的充值与返利情况 -->
+	<!-- <select id="getJRPayData" resultType="java.util.HashMap">
+	
+		SELECT COUNT(*) AS pay_count, SUM(gprs_price) AS pay_money, SUM(rebate_money) AS rebate_money
+		FROM cc_gprs_pay WHERE 1 = 1
+		
+		<choose>
+			<when test='orgpos == "*"'>
+
+			</when>
+			<otherwise>
+				AND org_id IN
+				<foreach collection="orgs" item="id" index="index"
+					open="(" close=")" separator=",">
+					#{id}
+				</foreach>
+			</otherwise>
+		</choose>
+		<![CDATA[ 
+		 AND is_paid = 1 AND pay_method > 0 AND time_paid >= #{date_start} AND time_paid <=  #{date_end}
+		]]>
+		
+	</select> -->
+	
+	<select id="getJRActiveData" resultType="java.util.HashMap">
+		<![CDATA[ 
+			SELECT COUNT(pay_id) AS active_month, SUM(IF(DATE(time_added) = DATE(NOW()), 1, 0)) AS active_today FROM cc_gprs_pay
+			WHERE time_added >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND time_added <= NOW() AND is_paid = 1 AND pay_method = 0 AND transfer_id = 'system-init'
+		]]>
+		<choose>
+			<when test='orgpos == "*"'>
+
+			</when>
+			<otherwise>
+				AND org_id IN
+				<foreach collection="orgs" item="id" index="index"
+					open="(" close=")" separator=",">
+					#{id}
+				</foreach>
+			</otherwise>
+		</choose>
+		
+	</select>
+	
+	<!-- 首页-获取当月续费机构下的当月流量卡统计 -->
+	<select id="getDYPayCase" resultType="java.util.HashMap">
+		<![CDATA[ 
+			SELECT COUNT(*) AS pay_count, COUNT(DISTINCT card_id) AS card_pay,
+			SUM(gprs_price) AS pay_money, SUM(rebate_money) AS rebate_money
+			FROM cc_gprs_pay WHERE 1 = 1
+		]]>
+		<choose>
+			<when test='orgpos == "*"'>
+
+			</when>
+			<otherwise>
+				AND org_id IN
+				<foreach collection="orgs" item="id" index="index"
+					open="(" close=")" separator=",">
+					#{id}
+				</foreach>
+			</otherwise>
+		</choose>
+		
+		AND is_paid = 1 AND pay_method > 0 AND time_paid >= #{date_start}
+	</select>
+	
+	<select id="getSYPayCase" resultType="java.util.HashMap">
+	
+		SELECT COUNT(*) AS pay_count, COUNT(DISTINCT card_id) AS card_pay,
+		SUM(gprs_price) AS pay_money, SUM(rebate_money) AS rebate_money
+		FROM cc_gprs_pay WHERE  1=1
+		<choose>
+			<when test='orgpos == "*"'>
+
+			</when>
+			<otherwise>
+				AND org_id IN
+				<foreach collection="orgs" item="id" index="index"
+					open="(" close=")" separator=",">
+					#{id}
+				</foreach>
+			</otherwise>
+		</choose>
+		<![CDATA[ 
+			AND is_paid = 1 AND pay_method > 0 AND time_paid >= #{date_start} AND time_paid <=  #{date_end}
+		]]>
+	</select>
 
 </mapper>

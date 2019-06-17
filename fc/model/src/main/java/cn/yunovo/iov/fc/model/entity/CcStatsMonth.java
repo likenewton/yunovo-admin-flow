@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.metadata.BaseRowModel;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import io.swagger.annotations.ApiModel;
@@ -51,32 +52,40 @@ public class CcStatsMonth extends BaseRowModel {
 	@ApiModelProperty(value = "修改时间")
 	private String time_modify;
 	
+	@TableField(exist=false)
 	@ExcelProperty(index=1, value="卡ICCID")
 	@ApiModelProperty(value = "卡iccid")
 	private String card_iccid;
 	
+	@TableField(exist=false)
 	@ApiModelProperty(value = "卡商名称")
 	private String card_type;
 	
+	@TableField(exist=false)
 	@ExcelProperty(index=2, value="卡商名称")
 	@ApiModelProperty(value = "卡类型中文名称")
 	private String card_type_name;
 	
+	@TableField(exist=false)
 	@ApiModelProperty(value = "机构id")
 	private String org_id;
 	
+	@TableField(exist=false)
 	@ExcelProperty(index=3, value="所属机构")
 	@ApiModelProperty(value = "机构名称")
 	private String org_name;
 	
+	@TableField(exist=false)
 	@ExcelProperty(index=7, value="激活时间")
 	@ApiModelProperty(value = "流量卡激活时间")
 	private String time_active;
 	
+	@TableField(exist=false)
 	@ExcelProperty(index=4, value="导卡时间")
 	@ApiModelProperty(value = "流量卡入库时间")
 	private String time_added;
 	
+	@TableField(exist=false)
 	@ApiModelProperty(value = "总消耗流量")
 	private Long usedTotal;
 	

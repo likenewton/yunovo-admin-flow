@@ -113,4 +113,12 @@ public interface ICcGprsCardMapper extends BaseMapper<CcGprsCard> {
 	 * @return
 	 */
 	public List<CardTotalByOrgidInfoBean> cardTotalByOrgidGroup(IPage<CardTotalByOrgidInfoBean> page, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	
+	/**
+	 * 首页-
+	 * @param orgpos
+	 * @param orgs
+	 * @return
+	 */
+	public HashMap<String, Object> getCardCase(@Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 }

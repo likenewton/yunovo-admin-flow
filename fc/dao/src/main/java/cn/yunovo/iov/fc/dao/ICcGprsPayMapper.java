@@ -1,5 +1,6 @@
 package cn.yunovo.iov.fc.dao;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -68,5 +69,57 @@ public interface ICcGprsPayMapper extends BaseMapper<CcGprsPay> {
 	public List<PayListChartDataResultBean> getMethodChart(@Param("org_id")Integer org_id, @Param("pay_sn")String pay_sn, @Param("card_iccid")String card_iccid, @Param("card_id")Integer card_id, @Param("card_type")Integer card_type, @Param("transfer_id")String transfer_id, @Param("gprs_amount")Double gprs_amount, @Param("pay_from")String pay_from, @Param("pay_method")Short pay_method, @Param("is_paid")Short is_paid, @Param("date_start")String date_start, @Param("date_end")String date_end, @Param("paid_start")String  paid_start, @Param("paid_end")String paid_end, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 	
 	public List<PayListChartDataResultBean> getPaidChart(@Param("org_id")Integer org_id, @Param("pay_sn")String pay_sn, @Param("card_iccid")String card_iccid, @Param("card_id")Integer card_id, @Param("card_type")Integer card_type, @Param("transfer_id")String transfer_id, @Param("gprs_amount")Double gprs_amount, @Param("pay_from")String pay_from, @Param("pay_method")Short pay_method, @Param("is_paid")Short is_paid, @Param("date_start")String date_start, @Param("date_end")String date_end, @Param("paid_start")String  paid_start, @Param("paid_end")String paid_end, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	
+	/**
+	 * 首页-获取上月支付信息
+	 * @param date_start
+	 * @param date_end
+	 * @param orgpos
+	 * @param orgs
+	 * @return
+	 */
+	public HashMap<String, Object> getSYPayCase(@Param("date_start")String date_start, @Param("date_end")String date_end, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	
+/*	*//**
+	 * 首页-获取上月支付信息
+	 * @param date_start
+	 * @param date_end
+	 * @param orgpos
+	 * @param orgs
+	 * @return
+	 *//*
+	public HashMap<String, Object> getJRPayData(@Param("date_start")String date_start, @Param("date_end")String date_end, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	*/
+	/**
+	 * 首页-获取机构下的充值与返利情况
+	 * @param date_start
+	 * @param date_end
+	 * @param orgpos
+	 * @param orgs
+	 * @return
+	 */
+	public HashMap<String, Object> getPayCase(@Param("date_start")String date_start, @Param("date_end")String date_end, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	
+	/**
+	 * 首页-当月支付信息
+	 * @param date_start
+	 * @param date_end
+	 * @param orgpos
+	 * @param orgs
+	 * @return
+	 */
+	public HashMap<String, Object> getDYPayCase(@Param("date_start")String date_start, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	
+	
+	/**
+	 * 首页-当月流量卡激活数据
+	 * @param date_start
+	 * @param date_end
+	 * @param orgpos
+	 * @param orgs
+	 * @return
+	 */
+	public HashMap<String, Object> getJRActiveData(@Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	
 	
 }
