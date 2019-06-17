@@ -175,10 +175,11 @@ public class HomeServiceImpl implements IHomeService{
 		}
 		Page<CcStats> page = new Page<>(1, 1);
 		page.setSearchCount(false);
+		page.setDesc("stats_date");
 		List<CcStats> data = iCcStatsMapper.getItemsPage(page, null, null, null, orgpos, orgpos.split(","));
 		
 		////获取今日停卡数量
-		ExecutorService exc = Executors.newFixedThreadPool(7);
+		ExecutorService exc = Executors.newFixedThreadPool(3);
 		FutureTask<CcStats> data1 = new FutureTask<>(new Callable<CcStats>() {
 			@Override
 			public CcStats call() throws Exception {
@@ -216,6 +217,8 @@ public class HomeServiceImpl implements IHomeService{
 			
 		});
 		exc.execute(data3);
+		
+		exc.shutdown();
 		CcStats stats = data1.get();	
 		
 		stats.setUnicom_total(data2.get());
