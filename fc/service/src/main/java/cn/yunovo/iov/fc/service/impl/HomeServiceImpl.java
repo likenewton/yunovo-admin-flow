@@ -29,6 +29,8 @@ import cn.yunovo.iov.fc.dao.ICcRealnameMapper;
 import cn.yunovo.iov.fc.dao.ICcStatsMapper;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.entity.CcStats;
+import cn.yunovo.iov.fc.model.result.HomeChartDataBean;
+import cn.yunovo.iov.fc.model.result.HomeSimTrendInfoBean;
 import cn.yunovo.iov.fc.service.ICcUserService;
 import cn.yunovo.iov.fc.service.IHomeService;
 
@@ -156,17 +158,52 @@ public class HomeServiceImpl implements IHomeService{
 		exc.shutdown();
 		HashMap<String, HashMap<String, Object>> returnData = new HashMap<>();
 		
-		returnData.put("cres", data2.get());
-		returnData.put("pres", data5.get());
 		
-		HashMap<String, Object> tres = new HashMap<>();
-		tres.putAll(data3.get());
-		tres.putAll(data6.get());
-		tres.putAll(data1.get());
-		returnData.put("tres", tres);
+		HashMap<String, Object> temp = new HashMap<>();
+		temp.put("total", 0);
+		temp.put("actived", 0);
+		temp.put("stoped", 0);
+		temp.putAll(data2.get());
+		returnData.put("cres", temp);
 		
-		returnData.put("dy_pres",data4.get());
-		returnData.put("sy_pres",data7.get());
+		
+		temp = new HashMap<>();
+		temp.put("pay_count", 0);
+		temp.put("pay_money", 0);
+		temp.put("rebate_money", 0);
+		temp.putAll(data5.get());
+		returnData.put("pres", temp);
+		
+		temp = new HashMap<>();
+		temp.put("active_month", 0);
+		temp.put("active_today", 0);
+		temp.putAll(data3.get());
+
+		temp.put("pay_count", 0);
+		temp.put("pay_money", 0);
+		temp.put("rebate_money", 0);
+		temp.putAll(data6.get());
+		
+		temp.put("stop_month", 0);
+		temp.put("stop_today", 0);
+		temp.putAll(data1.get());
+		returnData.put("tres", temp);
+		
+		temp = new HashMap<>();
+		temp.put("pay_count", 0);
+		temp.put("card_pay", 0);
+		temp.put("pay_money", 0);
+		temp.put("rebate_money", 0);
+		temp.putAll(data4.get());
+		returnData.put("dy_pres",temp);
+		
+		temp = new HashMap<>();
+		temp.put("pay_count", 0);
+		temp.put("card_pay", 0);
+		temp.put("pay_money", 0);
+		temp.put("rebate_money", 0);
+		temp.putAll(data7.get());
+		returnData.put("sy_pres", temp);
 		
 		return returnData;
 	}
@@ -182,7 +219,6 @@ public class HomeServiceImpl implements IHomeService{
 		Page<CcStats> page = new Page<>(1, 1);
 		page.setSearchCount(false);
 		page.setDesc("stats_date");
-		List<CcStats> data = iCcStatsMapper.getItemsPage(page, null, null, null, orgpos, orgpos.split(","));
 		
 		////获取今日停卡数量
 		ExecutorService exc = Executors.newFixedThreadPool(3);
@@ -252,5 +288,126 @@ public class HomeServiceImpl implements IHomeService{
 		data.put("pack_num", packNum);
 		return data;
 	}
+	
+	@Override
+	public 	List<HomeSimTrendInfoBean> simTrend(Integer stype, String date_start, String date_end, LoginInfo info) {
+		
+		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
+		if (StringUtils.isEmpty(orgpos)) {
+			
+			return null;
+		}
+		
+		if (StringUtils.isNotEmpty(date_start)) {
+			date_start = date_start + " 00:00:00";
+		}
+
+		if (StringUtils.isNotEmpty(date_end)) {
+			date_end = date_end + " 23:59:59";
+		}
+		
+		List<HomeSimTrendInfoBean> data = iCcStatsMapper.simTrend(stype, date_start, date_end, orgpos, orgpos.split(","));
+		
+		return data;
+	}
+	
+	@Override
+	public 	Map<String, List<HomeChartDataBean>> topupTrend(Integer stype, String date_start, String date_end, LoginInfo info) {
+		
+		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
+		if (StringUtils.isEmpty(orgpos)) {
+			
+			return null;
+		}
+		
+		if (StringUtils.isNotEmpty(date_start)) {
+			date_start = date_start + " 00:00:00";
+		}
+
+		if (StringUtils.isNotEmpty(date_end)) {
+			date_end = date_end + " 23:59:59";
+		}
+		
+		Map<String, List<HomeChartDataBean>> data = new HashMap<>();
+		data.put("orgrank", iCcStatsMapper.getOrgTopupRank(date_start, date_end, orgpos, orgpos.split(",")));
+		data.put("chart", iCcStatsMapper.topupTrend(stype, date_start, date_end, orgpos, orgpos.split(",")));
+		
+		return data;
+	}
+	
+	@Override
+	public 	Map<String, List<HomeChartDataBean>> orderTrend(Integer stype, String date_start, String date_end, LoginInfo info) {
+		
+		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
+		if (StringUtils.isEmpty(orgpos)) {
+			
+			return null;
+		}
+		
+		if (StringUtils.isNotEmpty(date_start)) {
+			date_start = date_start + " 00:00:00";
+		}
+
+		if (StringUtils.isNotEmpty(date_end)) {
+			date_end = date_end + " 23:59:59";
+		}
+		
+		Map<String, List<HomeChartDataBean>> data = new HashMap<>();
+		data.put("orgrank", iCcStatsMapper.getOrgOrderRank(date_start, date_end, orgpos, orgpos.split(",")));
+		data.put("chart", iCcStatsMapper.orderTrend(stype, date_start, date_end, orgpos, orgpos.split(",")));
+		
+		return data;
+	}
+	
+	@Override
+	public Map<String, List<HomeChartDataBean>> gprsTrend(Integer stype, String date_start, String date_end, LoginInfo info) {
+		
+		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
+		if (StringUtils.isEmpty(orgpos)) {
+			
+			return null;
+		}
+		
+		if (StringUtils.isNotEmpty(date_start)) {
+			date_start = date_start + " 00:00:00";
+		}
+
+		if (StringUtils.isNotEmpty(date_end)) {
+			date_end = date_end + " 23:59:59";
+		}
+		
+		Map<String, List<HomeChartDataBean>> data = new HashMap<>();
+		data.put("orgrank", iCcStatsMapper.getOrgGprsRank(date_start, date_end, orgpos, orgpos.split(",")));
+		data.put("chart", iCcStatsMapper.gprsTrend(stype, date_start, date_end, orgpos, orgpos.split(",")));
+		
+		return data;
+	}
+	
+	@Override
+	public Map<String, List<HomeChartDataBean>> priceTrend(Integer stype, String date_start, String date_end, LoginInfo info) {
+		
+		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
+		if (StringUtils.isEmpty(orgpos)) {
+			
+			return null;
+		}
+		
+		if (StringUtils.isNotEmpty(date_start)) {
+			date_start = date_start + " 00:00:00";
+		}
+
+		if (StringUtils.isNotEmpty(date_end)) {
+			date_end = date_end + " 23:59:59";
+		}
+		
+		Map<String, List<HomeChartDataBean>> data = new HashMap<>();
+		data.put("orgrank", iCcStatsMapper.getOrgPriceRank(date_start, date_end, orgpos, orgpos.split(",")));
+		data.put("chart", iCcStatsMapper.priceTrend(stype, date_start, date_end, orgpos, orgpos.split(",")));
+		
+		return data;
+	}
+	
+	
+	
 	
 }

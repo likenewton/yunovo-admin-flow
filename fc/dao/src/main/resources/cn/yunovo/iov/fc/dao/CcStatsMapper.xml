@@ -46,4 +46,355 @@
 		 GROUP BY stats_date
 	</select>
 
+	<!-- SIM卡使用趋势 -->
+	<select id="simTrend" resultType="cn.yunovo.iov.fc.model.result.HomeSimTrendInfoBean">
+
+		<!-- 按月 -->
+		<if test="stype == 1">
+			SELECT LEFT(stats_time, 7) AS stats_time, card_total, active_total, unactive_total, stop_total FROM (
+			<![CDATA[ 
+				SELECT stats_date AS stats_time, SUM(card_total) AS card_total, SUM(active_total) AS active_total,
+					SUM(active_count) AS active_count, SUM(card_total) - SUM(active_total) AS unactive_total, SUM(stop_total) AS stop_total
+					FROM cc_stats 
+					WHERE stats_date >= #{date_start} AND stats_date <=  #{date_end} 
+			]]>
+			<choose>
+				<when test='orgpos == "*"'>
+
+				</when>
+				<otherwise>
+					AND org_id IN
+					<foreach collection="orgs" item="id" index="index" open="("
+						close=")" separator=",">
+						#{id}
+					</foreach>
+				</otherwise>
+			</choose>
+			GROUP BY stats_time
+			ORDER BY stats_time DESC
+			) T GROUP BY LEFT(stats_time, 7)
+		</if>
+		
+		<!-- 按月 -->
+		<if test="stype == 2">
+			SELECT LEFT(stats_time, 7) AS stats_time, card_total, active_total, unactive_total, stop_total FROM (
+			<![CDATA[ 
+				SELECT stats_date AS stats_time, SUM(card_total) AS card_total, SUM(active_total) AS active_total,
+					SUM(active_count) AS active_count, SUM(card_total) - SUM(active_total) AS unactive_total, SUM(stop_total) AS stop_total
+					FROM cc_stats 
+					WHERE stats_date >= #{date_start} AND stats_date <=  #{date_end} 
+			]]>
+			<choose>
+				<when test='orgpos == "*"'>
+
+				</when>
+				<otherwise>
+					AND org_id IN
+					<foreach collection="orgs" item="id" index="index" open="("
+						close=")" separator=",">
+						#{id}
+					</foreach>
+				</otherwise>
+			</choose>
+			GROUP BY stats_time
+			ORDER BY stats_time DESC
+			) T GROUP BY LEFT(stats_time, 4)
+		</if>
+		
+		<!-- 按天 -->
+		<if test="stype == 0">
+			<![CDATA[ 
+				SELECT stats_date AS stats_time, SUM(card_total) AS card_total, SUM(active_total) AS active_total,
+					SUM(active_count) AS active_count, SUM(card_total) - SUM(active_total) AS unactive_total, SUM(stop_total) AS stop_total
+					FROM cc_stats 
+					WHERE stats_date >= #{date_start} AND stats_date <=  #{date_end} 
+			]]>
+			<choose>
+				<when test='orgpos == "*"'>
+
+				</when>
+				<otherwise>
+					AND org_id IN
+					<foreach collection="orgs" item="id" index="index" open="("
+						close=")" separator=",">
+						#{id}
+					</foreach>
+				</otherwise>
+			</choose>
+			GROUP BY stats_time
+			
+		</if>
+		
+
+	</select>
+	
+	<!-- 续费趋势 -->
+	<select id="topupTrend" resultType="cn.yunovo.iov.fc.model.result.HomeChartDataBean">
+	
+		SELECT 
+		<if test="stype == 1">
+			LEFT(stats_date, 7) AS stats_time,
+		</if>
+		<if test="stype == 2">
+			LEFT(stats_date, 4) AS stats_time,
+		</if>
+		<if test="stype == 0">
+			stats_date AS stats_time,
+		</if>
+		
+		SUM(pay_succeed_money) AS val, SUM(rebate_money) AS val2,
+		(SUM(pay_cards) / SUM(active_total)) * 100 AS val3
+		
+		FROM cc_stats 
+		WHERE 
+		
+		<![CDATA[ 
+		 stats_date >= #{date_start} AND stats_date <= #{date_end}
+		]]>
+		
+		<choose>
+			<when test='orgpos == "*"'>
+
+			</when>
+			<otherwise>
+				AND org_id IN
+				<foreach collection="orgs" item="id" index="index" open="("
+					close=")" separator=",">
+					#{id}
+				</foreach>
+			</otherwise>
+		</choose>
+	
+		GROUP BY stats_time
+		
+		
+	</select>
+	
+	<!-- 机构充值排名 -->
+	<select id="getOrgTopupRank" resultType="cn.yunovo.iov.fc.model.result.HomeChartDataBean">
+		
+		SELECT O.name AS org_name, SUM(S.pay_succeed_money) AS val, SUM(S.rebate_money) AS val2
+		FROM cc_stats S INNER JOIN cc_org O ON O.org_id = s.org_id 
+		
+		WHERE 
+		<![CDATA[ 
+			S.stats_date >= #{date_start} AND S.stats_date <=  #{date_end}
+		]]>
+		
+		<choose>
+			<when test='orgpos == "*"'>
+
+			</when>
+			<otherwise>
+				AND S.org_id IN
+				<foreach collection="orgs" item="id" index="index" open="("
+					close=")" separator=",">
+					#{id}
+				</foreach>
+			</otherwise>
+		</choose>
+		
+		 GROUP BY S.org_id ORDER BY pay_money DESC
+	
+	</select>
+	
+	
+	<!-- 续费次数趋势 -->
+	<select id="orderTrend" resultType="cn.yunovo.iov.fc.model.result.HomeChartDataBean">
+	
+		SELECT 
+		<if test="stype == 1">
+			LEFT(stats_date, 7) AS stats_time,
+		</if>
+		<if test="stype == 2">
+			LEFT(stats_date, 4) AS stats_time,
+		</if>
+		<if test="stype == 0">
+			stats_date AS stats_time,
+		</if>
+		
+		SUM(pay_succeed) AS val
+		
+		FROM cc_stats 
+		WHERE 
+		
+		<![CDATA[ 
+		 stats_date >= #{date_start} AND stats_date <= #{date_end}
+		]]>
+		
+		<choose>
+			<when test='orgpos == "*"'>
+
+			</when>
+			<otherwise>
+				AND org_id IN
+				<foreach collection="orgs" item="id" index="index" open="("
+					close=")" separator=",">
+					#{id}
+				</foreach>
+			</otherwise>
+		</choose>
+	
+		 GROUP BY stats_time ORDER BY stats_time
+	
+	</select>
+	
+	<select id="getOrgOrderRank" resultType="cn.yunovo.iov.fc.model.result.HomeChartDataBean">
+	
+		SELECT O.name AS org_name, SUM(S.pay_succeed) AS val FROM cc_stats S
+		INNER JOIN cc_org O ON O.org_id = s.org_id 
+		
+		WHERE 
+		<![CDATA[ 
+		 S.stats_date >= #{date_start} AND S.stats_date <= #{date_end}
+		]]>
+		
+		<choose>
+			<when test='orgpos == "*"'>
+
+			</when>
+			<otherwise>
+				AND org_id IN
+				<foreach collection="orgs" item="id" index="index" open="("
+					close=")" separator=",">
+					#{id}
+				</foreach>
+			</otherwise>
+		</choose>
+		
+		 GROUP BY S.org_id ORDER BY pay_succeed DESC
+	</select>
+	
+	
+	<!-- 流量消耗趋势 -->
+	<select id="gprsTrend" resultType="cn.yunovo.iov.fc.model.result.HomeChartDataBean">
+	
+		SELECT 
+		<if test="stype == 1">
+			LEFT(stats_date, 7) AS stats_time,
+		</if>
+		<if test="stype == 2">
+			LEFT(stats_date, 4) AS stats_time,
+		</if>
+		<if test="stype == 0">
+			stats_date AS stats_time,
+		</if>
+		
+		SUM(used_amount) AS val
+		
+		FROM cc_stats 
+		WHERE 
+		
+		<![CDATA[ 
+		 stats_date >= #{date_start} AND stats_date <= #{date_end}
+		]]>
+		
+		<choose>
+			<when test='orgpos == "*"'>
+
+			</when>
+			<otherwise>
+				AND org_id IN
+				<foreach collection="orgs" item="id" index="index" open="("
+					close=")" separator=",">
+					#{id}
+				</foreach>
+			</otherwise>
+		</choose>
+	
+		 GROUP BY stats_time ORDER BY stats_time
+	
+	</select>
+	
+	<!-- 机构流量消耗排名 -->
+	<select id="getOrgGprsRank" resultType="cn.yunovo.iov.fc.model.result.HomeChartDataBean">
+	
+		SELECT O.name AS org_name, SUM(S.used_amount) AS val FROM cc_stats S
+		INNER JOIN cc_org O ON O.org_id = s.org_id 
+		
+		WHERE 
+		<![CDATA[ 
+		 S.stats_date >= #{date_start} AND S.stats_date <= #{date_end}
+		]]>
+		
+		<choose>
+			<when test='orgpos == "*"'>
+
+			</when>
+			<otherwise>
+				AND org_id IN
+				<foreach collection="orgs" item="id" index="index" open="("
+					close=")" separator=",">
+					#{id}
+				</foreach>
+			</otherwise>
+		</choose>
+		
+		 GROUP BY S.org_id ORDER BY pay_succeed DESC
+	</select>
+
+	<!-- 客单价趋势  -->
+	<select id="priceTrend" resultType="cn.yunovo.iov.fc.model.result.HomeChartDataBean">
+	
+		SELECT 
+		<if test="stype == 1">
+			LEFT(stats_date, 7) AS stats_time,
+		</if>
+		<if test="stype == 2">
+			LEFT(stats_date, 4) AS stats_time,
+		</if>
+		<if test="stype == 0">
+			stats_date AS stats_time,
+		</if>
+		ROUND(SUM(pay_succeed_money) / SUM(pay_succeed), 2) AS val
+		
+		FROM cc_stats 
+		WHERE 
+		
+		<![CDATA[ 
+		 stats_date >= #{date_start} AND stats_date <= #{date_end}
+		]]>
+		
+		<choose>
+			<when test='orgpos == "*"'>
+
+			</when>
+			<otherwise>
+				AND org_id IN
+				<foreach collection="orgs" item="id" index="index" open="("
+					close=")" separator=",">
+					#{id}
+				</foreach>
+			</otherwise>
+		</choose>
+	
+		 GROUP BY stats_time ORDER BY stats_time
+	</select>
+	
+	<!-- 机构客单价排名 -->
+	<select id="getOrgPriceRank" resultType="cn.yunovo.iov.fc.model.result.HomeChartDataBean">
+	
+		SELECT O.name AS org_name, ROUND(SUM(pay_succeed_money) / SUM(pay_succeed), 2) AS val FROM cc_stats S
+		INNER JOIN cc_org O ON O.org_id = s.org_id
+		WHERE 
+		<![CDATA[ 
+		 S.stats_date >= #{date_start} AND S.stats_date <= #{date_end}
+		]]>
+		
+		<choose>
+			<when test='orgpos == "*"'>
+
+			</when>
+			<otherwise>
+				AND org_id IN
+				<foreach collection="orgs" item="id" index="index" open="("
+					close=")" separator=",">
+					#{id}
+				</foreach>
+			</otherwise>
+		</choose>
+		
+		 GROUP BY S.org_id ORDER BY pay_succeed DESC
+	</select>
+
 </mapper>
