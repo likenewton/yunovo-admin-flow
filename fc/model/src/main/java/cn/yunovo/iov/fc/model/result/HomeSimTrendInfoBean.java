@@ -25,7 +25,7 @@ public class HomeSimTrendInfoBean implements Serializable{
 	private Integer card_total;
 	
 	@ApiModelProperty(value = "流量卡激活总数")
-	private Integer active_count;
+	private Integer active_total;
 	
 	@ApiModelProperty(value = "流量卡未激活总数")
 	private Integer unactive_total;

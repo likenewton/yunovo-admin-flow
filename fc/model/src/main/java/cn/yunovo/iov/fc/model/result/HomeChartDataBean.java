@@ -1,6 +1,7 @@
 package cn.yunovo.iov.fc.model.result;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -30,18 +31,18 @@ public class HomeChartDataBean implements Serializable{
 	 * 值1
 	 */
 	@ApiModelProperty("值1")
-	private Number val;
+	private BigDecimal val;
 	
 	/**
 	 * 值2
 	 */
 	@ApiModelProperty("值2")
-	private Number val2;
+	private BigDecimal val2;
 	
 	/**
 	 * 值2
 	 */
 	@ApiModelProperty("值3")
-	private Number val3;
+	private BigDecimal val3;
 	
 }

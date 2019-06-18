@@ -194,7 +194,7 @@
 			</otherwise>
 		</choose>
 		
-		 GROUP BY S.org_id ORDER BY pay_money DESC
+		 GROUP BY S.org_id ORDER BY val DESC
 	
 	</select>
 	
@@ -262,7 +262,7 @@
 			</otherwise>
 		</choose>
 		
-		 GROUP BY S.org_id ORDER BY pay_succeed DESC
+		 GROUP BY S.org_id ORDER BY val DESC
 	</select>
 	
 	
@@ -330,7 +330,7 @@
 			</otherwise>
 		</choose>
 		
-		 GROUP BY S.org_id ORDER BY pay_succeed DESC
+		 GROUP BY S.org_id ORDER BY val DESC
 	</select>
 
 	<!-- 客单价趋势  -->
@@ -394,7 +394,7 @@
 			</otherwise>
 		</choose>
 		
-		 GROUP BY S.org_id ORDER BY pay_succeed DESC
+		 GROUP BY S.org_id ORDER BY val DESC
 	</select>
 
 </mapper>
