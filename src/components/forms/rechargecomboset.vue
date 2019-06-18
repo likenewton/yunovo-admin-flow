@@ -143,9 +143,7 @@ export default {
       }
     }
   },
-  mounted() {
-
-  },
+  mounted() {},
   methods: {
     // 提交表单
     submitForm(formName) {

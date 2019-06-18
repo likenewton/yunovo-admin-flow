@@ -171,7 +171,7 @@
       <el-card class="bottom-card" shadow="never" :style="{height: '450px'}">
         <div class="header">
           <span>平台经营趋势统计</span>
-          <el-date-picker class="date_picker" v-model="timePickData" type="daterange" align="right" unlink-panels range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions" @change="getData" value-format="yyyy-MM-dd" size="small">
+          <el-date-picker class="date_picker" v-model="timePickData" type="daterange" align="right" unlink-panels range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions" @change="getData" value-format="yyyy-MM-dd" size="small" :clearable="false">
           </el-date-picker>
           <el-select class="stype_choice" v-model="stype" placeholder="请选择统计分组方式" @change="getData" size="small">
             <el-option label="按日统计" :value="0"></el-option>
@@ -819,12 +819,17 @@ export default {
       right: 20px;
       top: 35px;
       z-index: 10;
+      width: 260px;
+
+      .el-range__close-icon {
+        display: none;
+      }
     }
 
     .stype_choice {
       position: absolute;
-      width: 180px;
-      right: 380px;
+      width: 150px;
+      right: 290px;
       top: 35px;
       z-index: 10;
     }
@@ -875,6 +880,11 @@ export default {
       width: 100%;
       height: 340px;
       font-size: 14px;
+  
+      // 数据视图dataView无法遮盖下面的cancas, 将top = 5px 手动修改为 4px
+      div[style*="background-color: rgb(255, 255, 255)"] {
+        top: 4px !important;
+      }
     }
 
   }
