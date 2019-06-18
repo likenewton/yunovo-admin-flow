@@ -94,7 +94,7 @@ public class HomeController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
-	@ApiOperation(notes="首页-续费趋势", value = "首页-续费趋势")
+	@ApiOperation(notes="首页-订单趋势", value = "首页-订单趋势")
 	@ApiImplicitParams(value = { 
 			@ApiImplicitParam(name = "date_start", value = "统计日期-开始日期（YYYY-MM-DD）", required = true, dataType = "String",paramType = "query"),
 			@ApiImplicitParam(name = "date_end", value = "统计日期-结束日期（YYYY-MM-DD）", required = true, dataType = "String",paramType = "query"),

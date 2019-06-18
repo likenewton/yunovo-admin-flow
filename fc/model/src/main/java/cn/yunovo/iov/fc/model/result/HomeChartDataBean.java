@@ -43,6 +43,6 @@ public class HomeChartDataBean implements Serializable{
 	 * 值2
 	 */
 	@ApiModelProperty("值3")
-	private BigDecimal val3;
+	private Double val3;
 	
 }

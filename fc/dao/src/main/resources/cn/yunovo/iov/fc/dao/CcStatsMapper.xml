@@ -129,8 +129,8 @@
 	</select>
 	
 	<!-- 续费趋势 -->
-	<select id="topupTrend" resultType="cn.yunovo.iov.fc.model.result.HomeChartDataBean">
 	
+	<select id="topupTrend" resultType="cn.yunovo.iov.fc.model.result.HomeChartDataBean">
 		SELECT 
 		<if test="stype == 1">
 			LEFT(stats_date, 7) AS stats_time,
