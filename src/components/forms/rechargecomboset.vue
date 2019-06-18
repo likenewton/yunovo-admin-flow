@@ -6,10 +6,8 @@
     <el-form :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="120px" size="small" :status-icon="true">
       <el-form-item prop="jg_name">
         <span slot="label">机构名称：</span>
-        <el-select v-model="formInline.jg_name" placeholder="请选择机构名称">
-          <el-option label="机构1" :value="0"></el-option>
-          <el-option label="机构2" :value="1"></el-option>
-          <el-option label="机构3" :value="2"></el-option>
+        <el-select v-model="formInline.org_id" filterable placeholder="请选择">
+          <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value - 0"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item prop="model">
@@ -45,9 +43,7 @@
       <el-form-item prop="fp_month">
         <span slot="label">分配月数：</span>
         <el-select v-model="formInline.fp_month" placeholder="请选择分配月数">
-          <el-option label="1个月" :value="0"></el-option>
-          <el-option label="2个月" :value="1"></el-option>
-          <el-option label="3个月" :value="2"></el-option>
+          <el-option v-if="item.value >= 1 && item.value <= 48" v-for="(item, index) in liveMonthSelect" :key="index" :label="item.label" :value="item.value"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item prop="is_clear">
@@ -55,12 +51,10 @@
         <el-radio v-model="formInline.is_clear" label="1">不清零</el-radio>
         <el-radio v-model="formInline.is_clear" label="2">会清零</el-radio>
       </el-form-item>
-      <el-form-item prop="eff_pro">
+      <el-form-item prop="live_month">
         <span slot="label">有效周期：</span>
-        <el-select v-model="formInline.eff_pro" placeholder="请选择有效周期">
-          <el-option label="1个月" :value="0"></el-option>
-          <el-option label="2个月" :value="1"></el-option>
-          <el-option label="3个月" :value="2"></el-option>
+        <el-select v-model="formInline.live_month" placeholder="请选择有效周期">
+          <el-option v-for="(item, index) in liveMonthSelect" :key="index" :label="item.label" :value="item.value"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item prop="rebate_money">
@@ -91,27 +85,14 @@
 </template>
 <script>
 import Api from 'assets/js/api.js'
+import { mapState } from 'vuex'
 
 export default {
   data() {
     return {
-      formInline: {
-        jg_name: '',
-        tc_remark: '',
-        model: '1',
-        tc_name: '',
-        tc_flow: '',
-        tc_price: '',
-        tc_discount: '',
-        type: '1',
-        fp_month: '',
-        is_clear: '1',
-        eff_pro: '',
-        rebate_money: '',
-        is_recommend: ''
-      },
+      formInline: {},
       rules: {
-        jg_name: [{
+        org_id: [{
           required: true,
           message: '请输入批次名称',
           trigger: 'blur'
@@ -154,7 +135,7 @@ export default {
           message: '请选择是否清零',
           trigger: 'change'
         }],
-        eff_pro: [{
+        live_month: [{
           required: true,
           message: '请选择有效周期',
           trigger: 'change'
@@ -191,6 +172,14 @@ export default {
         callback()
       }
     }
+  },
+  computed: {
+    ...mapState({
+      orgs: 'orgs',
+      cardTypes: 'cardTypes',
+      liveMonthSelect: 'liveMonthSelect',
+      months: 'months'
+    })
   }
 }
 

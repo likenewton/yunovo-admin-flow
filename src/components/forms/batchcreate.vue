@@ -48,9 +48,7 @@
       <el-form-item prop="months">
         <span slot="label">分配月数：</span>
         <el-select v-model="formInline.months" placeholder="请选择分配月数">
-          <el-option label="1个月" :value="0"></el-option>
-          <el-option label="2个月" :value="1"></el-option>
-          <el-option label="3个月" :value="2"></el-option>
+          <el-option v-if="item.value >= 1 && item.value <= 48" v-for="(item, index) in liveMonthSelect" :key="index" :label="item.label" :value="item.value"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item prop="yj_flow">
@@ -249,11 +247,10 @@ export default {
     },
     // 提交表单
     submitForm(formName) {
-      console.log(this.formInline)
       this.$refs[formName].validate((valid) => {
-        this.$refs.upload.submit() // 上传应当是验证通过才开始，测试阶段先放在外面
         if (valid) {
           // 验证通过
+          this.$refs.upload.submit()
         } else {
           Api.UNITS.showMsgBox()
           return false;

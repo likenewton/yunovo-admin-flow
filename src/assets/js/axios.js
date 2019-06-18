@@ -92,6 +92,11 @@ class AXIOS {
       getPayCase: '/fc/api/home/payCase', // 数据看板
       getSiminfo: '/fc/api/home/siminfo', // 获取pie-card数据
       getEl2pack: '/fc/api/home/rl2pack', // 数据总览
+      getTopupTrend: '/fc/api/home/topupTrend', // 续费趋势
+      getOrderTrend: '/fc/api/home/orderTrend', // 订单趋势
+      getGprsTrend: '/fc/api/home/gprsTrend', // 流量消耗趋势
+      getPriceTrend: '/fc/api/home/priceTrend', // 客单价趋势
+      getSimTrend: '/fc/api/home/simTrend', // sim卡使用趋势
     }
   }
 
