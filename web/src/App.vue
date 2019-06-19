@@ -6,7 +6,6 @@
   </div>
 </template>
 <script>
-
 if (!!window.ActiveXObject || "ActiveXObject" in window) {
   setTimeout(() => {
     // 如果是IE浏览器，不要显示v-loading遮罩
@@ -15,7 +14,17 @@ if (!!window.ActiveXObject || "ActiveXObject" in window) {
 }
 
 export default {
-  name: 'App'
+  name: 'App',
+  data() {
+    return {}
+  },
+  mounted() {
+    let width = document.querySelector("body").clientWidth;
+    if (width > 1200) {
+      let ratio = width / 1920;
+      document.querySelector("body").style.zoom = ratio;
+    }
+  }
 }
 
 </script>

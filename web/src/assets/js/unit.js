@@ -282,8 +282,9 @@ module.exports = {
     else return queryObj
   },
   maxTableHeight() {
-    let height = $(window).height() - (220 + 300000 / ($(window).height() + 1000))
-    if (height < 400) height = 400
+    // let height = $(window).height() - (220 + 300000 / ($(window).height() + 1000))
+    // if (height < 400) height = 400
+    let height = 600
     return height
   },
   // 时间格式化

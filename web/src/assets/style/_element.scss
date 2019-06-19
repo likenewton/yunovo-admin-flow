@@ -152,3 +152,8 @@
     display: none !important;
   }
 }
+
+// 生成环境中tabs 边线过粗
+.el-tabs__nav-wrap:after {
+  height: 1px !important;
+}

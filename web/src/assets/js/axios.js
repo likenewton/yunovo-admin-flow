@@ -127,6 +127,7 @@ class AXIOS {
             title: '错误',
             message: 'token校验异常'
           })
+          localStorage.setItem('loginCount', '0')
         }
       } else {
         localStorage.setItem('loginCount', '0')
