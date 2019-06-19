@@ -16,6 +16,8 @@ public class FcConstant {
 	
 	public final static String CARD_MONTH_WLIST_TOTAL_CACHEKEY = "CARD#MonthWlistTotal#%s";
 	
+	public final static String MONTH_END_TYPE_CACHEKEY = "MONTH_END_TYPE";
+	
 	public final static String CARD_INFO_CACHEKEY = "CARD-INFO-%s";
 	
 	public static String memResKey(String key) {

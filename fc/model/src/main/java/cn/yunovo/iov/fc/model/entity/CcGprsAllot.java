@@ -57,6 +57,6 @@ public class CcGprsAllot implements Serializable {
 	
 	@ApiModelProperty(value="流量卡类型")
 	@TableField(exist=false)
-	private String card_type;
+	private Integer card_type;
 
 }

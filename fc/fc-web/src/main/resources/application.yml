@@ -219,7 +219,7 @@ casClient:
   exludeFilterResource: "*remote*"
   serverIndexUrls: /fc/sso/api/ssoLogin
   redirectAfterValidation: false
-  h5IndexUrl: "http://t.wx.yunovo.cn/flowCenter/dist/index.html"
+  h5IndexUrl: "http://t.wx.yunovo.cn/flowCenter/dist/index.html/#/"
   h5Client: true
   ucIndexUrl: "http://t.wx.yunovo.cn/authCenter/dist/index.html#/sysmenu"
   authTokenCrypto: 
