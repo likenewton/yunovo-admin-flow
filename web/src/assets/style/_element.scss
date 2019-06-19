@@ -141,6 +141,12 @@
   }
 }
 
+.el-card.search-card {
+  .el-card__body {
+    padding-bottom: 3px;
+  }
+}
+
 .IE {
   .el-loading-mask {
     display: none !important;

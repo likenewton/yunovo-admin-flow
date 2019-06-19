@@ -1,9 +1,9 @@
 <template>
   <div>
-    <el-card class="box-card clearfix" shadow="never">
+    <el-card class="clearfix" shadow="never">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="mini" type="success" @click="createAuth">新增</el-button>
-        <el-button size="mini" type="danger" @click="deleteData">删除</el-button>
+        <el-button size="small" type="success" @click="createAuth">新增</el-button>
+        <el-button size="small" type="danger" @click="deleteData">删除</el-button>
       </el-button-group>
       <el-table v-loading="loadData" ref="multipleTable" :data="curTableData" border @selection-change="handleSelectionChange" :default-sort="{prop: 'authgroup_name', order: 'descending'}" size="mini">
         <el-table-column fixed="left" type="selection" min-width="60"></el-table-column>

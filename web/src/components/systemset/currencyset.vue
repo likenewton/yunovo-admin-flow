@@ -2,7 +2,7 @@
   <div class="currency_set">
     <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="mini" type="success" @click="$router.push({ name: 'createcurrency' })" icon="el-icon-circle-plus-outline">新增</el-button>
+        <el-button size="small" type="success" @click="$router.push({ name: 'createcurrency' })">新增</el-button>
       </el-button-group>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" border resizable size="mini">
         <el-table-column prop="title" label="货币名称" min-width="150" sortable="custom">

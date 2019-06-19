@@ -7,8 +7,8 @@
         <el-breadcrumb-item v-for="(item, index) in list.other" :key="index" :to="{name: 'nationset', query: {ntid: item.ntid}}">{{item.ntname}}</el-breadcrumb-item>
       </el-breadcrumb>
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="mini" type="success" @click="addData" icon="el-icon-circle-plus-outline">新增</el-button>
-        <el-button size="mini" type="danger" @click="deleteDatas" icon="el-icon-delete">删除</el-button>
+        <el-button size="small" type="success" @click="addData">新增</el-button>
+        <el-button size="small" type="danger" @click="deleteDatas">删除</el-button>
       </el-button-group>
       <el-table ref="listTable" :data="list.data" @selection-change="handleSelectionChange" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column fixed="left" type="selection" min-width="60"></el-table-column>

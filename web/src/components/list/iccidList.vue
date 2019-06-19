@@ -1,6 +1,6 @@
 <template>
   <div class="iccid_list">
-    <el-card style="margin-bottom: 20px" shadow="never">
+    <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
       <el-form class="search-form" :inline="true" :model="formInline" size="small">
         <el-form-item label="起止日期">
           <el-date-picker v-model="formInline.date_start" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -

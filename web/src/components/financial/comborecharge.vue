@@ -1,6 +1,6 @@
 <template>
   <div class="combo_recharge">
-    <el-card style="margin-bottom: 20px" shadow="never">
+    <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
       <el-form class="search-form" :inline="true" :model="formInline" size="small">
         <el-form-item label="机构名称">
           <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择">

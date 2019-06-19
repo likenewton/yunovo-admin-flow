@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-card class="box-card" style="margin-bottom: 20px" shadow="never">
+    <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
       <el-form :inline="true" :model="formInline" class="demo-form-inline" size="small">
         <el-form-item label="用户名">
           <el-input type="text" placeholder="请输入"></el-input>
@@ -27,8 +27,8 @@
     </el-card>
     <el-card class="box-card clearfix" shadow="never">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="mini" type="success" @click="createuser">新增</el-button>
-        <el-button size="mini" type="danger" @click="deleteData">删除</el-button>
+        <el-button size="small" type="success" @click="createuser">新增</el-button>
+        <el-button size="small" type="danger" @click="deleteData">删除</el-button>
       </el-button-group>
       <el-table v-loading="loadData" ref="multipleTable" :data="curTableData" border @selection-change="handleSelectionChange" :default-sort="{prop: 'user_name', order: 'descending'}" size="mini">
         <el-table-column fixed="left" type="selection" min-width="60"></el-table-column>

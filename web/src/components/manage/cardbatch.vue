@@ -1,6 +1,6 @@
 <template>
   <div class="card_batch">
-    <el-card style="margin-bottom: 20px" shadow="never">
+    <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item label="批次编号">
           <el-input v-model="formInline.batch_sn" placeholder="请输入批次编号"></el-input>
@@ -22,7 +22,7 @@
     </el-card>
     <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="mini" type="success" @click="$router.push({ name: 'batchcreate' })">新增</el-button>
+        <el-button size="small" type="success" @click="$router.push({ name: 'batchcreate' })">新增</el-button>
       </el-button-group>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column prop="batch_sn" label="批次编号" width="90" sortable="custom"></el-table-column>

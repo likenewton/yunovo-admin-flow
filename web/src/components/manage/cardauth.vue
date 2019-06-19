@@ -1,6 +1,6 @@
 <template>
   <div class="card_auth">
-    <el-card style="margin-bottom: 20px" shadow="never">
+    <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item label="卡ICCID">
           <el-input v-model="formInline.card_iccid" placeholder="请输入卡的iccid"></el-input>
@@ -29,7 +29,7 @@
     </el-card>
     <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="mini" type="warning">导出实名信息</el-button>
+        <el-button size="small" type="warning">导出实名信息</el-button>
       </el-button-group>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" width="182" sortable="custom">

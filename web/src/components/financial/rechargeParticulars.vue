@@ -1,6 +1,6 @@
 <template>
   <div class="recharge_particulars">
-    <el-card style="margin-bottom: 20px" shadow="never">
+    <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
       <el-form class="search-form" :inline="true" :model="formInline" size="small">
         <el-form-item label="订单编号">
           <el-input v-model="formInline.pay_sn" placeholder="请输入订单编号"></el-input>
@@ -57,9 +57,9 @@
     </el-card>
     <el-card class="box-card clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="mini" type="primary" @click="showEcharts()">图表</el-button>
-        <el-button size="mini" type="warning">导出明细</el-button>
-        <el-button size="mini" type="warning">导出快照</el-button>
+        <el-button size="small" type="primary" @click="showEcharts()">图表</el-button>
+        <el-button size="small" type="warning">导出明细</el-button>
+        <el-button size="small" type="warning">导出快照</el-button>
       </el-button-group>
       <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column prop="pay_sn" label="订单编号" width="145" sortable="custom"></el-table-column>

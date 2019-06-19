@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-card class="box-card" style="margin-bottom: 20px" shadow="never">
+    <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item label="机构名称">
           <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择">
@@ -21,9 +21,9 @@
         </el-form-item>
       </el-form>
     </el-card>
-    <el-card class="box-card clearfix" style="margin-bottom: 20px" shadow="never" v-loading="loadData">
+    <el-card class="clearfix" style="margin-bottom: 20px" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="mini" type="warning">导出</el-button>
+        <el-button size="small" type="warning">导出</el-button>
       </el-button-group>
       <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border size="mini" resizable>
         <el-table-column fixed="left" prop="org_id" label="机构名称" min-width="180" sortable="custom">
@@ -65,7 +65,7 @@
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
-    <el-card class="box-card clearfix" shadow="never" v-loading="loadData">
+    <el-card class="clearfix" shadow="never" v-loading="loadData">
       <div id="myChart_0" style="width:100%; height:380px"></div>
     </el-card>
   </div>

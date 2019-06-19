@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-card class="box-card" style="margin-bottom: 20px" shadow="never">
+    <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
       <el-form class="search-form" :inline="true" :model="formInline" size="small">
         <el-form-item label="机构名称">
           <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择">
@@ -50,7 +50,7 @@
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
-    <el-card class="box-card clearfix" shadow="never" v-loading="loadData">
+    <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-tabs @tab-click="changeTab">
         <el-tab-pane>
           <span slot="label">充值次数</span>

@@ -7,6 +7,13 @@
 </template>
 <script>
 
+if (!!window.ActiveXObject || "ActiveXObject" in window) {
+  setTimeout(() => {
+    // 如果是IE浏览器，不要显示v-loading遮罩
+    $('#app').addClass('IE')
+  }, 0)
+}
+
 export default {
   name: 'App'
 }
@@ -27,6 +34,7 @@ body {
   height: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
   .page-container {
     height: 100%;
   }

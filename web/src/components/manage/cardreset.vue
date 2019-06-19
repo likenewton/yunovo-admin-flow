@@ -18,7 +18,7 @@
         </el-tab-pane>
         <el-tab-pane v-loading="loadData">
           <span slot="label"></i>重置历史</span>
-          <el-form :inline="true" :model="formInline" size="small">
+          <el-form class="search-form" :inline="true" :model="formInline" size="small">
             <el-form-item label="卡ICCID">
               <el-input v-model="formInline.card_iccid" placeholder="请输入"></el-input>
             </el-form-item>

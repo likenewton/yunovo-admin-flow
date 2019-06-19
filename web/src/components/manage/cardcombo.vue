@@ -1,6 +1,6 @@
 <template>
   <div class="card_combo">
-    <el-card style="margin-bottom: 20px" shadow="never">
+    <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item label="机构名称">
           <el-select v-model="formInline.org_id" filterable placeholder="请选择">
@@ -15,7 +15,7 @@
     </el-card>
     <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="mini" type="success" @click="$router.push({ name: 'rechargecomboset' })">新增</el-button>
+        <el-button size="small" type="success" @click="$router.push({ name: 'rechargecomboset' })">新增</el-button>
       </el-button-group>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column prop="org_id" label="机构名称" min-width="140" sortable="custom">

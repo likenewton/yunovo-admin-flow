@@ -1,6 +1,6 @@
 <template>
   <div class="jg_manage">
-    <el-card style="margin-bottom: 20px" shadow="never">
+    <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
       <el-form :inline="true" :model="formInline" class="demo-form-inline" size="small">
         <el-form-item label="机构名称">
           <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择">
@@ -15,8 +15,8 @@
     </el-card>
     <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="mini" type="success" @click="$router.push({ name: 'createjg' })">新增</el-button>
-        <el-button size="mini" type="danger" @click="deleteOrgs">删除</el-button>
+        <el-button size="small" type="success" @click="$router.push({ name: 'createjg' })">新增</el-button>
+        <el-button size="small" type="danger" @click="deleteOrgs">删除</el-button>
       </el-button-group>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" @selection-change="handleSelectionChange" :row-key="getRowKeys" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column fixed="left" type="selection" :reserve-selection="true" min-width="60"></el-table-column>

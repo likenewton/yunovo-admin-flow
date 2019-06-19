@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-card class="box-card" style="margin-bottom: 20px" shadow="never">
+    <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item label="统计日期">
           <el-date-picker v-model="formInline.date_start" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
@@ -12,12 +12,12 @@
         </el-form-item>
       </el-form>
     </el-card>
-    <el-card class="box-card clearfix" shadow="never" v-loading="loadData">
+    <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="mini" type="primary" @click="showEcharts('0')">支付图表</el-button>
-        <el-button size="mini" type="primary" @click="showEcharts('1')">在线图表</el-button>
-        <el-button size="mini" type="primary" @click="showEcharts('2')">激活图表</el-button>
-        <el-button size="mini" type="warning">导出</el-button>
+        <el-button size="small" type="primary" @click="showEcharts('0')">支付图表</el-button>
+        <el-button size="small" type="primary" @click="showEcharts('1')">在线图表</el-button>
+        <el-button size="small" type="primary" @click="showEcharts('2')">激活图表</el-button>
+        <el-button size="small" type="warning">导出</el-button>
       </el-button-group>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border size="mini" resizable>
         <el-table-column prop="stats_date" label="统计日期" width="95" sortable="custom">

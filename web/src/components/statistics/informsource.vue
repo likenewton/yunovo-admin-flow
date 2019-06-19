@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-card class="box-card" style="margin-bottom: 20px" shadow="never">
+    <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item label="通知或来源">
           <el-select v-model="formInline.ntf_type" filterable placeholder="请选择">
@@ -17,7 +17,7 @@
         </el-form-item>
       </el-form>
     </el-card>
-    <el-card class="box-card clearfix" shadow="never" v-loading="loadData">
+    <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column prop="ntf_date" label="统计日期" min-width="100" sortable="custom">
           <template slot-scope="scope">

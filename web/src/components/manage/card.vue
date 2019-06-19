@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <el-card class="box-card" style="margin-bottom: 20px" shadow="never">
+    <el-card class="box-card search-card" style="margin-bottom: 20px" shadow="never">
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item label="卡ICCID">
           <el-input v-model="formInline.card_iccid" placeholder="请输入"></el-input>
@@ -43,9 +43,9 @@
     </el-card>
     <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="mini" type="primary" @click="showEcharts">图表</el-button>
-        <el-button size="mini" type="warning">导入</el-button>
-        <el-button size="mini" type="warning">导出</el-button>
+        <el-button size="small" type="primary" @click="showEcharts">图表</el-button>
+        <el-button size="small" type="warning">导入</el-button>
+        <el-button size="small" type="warning">导出</el-button>
       </el-button-group>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" width="182" sortable="custom">

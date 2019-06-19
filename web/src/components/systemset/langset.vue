@@ -2,8 +2,8 @@
   <div class="lang_set">
     <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="mini" type="success" @click="createLang">新增</el-button>
-        <el-button size="mini" type="danger" @click="deleteDatas">删除</el-button>
+        <el-button size="small" type="success" @click="createLang">新增</el-button>
+        <el-button size="small" type="danger" @click="deleteDatas">删除</el-button>
       </el-button-group>
       <el-table ref="listTable" :data="list.data" @selection-change="handleSelectionChange" @sort-change="handleSortChange" border resizable size="mini">
         <el-table-column type="selection" min-width="60"></el-table-column>
