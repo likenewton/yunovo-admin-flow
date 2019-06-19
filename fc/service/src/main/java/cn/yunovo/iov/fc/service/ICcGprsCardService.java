@@ -128,6 +128,8 @@ public interface ICcGprsCardService extends IService<CcGprsCard> {
 	 * @return
 	 */
 	PageData<CardTotalByOrgidInfoBean, Object> cardTotalByOrgidGroupPage(PageForm form, LoginInfo info);
+
+	CcGprsCard getByIccid(String iccid);
 	
 	
 	

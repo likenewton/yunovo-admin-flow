@@ -21,4 +21,5 @@ public interface ICcGprsBatchMapper extends BaseMapper<CcGprsBatch> {
 
 	public List<CcGprsBatch> getItemsPage(IPage<CcGprsBatch> page, @Param("org_id")Integer org_id, @Param("batch_sn")String batch_sn, @Param("date_start")String date_start, @Param("date_end")String date_end, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 	
+	public CcGprsBatch getGiveInfoByBatchId(Integer batch_id);
 }

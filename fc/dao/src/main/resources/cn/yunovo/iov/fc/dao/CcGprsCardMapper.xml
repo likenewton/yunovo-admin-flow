@@ -583,5 +583,18 @@
 			</otherwise>
 		</choose>
 	</select>
+	
+	<select id="getByIccid" resultType="cn.yunovo.iov.fc.model.entity.CcGprsCard">
+	
+		SELECT * FROM cc_gprs_card WHERE card_iccid = #{card_iccid}
+	
+	</select>
+	
+	<select id="getByLikeIccid" resultType="cn.yunovo.iov.fc.model.entity.CcGprsCard">
+	
+		<bind name="card_iccid_bind" value="card_iccid+'%'" />
+		SELECT * FROM cc_gprs_card WHERE card_iccid like #{card_iccid_bind}
+	
+	</select>
 
 </mapper>

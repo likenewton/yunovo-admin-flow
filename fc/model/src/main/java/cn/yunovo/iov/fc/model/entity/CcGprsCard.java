@@ -125,5 +125,11 @@ public class CcGprsCard implements Serializable {
 	@TableField(exist=false)
 	@ApiModelProperty(value = "机构名称")
 	private String org_name;
+	
+	/**
+	 * 该字段用来保持跟php缓存一致
+	 */
+	@TableField(exist=false)
+	private Integer none;
 
 }

@@ -1,5 +1,6 @@
 package cn.yunovo.iov.fc.service.impl;
 
+import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
 import cn.yunovo.iov.fc.dao.ICcGprsBatchMapper;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
@@ -8,12 +9,14 @@ import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcGprsBatch;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
 import cn.yunovo.iov.fc.model.entity.CcResetLog;
+import cn.yunovo.iov.fc.service.FcConstant;
 import cn.yunovo.iov.fc.service.ICcGprsBatchService;
 import cn.yunovo.iov.fc.service.ICcNationService;
 import cn.yunovo.iov.fc.service.ICcOrgService;
 import cn.yunovo.iov.fc.service.ICcUserService;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -56,6 +59,9 @@ public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGp
 	
 	@Autowired
 	private ICcNationService iCcNationService;
+	
+	@Autowired
+	private JedisPoolUtil jedisPoolUtil;
 	
 	@Override
 	public PageData<CcGprsBatch, Object> getItemsPage(PageForm form, Integer org_id, String batch_sn, String date_start,
@@ -140,6 +146,33 @@ public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGp
 		return select;
 		
 		
+	}
+	
+	@Override
+	public CcGprsBatch getGiveInfoByBatchId(Integer batch_id) {
+		
+		if(batch_id == null) {
+			return null;
+		}
+		String sql = "SELECT give_value, give_live_month FROM cc_gprs_batch WHERE batch_id = "+batch_id;
+		
+		String cacheKey = FcConstant.memSqlNewKey(sql);
+		String cache = jedisPoolUtil.get(cacheKey);
+		CcGprsBatch data = null;
+		if(StringUtils.isEmpty(cache)) {
+			
+			data = iCcGprsBatchMapper.getGiveInfoByBatchId(batch_id);
+			if(data == null) {
+				return null;
+			}else {
+				cache = JSONObject.toJSONString(data);
+				jedisPoolUtil.setEx(cacheKey, cache);
+			}
+		}else {
+			data = JSONObject.parseObject(cache, CcGprsBatch.class);
+		}
+		
+		return data;
 	}
 	
 	

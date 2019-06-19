@@ -35,5 +35,12 @@ public interface ICcGprsBatchService extends IService<CcGprsBatch> {
 			String date_end, LoginInfo info);
 
 	List<SelectBean> select();
+
+	/**
+	 * 通过出货批次获取实名认证后可赠送流量信息
+	 * @param batch_id 出货批次id
+	 * @return
+	 */
+	CcGprsBatch getGiveInfoByBatchId(Integer batch_id);
 	
 }

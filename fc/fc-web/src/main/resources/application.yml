@@ -48,6 +48,7 @@ hessian:
     
 fc: 
   gprs: 
+    file_dir_root: E://PHP
     card_type: 
       1: 智网吉林11位卡
       2: 智网科技 JASPER

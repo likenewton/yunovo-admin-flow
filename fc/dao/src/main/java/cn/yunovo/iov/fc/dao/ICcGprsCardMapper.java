@@ -122,5 +122,27 @@ public interface ICcGprsCardMapper extends BaseMapper<CcGprsCard> {
 	 */
 	public HashMap<String, Object> getCardCase(@Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 	
+	/**
+	 * 获取非云智设备激活设备数
+	 * @param orgpos
+	 * @param orgs
+	 * @return
+	 */
 	public Integer getUnicomTotal(@Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	
+	/**
+	 * SELECT * FROM cc_gprs_card WHERE card_iccid = #{card_iccid}
+	 * 通过iccid 获取流量卡信息
+	 * @param card_iccid
+	 * @return
+	 */
+	public CcGprsCard getByIccid(@Param("card_iccid")String card_iccid);
+	
+	/**
+	 * 兼容19位ICCID
+	 * SELECT * FROM cc_gprs_card WHERE card_iccid like "#{card_iccid}%"
+	 * @param card_iccid
+	 * @return
+	 */
+	public CcGprsCard getByLikeIccid(@Param("card_iccid")String card_iccid);
 }

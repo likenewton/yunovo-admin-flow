@@ -60,7 +60,7 @@ public class DataSourceConfiguration {
     }
 	
     @Bean(name="clwTransactionManager")
-    public DataSourceTransactionManager testTransactionManager(@Qualifier("clwDataSource") DataSource dataSource){
+    public DataSourceTransactionManager clwTransactionManager(@Qualifier("clwDataSource") DataSource dataSource){
         return  new DataSourceTransactionManager(dataSource);
     }
 

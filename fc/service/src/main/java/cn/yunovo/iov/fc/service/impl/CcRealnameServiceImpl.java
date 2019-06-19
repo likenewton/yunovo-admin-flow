@@ -1,0 +1,332 @@
+package cn.yunovo.iov.fc.service.impl;
+
+import cn.yunovo.iov.fc.common.utils.BusinessException;
+import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
+import cn.yunovo.iov.fc.dao.ICcGprsPayMapper;
+import cn.yunovo.iov.fc.dao.ICcRealnameMapper;
+import cn.yunovo.iov.fc.model.LoginInfo;
+import cn.yunovo.iov.fc.model.PageData;
+import cn.yunovo.iov.fc.model.PageForm;
+import cn.yunovo.iov.fc.model.entity.CcGprsAllot;
+import cn.yunovo.iov.fc.model.entity.CcGprsBatch;
+import cn.yunovo.iov.fc.model.entity.CcGprsCard;
+import cn.yunovo.iov.fc.model.entity.CcGprsPay;
+import cn.yunovo.iov.fc.model.entity.CcOrg;
+import cn.yunovo.iov.fc.model.entity.CcRealname;
+import cn.yunovo.iov.fc.service.FcConstant;
+import cn.yunovo.iov.fc.service.ICcGprsAllotService;
+import cn.yunovo.iov.fc.service.ICcGprsBatchService;
+import cn.yunovo.iov.fc.service.ICcGprsCardService;
+import cn.yunovo.iov.fc.service.ICcGprsPayService;
+import cn.yunovo.iov.fc.service.ICcOrgService;
+import cn.yunovo.iov.fc.service.ICcRealnameService;
+import cn.yunovo.iov.fc.service.ICcUserService;
+import lombok.extern.slf4j.Slf4j;
+
+import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.util.CollectionUtils;
+
+/**
+ * <p>
+ * 流量卡实名制表 服务实现类
+ * </p>
+ *
+ * @author bill
+ * @since 2019-06-14
+ */
+@Service
+@Slf4j
+public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcRealname> implements ICcRealnameService {
+
+	@Autowired
+	private ICcRealnameMapper iCcRealnameMapper;
+	
+	@Autowired
+	private ICcUserService iCcUserService;
+	
+	@Autowired
+	private ICcOrgService iCcOrgService;
+	
+	@Autowired
+	private ICcGprsBatchService iCcGprsBatchService;
+	
+	@Autowired
+	private ICcGprsCardService iCcGprsCardService;
+	
+	@Autowired
+	private JedisPoolUtil jedisPoolUtil;
+	
+	@Autowired
+	private ICcGprsPayService iCcGprsPayService;
+	
+	@Autowired
+	private ICcGprsAllotService iCcGprsAllotService;
+	
+	@Autowired
+	@Qualifier("clwTransactionManager")
+	private DataSourceTransactionManager clwTransactionManager;
+	
+	@Value("fc.gprs.file_dir_root")
+	private String file_dir_root;
+	
+	@Override
+	public PageData<CcRealname, Object> getItemsPage(PageForm form, Integer org_id, String card_iccid,
+			String date_start, String date_end, Integer status, LoginInfo info) {
+		
+
+		Page<CcRealname> page = form.build(CcRealname.class, null, null);
+		page.setDesc("R.cdi_status","R.time_added");
+		PageData<CcRealname, Object> returnData = new PageData<>();
+		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
+		if (StringUtils.isEmpty(orgpos)) {
+			page.setTotal(0);
+			page.setRecords(null);
+			returnData.setPage(page);
+			return returnData;
+		}
+
+		if(org_id != null && !iCcOrgService.hasPermission(org_id, orgpos)) {
+			
+			page.setTotal(0);
+			page.setRecords(null);
+			returnData.setPage(page);
+			return returnData;
+		}
+		if (StringUtils.isNotEmpty(date_start)) {
+			date_start = date_start + " 00:00:00";
+		}
+
+		if (StringUtils.isNotEmpty(date_end)) {
+			date_end = date_end + " 23:59:59";
+		}
+		
+		List<CcRealname> records = iCcRealnameMapper.getItemsPage(page, org_id, card_iccid, date_start, date_end, status, orgpos, orgpos.split(","));
+		
+		if(!CollectionUtils.isEmpty(records)) {
+			
+			Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
+			Map<Integer, String> userMap = iCcUserService.userIdMap();
+			for (CcRealname ccRealname : records) {
+
+				ccRealname.setOrg_name(orgs.get(String.valueOf(ccRealname.getOrg_id())).getName());
+				ccRealname.setFirst_name(userMap.get(ccRealname.getUser_id()));
+			}
+		}
+		
+		page.setRecords(records);
+		returnData.setPage(page);
+		return returnData;
+	}
+	
+	/**
+	 * 实名审核
+	 * @param card_id
+	 * @param status 审批状态, 2 审批通过
+	 * @param loginInfo
+	 * @return
+	 */
+	public boolean audit(Integer card_id, Short status, LoginInfo loginInfo) {
+		
+		boolean ret = false;
+		
+		//1、获取对应流量卡的实名申请信息,如果如找到则直接返回错误信息
+		CcRealname data = iCcRealnameMapper.getByCardId(card_id);
+		if(data == null) {
+			throw new BusinessException(-1, "请选择您要审批的实名申请信息！");
+		}
+		
+		CcRealname opData = new CcRealname();
+		BeanUtils.copyProperties(data, opData);
+		opData.setCdi_status(status);
+		if(status == 2) {//如果审批通过则执行如下流程
+			
+			//2.1、获取流量卡信息,如果未找到流量卡信息则返回错误信息
+			CcGprsCard card = iCcGprsCardService.getByIccid(data.getCard_iccid());
+			if(card == null) {
+				throw new BusinessException(-1, "实名审批失败,未找到对应的流量卡信息！");
+			}
+			
+			//2.2、移动实名认证照片到成功区域
+			try {
+				opData.setCdi_img1(this._moveFile(data.getCdi_img1()));
+				opData.setCdi_img2(this._moveFile(data.getCdi_img2()));
+				opData.setCdi_img3(this._moveFile(data.getCdi_img3()));
+			} catch (IOException e) {
+				
+				log.error("[audit][exception]params:{},errmsg={}", JSONObject.toJSONString(data), ExceptionUtils.getStackTrace(e));
+				throw new BusinessException(-1, "实名审批失败,处理实名证件信息失败！");
+			}
+			
+			//2.3、判断是否已赠送过流量套餐, 获取流量卡实名认证成功后可获得多少赠送流量
+			CcGprsBatch batchInfo = iCcGprsBatchService.getGiveInfoByBatchId(card.getBatch_id());
+			Double give_value = batchInfo.getGive_value() == null ? 0 : batchInfo.getGive_value();
+			Float live_month = batchInfo.getGive_live_month() == null ? 0 : batchInfo.getGive_live_month();
+			
+			if(StringUtils.isEmpty(data.getGive_time()) && give_value > 0 && live_month > 0) {
+				
+				
+				/*
+				 * 循环判断当前流量接口是否在计算修改中，如果有缓存程序则暂停1秒执行
+				 */
+				Integer is_update = 0;
+				String cardLockCacheKey = FcConstant.memResKey("CARD-LOCK-"+card.getCard_iccid());
+				while(StringUtils.equals(jedisPoolUtil.get(cardLockCacheKey),"1")) {
+					
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						log.error("[audit][exception]params={},errmsg={}", JSONObject.toJSONString(data), ExceptionUtils.getStackTrace(e));
+						throw new BusinessException("实名审核失败");
+					}
+					is_update = 1;
+				}
+				
+				if(is_update == 1) {
+					card = iCcGprsCardService.getByIccid(data.getCard_iccid());
+				}
+				
+				//
+				//事务定义
+				DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
+				definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+				TransactionStatus transactionStatus = clwTransactionManager.getTransaction(definition);
+				boolean flag = false;
+				try {
+					
+					/**
+					 * 增加流水支付记录,
+					 */
+					Date now = new Date();
+					String now_format = DateFormatUtils.format(now, "yyyy-MM-dd HH:mm:ss");
+					Date time_expire = liveMonthConverToExpireTime(live_month, now); //赠送流量到期时间
+					
+					CcGprsPay pay = new CcGprsPay();
+					pay.setOrg_id(card.getOrg_id());
+					pay.setCard_id(card.getCard_id());
+					pay.setGprs_amount(give_value);
+					pay.setGprs_price(new BigDecimal("0"));
+					pay.setLive_month(live_month);
+					pay.setPay_sn(makePaySn());
+					pay.setPay_memo("实名成功赠送");
+					pay.setPay_method((short) 0);
+					pay.setTransfer_id("realname-give");
+					pay.setIs_paid((short)1);
+					pay.setTime_paid(now_format);
+					pay.setTime_added(now_format);
+					pay.setTime_expire(DateFormatUtils.format(time_expire, "yyyy-MM-dd HH:mm:ss"));
+					
+					flag = iCcGprsPayService.save(pay);
+					if(!flag) {
+						log.error("[audit][exception]params={data:{},pay:{}},errmsg={}", JSONObject.toJSONString(data), JSONObject.toJSONString(pay), "新增订单失败");
+						throw new BusinessException(-1, "实名审核失败！");
+					}
+					
+					CcGprsAllot gprsAllot = new CcGprsAllot();
+					gprsAllot.setCard_id(card.getCard_id());
+					gprsAllot.setGprs_amount(give_value);
+					gprsAllot.setAllot_month(1);
+					gprsAllot.setAllot_value(give_value);
+					gprsAllot.setAllot_reset((short) 0);
+					gprsAllot.setAssigned_month(0);
+					gprsAllot.setTime_added(now_format);
+					gprsAllot.setTime_expire(pay.getTime_expire());
+					if(!iCcGprsAllotService.save(gprsAllot)) {
+						log.error("[audit][exception]params={data:{},gprsAllot:{}},errmsg={}", JSONObject.toJSONString(data), JSONObject.toJSONString(pay), "新增订单失败");
+						throw new BusinessException(-1, "实名审核失败！");
+					}
+					
+					clwTransactionManager.commit(transactionStatus);
+					
+					//time_expire = (live_month < 1) ? ("+"+()):();
+					//$time_expire = ($live_month < 1) ? ('+' . (round($live_month, 2) * 100) . ' day') : ($live_month == 999 ? '2038-01-01 01:01:01' : "+{$live_month} month");
+				}catch(BusinessException e) {
+					clwTransactionManager.rollback(transactionStatus);
+					throw e;
+				}catch (Exception e) {
+					log.error("[audit][exception]params={},errmsg={}", JSONObject.toJSONString(data), ExceptionUtils.getStackTrace(e));
+					clwTransactionManager.rollback(transactionStatus);
+				}
+				
+				
+				
+			}
+			
+		}
+		return ret;
+	}
+	
+	public String _moveFile(String source) throws IOException {
+		
+		String month = DateFormatUtils.format(new Date(), "yyyyMM");
+		String filenew = source.replace("real/", String.format("realname/%s/", month));
+		
+		File srcFile = new File(file_dir_root +"/www/img/"+source);
+		File destFile = new File(file_dir_root +"/www/img/"+filenew);
+		File parentFile = destFile.getParentFile();
+		if(!parentFile.exists()) {
+			parentFile.mkdirs();
+		}
+		
+		FileUtils.moveFile(srcFile, destFile);
+		return filenew;
+	}
+	
+	/**
+	 * liveMonth to 实际日期
+	 * @param liveMonth 有效周期，参考arr_live_month
+	 * @param now
+	 * @return
+	 */
+	public static Date liveMonthConverToExpireTime(float liveMonth, Date now) {
+		
+		int liveMonth_1 = 0;
+		if(liveMonth < 1) { //例如 0.01 
+			liveMonth_1 = (int)(liveMonth * 100);
+			return DateUtils.addDays(now, liveMonth_1);
+		}
+		
+		if(liveMonth == 999) {
+			Calendar rightNow = Calendar.getInstance();
+			rightNow.set(2038, 0, 1, 1, 1, 1);
+			return rightNow.getTime();
+		}
+		
+		liveMonth_1 = (int) liveMonth;
+		
+		return DateUtils.addMonths(now, liveMonth_1);
+	}
+	
+	public static String makePaySn() {
+		
+		return DateFormatUtils.format(new Date(), "yyyyMMdd-HHmmss-")+RandomUtils.nextInt(100000, 999999);
+	}
+
+}

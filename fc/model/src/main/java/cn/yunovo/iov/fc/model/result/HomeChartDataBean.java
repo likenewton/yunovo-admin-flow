@@ -40,9 +40,9 @@ public class HomeChartDataBean implements Serializable{
 	private BigDecimal val2;
 	
 	/**
-	 * 值2
+	 * 值3
 	 */
 	@ApiModelProperty("值3")
-	private Double val3;
+	private BigDecimal val3;
 	
 }

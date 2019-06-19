@@ -1,5 +1,6 @@
 package cn.yunovo.iov.fc.service.impl;
 
+import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
 import cn.yunovo.iov.fc.dao.ICcGprsCardMapper;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
@@ -12,6 +13,7 @@ import cn.yunovo.iov.fc.model.result.CardTotalByOrgidInfoBean;
 import cn.yunovo.iov.fc.model.result.CardUsedResultBean;
 import cn.yunovo.iov.fc.model.result.PayDetailResultBean;
 import cn.yunovo.iov.fc.model.result.UnicomStatResultBean;
+import cn.yunovo.iov.fc.service.FcConstant;
 import cn.yunovo.iov.fc.service.ICcGprsCardService;
 import cn.yunovo.iov.fc.service.ICcOrgService;
 import cn.yunovo.iov.fc.service.ICcStatsMonthService;
@@ -19,8 +21,10 @@ import cn.yunovo.iov.fc.service.ICcUserService;
 import lombok.extern.slf4j.Slf4j;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import java.util.HashMap;
 import java.util.List;
@@ -58,6 +62,9 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 	
 	@Autowired
 	private ICcStatsMonthService iCcStatsMonthService;
+	
+	@Autowired
+	private JedisPoolUtil jedisPoolUtil;
 
 	private Map<String, String> array_card_type;
 
@@ -479,6 +486,53 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 		page.setRecords(records);
 		returnData.setPage(page);
 		return returnData;
+	}
+	
+	/**
+	 * 通过ICCID获取流量卡数据, 如果缓存里有流量卡数据，则优先使用缓存
+	 * @param iccid 流量卡号
+	 * @return 
+	 */
+	@Override
+	public CcGprsCard getByIccid(String iccid) {
+		
+		//iccid 的长度必须 >= 19位
+		if(StringUtils.isEmpty(iccid) || iccid.length() < 19) {
+			return null;
+		}
+		String cachekey = FcConstant.cardInfoKey(iccid);
+		CcGprsCard card = null;
+		String card_info = jedisPoolUtil.get(cachekey);
+		if(StringUtils.isEmpty(card_info)) {
+			
+			card = iGprsCardMapper.getByIccid(iccid);
+			if(card == null) { //如果通过完整的iccid查询不到流量卡信息则查19位流量卡
+				
+				card = iGprsCardMapper.getByLikeIccid(iccid.substring(0, 19));
+			}
+			
+			//如果从数据库中无法查询到流量卡信息，则说明改卡非我司流量卡
+			if(card == null || StringUtils.isEmpty(card.getCard_iccid())) {
+				card = new CcGprsCard();
+				card.setNone(1);
+				//为防止缓存穿透 或减少数据层访问,因此也会将该iccid缓存
+				card_info = JSONObject.toJSONString(card);
+				jedisPoolUtil.setEx(cachekey, card_info);
+				return null;
+			}else {
+				
+				card_info = JSONObject.toJSONString(card, SerializerFeature.WriteMapNullValue);
+				jedisPoolUtil.setEx(cachekey, card_info);
+				return card;
+			}
+		}else {
+			card = JSONObject.parseObject(card_info, CcGprsCard.class);
+			if(card == null || StringUtils.isEmpty(card.getCard_iccid())) {
+				return null;
+			}else {
+				return card;
+			}
+		}
 	}
 
 }
