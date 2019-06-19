@@ -48,7 +48,7 @@
         <el-button size="mini" type="warning">导出</el-button>
       </el-button-group>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
-        <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" min-width="180" sortable="custom">
+        <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" width="182" sortable="custom">
           <template slot-scope="scope">
             <span class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
           </template>
@@ -78,10 +78,10 @@
             <div v-html="formatFlowUnit(scope.row.unicom_unused)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="time_added" label="导卡时间" min-width="151" sortable="custom"></el-table-column>
-        <el-table-column prop="time_active" label="激活时间" min-width="151" sortable="custom"></el-table-column>
-        <el-table-column prop="time_last" label="设备更新时间" min-width="151" sortable="custom"></el-table-column>
-        <el-table-column prop="time_expire" label="过期时间" min-width="215" sortable="custom">
+        <el-table-column prop="time_added" label="导卡时间" min-width="155" sortable="custom"></el-table-column>
+        <el-table-column prop="time_active" label="激活时间" min-width="155" sortable="custom"></el-table-column>
+        <el-table-column prop="time_last" label="设备更新时间" min-width="155" sortable="custom"></el-table-column>
+        <el-table-column prop="time_expire" label="过期时间" min-width="220" sortable="custom">
           <template slot-scope="scope">
             <div v-html="calcLeftTime(scope.row.time_expire)"></div>
           </template>

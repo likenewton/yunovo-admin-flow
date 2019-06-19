@@ -329,5 +329,8 @@ module.exports = {
   },
   toFixed(value, total, count = 2) {
     return (value / total * 100).toFixed(count) + '%'
+  },
+  compatibel_Ie_input() {
+    $('.el-input__inner').attr("unselectable","on")
   }
 }

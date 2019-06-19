@@ -103,7 +103,7 @@ class AXIOS {
   send(para) {
     let data = Object.assign({}, this.constData, para)
     data.headers = Object.assign(this.constData.headers, para.headers || {
-      '_iov_token_': localStorage.getItem('_iov_token_') || '' // 每次的请求都要在headers中携带token过去
+      'iov-token': localStorage.getItem('iov-token') || '' // 每次的请求都要在headers中携带token过去
     })
 
     axios({
@@ -116,11 +116,21 @@ class AXIOS {
     }).then(res => {
       // 这里要根据状态码来对不同的响应状态做处理
       if (res.data.status === 401) {
-        // 未登录状态跳转登录页
-        location.replace(res.data.redirectUrl += '&target=' + encodeURIComponent(location.href))
-        // location.replace(res.data.redirectUrl)
+        // 如果没有登录要记录跳转次数，大于5次就不跳转了
+        let loginCount = localStorage.getItem('loginCount') || '0'
+        if (loginCount - 0 <= 5) {
+          localStorage.setItem('loginCount', ++loginCount + '')
+          // 未登录状态跳转登录页
+          location.replace(res.data.redirectUrl += '&target=' + encodeURIComponent(location.href))
+        } else {
+          Vue.prototype.$notify.error({
+            title: '错误',
+            message: 'token校验异常'
+          })
+        }
       } else {
-        // status === 0 为正常返回
+        localStorage.setItem('loginCount', '0')
+        // status === 0 为正常返回, 表示已经登录了
         if (res.data.status === 0) {
           data.done && data.done(res.data)
         } else {

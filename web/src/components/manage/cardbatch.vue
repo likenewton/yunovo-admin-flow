@@ -94,7 +94,6 @@ export default {
   },
   mounted() {
     this.getData()
-    console.log(this.liveMonthSelect)
   },
   methods: {
     handleSizeChange(val) {

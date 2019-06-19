@@ -63,7 +63,7 @@
       </el-button-group>
       <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column prop="pay_sn" label="订单编号" width="145" sortable="custom"></el-table-column>
-        <el-table-column prop="card_iccid" label="ICCID卡" width="180" sortable="custom">
+        <el-table-column prop="card_iccid" label="ICCID卡" width="182" sortable="custom">
           <template slot-scope="scope">
             <span v-if="scope.row.sums">{{scope.row.card_iccid}}</span>
             <span v-else class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>

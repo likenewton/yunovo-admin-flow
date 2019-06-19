@@ -32,7 +32,7 @@
         <el-button size="mini" type="warning">导出实名信息</el-button>
       </el-button-group>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
-        <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" min-width="180" sortable="custom">
+        <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" width="182" sortable="custom">
           <template slot-scope="scope">
             <span class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
           </template>

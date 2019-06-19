@@ -163,6 +163,7 @@ export default {
   mounted() {
     Vue.nextTick(() => {
       this.myChart = this.$echarts.init(document.getElementById('myChart_0'))
+      Api.UNITS.compatibel_Ie_input()
     })
     // 进入页面的时候请求数据
     this.getData()
