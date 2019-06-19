@@ -162,10 +162,10 @@ spring:
   profiles: dev
 casClient: 
   casEnabled: true
-  casServerHost: 192.168.3.240
-  casServerUrlPrefix: http://192.168.3.240:8081/cas-server
-  casServerLoginUrl: http://192.168.3.240:8081/cas-server/login
-  casServerLogoutUrl: http://192.168.3.240:8081/cas-server/logout
+  casServerHost: tcas.yunovo.cn
+  casServerUrlPrefix: http://tcas.yunovo.cn:8081/cas-server
+  casServerLoginUrl: http://tcas.yunovo.cn:8081/cas-server/login
+  casServerLogoutUrl: http://tcas.yunovo.cn:8081/cas-server/logout
   serverHost: 10.0.0.160
   serverName: http://10.0.0.160:9098
   service: http://10.0.0.160:9098/fc/api/sso/ssoLogin
@@ -209,19 +209,19 @@ spring:
   profiles: test
 casClient: 
   casEnabled: true
-  casServerHost: 192.168.3.240
-  casServerUrlPrefix: http://192.168.3.240:8081/cas-server
-  casServerLoginUrl: http://192.168.3.240:8081/cas-server/login
-  casServerLogoutUrl: http://192.168.3.240:8081/cas-server/logout
+  casServerHost: tcas.yunovo.cn
+  casServerUrlPrefix: http://tcas.yunovo.cn:8081/cas-server
+  casServerLoginUrl: http://tcas.yunovo.cn:8081/cas-server/login
+  casServerLogoutUrl: http://tcas.yunovo.cn:8081/cas-server/logout
   serverHost: 10.0.0.160
   serverName: http://192.168.3.240:9098
   service: http://192.168.3.240:9098/fc/api/sso/ssoLogin
   exludeFilterResource: "*remote*"
   serverIndexUrls: /fc/sso/api/ssoLogin
   redirectAfterValidation: false
-  h5IndexUrl: "http://10.0.3.43:8091/#/"
+  h5IndexUrl: "http://t.wx.yunovo.cn/flowCenter/dist/index.html"
   h5Client: true
-  ucIndexUrl: "http://10.0.3.43:8091/#/"
+  ucIndexUrl: "http://t.wx.yunovo.cn/authCenter/dist/index.html#/sysmenu"
   authTokenCrypto: 
     signingKey: eckhybvk3nqorVo5efMxERNu_CkR8KCYfV6Hv7J1MVASsVG-DHYzMLpz4UbnGfwz4Y4bu3SAzBMICqlROp2gBQ
     signingKeySize: 512

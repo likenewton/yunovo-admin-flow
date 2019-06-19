@@ -2,4 +2,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.yunovo.iov.fc.dao.ICcGprsAllotMapper">
 
+	<select id="getUnAllotGprsPack" resultType="cn.yunovo.iov.fc.model.entity.CcGprsAllot">
+	
+		SELECT GA.*, GC.card_type 
+		FROM cc_gprs_allot GA INNER JOIN cc_gprs_card GC ON GC.card_id = GA.card_id 
+		WHERE 1 = 1 
+		<if test="card_id != null">
+			
+		</if>
+		
+		<choose>
+			<when test='card_id != null'>
+				AND GA.card_id = {$card_id}  
+			</when>
+			<otherwise>
+				GC.org_id != 19 AND GC.card_type = #{month_end_type}
+			</otherwise>
+		</choose>
+		
+		AND GA.time_expire > NOW() ORDER BY GA.allot_id ASC
+		
+	</select>
+
 </mapper>

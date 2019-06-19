@@ -18,4 +18,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGprsAllot> implements ICcGprsAllotService {
 
+	
+	public void gprsAllot(Integer card_id) {
+		
+		
+		//获取未过期的流量套餐分配情况列表，根据此列表分配当月可使用的流量套餐
+		
+		
+		
+		
+	}
+	
 }

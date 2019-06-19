@@ -1,6 +1,7 @@
 package cn.yunovo.iov.fc.model.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
@@ -53,5 +54,9 @@ public class CcGprsAllot implements Serializable {
 
 	@ApiModelProperty(value = "过期时间")
 	private String time_expire;
+	
+	@ApiModelProperty(value="流量卡类型")
+	@TableField(exist=false)
+	private String card_type;
 
 }
