@@ -63,17 +63,17 @@
             <span>{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="unicom_month" label="当月用量" min-width="93" sortable="custom">
+        <el-table-column prop="unicom_month" label="当月用量" width="105" sortable="custom">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.unicom_month)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="unicom_total" label="累计用量" min-width="93" sortable="custom">
+        <el-table-column prop="unicom_total" label="累计用量" width="105" sortable="custom">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.unicom_total)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="unicom_unused" label="剩余用量" min-width="93" sortable="custom">
+        <el-table-column prop="unicom_unused" label="剩余用量" width="105" sortable="custom">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.unicom_unused)"></div>
           </template>
@@ -86,19 +86,19 @@
             <div v-html="calcLeftTime(scope.row.time_expire)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="unicom_stop" label="运行状态" min-width="80">
+        <el-table-column prop="unicom_stop" label="运行状态" width="75">
           <template slot-scope="scope">
             <span class="text_success bold" v-if="scope.row.unicom_stop==0">正常运行</span>
             <span class="text_danger bold" v-else>已停卡</span>
           </template>
         </el-table-column>
-        <el-table-column label="激活状态" min-width="70">
+        <el-table-column label="激活状态" width="75">
           <template slot-scope="scope">
             <span v-if="scope.row.time_active">已激活</span>
             <span v-else>未激活</span>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" min-width="140">
+        <el-table-column fixed="right" label="操作" width="145">
           <template slot-scope="scope">
             <el-button type="text" @click="showDetail(scope)">同步</el-button>
             <el-button type="text" @click="toUnicomLink(scope.row.card_iccid)">套餐</el-button>

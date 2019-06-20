@@ -25,25 +25,25 @@
         <el-button size="small" type="success" @click="$router.push({ name: 'batchcreate' })">新增</el-button>
       </el-button-group>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
-        <el-table-column prop="batch_sn" label="批次编号" width="90" sortable="custom"></el-table-column>
+        <el-table-column prop="batch_sn" label="批次编号" width="105" sortable="custom"></el-table-column>
         <el-table-column prop="batch_name" label="批次名称" min-width="140" sortable="custom"></el-table-column>
         <el-table-column prop="org_id" label="机构名称" min-width="180" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="gprs_amount" label="套餐流量" width="100" sortable="custom">
+        <el-table-column prop="gprs_amount" label="套餐流量" width="105" sortable="custom">
           <template slot-scope="scope">
             <div v-html="formatComboFlow(scope.row.gprs_amount)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="live_month" label="有效周期" width="100" sortable="custom">
+        <el-table-column prop="live_month" label="有效周期" width="105" sortable="custom">
           <template slot-scope="scope">
             <div>{{getLiveMonthAlias(scope.row.live_month)}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="card_amount" label="入卡数量" width="90" sortable="custom"></el-table-column>
-        <el-table-column prop="batch_shipper" label="出货人名" width="90" sortable="custom"></el-table-column>
+        <el-table-column prop="card_amount" label="入卡数量" width="105" sortable="custom"></el-table-column>
+        <el-table-column prop="batch_shipper" label="出货人名" width="105" sortable="custom"></el-table-column>
         <el-table-column label="销往城市" width="140">
           <template slot-scope="scope">
             <span>{{scope.row.province_name}}{{scope.row.city_name}}</span>
@@ -51,12 +51,12 @@
         </el-table-column>
         <el-table-column prop="batch_memo" label="批次备注" width="150" sortable="custom" show-overflow-tooltip></el-table-column>
         <el-table-column prop="time_added" label="添加时间" width="155" sortable="custom"></el-table-column>
-        <el-table-column prop="user_id" label="操作者" width="80" sortable="custom">
+        <el-table-column prop="user_id" label="操作者" width="90" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.first_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="alter_id" label="更改者" width="80" sortable="custom">
+        <el-table-column prop="alter_id" label="更改者" width="90" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.alter_name}}</span>
           </template>

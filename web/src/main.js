@@ -49,29 +49,24 @@ Vue.config.productionTip = false
 
 // 路由进入前的全局钩子
 router.beforeEach((to, from, next) => {
-
   if (Api.UNITS.getQuery(Api.STATIC.token)) {
-    // 当页面重定向过来的时候带的token 要保存进去，并且此时肯定是登录成功的不用再验证了
+    // 当页面重定向过来的时候带的token 要保存进去
     localStorage.setItem(Api.STATIC.token, Api.UNITS.getQuery(Api.STATIC.token))
-    next()
-  } else {
-    // 如果URL地址上没有带token要验证有效性
-    _axios.send({
-      method: 'get',
-      url: _axios.ajaxAd.isLogin,
-      done: (res) => {
-        // 这里一定登录了
-        if (store.state.authMenu.length === 0) {
-          // 如果权限列表为空就从后台拉取权限信息
-          let asideData = Api.STATIC.asideData
-          let authMenu = Api.UNITS.getAuthMenu(asideData) // 这里将本地的asideData与后台提交的数据生成authMenu
-          store.commit('SET_AUTHMENU', { authMenu })
-        }
-        next()
-      }
-    })
   }
-
+  _axios.send({
+    method: 'get',
+    url: _axios.ajaxAd.isLogin,
+    done: (res) => {
+      // 这里一定登录了
+      if (store.state.authMenu.length === 0) {
+        // 如果权限列表为空就从后台拉取权限信息
+        let asideData = Api.STATIC.asideData
+        let authMenu = Api.UNITS.getAuthMenu(asideData) // 这里将本地的asideData与后台提交的数据生成authMenu
+        store.commit('SET_AUTHMENU', { authMenu })
+      }
+      next()
+    }
+  })
 })
 
 new Vue({
@@ -81,4 +76,3 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
-

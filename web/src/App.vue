@@ -19,9 +19,10 @@ export default {
     return {}
   },
   mounted() {
-    let width = document.querySelector("body").clientWidth;
+    // 消除浏览器自带的缩放
+    let width = $(window).width();
     if (width > 1200) {
-      let ratio = width / 1920;
+      let ratio = width / window.screen.width;
       document.querySelector("body").style.zoom = ratio;
     }
   }

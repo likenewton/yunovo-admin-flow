@@ -88,7 +88,7 @@ export default {
       },
       formInline: {},
       sort: {},
-      maxTableHeight: Api.UNITS.maxTableHeight(),
+      maxTableHeight: Api.UNITS.maxTableHeight(330),
       chartConst: {
         '0': {
           title: '机构充值记录统计',

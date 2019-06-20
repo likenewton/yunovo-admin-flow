@@ -41,7 +41,6 @@ const Datapreserve = r => require.ensure([], () => r(require('@/components/syste
 let menuRoute = {
   path: '/asidemenu',
   name: 'asidemenu',
-  
   component: Asidemenu,
   redirect: '/asidemenu/menu',
   // 侧边栏菜单

@@ -81,7 +81,7 @@ export default {
       },
       sort: {},
       formInline: {},
-      maxTableHeight: Api.UNITS.maxTableHeight(),
+      maxTableHeight: Api.UNITS.maxTableHeight(360),
     }
   },
   mounted() {

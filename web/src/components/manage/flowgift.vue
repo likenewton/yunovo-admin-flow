@@ -132,7 +132,7 @@ export default {
       pageSizes: Api.STATIC.pageSizes,
       tabIndex: '1',
       loadData: true,
-      maxTableHeight: Api.UNITS.maxTableHeight(),
+      maxTableHeight: Api.UNITS.maxTableHeight(370),
       list: {
         data: [],
         pagesize: Api.STATIC.pageSizes[1],

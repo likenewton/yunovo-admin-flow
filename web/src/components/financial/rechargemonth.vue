@@ -18,7 +18,7 @@
         </el-form-item>
       </el-form>
     </el-card>
-    <el-card class="clearfix" style="margin-bottom: 20px" shadow="never" v-loading="loadData">
+    <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" :default-sort="defaultSort" border resizable size="mini">
         <el-table-column prop="org_id" label="机构名称" min-width="200" sortable="custom">
           <template slot-scope="scope">
@@ -93,7 +93,7 @@ export default {
       formInline: {},
       sort: {},
       defaultSort: { prop: 'org_id', order: 'ascending' },
-      maxTableHeight: Api.UNITS.maxTableHeight(),
+      maxTableHeight: Api.UNITS.maxTableHeight(360),
       chartConst: {
         '0': {
           title: '次数统计',

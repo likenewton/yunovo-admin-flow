@@ -281,11 +281,13 @@ module.exports = {
     if (attr) return queryObj[attr]
     else return queryObj
   },
-  maxTableHeight() {
+  maxTableHeight(leftHeight = 405) {
     // let height = $(window).height() - (220 + 300000 / ($(window).height() + 1000))
     // if (height < 400) height = 400
-    let height = 600
-    return height
+    let winWidth = $(window).width()
+    let zoom = winWidth > 1200 ? winWidth / window.screen.width : 1
+    let calcHeight = ($(window).height() - leftHeight * zoom) / zoom
+    return calcHeight
   },
   // 时间格式化
   formatdate(date, fmt) {

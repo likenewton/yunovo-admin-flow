@@ -52,7 +52,7 @@ export default {
       formInline: {
         ntid: Api.UNITS.getQuery('ntid')
       },
-      maxTableHeight: Api.UNITS.maxTableHeight()
+      maxTableHeight: Api.UNITS.maxTableHeight(354)
     }
   },
   mounted() {

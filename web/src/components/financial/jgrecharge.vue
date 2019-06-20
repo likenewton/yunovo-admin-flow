@@ -82,7 +82,7 @@ export default {
       formInline: {
         org_id: Api.UNITS.getQuery('org_id')
       },
-      maxTableHeight: Api.UNITS.maxTableHeight(),
+      maxTableHeight: Api.UNITS.maxTableHeight(360),
     }
   },
   mounted() {
