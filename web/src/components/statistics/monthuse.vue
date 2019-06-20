@@ -137,14 +137,7 @@ export default {
     },
     // 导出excel
     exportExcel() {
-      _axios.send({
-        method: 'get',
-        url: _axios.ajaxAd.statsExport,
-        params: this.formInline,
-        done: (res) => {
-          console.log(res)
-        }
-      })
+      Api.UNITS.exportExcel(_axios.ajaxAd.statsExport, this.formInline)
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,
     calcLeftTime: Api.UNITS.calcLeftTime

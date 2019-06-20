@@ -84,6 +84,7 @@ export default {
     resetForm(formName) {
       // resetFields 只能重置需要验证的值
       this.$refs[formName].resetFields()
+      this.formInline = {}
     },
     getData() {
       this.loadData = true

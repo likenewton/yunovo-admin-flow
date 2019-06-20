@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card class="system_set" shadow="never">
-      <el-tabs @tab-click="changeTab">
+      <el-tabs @tab-click="changeTab" v-model="tabIndex">
         <!-- 编辑项目 -->
         <el-tab-pane>
           <span slot="label"></i>编辑项目</span>
@@ -323,9 +323,6 @@ export default {
     this.getData()
   },
   methods: {
-    changeTab(para) {
-      this.tabIndex = para.index
-    },
     getData() {
       this.loadData = true
       _axios.send({
@@ -386,11 +383,10 @@ export default {
     },
     resetForm(formName) {
       // 5个表单的数据都是从getData取得，所以重置要重置5个表单
-      this.$refs['ruleForm_0'].resetFields()
-      this.$refs['ruleForm_1'].resetFields()
-      this.$refs['ruleForm_2'].resetFields()
-      this.$refs['ruleForm_3'].resetFields()
-      this.$refs['ruleForm_4'].resetFields()
+      for(let i = 0; i < 5; i++) {
+        this.$refs[`ruleForm_${i}`].resetFields()
+        this[`formInline_${i}`] = {}
+      }
       this.getData()
     },
     limitNumber: Api.UNITS.limitNumber, // 限制数字类型位数

@@ -36,7 +36,7 @@
       </el-form-item>
       <el-form-item prop="rebate_value">
         <span slot="label">返利比率：</span>
-        <el-input v-model="formInline.rebate_value" @input="formInline.rebate_value = limitNumber(formInline.rebate_value, 1, 3)" placeholder="请输入返利比率"></el-input>
+        <el-input v-model="formInline.rebate_value" @input="formInline.rebate_value = limitNumber(formInline.rebate_value, 1, 4)" placeholder="请输入返利比率"></el-input>
         <div class="annotation">值需小于1大于等于0，返利比率 * 充值金额 = 返利金额</div>
       </el-form-item>
       <el-form-item>
@@ -63,6 +63,11 @@ export default {
           required: true,
           message: '请输入机构名称',
           trigger: 'blur'
+        }, {
+          min: 1,
+          max: 100,
+          message: '机构名必须在1至100个字符之间',
+          trigger: 'blur'
         }],
         parent_id: [{
           required: true,
@@ -74,22 +79,31 @@ export default {
           message: '请输入开户数量',
           trigger: 'blur'
         }],
+        memo: [{
+          min: 0,
+          max: 255,
+          message: '机构备注不能多于255个字符',
+          trigger: 'blur'
+        }],
         notify_url: [{
           required: true,
           message: '请输入异步通知地址',
           trigger: 'blur'
+        }, {
+          validator: this.validatorNotifyUrl,
+          trigger: 'blur'
         }],
         email: [{
           validator: this.validatorEmall,
-          trigger: 'blur'
+          trigger: ['blur']
         }],
         tel: [{
           validator: this.validatorPhoneNumber,
-          trigger: 'blur'
+          trigger: ['blur']
         }],
         rebate_value: [{
           validator: this.validatorRebate,
-          trigger: 'blur'
+          trigger: ['blur']
         }]
       }
     }
@@ -118,6 +132,7 @@ export default {
     },
     // 提交表单
     submitForm(formName) {
+      // 全校验
       this.$refs[formName].validate((valid) => {
         if (valid) {
           // 验证通过
@@ -158,6 +173,7 @@ export default {
     resetForm(formName) {
       // resetFields 只能重置需要验证的值
       this.$refs[formName].resetFields()
+      this.formInline = {}
       this.isUpdate && this.getData()
     },
     limitNumber: Api.UNITS.limitNumber,
@@ -183,6 +199,14 @@ export default {
         callback()
       } else {
         callback(new Error('返利比率必须大于等于0，小于1'))
+      }
+    },
+    validatorNotifyUrl(rule, value, callback) {
+      let exp = new RegExp('(^$)|(^([hH][tT]{2}[pP]:/*|[hH][tT]{2}[pP][sS]:/*|[fF][tT][pP]:/*)(([A-Za-z0-9-~]+).)+([A-Za-z0-9-~\\/])+(\\?{0,1}(([A-Za-z0-9-~]+\\={0,1})([A-Za-z0-9-~]*)\\&{0,1})*)$)')
+      if (exp.test(value)) {
+        callback()
+      } else {
+        callback(new Error('异步通知地址格式不正确'))
       }
     }
   },

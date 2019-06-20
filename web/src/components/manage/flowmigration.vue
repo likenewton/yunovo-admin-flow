@@ -176,6 +176,7 @@ export default {
     // 重置表单
     resetForm(formName) {
       this.$refs[formName].resetFields()
+      this,formInline = {}
     },
     checkRechargeDetail(scope) {
       this.$router.push({ name: 'rechargeDetail', query: { card_iccid: scope.row.card_iccid } })

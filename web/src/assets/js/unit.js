@@ -335,5 +335,13 @@ module.exports = {
   },
   compatibel_Ie_input() {
     $('.el-input__inner').attr("unselectable","on")
+  },
+  // 导出excel
+  exportExcel(url, params = {}) {
+    let link = `${url}?iov-token=${localStorage.getItem('iov-token')}`
+    for(let key in params) {
+      link += `&${key}=${params[key]}`
+    }
+    window.open(link)
   }
 }
