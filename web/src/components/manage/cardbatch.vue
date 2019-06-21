@@ -63,7 +63,7 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="80">
           <template slot-scope="scope">
-            <el-button type="text">编辑</el-button>
+            <el-button type="text" class="text_editor">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>

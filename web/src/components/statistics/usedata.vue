@@ -56,7 +56,7 @@
             <div v-html="formatFlowUnit(scope.row.unused_count)"></div>
           </template>
         </el-table-column>
-        <el-table-column label="使用流量率" min-width="80">
+        <el-table-column label="使用流量率" min-width="100">
           <template slot-scope="scope">
             <span>{{(scope.row.used_count/(scope.row.used_count + scope.row.unused_count)*100).toFixed(3)}}%</span>
           </template>

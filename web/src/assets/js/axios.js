@@ -70,8 +70,13 @@ class AXIOS {
       getDayUse: '/fc/api/gprs/card/dayUse',
       getMonthUse: '/fc/api/gprs/card/monthUse',
       getCardDetail: '/fc/api/gprs/card/detail',
+      getComboDetail: '/fc/api/gprs/pack/detail',
       // 导出
       statsExport: '/fc/api/gprs/stats/export',
+      // 实名审核
+      checkAudit: '/fc/api/realname/audit',
+      // 停用/启用
+      checkComboStop: '/fc/api/gprs/pack/stop',
       // 图表
       getPayPie: '/fc/api/gprs/report/paylog/chart',
       getCardBar: '/fc/api/gprs/card/cardTotalByOrgidGroup',
@@ -88,6 +93,8 @@ class AXIOS {
       addCurrency: '/fc/api/system/currency/insert',
       updateCurrency: '/fc/api/system/currency/update',
       updateSystemParams: '/fc/api/system/params/update',
+      addGprsCombo: '/fc/api/gprs/pack/insert',
+      updateGprsCombo: '/fc/api/gprs/pack/update',
       // 首页
       getPayCase: '/fc/api/home/payCase', // 数据看板
       getSiminfo: '/fc/api/home/siminfo', // 获取pie-card数据

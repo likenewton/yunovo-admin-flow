@@ -131,7 +131,7 @@ module.exports = {
       }
     } else {
       if (Math.abs(count / 1024) < 1) {
-        htmlStr = `${count} M`
+        htmlStr = `${count.toFixed(fix)} M`
       } else if (Math.abs(count / 1024 / 1024) < 1) {
         htmlStr = `${(count / 1024).toFixed(fix)} G`
       } else {
@@ -334,7 +334,8 @@ module.exports = {
     return (value / total * 100).toFixed(count) + '%'
   },
   compatibel_Ie_input() {
-    $('.el-input__inner').attr("unselectable","on")
+    console.log(1)
+    $('.el-select .el-input__inner').attr("unselectable","on")
   },
   // 导出excel
   exportExcel(url, params = {}) {

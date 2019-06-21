@@ -4,6 +4,7 @@
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item label="机构名称">
           <el-select v-model="formInline.org_id" filterable placeholder="请选择">
+            <el-option :key="Newton" label="公共套餐" value="0"></el-option>
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
@@ -71,21 +72,21 @@
         </el-table-column>
         <el-table-column prop="time_added" label="添加时间" min-width="155" sortable="custom"></el-table-column>
         <el-table-column prop="time_modify" label="更改时间" min-width="155" sortable="custom"></el-table-column>
-        <el-table-column prop="user_id" label="创建者" min-width="100" sortable="custom">
+        <el-table-column prop="user_id" label="创建者" width="90" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.first_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="alter_id" label="更改者" min-width="100" sortable="custom">
+        <el-table-column prop="alter_id" label="更改者" width="90" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.alter_name}}</span>
           </template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="105">
           <template slot-scope="scope">
-            <el-button type="text">编辑</el-button>
-            <el-button type="text" class="text_danger" v-if="scope.row.pack_status==1">停用</el-button>
-            <el-button type="text" class="text_success" v-else>启用</el-button>
+            <el-button type="text" class="text_editor" @click="$router.push({name: 'rechargecomboset', query: {type: 'update', pack_id: scope.row.pack_id}})">编辑</el-button>
+            <el-button type="text" class="text_danger" v-if="scope.row.pack_status==1" @click="checkComboStop(scope, 0)">停用</el-button>
+            <el-button type="text" class="text_success" v-else @click="checkComboStop(scope, 1)">启用</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -148,6 +149,43 @@ export default {
       Api.UNITS.getListData({
         vue: this,
         url: _axios.ajaxAd.getPacks
+      })
+    },
+    // 停用/启用
+    checkComboStop(scope, pack_status) {
+      let prompt = ''
+      if (pack_status === 0) {
+        prompt = '是否停用该套餐？'
+      } else if (pack_status === 1) {
+        prompt = '是否启用该套餐？'
+      }
+      this.$confirm(prompt, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        _axios.send({
+          method: 'post',
+          url: _axios.ajaxAd.checkComboStop,
+          data: {
+            pack_id: scope.row.pack_id,
+            pack_status // 0停用，1启用
+          },
+          done: ((res) => {
+            this.getData()
+            setTimeout(() => {
+              this.$message({
+                type: 'success',
+                message: '操作成功!'
+              })
+            }, 150)
+          })
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消操作'
+        })
       })
     },
     getLiveMonthAlias(value) {

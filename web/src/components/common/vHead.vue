@@ -111,6 +111,7 @@ export default {
 
     .logo {
       width: 132px;
+      height: 26px;
       margin-top: -8px;
     }
 
@@ -136,6 +137,8 @@ export default {
 
       img {
         position: absolute;
+        width: 40px;
+        height: 40px;
         top: 0;
         left: 0;
         width: 100%;

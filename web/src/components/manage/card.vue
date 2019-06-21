@@ -47,7 +47,7 @@
         <el-button size="small" type="warning" @click="$router.push({name: 'cardbatch'})">导入</el-button>
         <el-button size="small" type="warning">导出</el-button>
       </el-button-group>
-      <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
+      <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border size="mini">
         <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" width="182" sortable="custom">
           <template slot-scope="scope">
             <span class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
@@ -86,7 +86,7 @@
             <div v-html="calcLeftTime(scope.row.time_expire)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="unicom_stop" label="运行状态" width="75">
+        <el-table-column prop="unicom_stop" label="运行状态" width="85">
           <template slot-scope="scope">
             <span class="text_success bold" v-if="scope.row.unicom_stop==0">正常运行</span>
             <span class="text_danger bold" v-else>已停卡</span>
@@ -113,7 +113,7 @@
     <v-dialog :dialogPara="dialogPara"></v-dialog>
     <el-dialog title="机构流量ICCID卡统计" :visible.sync="dialogChartVisible" width="70%" center>
       <div slot class="clearfix" v-loading="dialogChartLoadData">
-        <div id="myChart" style="width:100%; height:300px"></div>
+        <div id="myChart" style="width:100%" :style="{height: winHeight / 2.2 + 'px'}"></div>
         <el-pagination @size-change="handleSizeChangeDetail" @current-change="handleCurrentChangeDetail" :current-page="dialogList.currentPage" :page-sizes="pageSizes" :page-size="dialogList.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="dialogList.total" class="clearfix">
         </el-pagination>
       </div>
@@ -143,6 +143,7 @@ export default {
         org_id: Api.UNITS.getQuery('org_id')
       },
       maxTableHeight: Api.UNITS.maxTableHeight(),
+      winHeight: $(window).height(),
       // 要展开的对话框的参数
       dialogPara: {},
       dialogList: {

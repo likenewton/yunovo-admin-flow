@@ -1,8 +1,6 @@
 <template>
   <div class="inner-footer">
-    <span>Copyright©2014-2019</span>
-    <el-button type="text">&nbsp;深圳市云智易联科技有限公司&nbsp;</el-button>
-    <span>版权所有</span>
+    <span>Copyright©2014-2019&nbsp;深圳市云智易联科技有限公司&nbsp;版权所有</span>
   </div>
 </template>
 <script>
@@ -35,16 +33,14 @@ export default {
   position: absolute;
   display: inline-block;
   height: 100%;
-  padding: 3px 20px;
+  padding: 0 20px;
   left: 50%;
   transform: translateX(-50%);
   margin-left: -100px;
-  * {
+  span {
     font-size: 16px;
     color: #999;
-  }
-  .el-button {
-    line-height: unset !important;
+    line-height: 50px;
   }
 }
 

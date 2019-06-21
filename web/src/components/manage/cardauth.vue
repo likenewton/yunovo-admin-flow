@@ -94,8 +94,8 @@
         </div>
       </div>
       <div slot="footer">
-        <el-button size="small" type="danger">实名信息无效</el-button>
-        <el-button size="small" type="success">实名信息通过</el-button>
+        <el-button size="small" type="danger" @click="authInvalid">实名信息无效</el-button>
+        <el-button size="small" type="success" @click="authValid">实名信息通过</el-button>
       </div>
     </el-dialog>
   </div>
@@ -116,6 +116,7 @@ export default {
         currentPage: 1,
         total: 0,
       },
+      choiceItem: {}, // 当前选中项
       sort: {},
       formInline: {
         card_iccid: Api.UNITS.getQuery('card_iccid')
@@ -166,8 +167,66 @@ export default {
       })
     },
     showDialog(scope) {
+      this.choiceItem = scope.row
       this.winHeight = $(window).height()
       this.authDialogVisible = true
+    },
+    // 实名认证无效
+    authInvalid() {
+      this.$confirm(`该实名信息是否无效?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        _axios.send({
+          method: 'post',
+          url: _axios.ajaxAd.checkAudit,
+          data: {
+            card_id: this.choiceItem.card_id,
+            status: 1 // 1无效，2有效
+          },
+          done: ((res) => {
+            this.authDialogVisible = false
+            this.$message({
+              type: 'success',
+              message: '操作成功!'
+            })
+          })
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消操作'
+        })
+      })
+    },
+    authValid() {
+      this.$confirm(`该实名信息是否通过?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        _axios.send({
+          method: 'post',
+          url: _axios.ajaxAd.checkAudit,
+          data: {
+            card_id: this.choiceItem.card_id,
+            status: 2 // 1无效，2有效
+          },
+          done: ((res) => {
+            this.authDialogVisible = false
+            this.$message({
+              type: 'success',
+              message: '操作成功!'
+            })
+          })
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消操作'
+        })
+      })
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,
     calcLeftTime: Api.UNITS.calcLeftTime
