@@ -3,6 +3,7 @@ package cn.yunovo.iov.fc.web.controller;
 import java.util.Map;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jasig.cas.client.validation.Assertion;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -64,6 +65,8 @@ public class BaseController {
 		LoginInfo loginInfo = new LoginInfo();
 		loginInfo.setLoginName(String.valueOf(attr.get("loginName")));
 		loginInfo.setUserName(String.valueOf(attr.get("userName")));
+		loginInfo.setId(NumberUtils.createInteger(String.valueOf(attr.get("id"))));
+		loginInfo.setOrganCode(String.valueOf(attr.get("organCode")));
 		return loginInfo;
 	}
 }

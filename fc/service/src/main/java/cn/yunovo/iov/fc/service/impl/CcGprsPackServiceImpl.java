@@ -135,12 +135,41 @@ public class CcGprsPackServiceImpl extends ServiceImpl<ICcGprsPackMapper, CcGprs
 		CcGprsPack target = new CcGprsPack();
 		BeanUtils.copyProperties(form, target);
 		target.setTime_added(DateUtil.nowStr());
-		
+		target.setUser_id(info.getId());
 		boolean  isOk = this.save(target);
 		if(!isOk) {
 			
 			log.warn("[save][套餐新增失败]params={form:{},target:{},login:{}}", JSONObject.toJSONString(form),JSONObject.toJSONString(target),JSONObject.toJSONString(info));
 			throw new BusinessException(-1, "新增套餐失败");
+		}
+	}
+
+	@Override
+	public CcGprsPack detail(Integer pack_id, LoginInfo info) {
+		
+		if(pack_id == null) {
+			return null;
+		}
+		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
+		if (StringUtils.isEmpty(orgpos)) {
+			return null;
+		}
+		return iCcGprsPackMapper.getByPackId(pack_id, orgpos, orgpos.split(","));
+	}
+
+	@Override
+	public void update(GprsPackForm form, LoginInfo info) {
+
+		CcGprsPack target = new CcGprsPack();
+		BeanUtils.copyProperties(form, target);
+		target.setAlter_id(info.getId());
+		target.setTime_modify(DateUtil.nowStr());
+		boolean  isOk = this.updateById(target);
+		
+		if(!isOk) {
+			
+			log.warn("[save][变更套餐信息失败]params={form:{},target:{},login:{}}", JSONObject.toJSONString(form),JSONObject.toJSONString(target),JSONObject.toJSONString(info));
+			throw new BusinessException(-1, "变更套餐信息失败");
 		}
 	}
 

@@ -3,6 +3,9 @@ package cn.yunovo.iov.fc.model.form;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+
 import cn.yunovo.iov.fc.model.BaseForm;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -20,6 +23,9 @@ public class GprsPackForm extends BaseForm implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	@ApiModelProperty(value = "套餐编号")
+	private Integer pack_id;
 
 	@ApiModelProperty(value = "机构编号")
 	private Integer org_id;

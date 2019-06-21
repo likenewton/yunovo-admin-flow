@@ -19,4 +19,10 @@ public class LoginInfo {
 	
 	@ApiModelProperty(value="门户页地址",dataType="String")
 	private String ucIndexUrl;
+	
+	@ApiModelProperty(value="用户id",dataType="String")
+	private Integer id;
+	
+	@ApiModelProperty(value="机构代码",dataType="String")
+	private String organCode;
 }

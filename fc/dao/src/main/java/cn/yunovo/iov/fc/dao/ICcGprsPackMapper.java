@@ -30,4 +30,13 @@ public interface ICcGprsPackMapper extends BaseMapper<CcGprsPack> {
 	 * @return
 	 */
 	public Integer getPackNum(@Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	
+	/**
+	 * 通过套餐id 获取套餐信息
+	 * @param pack_id
+	 * @param orgpos
+	 * @param orgs
+	 * @return
+	 */
+	public CcGprsPack getByPackId(@Param("pack_id") Integer pack_id, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 }

@@ -26,5 +26,9 @@ public interface ICcGprsPackService extends IService<CcGprsPack> {
 	PageData<CcGprsPack, Object> getItemsPage(PageForm form, Integer org_id, LoginInfo info);
 
 	void save(GprsPackForm form, LoginInfo info);
+
+	public void update(GprsPackForm form, LoginInfo loginBaseInfo);
+
+	CcGprsPack detail(Integer pack_id, LoginInfo info);
 	
 }

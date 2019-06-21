@@ -73,5 +73,32 @@
 		</choose>
 		
 	</select>
+	
+	<select id="getByPackId" resultType="cn.yunovo.iov.fc.model.entity.CcGprsPack">
+	
+		SELECT pack_id,org_id,user_id,alter_id,pack_name,pack_memo,pack_mode,
+			pack_recom,pack_rebate,pack_status,gprs_amount,gprs_price,gprs_discount,
+			allot_month,allot_value,allot_reset,live_month,sell_amount,sort_order,
+			time_added,time_modify
+		FROM
+			cc_gprs_pack
+		WHERE 
+			1 = 1
+		
+		<choose>
+			<when test='orgpos == "*"'>
+
+			</when>
+			<otherwise>
+				AND org_id IN
+				<foreach collection="orgs" item="id" index="index"
+					open="(" close=")" separator=",">
+					#{id}
+				</foreach>
+			</otherwise>
+		</choose>
+		
+		AND pack_id = #{pack_id}
+	</select>
 
 </mapper>

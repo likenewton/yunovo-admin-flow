@@ -40,9 +40,28 @@ public class PackController extends BaseController{
 	
 	@ApiOperation(value="业务管理-套餐新增接口")
 	@RequestMapping(path="/insert",method= {RequestMethod.POST})
-	public Result<PageData<CcGprsPack, Object>> insert(GprsPackForm form) {
+	public Result<String> insert(GprsPackForm form) {
 		
 		iCcGprsPackService.save(form, this.getLoginBaseInfo());
 		return ResultUtil.successCN(null);
+	}
+	
+	@ApiOperation(value="业务管理-套餐新增接口")
+	@RequestMapping(path="/update",method= {RequestMethod.POST})
+	public Result<String> update(GprsPackForm form) {
+		
+		iCcGprsPackService.update(form, this.getLoginBaseInfo());
+		return ResultUtil.successCN(null);
+	}
+	
+	@ApiOperation(value="业务管理-套餐详情")
+	@ApiImplicitParams(value = { 
+			@ApiImplicitParam(name = "pack_id", value = "套餐id", required = false, dataType = "int",paramType = "query")
+			})
+	@RequestMapping(path="/detail",method= {RequestMethod.POST})
+	public Result<CcGprsPack> detail(Integer pack_id) {
+		
+		CcGprsPack pack = iCcGprsPackService.detail(pack_id, this.getLoginBaseInfo());
+		return ResultUtil.successCN(pack);
 	}
 }
