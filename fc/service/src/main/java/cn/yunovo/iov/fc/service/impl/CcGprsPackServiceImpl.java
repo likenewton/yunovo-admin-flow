@@ -134,6 +134,7 @@ public class CcGprsPackServiceImpl extends ServiceImpl<ICcGprsPackMapper, CcGprs
 		
 		CcGprsPack target = new CcGprsPack();
 		BeanUtils.copyProperties(form, target);
+		target.setPack_id(null);
 		target.setTime_added(DateUtil.nowStr());
 		target.setUser_id(info.getId());
 		boolean  isOk = this.save(target);

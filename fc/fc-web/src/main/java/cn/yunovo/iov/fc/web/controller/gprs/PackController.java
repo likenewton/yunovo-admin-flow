@@ -2,6 +2,7 @@ package cn.yunovo.iov.fc.web.controller.gprs;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,7 +44,7 @@ public class PackController extends BaseController{
 	
 	@ApiOperation(value="业务管理-套餐新增接口")
 	@RequestMapping(path="/insert",method= {RequestMethod.POST})
-	public Result<String> insert(GprsPackForm form) {
+	public Result<String> insert(@RequestBody GprsPackForm form) {
 		
 		form.validate(InsertGroupValidate.class);
 		iCcGprsPackService.save(form, this.getLoginBaseInfo());
@@ -52,7 +53,7 @@ public class PackController extends BaseController{
 	
 	@ApiOperation(value="业务管理-套餐新增接口")
 	@RequestMapping(path="/update",method= {RequestMethod.POST})
-	public Result<String> update(GprsPackForm form) {
+	public Result<String> update(@RequestBody GprsPackForm form) {
 		
 		form.validate(UpdateGroupValidate.class);
 		iCcGprsPackService.update(form, this.getLoginBaseInfo());
@@ -72,7 +73,7 @@ public class PackController extends BaseController{
 	
 	@ApiOperation(value="业务管理-套餐停用")
 	@RequestMapping(path="/stop",method= {RequestMethod.POST})
-	public Result<Object> stop(GprsPackForm form) {
+	public Result<Object> stop(@RequestBody GprsPackForm form) {
 		
 		form.validate(DeleteGroupValidate.class);
 		iCcGprsPackService.stop(form, this.getLoginBaseInfo());
