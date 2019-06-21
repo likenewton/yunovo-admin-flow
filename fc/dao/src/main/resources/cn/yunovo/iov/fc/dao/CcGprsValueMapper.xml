@@ -13,4 +13,50 @@
 		WHERE
 		V.card_id = #{card_id}
 	</select>
+	
+	<select id="getByCardidAndAllotidAndHowmonth"  resultType="cn.yunovo.iov.fc.model.entity.CcGprsValue">
+	
+		SELECT * FROM cc_gprs_value 
+		WHERE card_id = #{card_id} AND allot_id = #{allot_id} 
+		AND how_month IN
+		<foreach collection="how_month" item="month" index="index"
+			open="(" close=")" separator=",">
+			#{month}
+		</foreach>
+	</select>
+	
+	
+	<select id="getCardIccidByCardtypeAndHowmonthAndBalancevalue" resultType="java.util.List">
+	
+		SELECT C.card_iccid FROM cc_gprs_value V INNER JOIN cc_gprs_card C ON C.card_id = V.card_id WHERE
+		C.card_type = #{card_type} AND V.how_month = #{how_month} AND V.balance_value > 0 GROUP BY V.card_id
+	
+	</select>
+	
+	<select id="getGprsInfoByCardidAndHowmonth" resultType="cn.yunovo.iov.fc.model.entity.CcGprsValue">
+	
+		SELECT gprs_vid, balance_dval, balance_value, time_expire 
+		FROM cc_gprs_value 
+		WHERE card_id = #{card_id}
+		AND how_month = #{how_month} 
+		
+		<!-- 仅仅是为了智网定向流量套餐值不被计算 -->
+		<if test="card_type == 4">
+			AND gprs_value > 0.02
+		</if>
+		
+		 ORDER BY gprs_vid DESC
+	
+	</select>
+	
+	<select id="getMaxTimeExpireByCardidAndHowMonth" resultType="String">
+	
+		SELECT MAX(time_expire) FROM cc_gprs_value WHERE card_id = #{card_id} AND how_month = #{how_month}
+		
+	</select>
+	
+	<select id="sumBalanceDvalByCardidAndHowMonth"  resultType="cn.yunovo.iov.fc.model.entity.CcGprsValue"> 
+	
+		SELECT SUM(balance_dval) AS balance_dval, MAX(time_expire) AS time_expire FROM cc_gprs_value WHERE card_id = #{card_id} AND how_month = #{how_month}
+	</select>
 </mapper>

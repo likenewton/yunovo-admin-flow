@@ -1,10 +1,13 @@
 package cn.yunovo.iov.fc.web.controller.gprs;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.alibaba.fastjson.JSONObject;
 
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
@@ -12,16 +15,19 @@ import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcRealname;
 import cn.yunovo.iov.fc.model.entity.CcResetLog;
+import cn.yunovo.iov.fc.model.form.RealnameForm;
 import cn.yunovo.iov.fc.service.ICcRealnameService;
 import cn.yunovo.iov.fc.web.controller.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Api(tags="业务管理-流量卡实名接口列表")
 @RequestMapping(path="/api/realname", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+@Slf4j
 public class RealnameController extends BaseController{
 
 	@Autowired
@@ -41,6 +47,26 @@ public class RealnameController extends BaseController{
 		
 		PageData<CcRealname, Object>  data = iCcRealnameService.getItemsPage(form, org_id, card_iccid, date_start, date_end, status, this.getLoginBaseInfo());
 		return ResultUtil.success(data);
+	}
+	
+	@ApiOperation(value="业务管理-流量卡实名审批接口")
+	@RequestMapping(path="/audit",method= {RequestMethod.POST})
+	public Result<String> audit(RealnameForm form) {
+
+		try {
+			boolean isOk = iCcRealnameService.audit(form, this.getLoginBaseInfo());
+			if(!isOk) {
+				log.warn("[audit][实名审核失败]params={}", JSONObject.toJSONString(form));
+				return ResultUtil.build(500, "实名审批失败！");
+			}else {
+				return ResultUtil.successCN(null);
+			}
+		} catch (Exception e) {
+			log.error("[audit][exception]params={},exception={}", JSONObject.toJSONString(form),ExceptionUtils.getStackTrace(e));
+			return ResultUtil.build(500, "实名审批异常！");
+		}
+		
+		
 	}
 	
 }

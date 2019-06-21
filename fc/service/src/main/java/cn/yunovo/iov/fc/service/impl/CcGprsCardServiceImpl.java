@@ -535,4 +535,23 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 		}
 	}
 
+	@Override
+	public boolean updateCard(CcGprsCard card) {
+
+		int isOk = jedisPoolUtil.setEx(FcConstant.cardInfoKey(card.getCard_iccid()), JSONObject.toJSONString(card, SerializerFeature.WriteMapNullValue), 300 * 60);
+		
+		if(isOk < 1) {
+			return this.updateById(card);
+		}
+		
+		/**
+		 * 将流量卡ICCID加入到消息队列中，方便队列处理存储流量卡信息
+		 */
+		if(jedisPoolUtil.lpush(FcConstant.RES_QUEUE_CACHEKEY, card.getCard_iccid()) == 1) {
+			return true;//队列存储成功返回true
+		}else {
+			return this.updateCard(card);
+		}
+	}
+
 }

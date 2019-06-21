@@ -263,7 +263,32 @@ public class JedisPoolUtil {
         } finally {  
             this.closeJedis(jedis);  
         }  
-    }  
+    }
+    
+    /**
+     * 推送消息队列
+     * @param key 
+     * @param value
+     * @return
+     */
+    public int lpush(String key, String value) {
+    	
+    	if (isValueNull(key, value)) {  
+            return 0;  
+        }  
+        Jedis jedis = null;  
+        try {  
+            jedis = this.getJedis();  
+            Long result = jedis.lpush(key, value);  
+            if (result != null && result != 0) {  
+                return 1;  
+            } else {  
+                return 0;  
+            }  
+        } finally {  
+            this.closeJedis(jedis);  
+        }  
+    }
   
     /** 
      * 缓存一个字符串值到list中,全部list的key默认缓存时间为1小时,成功返回1,失败返回0 

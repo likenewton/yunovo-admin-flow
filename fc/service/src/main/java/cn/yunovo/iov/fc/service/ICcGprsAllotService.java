@@ -2,7 +2,9 @@ package cn.yunovo.iov.fc.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import cn.yunovo.iov.fc.model.GprsCalculateBean;
 import cn.yunovo.iov.fc.model.entity.CcGprsAllot;
+import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 
 /**
  * <p>
@@ -13,5 +15,19 @@ import cn.yunovo.iov.fc.model.entity.CcGprsAllot;
  * @since 2019-06-14
  */
 public interface ICcGprsAllotService extends IService<CcGprsAllot> {
+
+	
+	/**
+	 * @param card_id
+	 * @return
+	 */
+	boolean gprsAllot(Integer card_id);
+
+	/**
+	 * @param card
+	 * @param gprs
+	 * @return
+	 */
+	CcGprsCard gprsCalculate(CcGprsCard card, GprsCalculateBean gprs);
 
 }

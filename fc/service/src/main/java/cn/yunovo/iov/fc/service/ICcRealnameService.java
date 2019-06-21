@@ -4,6 +4,7 @@ import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcRealname;
+import cn.yunovo.iov.fc.model.form.RealnameForm;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -19,4 +20,12 @@ public interface ICcRealnameService extends IService<CcRealname> {
 
 	PageData<CcRealname, Object> getItemsPage(PageForm form, Integer org_id, String card_iccid, String date_start,
 			String date_end,Integer status, LoginInfo info);
+
+	/**
+	 * 实名审批
+	 * @param form 
+	 * @param loginInfo
+	 * @return
+	 */
+	boolean audit(RealnameForm form, LoginInfo loginInfo);
 }

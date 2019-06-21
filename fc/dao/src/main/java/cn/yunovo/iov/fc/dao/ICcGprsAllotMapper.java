@@ -26,4 +26,6 @@ public interface ICcGprsAllotMapper extends BaseMapper<CcGprsAllot> {
 	 */
 	public List<CcGprsAllot> getUnAllotGprsPack(@Param("card_id")Integer card_id, @Param("month_end_type")Integer month_end_type);
 	
+	
+	public int addAssignedMonthById(@Param("allot_id")Integer allot_id);
 }

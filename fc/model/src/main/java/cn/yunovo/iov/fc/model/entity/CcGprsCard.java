@@ -95,7 +95,7 @@ public class CcGprsCard implements Serializable {
 	private Double unicom_diff;
 
 	@ApiModelProperty(value = "联通是否已停卡:0否1是")
-	private Boolean unicom_stop;
+	private Short unicom_stop;
 
 	@ApiModelProperty(value = "联通建卡时间")
 	private String unicom_ctime;

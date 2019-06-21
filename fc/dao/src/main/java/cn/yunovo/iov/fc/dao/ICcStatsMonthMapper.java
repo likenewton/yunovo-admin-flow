@@ -31,4 +31,6 @@ public interface ICcStatsMonthMapper extends BaseMapper<CcStatsMonth> {
 	public List<CcStatsMonth> getMonthUsePage(IPage<CcStatsMonth> page, @Param("card_id")Integer card_id);
 	
 	public Double getWlistTotalByCardId(@Param("card_id")Integer card_id);
+	
+	public Integer updateForSql(@Param("value")String value);
 }

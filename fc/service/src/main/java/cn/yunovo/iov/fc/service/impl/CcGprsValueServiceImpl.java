@@ -15,6 +15,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +46,19 @@ public class CcGprsValueServiceImpl extends ServiceImpl<ICcGprsValueMapper, CcGp
 		page.setRecords(records);
 		returnData.setPage(page);
 		return returnData;
+	}
+	
+	@Override
+	public Map<Integer, CcGprsValue> allotValueMapForHowmonth(Integer card_id, Integer allot_id, Integer[] how_month){
+		
+		List<CcGprsValue>  data = iCcGprsValueMapper.getByCardidAndAllotidAndHowmonth(card_id, allot_id, how_month);
+		if(CollectionUtils.isEmpty(data)) {
+			return null;
+		}
+		
+		Map<Integer, CcGprsValue> map = data.stream().collect(Collectors.toMap(CcGprsValue::getHow_month, Function.identity()));
+		
+		return map;
 	}
 
 }

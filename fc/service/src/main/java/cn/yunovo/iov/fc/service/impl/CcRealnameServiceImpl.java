@@ -1,9 +1,10 @@
 package cn.yunovo.iov.fc.service.impl;
 
 import cn.yunovo.iov.fc.common.utils.BusinessException;
+import cn.yunovo.iov.fc.common.utils.DateUtil;
 import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
-import cn.yunovo.iov.fc.dao.ICcGprsPayMapper;
 import cn.yunovo.iov.fc.dao.ICcRealnameMapper;
+import cn.yunovo.iov.fc.model.GprsCalculateBean;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
@@ -13,7 +14,9 @@ import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.CcGprsPay;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
 import cn.yunovo.iov.fc.model.entity.CcRealname;
+import cn.yunovo.iov.fc.model.form.RealnameForm;
 import cn.yunovo.iov.fc.service.FcConstant;
+import cn.yunovo.iov.fc.service.ICcCardLogService;
 import cn.yunovo.iov.fc.service.ICcGprsAllotService;
 import cn.yunovo.iov.fc.service.ICcGprsBatchService;
 import cn.yunovo.iov.fc.service.ICcGprsCardService;
@@ -24,6 +27,9 @@ import cn.yunovo.iov.fc.service.ICcUserService;
 import lombok.extern.slf4j.Slf4j;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -36,11 +42,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.BeanUtils;
@@ -89,6 +93,9 @@ public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcReal
 	
 	@Autowired
 	private ICcGprsAllotService iCcGprsAllotService;
+	
+	@Autowired
+	private ICcCardLogService iCcCardLogService;
 	
 	@Autowired
 	@Qualifier("clwTransactionManager")
@@ -153,10 +160,12 @@ public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcReal
 	 * @param loginInfo
 	 * @return
 	 */
-	public boolean audit(Integer card_id, Short status, LoginInfo loginInfo) {
+	@Override
+	public boolean audit(RealnameForm form, LoginInfo loginInfo) {
 		
 		boolean ret = false;
-		
+		Short status = form.getStatus();
+		Integer card_id = form.getCard_id();
 		//1、获取对应流量卡的实名申请信息,如果如找到则直接返回错误信息
 		CcRealname data = iCcRealnameMapper.getByCardId(card_id);
 		if(data == null) {
@@ -164,8 +173,10 @@ public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcReal
 		}
 		
 		CcRealname opData = new CcRealname();
-		BeanUtils.copyProperties(data, opData);
+		//BeanUtils.copyProperties(data, opData);
 		opData.setCdi_status(status);
+		opData.setTime_audit(DateUtil.nowStr());
+		
 		if(status == 2) {//如果审批通过则执行如下流程
 			
 			//2.1、获取流量卡信息,如果未找到流量卡信息则返回错误信息
@@ -218,6 +229,7 @@ public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcReal
 				DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
 				definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
 				TransactionStatus transactionStatus = clwTransactionManager.getTransaction(definition);
+				CcGprsPay pay = null;
 				boolean flag = false;
 				try {
 					
@@ -228,7 +240,7 @@ public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcReal
 					String now_format = DateFormatUtils.format(now, "yyyy-MM-dd HH:mm:ss");
 					Date time_expire = liveMonthConverToExpireTime(live_month, now); //赠送流量到期时间
 					
-					CcGprsPay pay = new CcGprsPay();
+					pay = new CcGprsPay();
 					pay.setOrg_id(card.getOrg_id());
 					pay.setCard_id(card.getCard_id());
 					pay.setGprs_amount(give_value);
@@ -275,12 +287,66 @@ public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcReal
 					clwTransactionManager.rollback(transactionStatus);
 				}
 				
+				iCcGprsAllotService.gprsAllot(card_id);
 				
+				//充值成功通知队列
+				JSONObject pay_queue = new JSONObject();
+				pay_queue.put("payid", pay.getPay_id());
+				pay_queue.put("iccid", card.getCard_iccid());
+				jedisPoolUtil.lpush(FcConstant.PAY_QUEUE_CACHEKEY, pay_queue.toJSONString());
+				
+				opData.setGive_value(BigDecimal.valueOf(give_value));
+				opData.setGive_time(DateUtil.nowStr());
+				
+				card.setOwner_real(1);
+				
+				if(StringUtils.isEmpty(card.getTime_active())) {
+					
+					iCcGprsCardService.updateCard(card);
+				}else {
+					GprsCalculateBean gprs = new GprsCalculateBean();
+					gprs.setMonth(card.getUsed_month() + 0.001);
+					gprs.setTotal(card.getUsed_total() + 0.001);
+					gprs.setIs_unicom(false);
+					gprs.setOpen_card(true);
+					iCcGprsAllotService.gprsCalculate(card, gprs);
+				}
+				
+				data.setTime_audit(DateUtil.nowStr());
+				iCcCardLogService.log10Rlname(data, false);
 				
 			}
 			
 		}
+		
+		UpdateWrapper<CcRealname> updateWrapper = new UpdateWrapper<>();
+		updateWrapper.eq("card_id", opData.getCard_id());
+		ret = this.update(opData, updateWrapper);
+		this.getByIccid(data.getCard_iccid(), true);
 		return ret;
+	}
+	
+	public CcRealname getByIccid(String iccid, boolean noCache) {
+		
+		String sql = FcConstant.memSqlKey("SELECT * FROM cc_realname WHERE card_iccid = "+iccid);
+		String cache = null;
+		if(!noCache) {
+			cache = jedisPoolUtil.get(sql);
+		}
+		CcRealname returnData = null;
+		if(StringUtils.isEmpty(cache)) {
+			
+			QueryWrapper<CcRealname> queryWrapper = new QueryWrapper<>();
+			queryWrapper.eq("card_iccid", iccid);
+			returnData = this.getBaseMapper().selectOne(queryWrapper);
+			if(returnData != null) {
+				jedisPoolUtil.setEx(sql, JSONObject.toJSONString(returnData, SerializerFeature.WriteMapNullValue));
+			}
+		}else {
+			returnData = JSONObject.parseObject(cache, CcRealname.class);
+		}
+		
+		return returnData;
 	}
 	
 	public String _moveFile(String source) throws IOException {

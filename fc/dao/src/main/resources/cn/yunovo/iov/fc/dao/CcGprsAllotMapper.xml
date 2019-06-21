@@ -23,5 +23,10 @@
 		AND GA.time_expire > NOW() ORDER BY GA.allot_id ASC
 		
 	</select>
+	
+	<select id="updateAssignedMonthById" resultType="int">
+	
+		UPDATE cc_gprs_allot SET assigned_month = assigned_month + 1 WHERE allot_id = #{allot_id}
+	</select>
 
 </mapper>

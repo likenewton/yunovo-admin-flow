@@ -49,6 +49,8 @@ hessian:
 fc: 
   gprs: 
     file_dir_root: E://PHP
+    ##流量计算偏移量单位MB(为了方便流量卡当月未使用任何流量而同样参加流量运算)
+    GPRS_CAL_OFFSET: 0.001
     card_type: 
       1: 智网吉林11位卡
       2: 智网科技 JASPER

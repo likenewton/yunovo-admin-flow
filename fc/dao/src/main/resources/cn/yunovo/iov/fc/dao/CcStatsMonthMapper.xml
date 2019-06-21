@@ -165,4 +165,8 @@
 		SELECT SUM(month_wlist) FROM `cc_stats_month` WHERE card_id = #{card_id}
 	</select>
 
+	<update id="updateForSql">
+		${value}
+	</update>
+
 </mapper>

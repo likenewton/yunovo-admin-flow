@@ -129,7 +129,19 @@ public interface ICcGprsCardService extends IService<CcGprsCard> {
 	 */
 	PageData<CardTotalByOrgidInfoBean, Object> cardTotalByOrgidGroupPage(PageForm form, LoginInfo info);
 
+	/**
+	 * 通过ICCID获取流量卡数据, 如果缓存里有流量卡数据，则优先使用缓存
+	 * @param iccid  流量卡iccid
+	 * @return CcGprsCard对象
+	 */
 	CcGprsCard getByIccid(String iccid);
+
+	/**
+	 * 更新流量卡信息
+	 * @param card 需更新的流量卡数据
+	 * @return bool 成功true失败false
+	 */
+	public boolean updateCard(CcGprsCard card);
 	
 	
 	

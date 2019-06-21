@@ -5,6 +5,7 @@ import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcCardLog;
+import cn.yunovo.iov.fc.model.entity.CcRealname;
 import cn.yunovo.iov.fc.service.ICcCardLogService;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -68,6 +69,35 @@ public class CcCardLogServiceImpl extends ServiceImpl<ICcCardLogMapper, CcCardLo
 
 	public void setArr_log_type(Map<Integer, String> arr_log_type) {
 		this.arr_log_type = arr_log_type;
+	}
+	
+	
+	@Override
+	public boolean log10Rlname(CcRealname res, boolean unbind) {
+		
+		String log_url = null;
+		String log_text = null;
+		if(unbind) {
+			log_url = "";
+			log_text = res.getOwner_name()+" 解除实名认证成功";
+		}else {
+			log_url = "gprs/realname?iccid="+res.getCard_iccid();
+			log_text = res.getOwner_name()+" 绑定实名认证成功";
+		}
+		
+		CcCardLog log = build(res.getCard_id(), 10, log_text, log_url, res.getTime_audit());
+		return this.save(log);
+	}
+	
+	public CcCardLog build(Integer card_id, Integer log_type, String log_text, String log_url, String time_added) {
+		
+		CcCardLog log = new CcCardLog();
+		log.setCard_id(card_id);
+		log.setLog_type(log_type);
+		log.setLog_text(log_text);
+		log.setLog_url(log_url);
+		log.setTime_added(time_added);
+		return log;
 	}
 
 }
