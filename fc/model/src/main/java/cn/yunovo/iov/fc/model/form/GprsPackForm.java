@@ -9,6 +9,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Length;
@@ -51,11 +52,13 @@ public class GprsPackForm extends BaseForm implements Serializable{
 	private String pack_memo;
 
 	@NotNull(message="请选择套餐模式", groups= {UpdateGroupValidate.class, InsertGroupValidate.class})
-	@Size(max=1, min=0, message="套餐模式填写有误", groups= {UpdateGroupValidate.class, InsertGroupValidate.class})
+	@Max(value=1, message="套餐模式填写有误", groups= {UpdateGroupValidate.class, InsertGroupValidate.class})
+	@Min(value=0, message="套餐模式填写有误", groups= {UpdateGroupValidate.class, InsertGroupValidate.class})
 	@ApiModelProperty(value = "套餐模式：0叠加套餐 1延期套餐")
 	private Short pack_mode;
 
-	@Size(max=1, min=0, message="是否推荐填写有误", groups= {UpdateGroupValidate.class, InsertGroupValidate.class})
+	@Max(value=1, message="是否推荐填写有误", groups= {UpdateGroupValidate.class, InsertGroupValidate.class})
+	@Min(value=0, message="是否推荐填写有误", groups= {UpdateGroupValidate.class, InsertGroupValidate.class})
 	@ApiModelProperty(value = "是否推荐：0否 1是")
 	private Short pack_recom;
 
@@ -63,7 +66,8 @@ public class GprsPackForm extends BaseForm implements Serializable{
 	private BigDecimal pack_rebate;
 
 	@NotNull(message="套餐状态填写有误", groups= {DeleteGroupValidate.class})
-	@Size(max=1, min=0, message="套餐状态填写有误", groups= {DeleteGroupValidate.class})
+	@Max(value=1, message="套餐状态填写有误", groups= {DeleteGroupValidate.class})
+	@Min(value=0, message="套餐状态填写有误", groups= {DeleteGroupValidate.class})
 	@ApiModelProperty(value = "套餐状态：0停用 1启用")
 	private Short pack_status;
 
@@ -93,13 +97,14 @@ public class GprsPackForm extends BaseForm implements Serializable{
 	@ApiModelProperty(value = "分配流量值(MB)")
 	private Double allot_value;
 
-	@NotNull(message="请选择正确的套餐类型", groups= {UpdateGroupValidate.class, InsertGroupValidate.class})
-	@Size(max=1, min=0, message="请选择正确的套餐类型", groups= {UpdateGroupValidate.class, InsertGroupValidate.class})
+	@Max(value=1, message="请选择正确的套餐类型", groups= {UpdateGroupValidate.class, InsertGroupValidate.class})
+	@Min(value=0, message="请选择正确的套餐类型", groups= {UpdateGroupValidate.class, InsertGroupValidate.class})
 	@ApiModelProperty(value = "套餐类型,1 固定套餐, 0 非固定套餐")
 	private Integer allot;
 	
 	@NotNull(message="是否清零填写有误", groups= {UpdateGroupValidate.class, InsertGroupValidate.class})
-	@Size(max=1, min=0, message="是否清零填写有误", groups= {UpdateGroupValidate.class, InsertGroupValidate.class})
+	@Max(value=1, message="是否清零填写有误", groups= {UpdateGroupValidate.class, InsertGroupValidate.class})
+	@Min(value=0, message="是否清零填写有误", groups= {UpdateGroupValidate.class, InsertGroupValidate.class})
 	@ApiModelProperty(value = "分配流量是否清零:0不清 1清零")
 	private Short allot_reset;
 
