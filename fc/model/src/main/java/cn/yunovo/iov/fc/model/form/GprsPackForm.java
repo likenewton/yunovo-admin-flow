@@ -2,7 +2,10 @@ package cn.yunovo.iov.fc.model.form;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Set;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Max;
@@ -13,8 +16,13 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Length;
+import org.springframework.util.CollectionUtils;
+
+import com.alibaba.fastjson.JSONObject;
 
 import cn.yunovo.iov.fc.model.BaseForm;
+import cn.yunovo.iov.fc.model.ValidateGroup;
+import cn.yunovo.iov.fc.model.exception.FormValidateException;
 import cn.yunovo.iov.fc.model.form.group.DeleteGroupValidate;
 import cn.yunovo.iov.fc.model.form.group.InsertGroupValidate;
 import cn.yunovo.iov.fc.model.form.group.UpdateGroupValidate;
@@ -39,7 +47,7 @@ public class GprsPackForm extends BaseForm implements Serializable{
 	@ApiModelProperty(value = "套餐编号")
 	private Integer pack_id;
 
-	@NotEmpty(message="请选择机构！", groups= {UpdateGroupValidate.class, InsertGroupValidate.class})
+	@NotNull(message="请选择机构！", groups= {UpdateGroupValidate.class, InsertGroupValidate.class})
 	@ApiModelProperty(value = "机构编号")
 	private Integer org_id;
 
@@ -92,8 +100,6 @@ public class GprsPackForm extends BaseForm implements Serializable{
 	@ApiModelProperty(value = "分配几个月")
 	private Integer allot_month;
 
-	@NotNull(message="请填写正确的分配流量值", groups= {UpdateGroupValidate.class, InsertGroupValidate.class})
-	@DecimalMin(value="0.000001",message="请填写正确的分配流量值", groups= {UpdateGroupValidate.class, InsertGroupValidate.class})
 	@ApiModelProperty(value = "分配流量值(MB)")
 	private Double allot_value;
 
@@ -108,7 +114,36 @@ public class GprsPackForm extends BaseForm implements Serializable{
 	@ApiModelProperty(value = "分配流量是否清零:0不清 1清零")
 	private Short allot_reset;
 
+	@NotNull(message="请选择有效周期", groups= {UpdateGroupValidate.class, InsertGroupValidate.class})
 	@ApiModelProperty(value = "套餐生命周期：>=1按月，(>0<1)*100按天")
+	@DecimalMin(value="0.000001", message="请填写正确的有效周期", groups= {UpdateGroupValidate.class, InsertGroupValidate.class} )
 	private Float live_month;
+	
+	public void validate(Class<? extends ValidateGroup>... groups) {
+		
+		super.validate(groups);
+		if(this.allot == 0 && this.allot_month > this.live_month) {
+			throw new FormValidateException("套餐类型为月均套餐时，有效周期必须大于或等于分配月数","allot_month", JSONObject.toJSONString(this));
+		}
+		
+		float pack_pack_rebate =pack_rebate.floatValue();
+		float pack_gprs_price = gprs_price.floatValue();
+		if( pack_pack_rebate < 0F  || pack_pack_rebate > pack_gprs_price ) {
+			throw new FormValidateException("返利金额不能小于零且不能大于套餐金额","allot_month", JSONObject.toJSONString(this));
+		}
+		
+		/*Validator validator = this.validator();
+		Set<ConstraintViolation<BaseForm>>  errorSet = validator.validate(this, groups);
+		if(!CollectionUtils.isEmpty(errorSet)) {
+			
+			ConstraintViolation<BaseForm> temp = errorSet.iterator().next();
+			throw new FormValidateException(temp.getMessage(),temp.getPropertyPath().toString(), JSONObject.toJSONString(this));
+		}*/
+		
+	}
+	
+	public Double computeAllotValue() {
+		return gprs_amount / this.getAllot_month();
+	}
 
 }

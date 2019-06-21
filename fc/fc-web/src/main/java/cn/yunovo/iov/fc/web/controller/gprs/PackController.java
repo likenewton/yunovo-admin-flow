@@ -47,6 +47,7 @@ public class PackController extends BaseController{
 	public Result<String> insert(@RequestBody GprsPackForm form) {
 		
 		form.validate(InsertGroupValidate.class);
+		form.setAllot_value(form.computeAllotValue());
 		iCcGprsPackService.save(form, this.getLoginBaseInfo());
 		return ResultUtil.successCN(null);
 	}
@@ -56,6 +57,7 @@ public class PackController extends BaseController{
 	public Result<String> update(@RequestBody GprsPackForm form) {
 		
 		form.validate(UpdateGroupValidate.class);
+		form.setAllot_value(form.computeAllotValue());
 		iCcGprsPackService.update(form, this.getLoginBaseInfo());
 		return ResultUtil.successCN(null);
 	}
