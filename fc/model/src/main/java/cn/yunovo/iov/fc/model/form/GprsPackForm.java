@@ -71,7 +71,7 @@ public class GprsPackForm extends BaseForm implements Serializable{
 	private Short pack_recom;
 
 	@ApiModelProperty(value = "返利金额(元)")
-	private BigDecimal pack_rebate;
+	private BigDecimal pack_rebate ;
 
 	@NotNull(message="套餐状态填写有误", groups= {DeleteGroupValidate.class})
 	@Max(value=1, message="套餐状态填写有误", groups= {DeleteGroupValidate.class})
@@ -125,20 +125,12 @@ public class GprsPackForm extends BaseForm implements Serializable{
 		if(this.allot == 0 && this.allot_month > this.live_month) {
 			throw new FormValidateException("套餐类型为月均套餐时，有效周期必须大于或等于分配月数","allot_month", JSONObject.toJSONString(this));
 		}
-		
+		this.pack_rebate = this.pack_rebate == null ? new BigDecimal(0) : this.pack_rebate;
 		float pack_pack_rebate =pack_rebate.floatValue();
 		float pack_gprs_price = gprs_price.floatValue();
 		if( pack_pack_rebate < 0F  || pack_pack_rebate > pack_gprs_price ) {
 			throw new FormValidateException("返利金额不能小于零且不能大于套餐金额","allot_month", JSONObject.toJSONString(this));
 		}
-		
-		/*Validator validator = this.validator();
-		Set<ConstraintViolation<BaseForm>>  errorSet = validator.validate(this, groups);
-		if(!CollectionUtils.isEmpty(errorSet)) {
-			
-			ConstraintViolation<BaseForm> temp = errorSet.iterator().next();
-			throw new FormValidateException(temp.getMessage(),temp.getPropertyPath().toString(), JSONObject.toJSONString(this));
-		}*/
 		
 	}
 	
