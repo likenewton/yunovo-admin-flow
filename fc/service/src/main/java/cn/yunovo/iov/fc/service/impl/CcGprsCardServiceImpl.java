@@ -168,10 +168,7 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 			ccGprsCard.setCard_type_name(cardTypes.get(String.valueOf(ccGprsCard.getCard_type())));
 		}
 
-		//Long count = iGprsCardMapper.getItemsPageCount(card_iccid, card_type, org_id, max_unused, unicom_diff, orgpos,
-		//		orgpos.split(","));
 		page.setRecords(records);
-		//page.setTotal(count);
 		p.setPage(page);
 
 		return p;
@@ -283,7 +280,6 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 			sellPayResultBean.setOrg_name(orgs.get(String.valueOf(sellPayResultBean.getOrg_id())).getName());
 		}
 
-		//Long count = iGprsCardMapper.getCardUsedPageCount(org_id, date_start, date_end, orgpos, orgpos.split(","));
 		page.setRecords(records);
 		//page.setTotal(count);
 		p.setPage(page);
@@ -343,8 +339,6 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 			sellPayResultBean.setOrg_name(orgs.get(String.valueOf(sellPayResultBean.getOrg_id())).getName());
 		}
 
-		/*Long count = iGprsCardMapper.getUnicomStatPageCount(org_id, date_start, date_end, jstart, jend, orgpos,
-				orgpos.split(","));*/
 		page.setRecords(records);
 		//page.setTotal(count);
 		p.setPage(page);

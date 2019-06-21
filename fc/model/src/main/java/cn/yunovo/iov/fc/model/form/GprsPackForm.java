@@ -2,21 +2,15 @@ package cn.yunovo.iov.fc.model.form;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Set;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Length;
-import org.springframework.util.CollectionUtils;
+import org.hibernate.validator.constraints.Range;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -74,8 +68,7 @@ public class GprsPackForm extends BaseForm implements Serializable{
 	private BigDecimal pack_rebate ;
 
 	@NotNull(message="套餐状态填写有误", groups= {DeleteGroupValidate.class})
-	@Max(value=1, message="套餐状态填写有误", groups= {DeleteGroupValidate.class})
-	@Min(value=0, message="套餐状态填写有误", groups= {DeleteGroupValidate.class})
+	@Range(max=1,min=0,message="套餐状态填写有误",groups= {DeleteGroupValidate.class})
 	@ApiModelProperty(value = "套餐状态：0停用 1启用")
 	private Short pack_status;
 

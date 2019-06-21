@@ -132,15 +132,27 @@ public class CcGprsPackServiceImpl extends ServiceImpl<ICcGprsPackMapper, CcGprs
 	@Override
 	public void save(GprsPackForm form, LoginInfo info) {
 		
-		CcGprsPack target = new CcGprsPack();
-		BeanUtils.copyProperties(form, target);
-		target.setPack_id(null);
-		target.setTime_added(DateUtil.nowStr());
-		target.setUser_id(info.getId());
-		boolean  isOk = this.save(target);
+		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
+		boolean has = iCcOrgService.hasPermission(form.getOrg_id(), orgpos);
+		if(!has) {
+			log.warn("[update][无效的套餐机构]params={form:{},login:{}}", JSONObject.toJSONString(form),JSONObject.toJSONString(info));
+			throw new BusinessException(-1, "无效的套餐机构");
+		}
+		CcGprsPack pack = iCcGprsPackMapper.getByOrgAndGprsAmountAndPrice(form.getOrg_id(), form.getGprs_amount(), form.getGprs_price());
+		if(pack != null) {
+			log.warn("[save][该流量的价格套餐已添加！请勿重复操作]params={form:{},target:{},login:{}}", JSONObject.toJSONString(form),JSONObject.toJSONString(pack),JSONObject.toJSONString(info));
+			throw new BusinessException(-1, "该流量的价格套餐已添加！请勿重复操作");
+		}
+		pack = new CcGprsPack();
+		BeanUtils.copyProperties(form, pack);
+		pack.setPack_id(null);
+		pack.setTime_added(DateUtil.nowStr());
+		pack.setUser_id(info.getId());
+		pack.setPack_status((short)1);
+		boolean  isOk = this.save(pack);
 		if(!isOk) {
 			
-			log.warn("[save][套餐新增失败]params={form:{},target:{},login:{}}", JSONObject.toJSONString(form),JSONObject.toJSONString(target),JSONObject.toJSONString(info));
+			log.warn("[save][套餐新增失败]params={form:{},target:{},login:{}}", JSONObject.toJSONString(form),JSONObject.toJSONString(pack),JSONObject.toJSONString(info));
 			throw new BusinessException(-1, "新增套餐失败");
 		}
 	}
@@ -161,15 +173,29 @@ public class CcGprsPackServiceImpl extends ServiceImpl<ICcGprsPackMapper, CcGprs
 	@Override
 	public void update(GprsPackForm form, LoginInfo info) {
 
+		
+		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
+		boolean has = iCcOrgService.hasPermission(form.getOrg_id(), orgpos);
+		if(!has) {
+			log.warn("[update][无效的套餐机构]params={form:{},login:{}}", JSONObject.toJSONString(form),JSONObject.toJSONString(info));
+			throw new BusinessException(-1, "无效的套餐机构");
+		}
 		CcGprsPack pack = this.detail(form.getPack_id(), info);
 		if(pack == null) {
 			throw new BusinessException("未找到对应的套餐信息");
+		}
+		
+		pack = iCcGprsPackMapper.getByOrgAndGprsAmountAndPrice(form.getOrg_id(), form.getGprs_amount(), form.getGprs_price());
+		if(pack != null && form.getPack_id() != pack.getPack_id()) {
+			log.warn("[update][该流量的价格套餐已存在！请勿重复操作]params={form:{},target:{},login:{}}", JSONObject.toJSONString(form),JSONObject.toJSONString(pack),JSONObject.toJSONString(info));
+			throw new BusinessException(-1, "该流量的价格套餐已存在！请勿重复操作");
 		}
 		
 		CcGprsPack target = new CcGprsPack();
 		BeanUtils.copyProperties(form, target);
 		target.setAlter_id(info.getId());
 		target.setTime_modify(DateUtil.nowStr());
+		target.setPack_status(null);
 		boolean  isOk = this.updateById(target);
 		
 		if(!isOk) {
@@ -193,7 +219,7 @@ public class CcGprsPackServiceImpl extends ServiceImpl<ICcGprsPackMapper, CcGprs
 		pack = new CcGprsPack();
 		pack.setAlter_id(info.getId());
 		pack.setPack_id(form.getPack_id());
-		pack.setPack_status(form.getPack_status() == null? 0 : form.getPack_status());
+		pack.setPack_status(form.getPack_status() == null ? 0 : form.getPack_status());
 		boolean  isOk = this.updateById(pack);
 		if(!isOk) {
 			

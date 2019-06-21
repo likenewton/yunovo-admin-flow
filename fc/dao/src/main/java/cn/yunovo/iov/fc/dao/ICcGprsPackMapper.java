@@ -1,5 +1,6 @@
 package cn.yunovo.iov.fc.dao;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -39,4 +40,6 @@ public interface ICcGprsPackMapper extends BaseMapper<CcGprsPack> {
 	 * @return
 	 */
 	public CcGprsPack getByPackId(@Param("pack_id") Integer pack_id, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	
+	public CcGprsPack getByOrgAndGprsAmountAndPrice(@Param("org_id") Integer org_id, @Param("gprs_amount")Double gprs_amount, @Param("gprs_price")BigDecimal gprs_price);
 }
