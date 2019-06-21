@@ -54,10 +54,11 @@ public class RealnameController extends BaseController{
 	public Result<String> audit(RealnameForm form) {
 
 		try {
+			form.validate();
 			boolean isOk = iCcRealnameService.audit(form, this.getLoginBaseInfo());
 			if(!isOk) {
 				log.warn("[audit][实名审核失败]params={}", JSONObject.toJSONString(form));
-				return ResultUtil.build(500, "实名审批失败！");
+				return ResultUtil.build(-1, "实名审批失败！");
 			}else {
 				return ResultUtil.successCN(null);
 			}
@@ -65,7 +66,6 @@ public class RealnameController extends BaseController{
 			log.error("[audit][exception]params={},exception={}", JSONObject.toJSONString(form),ExceptionUtils.getStackTrace(e));
 			return ResultUtil.build(500, "实名审批异常！");
 		}
-		
 		
 	}
 	

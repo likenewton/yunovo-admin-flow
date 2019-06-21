@@ -11,6 +11,7 @@ import cn.yunovo.iov.fc.common.utils.ResultUtil;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcGprsPack;
+import cn.yunovo.iov.fc.model.form.GprsPackForm;
 import cn.yunovo.iov.fc.service.ICcGprsPackService;
 import cn.yunovo.iov.fc.web.controller.BaseController;
 import io.swagger.annotations.Api;
@@ -35,5 +36,13 @@ public class PackController extends BaseController{
 		
 		PageData<CcGprsPack, Object>  data = iCcGprsPackService.getItemsPage(form, org_id, this.getLoginBaseInfo());
 		return ResultUtil.success(data);
+	}
+	
+	@ApiOperation(value="业务管理-套餐新增接口")
+	@RequestMapping(path="/insert",method= {RequestMethod.POST})
+	public Result<PageData<CcGprsPack, Object>> insert(GprsPackForm form) {
+		
+		iCcGprsPackService.save(form, this.getLoginBaseInfo());
+		return ResultUtil.successCN(null);
 	}
 }

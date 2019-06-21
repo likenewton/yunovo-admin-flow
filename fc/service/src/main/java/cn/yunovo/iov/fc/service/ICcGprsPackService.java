@@ -9,6 +9,7 @@ import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcGprsPack;
+import cn.yunovo.iov.fc.model.form.GprsPackForm;
 
 /**
  * <p>
@@ -23,5 +24,7 @@ public interface ICcGprsPackService extends IService<CcGprsPack> {
 	public List<SelectBean> select(LoginInfo info);
 
 	PageData<CcGprsPack, Object> getItemsPage(PageForm form, Integer org_id, LoginInfo info);
+
+	void save(GprsPackForm form, LoginInfo info);
 	
 }

@@ -1,8 +1,11 @@
 package cn.yunovo.iov.fc.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
+import cn.yunovo.iov.fc.common.utils.BusinessException;
+import cn.yunovo.iov.fc.common.utils.DateUtil;
 import cn.yunovo.iov.fc.dao.ICcGprsPackMapper;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
@@ -10,15 +13,18 @@ import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcGprsPack;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
+import cn.yunovo.iov.fc.model.form.GprsPackForm;
 import cn.yunovo.iov.fc.service.ICcGprsPackService;
 import cn.yunovo.iov.fc.service.ICcOrgService;
 import cn.yunovo.iov.fc.service.ICcUserService;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -32,6 +38,7 @@ import org.springframework.util.CollectionUtils;
  * @since 2019-06-05
  */
 @Service
+@Slf4j
 public class CcGprsPackServiceImpl extends ServiceImpl<ICcGprsPackMapper, CcGprsPack> implements ICcGprsPackService {
 
 	@Autowired
@@ -120,6 +127,21 @@ public class CcGprsPackServiceImpl extends ServiceImpl<ICcGprsPackMapper, CcGprs
 		CcOrg org = orgs.get(String.valueOf(org_id));
 		
 		return org == null ? "":org.getName();
+	}
+	
+	@Override
+	public void save(GprsPackForm form, LoginInfo info) {
+		
+		CcGprsPack target = new CcGprsPack();
+		BeanUtils.copyProperties(form, target);
+		target.setTime_added(DateUtil.nowStr());
+		
+		boolean  isOk = this.save(target);
+		if(!isOk) {
+			
+			log.warn("[save][套餐新增失败]params={form:{},target:{},login:{}}", JSONObject.toJSONString(form),JSONObject.toJSONString(target),JSONObject.toJSONString(info));
+			throw new BusinessException(-1, "新增套餐失败");
+		}
 	}
 
 }
