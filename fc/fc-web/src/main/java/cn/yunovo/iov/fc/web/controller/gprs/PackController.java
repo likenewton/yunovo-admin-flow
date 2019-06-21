@@ -58,7 +58,7 @@ public class PackController extends BaseController{
 	@ApiImplicitParams(value = { 
 			@ApiImplicitParam(name = "pack_id", value = "套餐id", required = false, dataType = "int",paramType = "query")
 			})
-	@RequestMapping(path="/detail",method= {RequestMethod.POST})
+	@RequestMapping(path="/detail",method= {RequestMethod.GET, RequestMethod.POST})
 	public Result<CcGprsPack> detail(Integer pack_id) {
 		
 		CcGprsPack pack = iCcGprsPackService.detail(pack_id, this.getLoginBaseInfo());
