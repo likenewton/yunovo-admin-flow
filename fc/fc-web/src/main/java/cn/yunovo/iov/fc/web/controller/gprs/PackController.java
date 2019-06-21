@@ -12,6 +12,9 @@ import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcGprsPack;
 import cn.yunovo.iov.fc.model.form.GprsPackForm;
+import cn.yunovo.iov.fc.model.form.group.DeleteGroupValidate;
+import cn.yunovo.iov.fc.model.form.group.InsertGroupValidate;
+import cn.yunovo.iov.fc.model.form.group.UpdateGroupValidate;
 import cn.yunovo.iov.fc.service.ICcGprsPackService;
 import cn.yunovo.iov.fc.web.controller.BaseController;
 import io.swagger.annotations.Api;
@@ -42,6 +45,7 @@ public class PackController extends BaseController{
 	@RequestMapping(path="/insert",method= {RequestMethod.POST})
 	public Result<String> insert(GprsPackForm form) {
 		
+		form.validate(InsertGroupValidate.class);
 		iCcGprsPackService.save(form, this.getLoginBaseInfo());
 		return ResultUtil.successCN(null);
 	}
@@ -50,6 +54,7 @@ public class PackController extends BaseController{
 	@RequestMapping(path="/update",method= {RequestMethod.POST})
 	public Result<String> update(GprsPackForm form) {
 		
+		form.validate(UpdateGroupValidate.class);
 		iCcGprsPackService.update(form, this.getLoginBaseInfo());
 		return ResultUtil.successCN(null);
 	}
@@ -63,5 +68,14 @@ public class PackController extends BaseController{
 		
 		CcGprsPack pack = iCcGprsPackService.detail(pack_id, this.getLoginBaseInfo());
 		return ResultUtil.successCN(pack);
+	}
+	
+	@ApiOperation(value="业务管理-套餐停用")
+	@RequestMapping(path="/stop",method= {RequestMethod.POST})
+	public Result<Object> stop(GprsPackForm form) {
+		
+		form.validate(DeleteGroupValidate.class);
+		iCcGprsPackService.stop(form, this.getLoginBaseInfo());
+		return ResultUtil.successCN(null);
 	}
 }

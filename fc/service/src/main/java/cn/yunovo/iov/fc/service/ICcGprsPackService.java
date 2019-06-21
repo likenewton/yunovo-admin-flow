@@ -30,5 +30,7 @@ public interface ICcGprsPackService extends IService<CcGprsPack> {
 	public void update(GprsPackForm form, LoginInfo loginBaseInfo);
 
 	CcGprsPack detail(Integer pack_id, LoginInfo info);
+
+	public void stop(GprsPackForm form, LoginInfo loginBaseInfo);
 	
 }

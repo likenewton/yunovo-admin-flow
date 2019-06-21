@@ -160,6 +160,11 @@ public class CcGprsPackServiceImpl extends ServiceImpl<ICcGprsPackMapper, CcGprs
 	@Override
 	public void update(GprsPackForm form, LoginInfo info) {
 
+		CcGprsPack pack = this.detail(form.getPack_id(), info);
+		if(pack == null) {
+			throw new BusinessException("未找到对应的套餐信息");
+		}
+		
 		CcGprsPack target = new CcGprsPack();
 		BeanUtils.copyProperties(form, target);
 		target.setAlter_id(info.getId());
@@ -170,6 +175,29 @@ public class CcGprsPackServiceImpl extends ServiceImpl<ICcGprsPackMapper, CcGprs
 			
 			log.warn("[save][变更套餐信息失败]params={form:{},target:{},login:{}}", JSONObject.toJSONString(form),JSONObject.toJSONString(target),JSONObject.toJSONString(info));
 			throw new BusinessException(-1, "变更套餐信息失败");
+		}
+	}
+
+
+
+	@Override
+	public void stop(GprsPackForm form, LoginInfo info) {
+		
+		CcGprsPack pack = this.detail(form.getPack_id(), info);
+		if(pack == null) {
+			log.warn("[stop][未找到对应的套餐信息]params={form:{},login:{}}", JSONObject.toJSONString(form),JSONObject.toJSONString(info));
+			throw new BusinessException("未找到对应的套餐信息");
+		}
+		
+		pack = new CcGprsPack();
+		pack.setAlter_id(info.getId());
+		pack.setPack_id(form.getPack_id());
+		pack.setPack_status(form.getPack_status() == null? 0 : form.getPack_status());
+		boolean  isOk = this.updateById(pack);
+		if(!isOk) {
+			
+			log.warn("[stop][套餐停用操作失败]params={form:{},login:{}}", JSONObject.toJSONString(form),JSONObject.toJSONString(info));
+			throw new BusinessException(-1, "套餐停用操作失败");
 		}
 	}
 
