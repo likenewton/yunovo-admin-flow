@@ -240,7 +240,6 @@ export default {
         }
       }
     },
-    limitNumber: Api.UNITS.limitNumber,
     limitNumberSize(rule, value, callback) {
       if (value <= 0 || value > 1) {
         callback(new Error('折扣值必须在0.001~1之间'))
@@ -257,12 +256,6 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      orgs: 'orgs',
-      cardTypes: 'cardTypes',
-      liveMonthSelect: 'liveMonthSelect',
-      months: 'months'
-    }),
     gprsMonth() {
       let total = this.formInline.gprs_amount || 0
       let month = this.formInline.allot_month || 1

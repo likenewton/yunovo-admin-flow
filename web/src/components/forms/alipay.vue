@@ -111,13 +111,7 @@ export default {
           return false;
         }
       })
-    },
-    // 重置表单
-    resetForm(formName) {
-      this.$refs[formName].resetFields()
-      this.formInline = {}
-      this.isUpdate && this.getData()
-    },
+    }
   }
 }
 

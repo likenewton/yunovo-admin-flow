@@ -211,12 +211,6 @@ export default {
           return false;
         }
       });
-    },
-    // 重置表单
-    resetForm(formName) {
-      // resetFields 只能重置需要验证的值
-      this.$refs[formName].resetFields()
-      this.formInline = {}
     }
   }
 }

@@ -234,7 +234,6 @@ import Api from 'assets/js/api.js'
 export default {
   data() {
     return {
-      loadData: true, // 是否显示加载动画
       tabIndex: '0', // 当前激活的tab的下标值
       alias: { // 不同的tab对应的别名(tabName)
         'formInline_0': 'tab-general',

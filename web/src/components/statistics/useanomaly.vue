@@ -80,7 +80,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
   </div>
@@ -91,68 +91,18 @@ import { mapState } from 'vuex'
 
 export default {
   data() {
-    return {
-      loadData: true,
-      pageSizes: Api.STATIC.pageSizes,
-      list: {
-        data: [],
-        pagesize: Api.STATIC.pageSizes[1],
-        currentPage: 1,
-        total: 0,
-      },
-      sort: {},
-      formInline: {},
-      maxTableHeight: Api.UNITS.maxTableHeight()
-    }
+    return {}
   },
   mounted() {
-    // 进入页面的时候请求数据
     this.getData()
   },
   methods: {
-    handleSizeChange(val) {
-      this.list.pagesize = val
-      this.getData()
-    },
-    handleCurrentChange(val) {
-      this.list.currentPage = val
-      this.getData()
-    },
-    handleSortChange(val) {
-      Api.UNITS.setSortSearch(val, this)
-      this.getData()
-    },
-    // 查询
-    searchData() {
-      this.list.currentPage = 1
-      this.getData()
-    },
-    resetData() {
-      this.list.currentPage = 1
-      this.formInline = {} // 1、重置查询表单
-      this.sort = {} // 2、重置排序
-      this.$refs.listTable.clearSort() // 3、清空排序样式
-      this.getData()
-    },
-    // 获取列表数据
     getData() {
       Api.UNITS.getListData({
         vue: this,
         url: _axios.ajaxAd.getAbnormal
       })
-    },
-    formatFlowUnit: Api.UNITS.formatFlowUnit,
-    calcLeftTime: Api.UNITS.calcLeftTime,
-    toUnicomLink: Api.UNITS.toUnicomLink,
-    limitNumber: Api.UNITS.limitNumber
-  },
-  computed: {
-    ...mapState({
-      cardTypes: 'cardTypes', // 卡商列表
-      orgs: 'orgs', // 机构列表
-      unicomDiffSelect: 'unicomDiffSelect', // 日差异流量
-      maxUnusedSelect: 'maxUnusedSelect', // 剩余流量
-    })
+    }
   }
 }
 

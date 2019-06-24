@@ -59,7 +59,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
   </div>
@@ -71,17 +71,7 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
-      loadData: true,
-      pageSizes: Api.STATIC.pageSizes,
-      list: {
-        data: [],
-        pagesize: Api.STATIC.pageSizes[1],
-        currentPage: 1,
-        total: 0,
-      },
-      sort: {},
-      formInline: {},
-      maxTableHeight: Api.UNITS.maxTableHeight(360),
+      maxTableHeight: Api.UNITS.maxTableHeight(360)
     }
   },
   mounted() {

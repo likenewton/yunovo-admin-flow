@@ -62,7 +62,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
   </div>
@@ -74,43 +74,16 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
-      loadData: true,
       tabIndex: '0',
-      pageSizes: Api.STATIC.pageSizes,
-      list: {
-        data: [],
-        pagesize: Api.STATIC.pageSizes[1],
-        currentPage: 1,
-        total: 0,
-      },
-      sort: {},
       formInline: {
         stats_date: Api.UNITS.getQuery('stats_date')
-      },
-      maxTableHeight: Api.UNITS.maxTableHeight()
+      }
     }
   },
   mounted() {
-    // 进入页面的时候请求数据
     this.getData()
   },
   methods: {
-    handleSizeChange(val) {
-      this.list.pagesize = val
-      this.getData()
-    },
-    handleCurrentChange(val) {
-      this.list.currentPage = val
-      this.getData()
-    },
-    handleSortChange(val) {
-      Api.UNITS.setSortSearch(val, this)
-      this.getData()
-    },
-    searchData() {
-      this.list.currentPage = 1
-      this.getData()
-    },
     resetData() {
       this.list.currentPage = 1
       this.formInline = {
@@ -126,14 +99,7 @@ export default {
         vue: this,
         url: _axios.ajaxAd.getPayOnlineOrg
       })
-    },
-    formatFlowUnit: Api.UNITS.formatFlowUnit,
-    calcLeftTime: Api.UNITS.calcLeftTime
-  },
-  computed: {
-    ...mapState({
-      orgs: 'orgs', // 机构列表
-    })
+    }
   }
 }
 

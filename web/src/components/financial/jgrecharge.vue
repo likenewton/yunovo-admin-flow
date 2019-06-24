@@ -70,15 +70,6 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
-      loadData: true,
-      pageSizes: Api.STATIC.pageSizes,
-      list: {
-        data: [],
-        pagesize: Api.STATIC.pageSizes[1],
-        currentPage: 1,
-        total: 0,
-      },
-      sort: {},
       formInline: {
         org_id: Api.UNITS.getQuery('org_id')
       },
@@ -90,23 +81,6 @@ export default {
     this.getData()
   },
   methods: {
-    handleSizeChange(val) {
-      this.list.pagesize = val
-      this.getData()
-    },
-    handleCurrentChange(val) {
-      this.list.currentPage = val
-      this.getData()
-    },
-    handleSortChange(val = {}) {
-      Api.UNITS.setSortSearch(val, this)
-      this.getData()
-    },
-    // 查询
-    searchData() {
-      this.list.currentPage = 1
-      this.getData()
-    },
     // 重置列表
     resetData() {
       this.list.currentPage = 1
@@ -137,15 +111,9 @@ export default {
           }])
         }
       })
-    },
-    formatFlowUnit: Api.UNITS.formatFlowUnit,
-    calcLeftTime: Api.UNITS.calcLeftTime
+    }
   },
   computed: {
-    ...mapState({
-      orgs: 'orgs',
-      payMethodSelect: 'payMethodSelect'
-    }),
     // 起始时间约数
     startDatePicker() {
       return Api.UNITS.startDatePicker(this, this.formInline.date_end)

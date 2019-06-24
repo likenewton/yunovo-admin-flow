@@ -129,19 +129,9 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
-      pageSizes: Api.STATIC.pageSizes,
       tabIndex: '1',
-      loadData: true,
-      maxTableHeight: Api.UNITS.maxTableHeight(370),
-      list: {
-        data: [],
-        pagesize: Api.STATIC.pageSizes[1],
-        currentPage: 1,
-        total: 0,
-      },
-      sort: {},
-      formInline: {},
       searchForm: {},
+      maxTableHeight: Api.UNITS.maxTableHeight(370),
       rules: {
         card_iccid: [{
           required: true,
@@ -191,29 +181,12 @@ export default {
         }
       }
     },
-    handleSizeChange(val) {
-      this.list.pagesize = val
-      this.list.currentPage = 1
-      this.getData()
-    },
-    handleCurrentChange(val) {
-      this.list.currentPage = val
-      this.getData()
-    },
-    handleSortChange(val) {
-      Api.UNITS.setSortSearch(val, this)
-      this.getData()
-    },
     // 重置列表
     resetData() {
       this.list.currentPage = 1
-      this.searchForm = {} // 1、重置查询表单
-      this.sort = {} // 2、重置排序
-      this.$refs.listTable.clearSort() // 3、清空排序样式
-      this.getData()
-    },
-    searchData() {
-      this.list.currentPage = 1
+      this.searchForm = {}
+      this.sort = {}
+      this.$refs.listTable.clearSort()
       this.getData()
     },
     // 提交表单
@@ -226,11 +199,6 @@ export default {
           return false;
         }
       });
-    },
-    // 重置表单
-    resetForm(formName) {
-      this.$refs[formName].resetFields()
-      this.formInline = {}
     },
     checkRechargeDetail(scope) {
       this.$router.push({ name: 'rechargeDetail', query: { card_iccid: scope.row.card_iccid } })
@@ -245,17 +213,9 @@ export default {
     getLiveMonthAlias(value) {
       let item = this.liveMonthSelect.filter((v) => v.value == value)[0]
       return item ? item.label : ''
-    },
-    formatFlowUnit: Api.UNITS.formatFlowUnit,
-    limitNumber: Api.UNITS.limitNumber,
-    formatComboFlow: Api.UNITS.formatComboFlow,
-    calcLeftTime: Api.UNITS.calcLeftTime,
+    }
   },
   computed: {
-    ...mapState({
-      orgs: 'orgs',
-      liveMonthSelect: 'liveMonthSelect'
-    }),
     // 起始时间约数
     startDatePicker() {
       return Api.UNITS.startDatePicker(this, this.searchForm.date_end)

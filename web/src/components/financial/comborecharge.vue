@@ -70,51 +70,14 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
-      loadData: true,
       tabIndex: '0',
-      pageSizes: Api.STATIC.pageSizes,
-      list: {
-        data: [],
-        pagesize: Api.STATIC.pageSizes[1],
-        currentPage: 1,
-        total: 0,
-      },
-      formInline: {},
-      sort: {},
       maxTableHeight: Api.UNITS.maxTableHeight(360),
     }
   },
   mounted() {
-    // 进入页面的时候请求数据
     this.getData()
   },
   methods: {
-    handleSizeChange(val) {
-      this.list.pagesize = val
-      this.getData()
-    },
-    handleCurrentChange(val) {
-      this.list.currentPage = val
-      this.getData()
-    },
-    handleSortChange(val = {}) {
-      Api.UNITS.setSortSearch(val, this)
-      this.getData()
-    },
-    // 查询
-    searchData() {
-      this.list.currentPage = 1
-      this.getData()
-    },
-    // 重置列表
-    resetData() {
-      this.list.currentPage = 1
-      this.formInline = {} // 1、重置查询表单
-      this.sort = {} // 2、重置排序
-      this.$refs.listTable.clearSort() // 3、清空排序样式
-      this.getData()
-    },
-    // 获取列表数据
     getData() {
       Api.UNITS.getListData({
         vue: this,
@@ -135,16 +98,9 @@ export default {
           }])
         }
       })
-    },
-    formatFlowUnit: Api.UNITS.formatFlowUnit,
-    calcLeftTime: Api.UNITS.calcLeftTime,
-    formatComboFlow: Api.UNITS.formatComboFlow
+    }
   },
   computed: {
-    ...mapState({
-      orgs: 'orgs',
-      payMethodSelect: 'payMethodSelect'
-    }),
     // 起始时间约数
     startDatePicker() {
       return Api.UNITS.startDatePicker(this, this.formInline.date_end)

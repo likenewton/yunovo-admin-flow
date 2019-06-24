@@ -27,12 +27,10 @@
 export default {
   data() {
     return {
-      loadData: true,
       // 列表
       list: {
         data: []
-      },
-      formInline: {}
+      }
     }
   },
   mounted() {

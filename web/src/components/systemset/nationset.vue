@@ -25,7 +25,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
   </div>
@@ -36,8 +36,6 @@ import Api from 'assets/js/api.js'
 export default {
   data() {
     return {
-      loadData: true,
-      pageSizes: Api.STATIC.pageSizes,
       // 列表
       list: {
         data: [],
@@ -48,7 +46,6 @@ export default {
       },
       // 在列表中选择的数据
       selectData: [],
-      sort: {},
       formInline: {
         ntid: Api.UNITS.getQuery('ntid')
       },
@@ -56,25 +53,9 @@ export default {
     }
   },
   mounted() {
-    // 进入页面的时候请求数据
     this.getData()
   },
   methods: {
-    handleSizeChange(val) {
-      this.list.pagesize = val
-      this.getData()
-    },
-    handleCurrentChange(val) {
-      this.list.currentPage = val
-      this.getData()
-    },
-    handleSelectionChange(selectData) {
-      this.selectData = selectData
-    },
-    handleSortChange(val = {}) {
-      Api.UNITS.setSortSearch(val, this)
-      this.getData()
-    },
     editor(scope) {
       this.$router.push({
         name: 'createnation',
@@ -160,9 +141,7 @@ export default {
           this.list.other = (res.data.other || []).reverse()
         })
       })
-    },
-    formatFlowUnit: Api.UNITS.formatFlowUnit,
-    calcLeftTime: Api.UNITS.calcLeftTime
+    }
   },
   watch: {
     '$route': function() {

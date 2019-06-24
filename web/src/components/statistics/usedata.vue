@@ -87,20 +87,14 @@ const _echart = new Api.ECHARTS()
 export default {
   data() {
     return {
-      loadData: true,
       echartLoadData: true,
       tabIndex: '0',
-      pageSizes: Api.STATIC.pageSizes,
-      formInline: {},
-      // 列表数据
       list: {
         data: [],
         pagesize: Api.STATIC.pageSizes[0],
         currentPage: 1,
         total: 0,
       },
-      sort: {},
-      maxTableHeight: Api.UNITS.maxTableHeight(),
       myChart_0: null,
       myChart_1: null,
       // 激活-未激活柱状图数据
@@ -296,31 +290,6 @@ export default {
       }, 0)
       this.getOptionData()
     },
-    handleSizeChange(val) {
-      this.list.pagesize = val
-      this.getData()
-    },
-    handleCurrentChange(val) {
-      this.list.currentPage = val
-      this.getData()
-    },
-    handleSortChange(val) {
-      Api.UNITS.setSortSearch(val, this)
-      this.getData()
-    },
-    // 查询
-    searchData() {
-      this.list.currentPage = 1
-      this.getData()
-    },
-    resetData() {
-      this.list.currentPage = 1
-      this.formInline = {} // 1、重置查询表单
-      this.sort = {} // 2、重置排序
-      this.$refs.listTable.clearSort() // 3、清空排序样式
-      this.getData()
-    },
-    // 获取列表数据
     getData() {
       Api.UNITS.getListData({
         vue: this,
@@ -376,15 +345,9 @@ export default {
         this[`myChart_${this.tabIndex}`].setOption(option)
         this.echartLoadData = false
       }, 0)
-    },
-    formatFlowUnit: Api.UNITS.formatFlowUnit,
-    calcLeftTime: Api.UNITS.calcLeftTime
+    }
   },
   computed: {
-    ...mapState({
-      asideCollapse: 'asideCollapse',
-      orgs: 'orgs'
-    }),
     // 起始时间约数
     startDatePicker() {
       return Api.UNITS.startDatePicker(this, this.formInline.date_end)

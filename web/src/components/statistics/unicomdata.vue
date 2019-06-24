@@ -62,7 +62,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
     <el-card class="clearfix" shadow="never" v-loading="loadData">
@@ -78,9 +78,7 @@ const _echart = new Api.ECHARTS()
 export default {
   data() {
     return {
-      loadData: true,
       tabIndex: '0',
-      pageSizes: Api.STATIC.pageSizes,
       // 列表数据
       list: {
         data: [],
@@ -88,9 +86,6 @@ export default {
         currentPage: 1,
         total: 0,
       },
-      sort: {},
-      formInline: {},
-      maxTableHeight: Api.UNITS.maxTableHeight(),
       myChart_0: null,
       // 激活-未激活柱状图数据
       option_0: {
@@ -182,32 +177,6 @@ export default {
     this.getData()
   },
   methods: {
-    handleSizeChange(val) {
-      this.list.pagesize = val
-      this.getData()
-    },
-    handleCurrentChange(val) {
-      this.list.currentPage = val
-      this.getData()
-    },
-    handleSortChange(val = {}) {
-      Api.UNITS.setSortSearch(val, this)
-      this.getData()
-    },
-    // 查询
-    searchData() {
-      this.list.currentPage = 1
-      this.getData()
-    },
-    // 重置列表
-    resetData() {
-      this.list.currentPage = 1
-      this.formInline = {} // 1、重置查询表单
-      this.sort = {} // 2、重置排序
-      this.$refs.listTable.clearSort() // 3、清空排序样式
-      this.getData()
-    },
-    // 获取列表数据
     getData() {
       Api.UNITS.getListData({
         vue: this,
@@ -255,15 +224,9 @@ export default {
       setTimeout(() => {
         this[`myChart_${this.tabIndex}`].setOption(option)
       }, 0)
-    },
-    formatFlowUnit: Api.UNITS.formatFlowUnit,
-    calcLeftTime: Api.UNITS.calcLeftTime
+    }
   },
   computed: {
-    ...mapState({
-      asideCollapse: 'asideCollapse',
-      orgs: 'orgs'
-    }),
     // 起始时间约数
     startDatePicker() {
       return Api.UNITS.startDatePicker(this, this.formInline.date_end)

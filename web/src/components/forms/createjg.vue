@@ -169,14 +169,6 @@ export default {
         }
       });
     },
-    // 重置表单
-    resetForm(formName) {
-      // resetFields 只能重置需要验证的值
-      this.$refs[formName].resetFields()
-      this.formInline = {}
-      this.isUpdate && this.getData()
-    },
-    limitNumber: Api.UNITS.limitNumber,
     // 验证邮箱地址是否正确
     validatorEmall(rule, value, callback) {
       if (!value || Api.UNITS.validatorEmall(value)) {
@@ -209,11 +201,6 @@ export default {
         callback(new Error('异步通知地址格式不正确'))
       }
     }
-  },
-  computed: {
-    ...mapState({
-      orgs: 'orgs',
-    })
   }
 }
 

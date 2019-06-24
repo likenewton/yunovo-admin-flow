@@ -63,7 +63,7 @@
     </el-card>
     <el-dialog title="停卡详情列表" :visible.sync="dialogTableVisible">
       <div slot class="clearfix">
-        <el-table v-loading="dialogList.loadData" :data="curTableData" :max-height="maxDialogHeight" border size="mini">
+        <el-table v-loading="dialogList.loadData" :data="curTableData" :max-height="winHeight / 2" border size="mini">
           <el-table-column fixed="left" prop="card_iccid" label="卡ICCID" width="180"></el-table-column>
           <el-table-column prop="balance_value" label="剩余流量" width="105">
             <template slot-scope="scope">
@@ -79,7 +79,7 @@
             </template>
           </el-table-column>
         </el-table>
-        <el-pagination @size-change="handleSizeChangeDetail" @current-change="handleCurrentChangeDetail" :current-page="currentPage" :page-sizes="dialogList.pageSizes" :page-size="dialogList.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="dialogList.total" class="clearfix">
+        <el-pagination @size-change="handleSizeChangeDetail" @current-change="handleCurrentChangeDetail" :current-page="list.currentPage" :page-sizes="dialogList.pageSizes" :page-size="dialogList.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="dialogList.total" class="clearfix">
         </el-pagination>
       </div>
     </el-dialog>
@@ -92,14 +92,6 @@ import { mapState, mapMutations } from 'vuex'
 export default {
   data() {
     return {
-      loadData: true,
-      pageSizes: Api.STATIC.pageSizes,
-      list: {
-        data: [],
-        pagesize: Api.STATIC.pageSizes[1],
-        currentPage: 1,
-        total: 0,
-      },
       dialogTableVisible: false,
       dialogList: { // dialog table列表数据
         loadData: true,
@@ -110,36 +102,15 @@ export default {
         total: 0,
       },
       curChoiceRow: {}, // iccid详情列表 当前选择项保存项(list.data中的某一项)
-      sort: {},
       formInline: {
         card_id: Api.UNITS.getQuery('card_id')
-      },
-      maxTableHeight: Api.UNITS.maxTableHeight(),
-      maxDialogHeight: $(window).height() / 2
+      }
     }
   },
   mounted() {
-    // 进入页面的时候请求数据
     this.getData()
   },
   methods: {
-    ...mapMutations([
-      'SET_DIALOGVISIBLE'
-    ]),
-    handleSortChange(val) {
-      Api.UNITS.setSortSearch(val, this)
-      this.getData()
-    },
-    // 列表
-    handleSizeChange(val) {
-      this.list.pagesize = val
-      this.list.currentPage = 1
-      this.getData()
-    },
-    handleCurrentChange(val) {
-      this.list.currentPage = val
-      this.getData()
-    },
     // dialog中的列表
     handleSizeChangeDetail(val) {
       this.dialogList.pagesize = val
@@ -152,11 +123,6 @@ export default {
       this.curChoiceRow = row
       this.dialogTableVisible = true
       this.getDetailData()
-    },
-    // 查询
-    searchData() {
-      this.list.currentPage = 1
-      this.getData()
     },
     resetData() {
       this.list.currentPage = 1
@@ -192,19 +158,9 @@ export default {
           this.dialogList.total = res.data.length
         }
       })
-    },
-    // 过滤器
-    formatFlowUnit: Api.UNITS.formatFlowUnit,
-    calcLeftTime: Api.UNITS.calcLeftTime,
-    toUnicomLink: Api.UNITS.toUnicomLink,
-    limitNumber: Api.UNITS.limitNumber
+    }
   },
   computed: {
-    ...mapState({
-      dialogVisible: 'dialogVisible',
-      cardTypes: 'cardTypes', // 卡商列表
-      orgs: 'orgs'
-    }),
     // dialog中的表单采用前端分页
     curTableData() {
       return this.dialogList.data.slice((this.dialogList.currentPage - 1) * this.dialogList.pagesize, this.dialogList.currentPage * this.dialogList.pagesize)

@@ -257,12 +257,6 @@ export default {
         }
       });
     },
-    // 重置表单
-    resetForm(formName) {
-      // resetFields 只能重置需要验证的值
-      this.$refs[formName].resetFields()
-      this.formInline = {}
-    },
     // 自定义验证城市选择（区为可选）
     validateCity(rule, value, callback) {
       if (value.length === 0) {

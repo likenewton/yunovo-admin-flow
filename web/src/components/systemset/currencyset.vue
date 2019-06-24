@@ -20,7 +20,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
   </div>
@@ -30,37 +30,13 @@ import Api from 'assets/js/api.js'
 
 export default {
   data() {
-    return {
-      loadData: true,
-      pageSizes: Api.STATIC.pageSizes,
-      // 列表
-      list: {
-        data: [],
-        pagesize: Api.STATIC.pageSizes[1],
-        currentPage: 1,
-        total: 0,
-      },
-      sort: {},
-      formInline: {}
-    }
+    return {}
   },
   mounted() {
     // 进入页面的时候请求数据
     this.getData()
   },
   methods: {
-    handleSizeChange(val) {
-      this.list.pagesize = val
-      this.getData()
-    },
-    handleCurrentChange(val) {
-      this.list.currentPage = val
-      this.getData()
-    },
-    handleSortChange(val = {}) {
-      Api.UNITS.setSortSearch(val, this)
-      this.getData()
-    },
     editorData(scope) {
       this.$router.push({
         name: 'createcurrency',
@@ -76,9 +52,7 @@ export default {
         vue: this,
         url: _axios.ajaxAd.getCurrency
       })
-    },
-    formatFlowUnit: Api.UNITS.formatFlowUnit,
-    calcLeftTime: Api.UNITS.calcLeftTime
+    }
   }
 }
 

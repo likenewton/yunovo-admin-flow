@@ -224,21 +224,19 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
-      loadData: true, // 是否显示加载动画
       tabIndex: '0', // 当前激活的tab的下标值
-      pageSizes: Api.STATIC.pageSizes, // 显示页数列表，通配的
-      maxTableHeight: Api.UNITS.maxTableHeight(),
       cardDetail: {},
+      maxTableHeight: Api.UNITS.maxTableHeight(410),
       // 列表数据
       list_0: { // 充值详情列表
         data: [],
-        pagesize: Api.STATIC.pageSizes[1],
+        pagesize: Api.STATIC.pageSizes[2],
         currentPage: 1,
         total: 0
       },
       list_1: { // 流量分配详情
         data: [],
-        pagesize: Api.STATIC.pageSizes[1],
+        pagesize: Api.STATIC.pageSizes[2],
         currentPage: 1,
         total: 0
       },
@@ -250,7 +248,7 @@ export default {
       },
       list_3: { // 日使用情况
         data: [],
-        pagesize: Api.STATIC.pageSizes[1],
+        pagesize: Api.STATIC.pageSizes[2],
         currentPage: 1,
         total: 0
       },
@@ -410,19 +408,9 @@ export default {
           return scope.row.allot_value
         }
       }
-    },
-    formatFlowUnit: Api.UNITS.formatFlowUnit, // 格式化流量单位
-    calcLeftTime: Api.UNITS.calcLeftTime, // 计算剩余时间
-    formatComboFlow: Api.UNITS.formatComboFlow,
-    formatMoney: Api.UNITS.formatMoney,
+    }
   },
   computed: {
-    // 模拟分页
-    ...mapState({
-      paySelect: 'paySelect',
-      payMethodSelect: 'payMethodSelect',
-      liveMonthSelect: 'liveMonthSelect',
-    }),
     // 起始时间约数
     startDatePicker() {
       return Api.UNITS.startDatePicker(this, this.formInline_0.date_end)

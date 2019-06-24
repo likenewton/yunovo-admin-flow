@@ -53,7 +53,7 @@
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
-    <el-card class="box-card clearfix" shadow="never" v-loading="loadData" v-show="formInline.org_id && list.data.length > 0">
+    <el-card class="clearfix" shadow="never" v-loading="loadData" v-show="formInline.org_id && list.data.length > 0" style="margin-top: 20px">
       <el-tabs @tab-click="changeTab">
         <el-tab-pane>
           <span slot="label">次数统计</span>
@@ -79,9 +79,7 @@ const _echart = new Api.ECHARTS()
 export default {
   data() {
     return {
-      loadData: true,
       tabIndex: '0',
-      pageSizes: Api.STATIC.pageSizes,
       // 列表数据
       list: {
         data: [],
@@ -89,9 +87,6 @@ export default {
         currentPage: 1,
         total: 0,
       },
-      // 查询表单数据
-      formInline: {},
-      sort: {},
       defaultSort: { prop: 'org_id', order: 'ascending' },
       maxTableHeight: Api.UNITS.maxTableHeight(360),
       chartConst: {
@@ -122,30 +117,6 @@ export default {
         this.myChart.resize()
       })
       this.setEchartOption()
-    },
-    handleSizeChange(val) {
-      this.list.pagesize = val
-      this.getData()
-    },
-    handleCurrentChange(val) {
-      this.list.currentPage = val
-      this.getData()
-    },
-    handleSortChange(val = {}) {
-      Api.UNITS.setSortSearch(val, this)
-      this.getData()
-    },
-    // 查询
-    searchData() {
-      this.list.currentPage = 1
-      this.getData()
-    },
-    // 重置
-    resetData() {
-      this.list.currentPage = 1
-      this.formInline = {} // 1、重置查询表单
-      this.$refs.listTable.clearSort() // 3、清空排序样式
-      this.handleSortChange(this.defaultSort) // 2、重置排序
     },
     // 获取列表数据
     getData() {
@@ -251,16 +222,7 @@ export default {
           return str
         }()}
       </div>`
-    },
-    formatFlowUnit: Api.UNITS.formatFlowUnit,
-    calcLeftTime: Api.UNITS.calcLeftTime
-  },
-  computed: {
-    ...mapState({
-      asideCollapse: 'asideCollapse',
-      orgs: 'orgs',
-      months: 'months'
-    })
+    }
   },
   watch: {
     asideCollapse(val, oldVal) {

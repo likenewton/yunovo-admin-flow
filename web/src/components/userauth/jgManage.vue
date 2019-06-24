@@ -50,7 +50,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
   </div>
@@ -62,20 +62,8 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
-      loadData: true,
-      pageSizes: Api.STATIC.pageSizes,
-      // 列表
-      list: {
-        data: [],
-        pagesize: Api.STATIC.pageSizes[1],
-        currentPage: 1,
-        total: 0,
-      },
       // 在列表中选择的数据
-      selectData: [],
-      sort: {},
-      formInline: {},
-      maxTableHeight: Api.UNITS.maxTableHeight(),
+      selectData: []
     }
   },
   mounted() {
@@ -86,26 +74,9 @@ export default {
     getRowKeys(row) {
       return row.org_id
     },
-    handleSizeChange(val) {
-      this.list.pagesize = val
-      this.getData()
-    },
-    handleCurrentChange(val) {
-      this.list.currentPage = val
-      this.getData()
-    },
-    handleSortChange(val = {}) {
-      Api.UNITS.setSortSearch(val, this)
-      this.getData()
-    },
     // 处理列表多选
     handleSelectionChange(selectData) {
       this.selectData = selectData
-    },
-    // 查询
-    searchData() {
-      this.list.currentPage = 1
-      this.getData()
     },
     // 重置列表
     resetData() {
@@ -180,14 +151,7 @@ export default {
           })
         })
       }
-    },
-    formatFlowUnit: Api.UNITS.formatFlowUnit,
-    calcLeftTime: Api.UNITS.calcLeftTime
-  },
-  computed: {
-    ...mapState({
-      orgs: 'orgs',
-    })
+    }
   }
 }
 

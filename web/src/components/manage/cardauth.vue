@@ -73,7 +73,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
     <el-dialog title="机构卡实名审核" :visible.sync="authDialogVisible">
@@ -107,21 +107,10 @@ import { mapState, mapMutations } from 'vuex'
 export default {
   data() {
     return {
-      loadData: true,
-      pageSizes: Api.STATIC.pageSizes,
-      maxTableHeight: Api.UNITS.maxTableHeight(),
-      list: {
-        data: [],
-        pagesize: Api.STATIC.pageSizes[1],
-        currentPage: 1,
-        total: 0,
-      },
       choiceItem: {}, // 当前选中项
-      sort: {},
       formInline: {
         card_iccid: Api.UNITS.getQuery('card_iccid')
       },
-      winHeight: 0,
       authDialogVisible: false
     }
   },
@@ -129,23 +118,6 @@ export default {
     this.getData()
   },
   methods: {
-    ...mapMutations([
-      'SET_DIALOGVISIBLE'
-    ]),
-    handleSizeChange(val) {
-      this.list.pagesize = val
-      this.list.currentPage = 1
-      this.getData()
-    },
-    handleCurrentChange(val) {
-      this.list.currentPage = val
-      this.getData()
-    },
-    handleSortChange(val) {
-      Api.UNITS.setSortSearch(val, this)
-      this.getData()
-    },
-    // 重置列表
     resetData() {
       this.list.currentPage = 1
       this.formInline = {
@@ -153,10 +125,6 @@ export default {
       } // 1、重置查询表单
       this.sort = {} // 2、重置排序
       this.$refs.listTable.clearSort() // 3、清空排序样式
-      this.getData()
-    },
-    searchData() {
-      this.list.currentPage = 1
       this.getData()
     },
     // 获取列表数据
@@ -168,7 +136,6 @@ export default {
     },
     showDialog(scope) {
       this.choiceItem = scope.row
-      this.winHeight = $(window).height()
       this.authDialogVisible = true
     },
     // 实名认证无效
@@ -227,15 +194,9 @@ export default {
           message: '已取消操作'
         })
       })
-    },
-    formatFlowUnit: Api.UNITS.formatFlowUnit,
-    calcLeftTime: Api.UNITS.calcLeftTime,
-    limitNumber: Api.UNITS.limitNumber
+    }
   },
   computed: {
-    ...mapState({
-      orgs: 'orgs'
-    }),
     // 起始时间约数
     startDatePicker() {
       return Api.UNITS.startDatePicker(this, this.formInline.date_end)

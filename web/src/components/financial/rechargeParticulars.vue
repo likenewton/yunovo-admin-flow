@@ -130,21 +130,11 @@ const _echart = new Api.ECHARTS()
 export default {
   data() {
     return {
-      loadData: true,
-      pageSizes: Api.STATIC.pageSizes,
       gprsAmount: [], // 套餐流量下拉列表
-      list: {
-        data: [],
-        pagesize: Api.STATIC.pageSizes[1],
-        currentPage: 1,
-        total: 0,
-      },
       formInline: {
         pay_sn: Api.UNITS.getQuery('pay_sn'),
         org_id: Api.UNITS.getQuery('org_id')
       },
-      sort: {},
-      maxTableHeight: Api.UNITS.maxTableHeight(),
       // 要展开的对话框的参数
       dialogPara: {
         loadDialog: true,
@@ -267,26 +257,6 @@ export default {
     this.getData()
   },
   methods: {
-    ...mapMutations([
-      'SET_DIALOGVISIBLE'
-    ]),
-    handleSizeChange(val) {
-      this.list.pagesize = val
-      this.getData()
-    },
-    handleCurrentChange(val) {
-      this.list.currentPage = val
-      this.getData()
-    },
-    handleSortChange(val = {}) {
-      Api.UNITS.setSortSearch(val, this)
-      this.getData()
-    },
-    // 查询
-    searchData() {
-      this.list.currentPage = 1
-      this.getData()
-    },
     // 重置列表
     resetData() {
       this.list.currentPage = 1
@@ -374,21 +344,9 @@ export default {
           })
         }
       })
-    },
-    formatFlowUnit: Api.UNITS.formatFlowUnit,
-    calcLeftTime: Api.UNITS.calcLeftTime,
-    limitNumber: Api.UNITS.limitNumber
+    }
   },
   computed: {
-    ...mapState({
-      dialogVisible: 'dialogVisible',
-      cardTypes: 'cardTypes',
-      orgs: 'orgs',
-      notifysFrom: 'notifysFrom',
-      paySelect: 'paySelect',
-      payMethodSelect: 'payMethodSelect',
-      paySelect: 'paySelect'
-    }),
     // 起始时间约数
     startDatePicker() {
       return Api.UNITS.startDatePicker(this, this.formInline.date_end)

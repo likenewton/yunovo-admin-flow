@@ -4,6 +4,7 @@ import store from './store'
 import upperFirst from 'lodash/upperFirst'
 import camelCase from 'lodash/camelCase'
 import Api from 'assets/js/api.js'
+import MinXin from '@/components/MinXins/index.js'
 import 'babel-polyfill'
 import '../theme/index.css'
 import '../static/iconfont/iconfont.css'
@@ -40,6 +41,7 @@ requireComponent.keys().forEach(fileName => {
   )
 })
 
+Vue.mixin(MinXin) // 全局混入
 window._axios = Api.AXIOS.init() // 将_axios注册到全局，方便调用
 Vue.prototype.$echarts = echarts
 Vue.prototype.$http = axios
