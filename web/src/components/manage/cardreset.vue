@@ -20,7 +20,7 @@
           <span slot="label"></i>重置历史</span>
           <el-form class="search-form" :inline="true" :model="formInline" size="small">
             <el-form-item label="卡ICCID">
-              <el-input v-model="formInline.card_iccid" placeholder="请输入"></el-input>
+              <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20)" placeholder="请输入"></el-input>
             </el-form-item>
             <el-form-item label="机构名称">
               <el-select v-model="formInline.org_id" filterable placeholder="请选择">
@@ -28,8 +28,8 @@
               </el-select>
             </el-form-item>
             <el-form-item label="重置时间">
-              <el-date-picker v-model="formInline.date_start" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
-              <el-date-picker v-model="formInline.date_end" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
+              <el-date-picker v-model="formInline.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
+              <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
             </el-form-item>
             <el-form-item>
               <el-button size="small" type="primary" @click="searchData">查询</el-button>
@@ -175,13 +175,22 @@ export default {
       this.$refs[formName].resetFields()
       this.formInline = {}
     },
-    formatFlowUnit: Api.UNITS.formatFlowUnit
+    formatFlowUnit: Api.UNITS.formatFlowUnit,
+    limitNumber: Api.UNITS.limitNumber
   },
   computed: {
     ...mapState({
       orgs: 'orgs',
       cardTypes: 'cardTypes'
-    })
+    }),
+    // 起始时间约数
+    startDatePicker() {
+      return Api.UNITS.startDatePicker(this, this.formInline.date_end)
+    },
+    // 结束时间约数
+    endDatePicker() {
+      return Api.UNITS.endDatePicker(this, this.formInline.date_start)
+    }
   }
 }
 

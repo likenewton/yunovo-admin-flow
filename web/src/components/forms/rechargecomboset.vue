@@ -6,7 +6,7 @@
     <el-form :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="120px" size="small" :status-icon="true" v-loading="loadData">
       <el-form-item prop="org_id">
         <span slot="label">机构名称：</span>
-        <el-select v-model="formInline.org_id" filterable placeholder="请选择">
+        <el-select v-model="formInline.org_id" filterable placeholder="请选择机构">
           <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value - 0"></el-option>
         </el-select>
       </el-form-item>
@@ -71,7 +71,7 @@
       </el-form-item>
       <el-form-item prop="pack_recom">
         <span slot="label">是否推荐：</span>
-        <el-select v-model="formInline.pack_recom" placeholder="请选择是否推荐">
+        <el-select v-model="formInline.pack_recom" clearable placeholder="请选择是否推荐">
           <el-option label="否" :value="0"></el-option>
           <el-option label="是" :value="1"></el-option>
         </el-select>

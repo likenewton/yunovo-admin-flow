@@ -165,7 +165,7 @@ module.exports = {
     title: '流量预警设置',
     name: 'flowwarningset'
   }, {
-    title: '充值详情列表',
+    title: 'ICCID卡详情列表',
     name: 'rechargeDetail'
   }, {
     title: '充值总额统计',

@@ -45,16 +45,16 @@
           <span slot="label"></i>历史赠送</span>
           <el-form class="search-form" :inline="true" :model="searchForm" size="small">
             <el-form-item label="卡ICCID">
-              <el-input v-model="searchForm.card_iccid" placeholder="请输入"></el-input>
+              <el-input v-model="searchForm.card_iccid" @input="searchForm.card_iccid = limitNumber(searchForm.card_iccid, 20)" placeholder="请输入"></el-input>
             </el-form-item>
             <el-form-item label="机构名称">
-              <el-select v-model="searchForm.org_id" filterable placeholder="请选择">
+              <el-select v-model="searchForm.org_id" filterable clearable placeholder="请选择机构">
                 <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="添加时间">
-              <el-date-picker v-model="searchForm.date_start" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
-              <el-date-picker v-model="searchForm.date_end" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
+              <el-date-picker v-model="searchForm.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
+              <el-date-picker v-model="searchForm.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="searchData">查询</el-button>
@@ -255,7 +255,15 @@ export default {
     ...mapState({
       orgs: 'orgs',
       liveMonthSelect: 'liveMonthSelect'
-    })
+    }),
+    // 起始时间约数
+    startDatePicker() {
+      return Api.UNITS.startDatePicker(this, this.searchForm.date_end)
+    },
+    // 结束时间约数
+    endDatePicker() {
+      return Api.UNITS.endDatePicker(this, this.searchForm.date_start)
+    }
   }
 }
 

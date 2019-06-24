@@ -3,20 +3,20 @@
     <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item label="卡ICCID">
-          <el-input v-model="formInline.card_iccid" placeholder="请输入卡的iccid"></el-input>
+          <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20)" placeholder="请输入卡的iccid"></el-input>
         </el-form-item>
         <el-form-item label="卡商名称">
-          <el-select v-model="formInline.card_type" filterable clearable placeholder="请选择">
+          <el-select v-model="formInline.card_type" filterable clearable placeholder="请选择卡商">
             <el-option v-for="(item, index) in cardTypes" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="所属机构">
-          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择">
+          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择机构">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="月份">
-          <el-select v-model="formInline.mdate" filterable clearable placeholder="请选择">
+          <el-select v-model="formInline.mdate" filterable clearable placeholder="请选择月份">
             <el-option v-for="(item, index) in months" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
@@ -140,7 +140,8 @@ export default {
       Api.UNITS.exportExcel(_axios.ajaxAd.statsExport, this.formInline)
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,
-    calcLeftTime: Api.UNITS.calcLeftTime
+    calcLeftTime: Api.UNITS.calcLeftTime,
+    limitNumber: Api.UNITS.limitNumber
   },
   computed: {
     ...mapState({

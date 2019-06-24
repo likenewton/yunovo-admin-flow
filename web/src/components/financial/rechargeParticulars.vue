@@ -6,43 +6,43 @@
           <el-input v-model="formInline.pay_sn" placeholder="请输入订单编号"></el-input>
         </el-form-item>
         <el-form-item label="卡ICCID">
-          <el-input v-model="formInline.cardd_iccid" placeholder="请输入卡的iccid"></el-input>
+          <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20)" placeholder="请输入卡的iccid"></el-input>
         </el-form-item>
         <el-form-item label="支付流水号">
           <el-input v-model="formInline.transfer_id" placeholder="请输入支付流水号"></el-input>
         </el-form-item>
         <el-form-item label="卡商名称">
-          <el-select v-model="formInline.card_type" filterable clearable placeholder="请选择">
+          <el-select v-model="formInline.card_type" filterable clearable placeholder="请选择卡商">
             <el-option v-for="(item, index) in cardTypes" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="机构名称">
-          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择">
+          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择机构">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="订单来源">
-          <el-select v-model="formInline.pay_from" filterable clearable placeholder="请选择">
+          <el-select v-model="formInline.pay_from" filterable clearable placeholder="请选择订单来源">
             <el-option v-for="(item, index) in notifysFrom" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="支付状态">
-          <el-select v-model="formInline.is_paid" filterable clearable placeholder="请选择">
+          <el-select v-model="formInline.is_paid" filterable clearable placeholder="请选择支付状态">
             <el-option v-for="(item, index) in paySelect" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="套餐流量">
-          <el-select v-model="formInline.gprs_amount" filterable clearable placeholder="请选择">
+          <el-select v-model="formInline.gprs_amount" filterable clearable placeholder="请选择套餐流量">
             <el-option v-for="(item, index) in gprsAmount" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="充值日期">
-          <el-date-picker v-model="formInline.date_start" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
-          <el-date-picker v-model="formInline.date_end" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
+          <el-date-picker v-model="formInline.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
+          <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="付款日期">
-          <el-date-picker v-model="formInline.paid_start" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
-          <el-date-picker v-model="formInline.paid_end" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
+          <el-date-picker v-model="formInline.paid_start" :picker-options="startDatePicker_2" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
+          <el-date-picker v-model="formInline.paid_end" :picker-options="endDatePicker_2" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="付款方式">
           <el-select v-model="formInline.pay_method" filterable clearable placeholder="请选择">
@@ -376,7 +376,8 @@ export default {
       })
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,
-    calcLeftTime: Api.UNITS.calcLeftTime
+    calcLeftTime: Api.UNITS.calcLeftTime,
+    limitNumber: Api.UNITS.limitNumber
   },
   computed: {
     ...mapState({
@@ -387,7 +388,21 @@ export default {
       paySelect: 'paySelect',
       payMethodSelect: 'payMethodSelect',
       paySelect: 'paySelect'
-    })
+    }),
+    // 起始时间约数
+    startDatePicker() {
+      return Api.UNITS.startDatePicker(this, this.formInline.date_end)
+    },
+    startDatePicker_2() {
+      return Api.UNITS.startDatePicker(this, this.formInline.paid_end)
+    },
+    // 结束时间约数
+    endDatePicker() {
+      return Api.UNITS.endDatePicker(this, this.formInline.date_start)
+    },
+    endDatePicker_2() {
+      return Api.UNITS.endDatePicker(this, this.formInline.paid_start)
+    }
   }
 }
 

@@ -35,7 +35,7 @@
       </el-form-item>
       <el-form-item prop="status">
         <span slot="label">状态：</span>
-        <el-select v-model="formInline.status" placeholder="请选择">
+        <el-select v-model="formInline.status" clearable placeholder="请选择">
           <el-option label="启用" :value="0"></el-option>
           <el-option label="停用" :value="1"></el-option>
         </el-select>

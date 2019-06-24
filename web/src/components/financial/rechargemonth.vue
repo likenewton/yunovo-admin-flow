@@ -3,12 +3,12 @@
     <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
       <el-form class="search-form" :inline="true" :model="formInline" size="small">
         <el-form-item label="机构名称">
-          <el-select v-model="formInline.org_id" filterable placeholder="请选择">
+          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择机构">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="月份">
-          <el-select v-model="formInline.mdate" filterable clearable placeholder="请选择">
+          <el-select v-model="formInline.mdate" filterable clearable placeholder="请选择月份">
             <el-option v-for="(item, index) in months" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
@@ -27,8 +27,8 @@
           </template>
         </el-table-column>
         <el-table-column prop="mdate" label="月份" min-width="100" sortable="custom"></el-table-column>
-        <el-table-column prop="paid_count" label="已付款次数" min-width="95" sortable="custom"></el-table-column>
-        <el-table-column prop="nopaid_count" label="未付款次数" min-width="95" sortable="custom"></el-table-column>
+        <el-table-column prop="paid_count" label="已付款次数" min-width="100" sortable="custom"></el-table-column>
+        <el-table-column prop="nopaid_count" label="未付款次数" min-width="100" sortable="custom"></el-table-column>
         <el-table-column prop="gprs_amount" label="分配总流量" min-width="110" sortable="custom">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.gprs_amount)"></div>

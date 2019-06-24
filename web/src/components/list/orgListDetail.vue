@@ -1,14 +1,14 @@
 <template>
   <div>
     <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
-      <el-form :inline="true" :model="formInline" class="seach-form" size="small">
+      <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item label="机构名称">
-          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择">
+          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择机构">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="通知或来源">
-          <el-select v-model="formInline.ntf_type" filterable placeholder="请选择">
+          <el-select v-model="formInline.ntf_type" filterable clearable placeholder="请选择">
             <el-option v-for="(item, index) in notifysFrom" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>

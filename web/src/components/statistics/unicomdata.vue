@@ -3,17 +3,17 @@
     <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item label="机构名称">
-          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择">
+          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择机构">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="导卡日期">
-          <el-date-picker v-model="formInline.date_start" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
-          <el-date-picker v-model="formInline.date_end" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
+          <el-date-picker v-model="formInline.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
+          <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="激活日期">
-          <el-date-picker v-model="formInline.jstart" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
-          <el-date-picker v-model="formInline.jend" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
+          <el-date-picker v-model="formInline.jstart" :picker-options="startDatePicker_2" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
+          <el-date-picker v-model="formInline.jend" :picker-options="endDatePicker_2" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="searchData">查询</el-button>
@@ -57,8 +57,8 @@
         </el-table-column>
         <el-table-column fixed="right" label="导出" width="140">
           <template slot-scope="scope">
-            <el-button type="text">已激活</el-button>
-            <el-button type="text">未激活</el-button>
+            <el-button type="text" class="text_warning">已激活</el-button>
+            <el-button type="text" class="text_warning">未激活</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -263,7 +263,21 @@ export default {
     ...mapState({
       asideCollapse: 'asideCollapse',
       orgs: 'orgs'
-    })
+    }),
+    // 起始时间约数
+    startDatePicker() {
+      return Api.UNITS.startDatePicker(this, this.formInline.date_end)
+    },
+    startDatePicker_2() {
+      return Api.UNITS.startDatePicker(this, this.formInline.jend)
+    },
+    // 结束时间约数
+    endDatePicker() {
+      return Api.UNITS.endDatePicker(this, this.formInline.date_start)
+    },
+    endDatePicker_2() {
+      return Api.UNITS.endDatePicker(this, this.formInline.jstart)
+    }
   },
   watch: {
     asideCollapse(val, oldVal) {

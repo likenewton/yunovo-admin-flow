@@ -6,7 +6,7 @@
     <el-form v-loading="isLoadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="120px" size="small" :status-icon="true">
       <el-form-item prop="jg_name">
         <span slot="label">所属机构：</span>
-        <el-select v-model="formInline.jg_name" placeholder="请选择">
+        <el-select v-model="formInline.jg_name" placeholder="请选择机构">
           <el-option label="机构1" :value="0"></el-option>
           <el-option label="机构2" :value="1"></el-option>
           <el-option label="机构3" :value="2"></el-option>

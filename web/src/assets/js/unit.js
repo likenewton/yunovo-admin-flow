@@ -334,15 +334,37 @@ module.exports = {
     return (value / total * 100).toFixed(count) + '%'
   },
   compatibel_Ie_input() {
-    console.log(1)
-    $('.el-select .el-input__inner').attr("unselectable","on")
+    $('.el-select .el-input__inner').attr("unselectable", "on")
   },
   // 导出excel
   exportExcel(url, params = {}) {
     let link = `${url}?iov-token=${localStorage.getItem('iov-token')}`
-    for(let key in params) {
+    for (let key in params) {
       link += `&${key}=${params[key]}`
     }
     window.open(link)
+  },
+  // 时间范围约束（一般用于有起止时间的选择器）
+  startDatePicker(vue, end) {
+    return {
+      disabledDate(time) {
+        if (end) {
+          return new Date(end).getTime() <= time.getTime() || time.getTime() > Date.now()
+        } else {
+          return time.getTime() > Date.now()
+        }
+      }
+    }
+  },
+  endDatePicker(vue, start) {
+    return {
+      disabledDate(time) {
+        if (start) {
+          return new Date(start).getTime() - 3600000 * 8 > time.getTime() || time.getTime() > Date.now()
+        } else {
+          return time.getTime() > Date.now()
+        }
+      }
+    }
   }
 }

@@ -3,18 +3,18 @@
     <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
       <el-form class="search-form" :inline="true" :model="formInline" size="small">
         <el-form-item label="机构名称">
-          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择">
+          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择机构">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="付款方式">
-          <el-select v-model="formInline.pay_method" placeholder="请选择">
+          <el-select v-model="formInline.pay_method" clearable placeholder="请选择付款方式">
             <el-option v-for="(item, index) in payMethodSelect" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="起止日期">
-          <el-date-picker v-model="formInline.date_start" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
-          <el-date-picker v-model="formInline.date_end" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
+          <el-date-picker v-model="formInline.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
+          <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="searchData">查询</el-button>
@@ -144,7 +144,15 @@ export default {
     ...mapState({
       orgs: 'orgs',
       payMethodSelect: 'payMethodSelect'
-    })
+    }),
+    // 起始时间约数
+    startDatePicker() {
+      return Api.UNITS.startDatePicker(this, this.formInline.date_end)
+    },
+    // 结束时间约数
+    endDatePicker() {
+      return Api.UNITS.endDatePicker(this, this.formInline.date_start)
+    }
   }
 }
 

@@ -3,7 +3,7 @@
     <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item label="机构名称">
-          <el-select v-model="formInline.org_id" filterable placeholder="请选择机构名称">
+          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择机构名称">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>

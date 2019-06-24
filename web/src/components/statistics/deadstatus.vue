@@ -3,7 +3,7 @@
     <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item label="卡ICCID">
-          <el-input v-model="formInline.card_iccid" placeholder="请输入卡的iccid"></el-input>
+          <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20)" placeholder="请输入卡的iccid"></el-input>
         </el-form-item>
         <el-form-item label="卡商名称">
           <el-select v-model="formInline.card_type" filterable clearable placeholder="请选择">
@@ -159,7 +159,8 @@ export default {
       })
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,
-    calcLeftTime: Api.UNITS.calcLeftTime
+    calcLeftTime: Api.UNITS.calcLeftTime,
+    limitNumber: Api.UNITS.limitNumber
   },
   computed: {
     ...mapState({

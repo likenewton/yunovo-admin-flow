@@ -76,7 +76,7 @@
       </el-form-item>
       <el-form-item prop="real_period">
         <span slot="label">实名认证成功赠送流量有效周期：</span>
-        <el-select v-model="formInline.live_month" placeholder="请选择有效周期">
+        <el-select v-model="formInline.live_month" clearable placeholder="请选择有效周期">
           <el-option v-for="(item, index) in liveMonthSelect" :key="index" :label="item.label" :value="item.value"></el-option>
         </el-select>
       </el-form-item>
@@ -87,7 +87,7 @@
       </el-form-item>
       <el-form-item prop="perf_period">
         <span slot="label">完善资料成功赠送流量有效周期：</span>
-        <el-select v-model="formInline.live_month" placeholder="请选择有效周期">
+        <el-select v-model="formInline.live_month" clearable placeholder="请选择有效周期">
           <el-option v-for="(item, index) in liveMonthSelect" :key="index" :label="item.label" :value="item.value"></el-option>
         </el-select>
       </el-form-item>
@@ -98,7 +98,7 @@
       </el-form-item>
       <el-form-item prop="bind_period">
         <span slot="label">绑定设备成功赠送流量有效周期：</span>
-        <el-select v-model="formInline.live_month" placeholder="请选择有效周期">
+        <el-select v-model="formInline.live_month" clearable placeholder="请选择有效周期">
           <el-option v-for="(item, index) in liveMonthSelect" :key="index" :label="item.label" :value="item.value"></el-option>
         </el-select>
       </el-form-item>
