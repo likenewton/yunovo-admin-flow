@@ -3,106 +3,23 @@ module.exports = {
   asideData: [{
     title: '业务管理',
     icon: 'el-icon-fontmima',
-    name: 'menu',
-    children: [{
-      title: '流量卡',
-      name: 'card'
-    }, {
-      title: '卡重置',
-      name: 'cardreset'
-    }, {
-      title: '出货批次',
-      name: 'cardbatch'
-    }, {
-      title: '充值套餐',
-      name: 'cardcombo'
-    }, {
-      title: '流量赠送',
-      name: 'flowgift'
-    }, {
-      title: '流量迁移',
-      name: 'flowmigration'
-    }, {
-      title: '卡实名制',
-      name: 'cardauth'
-    }]
+    name: 'menu'
   }, {
     title: '统计分析',
     icon: 'el-icon-fonttongjibaobiao',
-    name: 'statistics',
-    children: [{
-      title: '月度用量',
-      name: 'monthuse'
-    }, {
-      title: '已停卡况',
-      name: 'deadstatus'
-    }, {
-      title: '停卡日志',
-      name: 'stopcardlog'
-    }, {
-      title: '用量异常',
-      name: 'useanomaly'
-    }, {
-      title: '续费数据',
-      name: 'renewdata'
-    }, {
-      title: '累计用量',
-      name: 'usedata'
-    }, {
-      title: '联通流量卡',
-      name: 'unicomdata'
-    }, {
-      title: '运营统计',
-      name: 'operatedata'
-    }, {
-      title: '通知来源',
-      name: 'informsource'
-    }]
+    name: 'statistics'
   }, {
     title: '财务报表',
     icon: 'el-icon-fontcaiwufenxi',
-    name: 'financial',
-    children: [{
-      title: '充值总额',
-      name: 'rechargesum'
-    }, {
-      title: '月度充值',
-      name: 'rechargemonth'
-    }, {
-      title: '充值明细',
-      name: 'rechargeParticulars'
-    }, {
-      title: '机构充值',
-      name: 'jgrecharge'
-    }, {
-      title: '套餐充值',
-      name: 'comborecharge'
-    }]
+    name: 'financial'
   }, {
     title: '用户权限',
     icon: 'el-icon-fontyonghu1',
-    name: 'userauth',
-    children: [{
-      title: '机构管理',
-      name: 'jgManage'
-    }]
+    name: 'userauth'
   }, {
     title: '系统设置',
     icon: 'el-icon-fontxitongshezhi',
-    name: 'setting',
-    children: [{
-      title: '支付管理',
-      name: 'paySet'
-    }, {
-      title: '货币设置',
-      name: 'currencyset'
-    }, {
-      title: '国家区域',
-      name: 'nationset'
-    }, {
-      title: '系统参数',
-      name: 'sysparaset'
-    }]
+    name: 'setting'
   }],
   // 必须、误删
   operData: [{

@@ -1,7 +1,40 @@
 module.exports = {
-  // 获取权限菜单
-  getAuthMenu(asideData) {
-    return asideData
+  // 获取权限菜单列表
+  getAuthMenu(asideData = [], resources = []) {
+    resources.forEach((v1, i1) => {
+      asideData.forEach((v2, i2) => {
+        if (v1.resUrl === v2.name) {
+          v1.icon = v2.icon
+        }
+      })
+    })
+    return resources
+  },
+  // 获取菜单动态路由
+  getMenuRoute(menuRoute = [], resources = []) {
+    menuRoute.children.forEach((v1, i1) => {
+      let level_1 = false
+      resources.forEach((r1, j1) => {
+        if (v1.name === r1.resUrl) {
+          level_1 = true
+          v1.children.forEach((v2, i2) => {
+            let level_2 = false
+            r1.childResources.forEach((r2, j2) => {
+              if (v2.name === r2.resUrl) {
+                level_2 = true
+              }
+            })
+            if (!level_2) {
+              v1.children.splice(i2, 1)
+            }
+          })
+        }
+      })
+      if (!level_1) {
+        menuRoute.children.splice(i1, 1)
+      }
+    })
+    return menuRoute
   },
   // 获取当前页面某个字段求和
   pageSums(data, key) {
@@ -88,13 +121,13 @@ module.exports = {
     let breadArr = []
     if (name === 'home') return [, , '首页']
     authMenu.forEach((v1) => {
-      if (v1.name === name) {
-        breadArr.push('首页', v1.title)
+      if (v1.resUrl === name) {
+        breadArr.push('首页', v1.resName)
         return false
       }
-      v1.children.forEach((v2) => {
-        if (v2.name === name) {
-          breadArr.push('首页', v1.title, v2.title)
+      v1.childResources.forEach((v2) => {
+        if (v2.resUrl === name) {
+          breadArr.push('首页', v1.resName, v2.resName)
           return false
         }
       })
@@ -110,7 +143,7 @@ module.exports = {
         breadArr = breadArr.split(',')
       } else {
         // 如果没有数据就代表是直接通过url进入的默认进入 第一个菜单第一项
-        breadArr = ['首页', authMenu[0].title, authMenu[0].children[0].title]
+        breadArr = ['首页', authMenu[0].resName, authMenu[0].childResources[0].resName]
       }
     }
     return breadArr

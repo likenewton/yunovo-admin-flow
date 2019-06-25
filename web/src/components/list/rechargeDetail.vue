@@ -83,7 +83,7 @@
           <span slot="label">流量分配详情</span>
           <el-table @sort-change="handleSortChange" :data="list_1.data" :max-height="maxTableHeight" border resizable size="mini">
             <el-table-column prop="how_month" label="月份" min-width="85" sortable="custom"></el-table-column>
-            <el-table-column prop="gprs_value" label="套餐流量" min-width="170" sortable="custom">
+            <el-table-column prop="gprs_value" label="套餐流量" min-width="190" sortable="custom">
               <template slot-scope="scope">
                 <span v-html="formatComboFlow(calcComboFlow(scope))"></span>
                 <span v-if="scope.row.gprs_value != scope.row.allot_value" style="vertical-align: bottom">
@@ -93,23 +93,23 @@
                 </span>
               </template>
             </el-table-column>
-            <el-table-column prop="balance_dval" label="设备剩余流量" min-width="120" sortable="custom">
+            <el-table-column prop="balance_dval" label="设备剩余流量" min-width="115" sortable="custom">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.balance_dval)"></div>
               </template>
             </el-table-column>
-            <el-table-column prop="balance_value" label="联通剩余流量" min-width="120" sortable="custom">
+            <el-table-column prop="balance_value" label="联通剩余流量" min-width="115" sortable="custom">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.balance_value)"></div>
               </template>
             </el-table-column>
-            <el-table-column label="套餐类型" min-width="100" sortable="custom">
+            <el-table-column label="套餐类型" min-width="90" sortable="custom">
               <template slot-scope="scope">
                 <span v-if="scope.row.allot_month==1">固定套餐</span>
                 <span v-else>月均套餐</span>
               </template>
             </el-table-column>
-            <el-table-column prop="allot_reset" label="是否清零" min-width="100" sortable="custom">
+            <el-table-column prop="allot_reset" label="是否清零" min-width="90" sortable="custom">
               <template slot-scope="scope">
                 <span v-if="scope.row.allot_reset==1">会清零</span>
                 <span v-else>不清零</span>

@@ -1,5 +1,5 @@
 
-import menuRoute from './menuRoute.js' // 菜单页面
+// import menuRoute from './menuRoute.js' // 菜单页面
 import formRoute from './formRoute.js' // 表单页面
 import listRoute from './listRoute.js' // 二级列表页面
 // 按需加载路由
@@ -20,8 +20,10 @@ let router = new VueRouter({
   }]
 })
 
-router.addRoutes([menuRoute])
+// router.addRoutes([menuRoute])
 router.addRoutes([formRoute])
 router.addRoutes([listRoute])
 
 export default router
+
+

@@ -9,14 +9,14 @@
         </el-menu-item>
       </router-link>
       <!-- 循环渲染的列表页 -->
-      <el-submenu :index="menuItem.title" v-for="menuItem in authMenu" :key="menuItem.title">
+      <el-submenu :index="menuItem.resName" v-for="menuItem in authMenu" :key="menuItem.resName">
         <template slot="title">
           <i class="submenu-icon" :class="menuItem.icon"></i>
-          <span class="title-text">{{menuItem.title}}</span>
+          <span class="title-text">{{menuItem.resName}}</span>
         </template>
         <el-menu-item-group>
-          <router-link :to="{name: submenuItem.name}" v-for="submenuItem in menuItem.children" :key="submenuItem.name">
-            <el-menu-item class="sub-item" :index="submenuItem.title">{{submenuItem.title}}</el-menu-item>
+          <router-link :to="{name: submenuItem.resUrl}" v-for="submenuItem in menuItem.childResources" :key="submenuItem.resUrl">
+            <el-menu-item class="sub-item" :index="submenuItem.resName">{{submenuItem.resName}}</el-menu-item>
           </router-link>
         </el-menu-item-group>
       </el-submenu>

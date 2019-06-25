@@ -36,12 +36,12 @@ export default {
       }
       this.isShowBreadCrumb = true
       this.authMenu.forEach((v1) => {
-        if (v1.title === title) {
+        if (v1.resName === title) {
           routeName = v1.name
           return false
         }
-        v1.children.forEach((v2) => {
-          if (v2.title === title) {
+        v1.childResources.forEach((v2) => {
+          if (v2.resName === title) {
             routeName = v2.name
             return false
           }

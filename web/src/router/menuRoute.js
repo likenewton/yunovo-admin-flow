@@ -38,6 +38,7 @@ const Nationset = r => require.ensure([], () => r(require('@/components/systemse
 const Sysparaset = r => require.ensure([], () => r(require('@/components/systemset/sysparaset.vue')), 'chunk2') // 系统参数
 const Datapreserve = r => require.ensure([], () => r(require('@/components/systemset/datapreserve.vue')), 'chunk2') // 数据维护
 
+// 这里面试所有的配置，后续根据权限动态删除一些路由
 let menuRoute = {
   path: '/asidemenu',
   name: 'asidemenu',

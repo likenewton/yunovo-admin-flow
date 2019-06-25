@@ -23,6 +23,7 @@ export default {
     ...mapMutations([
       'SET_DIALOGVISIBLE'
     ]),
+    // 操作导航条
     handleSizeChange(val) {
       this.list.pagesize = val
       this.list.currentPage = 1
@@ -32,10 +33,12 @@ export default {
       this.list.currentPage = val
       this.getData()
     },
+    // 处理排序
     handleSortChange(val) {
       Api.UNITS.setSortSearch(val, this)
       this.getData()
     },
+    // 表单
     resetData() {
       this.list.currentPage = 1
       this.formInline = {}

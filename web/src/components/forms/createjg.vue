@@ -105,7 +105,9 @@ export default {
           validator: this.validatorRebate,
           trigger: ['blur']
         }]
-      }
+      },
+      emailRule: null,
+      telRule: null,
     }
   },
   mounted() {
@@ -167,8 +169,41 @@ export default {
           Api.UNITS.showMsgBox()
           return false
         }
-      });
+      })
     },
+    resetForm(formName) {
+      this.$refs[formName].resetFields()
+      this.formInline = {}
+      this.isUpdate && this.getData()
+      this.emailRuleChange()
+      this.telRuleChange()
+    },
+    // emailRuleChange() {
+    //   if (this.formInline.email) {
+    //     this.emailRule = [{ type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur'] }]
+    //     Vue.nextTick(() => {
+    //       this.$refs.ruleForm.validateField(['email'])
+    //     })
+    //   } else {
+    //     this.emailRule = null
+    //     Vue.nextTick(() => {
+    //       this.$refs.ruleForm.clearValidate(['email'])
+    //     })
+    //   }
+    // },
+    // telRuleChange() {
+    //   if (this.formInline.tel) {
+    //     this.telRule = [{ validator: this.validatorPhoneNumber, trigger: ['blur'] }]
+    //     Vue.nextTick(() => {
+    //       this.$refs.ruleForm.validateField(['tel'])
+    //     })
+    //   } else {
+    //     this.telRule = null
+    //     Vue.nextTick(() => {
+    //       this.$refs.ruleForm.clearValidate(['tel'])
+    //     })
+    //   }
+    // },
     // 验证邮箱地址是否正确
     validatorEmall(rule, value, callback) {
       if (!value || Api.UNITS.validatorEmall(value)) {
