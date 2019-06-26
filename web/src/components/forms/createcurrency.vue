@@ -3,7 +3,7 @@
     <div slot="header" class="clearfix">
       <span>货币设置</span>
     </div>
-    <el-form v-loading="loadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="140px" size="small" :status-icon="true">
+    <el-form class="editor-form" v-loading="loadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="140px" size="small" :status-icon="true">
       <el-form-item prop="title">
         <span slot="label">货币名称：</span>
         <el-input v-model="formInline.title" placeholder="请输入货币名称"></el-input>
@@ -16,10 +16,12 @@
       <el-form-item prop="symbol_left">
         <span slot="label">左符号：</span>
         <el-input v-model="formInline.symbol_left" placeholder="请输入货币左边符号"></el-input>
+        <div class="annotation">位于货币数值左边的符号，如￥5.00</div>
       </el-form-item>
       <el-form-item prop="symbol_right">
         <span slot="label">右符号：</span>
         <el-input v-model="formInline.symbol_right" placeholder="请输入货币右边符号"></el-input>
+        <div class="annotation">位于货币数值右边的符号，如5.00元</div>
       </el-form-item>
       <el-form-item prop="decimal_place">
         <span slot="label">小数位：</span>
@@ -105,6 +107,9 @@ export default {
         done: ((res) => {
           this.formInline = res.data
           this.loadData = false
+          Vue.nextTick(() => {
+            this.$refs.ruleForm.clearValidate(['status'])
+          })
         })
       })
     },

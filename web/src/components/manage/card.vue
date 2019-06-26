@@ -246,7 +246,7 @@ export default {
       this.dialogPara = {
         loadDialog: true,
         isShowCancelBtn: false,
-        title: `详细信息(${scope.row.iccid})`,
+        title: `详细信息(${scope.row.card_iccid})`,
         content: '<div style="height: 100px"></div>'
       }
       this.SET_DIALOGVISIBLE({ dialogVisible: true })
@@ -259,7 +259,7 @@ export default {
         this.dialogPara.content = `<div class="iccid_detail">
           <div class="item">
             <span class="fbs-left">MSISDN</span>
-            <span class="fbs-right">861064604868138</span>
+            <span class="fbs-right"></span>
           </div>
           <div class="item">
             <span class="fbs-left">IMSI</span>

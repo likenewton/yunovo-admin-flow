@@ -3,7 +3,7 @@
     <div slot="header" class="clearfix">
       <span>充值套餐设置</span>
     </div>
-    <el-form :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="120px" size="small" :status-icon="true" v-loading="loadData">
+    <el-form class="editor-form" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="120px" size="small" :status-icon="true" v-loading="loadData">
       <el-form-item prop="org_id">
         <span slot="label">机构名称：</span>
         <el-select v-model="formInline.org_id" filterable placeholder="请选择机构">
@@ -229,6 +229,9 @@ export default {
             this.formInline.allot = 0
           }
           this.loadData = false
+          Vue.nextTick(() => {
+            this.$refs.ruleForm.clearValidate(['live_month'])
+          })
         })
       })
     },

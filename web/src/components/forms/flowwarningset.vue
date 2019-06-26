@@ -3,7 +3,7 @@
     <div slot="header" class="clearfix">
       <span>充值套餐设置</span>
     </div>
-    <el-form v-loading="loadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="160px" size="small" :status-icon="true">
+    <el-form class="editor-form" v-loading="loadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="160px" size="small" :status-icon="true">
       <el-form-item prop="jg_name">
         <span slot="label">机构名称：</span>
         <el-select v-model="formInline.jg_name" placeholder="请选择">

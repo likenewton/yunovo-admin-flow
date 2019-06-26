@@ -3,7 +3,7 @@
     <div slot="header" class="clearfix">
       <span>权限管理设置</span>
     </div>
-    <el-form v-loading="isLoadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="120px" size="small" :status-icon="true">
+    <el-form class="editor-form" v-loading="isLoadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="120px" size="small" :status-icon="true">
       <el-form-item prop="authgroup_name">
         <span slot="label">权限组名称：</span>
         <el-input v-model="formInline.authgroup_name"></el-input>

@@ -3,7 +3,7 @@
     <div slot="header" class="clearfix">
       <span>用户管理设置</span>
     </div>
-    <el-form v-loading="isLoadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="120px" size="small" :status-icon="true">
+    <el-form class="editor-form" v-loading="isLoadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="120px" size="small" :status-icon="true">
       <el-form-item prop="jg_name">
         <span slot="label">所属机构：</span>
         <el-select v-model="formInline.jg_name" placeholder="请选择机构">

@@ -3,7 +3,7 @@
     <div slot="header" class="clearfix">
       <span>国家区域</span>
     </div>
-    <el-form v-loading="loadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="140px" size="small" :status-icon="true">
+    <el-form class="editor-form" v-loading="loadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="140px" size="small" :status-icon="true">
       <el-form-item prop="ntname">
         <span slot="label">区域名称：</span>
         <el-input v-model="formInline.ntname" placeholder="请输入区域名称"></el-input>

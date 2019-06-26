@@ -4,7 +4,7 @@
       <el-tabs @tab-click="changeTab" v-model="tabIndex">
         <el-tab-pane>
           <span slot="label">流量迁移</span>
-          <el-form :model="formInline" :rules="rules" ref="ruleForm" label-width="126px" size="small" :status-icon="true">
+          <el-form class="editor-form" :model="formInline" :rules="rules" ref="ruleForm" label-width="126px" size="small" :status-icon="true">
             <el-form-item prop="old_iccid">
               <span slot="label">旧卡ICCID：</span>
               <el-input v-model="formInline.old_iccid" @input="formInline.old_iccid = limitNumber(formInline.old_iccid, 20)" placeholder="请输入旧卡ICCID"></el-input>

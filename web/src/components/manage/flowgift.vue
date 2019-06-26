@@ -4,7 +4,7 @@
       <el-tabs @tab-click="changeTab" v-model="tabIndex">
         <el-tab-pane>
           <span slot="label">赠送流量</span>
-          <el-form :model="formInline" :rules="rules" ref="ruleForm" label-width="126px" size="small" :status-icon="true">
+          <el-form class="editor-form" :model="formInline" :rules="rules" ref="ruleForm" label-width="126px" size="small" :status-icon="true">
             <el-form-item prop="card_iccid">
               <span slot="label">卡ICCID列表：</span>
               <el-input type="textarea" v-model="formInline.card_iccid" rows="4" placeholder="请输入卡ICCID"></el-input>

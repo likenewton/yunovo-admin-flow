@@ -3,7 +3,7 @@
     <div slot="header" class="clearfix">
       <span>流量卡出货批次</span>
     </div>
-    <el-form :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="225px" size="small" :status-icon="true">
+    <el-form class="editor-form" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="225px" size="small" :status-icon="true">
       <el-form-item prop="batch_code">
         <span slot="label">批次编号：</span>
         <el-input v-model="formInline.batch_code" placeholder="请输入批次编号"></el-input>

@@ -5,11 +5,12 @@ import upperFirst from 'lodash/upperFirst'
 import camelCase from 'lodash/camelCase'
 import Api from 'assets/js/api.js'
 import MinXin from '@/components/MinXins/index.js'
-import menuRoute from './router/menuRoute.js' // 菜单页面
+import menuRoute from './router/menuRoute.js' // 菜单页面路由
 import 'babel-polyfill'
 import '../theme/index.css'
 import '../static/iconfont/iconfont.css'
 import 'assets/js/filter.js'
+import 'assets/js/directive.js'
 
 const requireComponent = require.context(
   // 其组件目录的相对路径
@@ -63,7 +64,7 @@ router.beforeEach((to, from, next) => {
       if (store.state.authMenu.length === 0) {
         // 如果权限列表为空就从后台拉取菜单权限信息
         _axios.send({
-          method: 'get',
+          method: 'get', // 模拟获取菜单权限
           url: '../flowCenter/static/authMenu.json', // 这里因config/index.js中配置了flowCenter/static
           done: ((res) => {
             let resources = res.userResources
