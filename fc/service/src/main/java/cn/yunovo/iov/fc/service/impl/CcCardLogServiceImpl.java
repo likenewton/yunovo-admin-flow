@@ -1,16 +1,23 @@
 package cn.yunovo.iov.fc.service.impl;
 
+import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
 import cn.yunovo.iov.fc.dao.ICcCardLogMapper;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcCardLog;
+import cn.yunovo.iov.fc.model.entity.CcGprsCard;
+import cn.yunovo.iov.fc.model.entity.CcOnoffLog;
 import cn.yunovo.iov.fc.model.entity.CcRealname;
+import cn.yunovo.iov.fc.service.FcConstant;
 import cn.yunovo.iov.fc.service.ICcCardLogService;
+import cn.yunovo.iov.fc.service.ICcGprsCardService;
+import cn.yunovo.iov.fc.service.ICcOnoffLogService;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +42,16 @@ public class CcCardLogServiceImpl extends ServiceImpl<ICcCardLogMapper, CcCardLo
 	
 	@Autowired
 	private ICcCardLogMapper iCcCardLogMapper;
+	
+	@Autowired
+	private ICcGprsCardService iCcGprsCardService;
+	
+	@Autowired
+	private ICcOnoffLogService iCcOnoffLogService;
+	
+	@Autowired
+	private JedisPoolUtil jedisPoolUtil;
+	
 	
 	@Override
 	public PageData<CcCardLog, Object> logList(PageForm pageForm, Integer card_id, LoginInfo info) {
@@ -87,6 +104,37 @@ public class CcCardLogServiceImpl extends ServiceImpl<ICcCardLogMapper, CcCardLo
 		
 		CcCardLog log = build(res.getCard_id(), 10, log_text, log_url, res.getTime_audit());
 		return this.save(log);
+	}
+	
+	@Override
+	public boolean log5On6Off(CcOnoffLog res, boolean isSuccess) {
+		
+		Integer log_type = null;
+		String log_text = null, log_url = "";
+		if(res.getOnoff_type() == 1) {
+			log_type = 5;
+			log_text = "停卡";
+			log_url = "gprs/onofflog?card_id="+res.getCard_id();
+		}else {
+			log_type = 6;
+			log_text = "开卡";
+		}
+		log_text = log_text + (isSuccess ?   "成功" : "失败");
+		String bal_amount = iCcGprsCardService.gprsFormat(res.getBalance_value());
+		
+		HashMap<String, String> onofflog = iCcOnoffLogService.getArr_onofflog();
+		
+		log_text = log_text + " 剩余流量"+bal_amount + (onofflog.containsKey(res.getUser_name())? onofflog.get(res.getUser_name()) : res.getUser_name());
+				
+		String sql = String.format("INSERT INTO cc_card_log SET card_id = %s, log_type = %s, log_text = '%s', log_url = '%s', time_added = '%s'", res.getCard_id(), log_type,log_text, log_url, res.getTime_added());
+		
+		boolean isOk = jedisPoolUtil.lpush(FcConstant.SQL_QUEUE_CACHEKEY, sql) > 0 ? true : false;
+		if(!isOk) {
+			CcCardLog log = build(res.getCard_id(), log_type, log_text, log_url, res.getTime_added());
+			return this.save(log);
+		}
+		
+		return isOk;
 	}
 	
 	public CcCardLog build(Integer card_id, Integer log_type, String log_text, String log_url, String time_added) {

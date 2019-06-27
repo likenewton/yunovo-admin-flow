@@ -1,6 +1,9 @@
 package cn.yunovo.iov.fc.service.impl;
 
+import cn.yunovo.iov.fc.common.utils.BusinessException;
+import cn.yunovo.iov.fc.common.utils.DateUtil;
 import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
+import cn.yunovo.iov.fc.common.utils.math.MathUtils;
 import cn.yunovo.iov.fc.dao.ICcGprsCardMapper;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
@@ -8,12 +11,15 @@ import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
 import cn.yunovo.iov.fc.model.entity.SellPayResultBean;
+import cn.yunovo.iov.fc.model.form.CardOnoffForm;
 import cn.yunovo.iov.fc.model.result.CardDetailInfoBean;
 import cn.yunovo.iov.fc.model.result.CardTotalByOrgidInfoBean;
 import cn.yunovo.iov.fc.model.result.CardUsedResultBean;
 import cn.yunovo.iov.fc.model.result.PayDetailResultBean;
+import cn.yunovo.iov.fc.model.result.UnicomDataBean;
 import cn.yunovo.iov.fc.model.result.UnicomStatResultBean;
 import cn.yunovo.iov.fc.service.FcConstant;
+import cn.yunovo.iov.fc.service.ICcGprsAllotService;
 import cn.yunovo.iov.fc.service.ICcGprsCardService;
 import cn.yunovo.iov.fc.service.ICcOrgService;
 import cn.yunovo.iov.fc.service.ICcStatsMonthService;
@@ -32,6 +38,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -62,6 +69,9 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 	
 	@Autowired
 	private ICcStatsMonthService iCcStatsMonthService;
+	
+	@Autowired
+	private ICcGprsAllotService iCcGprsAllotService;
 	
 	@Autowired
 	private JedisPoolUtil jedisPoolUtil;
@@ -546,6 +556,98 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 		}else {
 			return this.updateCard(card);
 		}
+	}
+	
+	@Override
+	public String gprsFormat(Double gprs) {
+		
+		if(gprs == null) {
+			return "";
+		}
+		
+		if(gprs.toString().length() == 8 && (gprs / 10000000) > 6) {
+			return "无限制";
+		}
+		if(gprs == 0.01) {
+			return "畅享无限";
+		}
+		if(gprs == 0.02) {
+			return "定向无限";
+		}
+		
+		Integer gb = 1024;
+		Integer tb = 1024 * 1024;
+		
+		Double _gprs = Math.abs(gprs);
+		if(_gprs < gb) {
+			return MathUtils.round(gprs, 3) + "M";
+		}
+		
+		if(_gprs >= gb && _gprs < tb) {
+			return MathUtils.round(gprs / gb, 3) + "G";
+		}
+		
+		if(_gprs >= tb) {
+			return MathUtils.round(gprs / tb, 3) + "T";
+		}
+		return gprs.toString();
+	}
+
+	@Override
+	public UnicomDataBean syncUnicomData(String card_sn, LoginInfo loginBaseInfo) {
+
+		if(StringUtils.isEmpty(card_sn)) {
+			throw new BusinessException("系统提示：请选择您要同步的流量卡");
+		}
+		CcGprsCard card = iGprsCardMapper.getByCardSn(card_sn);
+		if(card == null) {
+			throw new BusinessException("系统提示：未找到对应的流量卡信息");
+		}
+		
+		UnicomDataBean result = null;
+		try {
+			result = iCcGprsAllotService.syncUnicomData(card);
+		} catch (Exception e) {
+			log.error("[onoff][syncUnicomData]params={card_ns:{}},logininfo={},exception={}", card_sn, loginBaseInfo.buildJsonString(),ExceptionUtils.getStackTrace(e));
+			throw new BusinessException(-1, "操作失败");
+		}
+		
+		return result;
+	}
+
+	@Override
+	public boolean onoff(CardOnoffForm form, LoginInfo loginBaseInfo) {
+
+		CcGprsCard card = this.getByIccid(form.getCard_iccid());
+		
+		if(card == null) {
+			throw new BusinessException("系统提示：未找到对应的流量卡信息");
+		}
+		
+		boolean isSuccess = true;
+		try {
+			isSuccess = iCcGprsAllotService.cardOnoff(card, form.getStatus(), loginBaseInfo.getId(), loginBaseInfo.getLoginName());
+		} catch (Exception e) {
+			
+			log.error("[onoff][exception]params={},logininfo={},exception={}", form.buildJsonString(), loginBaseInfo.buildJsonString(),ExceptionUtils.getStackTrace(e));
+			return false;
+		}
+		
+		if(isSuccess) {
+			card.setUnicom_stop(form.getStatus());
+			if(form.getStatus() == 1) {
+				card.setTime_stop(DateUtil.nowStr());
+			}
+		}else {
+			if(form.getStatus() == 0) {
+				card.setUnicom_stop((short)0);
+			}else {
+				card.setUnicom_stop((short)1);
+			}
+		}
+		
+		return this.updateCard(card);
+		
 	}
 
 }

@@ -20,6 +20,7 @@ public class BusinessException extends RuntimeException{
 	
 	public BusinessException(Integer exception_code, String message) {
 		super(message);
+		this.exception_code = exception_code;
 	}
 	
 	public BusinessException(String message) {

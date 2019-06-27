@@ -2,6 +2,7 @@ package cn.yunovo.iov.fc.service.impl;
 
 import cn.yunovo.iov.fc.common.utils.DateUtil;
 import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
+import cn.yunovo.iov.fc.common.utils.math.MathUtils;
 import cn.yunovo.iov.fc.dao.ICcGprsAllotMapper;
 import cn.yunovo.iov.fc.dao.ICcGprsValueMapper;
 import cn.yunovo.iov.fc.dao.ICcStatsMonthMapper;
@@ -9,10 +10,14 @@ import cn.yunovo.iov.fc.model.GprsCalculateBean;
 import cn.yunovo.iov.fc.model.entity.CcGprsAllot;
 import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.CcGprsValue;
+import cn.yunovo.iov.fc.model.result.UnicomDataBean;
 import cn.yunovo.iov.fc.service.FcConstant;
 import cn.yunovo.iov.fc.service.ICcGprsAllotService;
 import cn.yunovo.iov.fc.service.ICcGprsCardService;
 import cn.yunovo.iov.fc.service.ICcGprsValueService;
+import cn.yunovo.iov.fc.service.ICcOnoffLogService;
+import cn.yunovo.iov.fc.service.manage.M2mService;
+import cn.yunovo.iov.fc.service.manage.ZhiWangApiService;
 import lombok.extern.slf4j.Slf4j;
 
 import com.alibaba.fastjson.JSONObject;
@@ -68,6 +73,16 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 	
 	@Autowired
 	private ICcStatsMonthMapper iCcStatsMonthMapper;
+	
+	@Autowired
+	private ZhiWangApiService zhiWangApiService;
+	
+	@Autowired
+	private ICcOnoffLogService iCcOnoffLogService;
+	
+	
+	@Autowired
+	private M2mService m2mService;
 	
 	private Double GPRS_CAL_OFFSET = 0.001;
 	
@@ -468,20 +483,38 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 	 * @param username 操作者姓名
 	 * @return bool 成功true失败false
 	 */
-	private boolean cardOnoff(CcGprsCard card, int onoff, int userid, String username) {
+	@Override
+	public boolean cardOnoff(CcGprsCard card, int onoff, int userid, String username) {
 
+		JSONObject apiData = null;
+		boolean isSuccess = true;
 		if(card.getCard_type() == 1) { //吉林联通卡
 			
-			
-			
+			try {
+				apiData = zhiWangApiService.cardOnoff(card.getCard_sn(), onoff);
+				isSuccess = zhiWangApiService.isSuccess(apiData);
+			} catch (Exception e) {
+				log.error("[cardOnoff][exception]params={card:{},onoff:{},userid:{},username:{}},exception={}", JSONObject.toJSONString(card),onoff,userid,username, ExceptionUtils.getStackTrace(e));
+				return false;
+			}
 		}else if(card.getCard_type() == 4) {//智网定向流量卡无开关功能
 			
 			return false;
 		}else {//联通JASPER平台接口
 			
+			try {
+				apiData = m2mService.editTerminal(card.getCard_type(), "", "", card.getCard_iccid(), 3, onoff == 1 ? "DEACTIVATED_NAME":"ACTIVATED_NAME");
+				isSuccess = m2mService.isSuccess(apiData);
+			} catch (Exception e) {
+				log.error("[cardOnoff][exception]params={card:{},onoff:{},userid:{},username:{}},exception={}", JSONObject.toJSONString(card),onoff,userid,username, ExceptionUtils.getStackTrace(e));
+				return false;
+			}
 		}
-		
-		return true;
+		if(!isSuccess) {
+			log.error("[cardOnoff][开卡停卡失败]params={card:{},onoff:{},userid:{},username:{}},apiData={}", JSONObject.toJSONString(card),onoff,userid,username, JSONObject.toJSONString(apiData));
+		}
+		iCcOnoffLogService.cardOnOffLog(card, onoff, isSuccess, userid, username);
+		return isSuccess;
 	}
 
 	/**
@@ -582,5 +615,118 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 		return true;
 	}
 	
-	
+	/**
+	 * 同步联通数据
+	 *
+	 * @param array   card_info 流量卡详情
+	 * @return UnicomDataBean 返回联通数据
+	 */
+	@Override
+	public UnicomDataBean syncUnicomData(CcGprsCard card) {
+		
+		UnicomDataBean result = new UnicomDataBean();
+		if(StringUtils.isEmpty(card.getTime_active())) {
+			result.setStatus(0);
+			result.setMsg("暂未激活");
+			return result;
+		}
+		String card_status = "已启用";
+		String this_month = DateFormatUtils.format(new Date(), "yyyyMM");
+		Long consumeDataMon = null;
+		Long consumeDataAll = null;
+		Double gprs_month = null;
+		Double gprs_total = null;
+		JSONObject apiData = null;
+		if(card.getCard_type() == 1) {
+			try {
+				apiData = zhiWangApiService.getTerminalDetails(card.getCard_sn());
+			} catch (Exception e) {
+				log.error("[syncUnicomData][exception]params={card:{}},exception={}", JSONObject.toJSONString(card), ExceptionUtils.getStackTrace(e));
+				result.setStatus(-1);
+				result.setMsg("接口调用失败");
+				return result;
+			}
+			
+			if(apiData == null) {
+				
+				result.setStatus(-1);
+				result.setMsg("接口调用失败");
+				return result;
+			}else if(zhiWangApiService.isSuccess(apiData)){
+				
+				if(apiData.getJSONObject("data").getInteger("state") != 1) {
+					
+					result.setStatus(0);
+					result.setMsg(apiData.getJSONObject("data").getInteger("state") == 2 ? "已停用" : "未激活");
+					return result;
+				}
+			}else {
+				log.warn("[syncUnicomData][接口返回错误]params={card:{}},apiData={}", JSONObject.toJSONString(card), JSONObject.toJSONString(apiData));
+				result.setStatus(apiData.getInteger("status"));
+				result.setMsg(apiData.getString("msg"));
+				return result;
+			}
+			consumeDataMon = StringUtils.equals("[]", apiData.getJSONObject("data").getString("consumeDataMon"))? 0L : NumberUtils.createLong(apiData.getJSONObject("data").getString("consumeDataMon"));
+			consumeDataAll = StringUtils.equals("[]", apiData.getJSONObject("data").getString("consumeDataAll"))? 0L : NumberUtils.createLong(apiData.getJSONObject("data").getString("consumeDataAll"));
+			gprs_month = MathUtils.round(consumeDataMon / 1048576D, 3); //当前月使用流量情况MB
+			gprs_total = MathUtils.round(consumeDataAll / 1048576D,3 ); //流量卡总使用流量情况MB
+		}else {
+			
+			try {
+				apiData = m2mService.getTerminalDetails(card.getCard_type(), "", "", card.getCard_iccid());
+			} catch (Exception e) {
+				log.error("[syncUnicomData][exception]params={card:{}},exception={}", JSONObject.toJSONString(card), ExceptionUtils.getStackTrace(e));
+				result.setStatus(-1);
+				result.setMsg("接口调用失败");
+				return result;
+			}
+			if(apiData == null) {
+				
+				result.setStatus(-1);
+				result.setMsg("接口调用失败");
+				return result;
+			}
+			if(m2mService.isSuccess(apiData)) {
+				
+				JSONObject temp = apiData.getJSONObject("data").getJSONObject("terminals").getJSONArray("terminal").getJSONObject(0);
+				card_status = StringUtils.equals(temp.getString("status"), "DEACTIVATED_NAME") ? "已停用":"已启用";
+				gprs_month = temp.getDouble("monthToDateDataUsage");
+				gprs_total = card.getUnicom_total() + (gprs_month - card.getUnicom_month() - card.getReset_diff());
+				this_month = DateUtil.getDayOfMonth(new Date()) >= 27 ? DateFormatUtils.format(DateUtils.addMonths(new Date(), 1), "yyyyMM") : DateFormatUtils.format(new Date(), "yyyyMM");
+			}else {
+				
+				log.warn("[syncUnicomData][接口返回错误]params={card:{}},apiData={}", JSONObject.toJSONString(card), JSONObject.toJSONString(apiData));
+				result.setStatus(apiData.getInteger("code"));
+				result.setMsg(apiData.getString("msg"));
+				return result;
+			}
+		}
+		
+		card = iCcGprsCardService.getByIccid(card.getCard_iccid());
+		GprsCalculateBean gprs = new GprsCalculateBean();
+		gprs.setMonth(gprs_month + GPRS_CAL_OFFSET); 
+		gprs.setTotal(gprs_total + GPRS_CAL_OFFSET);
+		gprs.setIs_unicom(true);
+		gprs.setThis_month(NumberUtils.createInteger(this_month));
+		gprs.setOpen_card(false);
+		card = this.gprsCalculate(card, gprs);
+		
+		/**
+		 * 判断最大可使用流量是否(超标100M)小于等于-100M，如果是则调用联通停卡接口停卡
+		 */
+		if(card.getMax_unused() <= -100 && card.getUnicom_stop() == 0) {
+			
+			if(this.cardOnoff(card, 1, 0, "sys2api")) {
+				card.setUnicom_stop((short)1);
+				card.setTime_stop(DateUtil.nowStr());
+				iCcGprsCardService.updateCard(card);
+			}
+		}
+		
+		result.setStatus(1);
+		result.setMsg(card_status);
+		result.setConsumeDataMon(gprs_month);
+		result.setConsumeDataAll(gprs_total);
+		return result;
+	}
 }

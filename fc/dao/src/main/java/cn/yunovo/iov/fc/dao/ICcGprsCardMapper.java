@@ -145,4 +145,6 @@ public interface ICcGprsCardMapper extends BaseMapper<CcGprsCard> {
 	 * @return
 	 */
 	public CcGprsCard getByLikeIccid(@Param("card_iccid")String card_iccid);
+	
+	public CcGprsCard getByCardSn(@Param("card_sn")String card_sn);
 }

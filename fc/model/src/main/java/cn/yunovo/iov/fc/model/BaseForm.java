@@ -31,4 +31,9 @@ public abstract class BaseForm {
 		}
 	}
 	
+	public String buildJsonString() {
+		
+		return JSONObject.toJSONString(this);
+	}
+	
 }

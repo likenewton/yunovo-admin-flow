@@ -4,6 +4,7 @@ import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcCardLog;
+import cn.yunovo.iov.fc.model.entity.CcOnoffLog;
 import cn.yunovo.iov.fc.model.entity.CcRealname;
 
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -26,5 +27,7 @@ public interface ICcCardLogService extends IService<CcCardLog> {
 	 * @param unbind 是否解除实名 true 解除实名，flase 绑定实名
 	 */
 	boolean log10Rlname(CcRealname res, boolean unbind);
+
+	boolean log5On6Off(CcOnoffLog res, boolean isSuccess);
 	
 }

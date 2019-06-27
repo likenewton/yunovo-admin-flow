@@ -5,6 +5,7 @@ package cn.yunovo.iov.fc.web.configuration;
  */
 
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestFactory;
@@ -12,6 +13,8 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 import cn.yunovo.iov.fc.common.utils.http.HttpClientUtils;
+import cn.yunovo.iov.fc.model.CdpProperties;
+import cn.yunovo.iov.fc.model.FcProperties;
 
 
 @Configuration
@@ -39,4 +42,20 @@ public class RestTemplateConfiguration {
 		
 //		return factory;
 	 }
+	
+	@Bean
+	@ConfigurationProperties(prefix="fc.gprs")
+	public FcProperties fcProperties() {
+		
+		return new FcProperties();
+	}
+	
+	@Bean
+	@ConfigurationProperties(prefix="cdp")
+	public CdpProperties cdpProperties() {
+		
+		return new CdpProperties();
+	}
+	
+	
 }

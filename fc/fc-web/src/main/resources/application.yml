@@ -18,7 +18,7 @@ spring:
     port: 6379
     ssl: false
     password: yunovo2Redis
-    database: 1
+    database: 0
     jedis: 
       poll: 
         maxIdle: 8
@@ -45,7 +45,8 @@ hessian:
   path:
     usercenter: http://tcas.yunovo.cn:8082/uc_web
     mpk: http://tcas.yunovo.cn:8080/mpk_web
-    
+cdp: 
+  isUrl: http://192.168.3.240:7000
 fc: 
   gprs: 
     file_dir_root: E://PHP
@@ -182,7 +183,7 @@ casClient:
     signingKeySize: 512
     encryptionKey: GPSAnpFr7BLttXAZjVKbnks-QKfEFBfZqeHmUyKk5TBTG5fNtesETWU_b5YcXVud
     encryptionKeySize: 256
-    effectiveTimeSec: 360000
+    effectiveTimeSec: 3600
     cryptoAlg: "A192CBC-HS384"
   ticketValidation: 
     proxyReceptorUrl: 
@@ -221,7 +222,7 @@ casClient:
   exludeFilterResource: "*remote*"
   serverIndexUrls: /fc/sso/api/ssoLogin
   redirectAfterValidation: false
-  h5IndexUrl: "http://t.wx.yunovo.cn/flowCenter/dist/index.html#/"
+  h5IndexUrl: "http://t.wx.yunovo.cn/flowCenter/index.html#/"
   h5Client: true
   ucIndexUrl: "http://t.wx.yunovo.cn/authCenter/dist/index.html#/sysmenu"
   authTokenCrypto: 
@@ -229,7 +230,7 @@ casClient:
     signingKeySize: 512
     encryptionKey: GPSAnpFr7BLttXAZjVKbnks-QKfEFBfZqeHmUyKk5TBTG5fNtesETWU_b5YcXVud
     encryptionKeySize: 256
-    effectiveTimeSec: 36000000
+    effectiveTimeSec: 3600
     cryptoAlg: "A192CBC-HS384"
   ticketValidation: 
     proxyReceptorUrl: 

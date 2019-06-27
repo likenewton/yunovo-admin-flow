@@ -1,6 +1,7 @@
 package cn.yunovo.iov.fc.service;
 
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -8,6 +9,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
+import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.CcOnoffLog;
 
 /**
@@ -25,4 +27,8 @@ public interface ICcOnoffLogService extends IService<CcOnoffLog> {
 			Integer card_type, Integer org_id, Integer card_id, LoginInfo info);
 	
 	public List<CcOnoffLog> stopDetail(Integer card_id, String card_iccid, LoginInfo info);
+
+	HashMap<String, String> getArr_onofflog();
+
+	boolean cardOnOffLog(CcGprsCard card, Integer onoff, boolean ret, Integer userid, String username);
 }

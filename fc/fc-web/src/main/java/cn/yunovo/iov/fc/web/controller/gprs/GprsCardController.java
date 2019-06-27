@@ -15,10 +15,12 @@ import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.CcGprsPay;
 import cn.yunovo.iov.fc.model.entity.CcStatsDay;
 import cn.yunovo.iov.fc.model.entity.CcStatsMonth;
+import cn.yunovo.iov.fc.model.form.CardOnoffForm;
 import cn.yunovo.iov.fc.model.result.CardDetailInfoBean;
 import cn.yunovo.iov.fc.model.result.CardTotalByOrgidInfoBean;
 import cn.yunovo.iov.fc.model.result.GprsAllotResultBean;
 import cn.yunovo.iov.fc.model.result.PayListTotalResulBean;
+import cn.yunovo.iov.fc.model.result.UnicomDataBean;
 import cn.yunovo.iov.fc.service.ICcCardLogService;
 import cn.yunovo.iov.fc.service.ICcGprsAllotService;
 import cn.yunovo.iov.fc.service.ICcGprsCardService;
@@ -177,6 +179,27 @@ public class GprsCardController extends BaseController{
 		
 		PageData<CardTotalByOrgidInfoBean, Object> data = iCcGprsCardService.cardTotalByOrgidGroupPage(pageForm, this.getLoginBaseInfo());
 		return ResultUtil.success(data);
+	}
+	
+	@ApiOperation(value = "业务管理-数据同步")
+	@RequestMapping(path="/syncUnicomData",method= {RequestMethod.GET, RequestMethod.POST})
+	public Result<UnicomDataBean> syncUnicomData(String card_sn) {
+		
+		UnicomDataBean bean = iCcGprsCardService.syncUnicomData(card_sn, this.getLoginBaseInfo());
+		return ResultUtil.success(bean);
+	}
+	
+	@ApiOperation(value = "业务管理-流量卡管理(开卡/停卡)")
+	@RequestMapping(path="/onoff",method= {RequestMethod.POST})
+	public Result<UnicomDataBean> onoff(CardOnoffForm form) {
+		
+		boolean isSuccess = iCcGprsCardService.onoff(form, this.getLoginBaseInfo());
+		if(isSuccess) {
+			return ResultUtil.successCN(null);
+		}else {
+			
+			return ResultUtil.build(-1, "操作失败");
+		}
 	}
 	
 }

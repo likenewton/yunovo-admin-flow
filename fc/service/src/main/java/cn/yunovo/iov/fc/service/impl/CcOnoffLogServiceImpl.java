@@ -4,12 +4,18 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
+import cn.yunovo.iov.fc.common.utils.DateUtil;
+import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
 import cn.yunovo.iov.fc.dao.ICcOnoffLogMapper;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
+import cn.yunovo.iov.fc.model.entity.CcCardLog;
+import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.CcOnoffLog;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
+import cn.yunovo.iov.fc.service.FcConstant;
+import cn.yunovo.iov.fc.service.ICcCardLogService;
 import cn.yunovo.iov.fc.service.ICcGprsCardService;
 import cn.yunovo.iov.fc.service.ICcOnoffLogService;
 import cn.yunovo.iov.fc.service.ICcOrgService;
@@ -53,6 +59,12 @@ public class CcOnoffLogServiceImpl extends ServiceImpl<ICcOnoffLogMapper, CcOnof
 	
 	@Autowired
 	private ICcOrgService iCcOrgService;
+	
+	@Autowired
+	private ICcCardLogService iCcCardLogService;
+	
+	@Autowired
+	private JedisPoolUtil jedisPoolUtil;
 	
 	@Override
 	public PageData<CcOnoffLog, Object> getItems(PageForm pageForm, String card_iccid, Integer card_type,
@@ -132,7 +144,32 @@ public class CcOnoffLogServiceImpl extends ServiceImpl<ICcOnoffLogMapper, CcOnof
 		
 		return selectList;
 	}
+	
+	@Override
+	public boolean cardOnOffLog(CcGprsCard card, Integer onoff, boolean ret, Integer userid, String username) {
+		
+		CcOnoffLog log = new CcOnoffLog();
+		log.setOnoff_type(onoff);
+		log.setCard_id(card.getCard_id());
+		log.setExec_status(ret ? 1 : 0);
+		log.setUser_name(username);
+		log.setUser_id(userid);
+		log.setTime_added(DateUtil.nowStr());
+		log.setBalance_value(card.getMax_unused());
+		
+		iCcCardLogService.log5On6Off(log, ret);
+		
+		String sql = String.format("onoff_type = %s, exec_status = %s, user_id = %s, user_name = '%s', time_added = '%s'", log.getOnoff_type(),log.getExec_status(),log.getUser_id(),log.getUser_name(),log.getTime_added());
+		sql = String.format("INSERT INTO cc_onoff_log SET card_id = %s, balance_value = %s, %s", log.getCard_id(), log.getBalance_value(), sql);
+		
+		boolean isOk = jedisPoolUtil.lpush(FcConstant.SQL_QUEUE_CACHEKEY, sql) > 0 ? true : false;
+		if(!isOk) {
+			return this.save(log);
+		}
+		return isOk;
+	}
 
+	@Override
 	public HashMap<String, String> getArr_onofflog() {
 		return arr_onofflog;
 	}

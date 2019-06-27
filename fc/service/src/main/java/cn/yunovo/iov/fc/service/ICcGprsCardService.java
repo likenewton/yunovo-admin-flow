@@ -5,10 +5,12 @@ import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.SellPayResultBean;
+import cn.yunovo.iov.fc.model.form.CardOnoffForm;
 import cn.yunovo.iov.fc.model.result.CardDetailInfoBean;
 import cn.yunovo.iov.fc.model.result.CardTotalByOrgidInfoBean;
 import cn.yunovo.iov.fc.model.result.CardUsedResultBean;
 import cn.yunovo.iov.fc.model.result.PayDetailResultBean;
+import cn.yunovo.iov.fc.model.result.UnicomDataBean;
 import cn.yunovo.iov.fc.model.result.UnicomStatResultBean;
 
 import java.util.HashMap;
@@ -142,6 +144,16 @@ public interface ICcGprsCardService extends IService<CcGprsCard> {
 	 * @return bool 成功true失败false
 	 */
 	public boolean updateCard(CcGprsCard card);
+
+	String gprsFormat(Double gprs);
+
+	/**
+	 * 同步联通数据
+	 * @param card_sn gprs.cc_gprs_card.card_sn
+	 */
+	public UnicomDataBean syncUnicomData(String card_sn, LoginInfo loginBaseInfo);
+
+	public boolean onoff(CardOnoffForm form, LoginInfo loginBaseInfo);
 	
 	
 	

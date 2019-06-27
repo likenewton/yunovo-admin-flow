@@ -1,5 +1,7 @@
 package cn.yunovo.iov.fc.model;
 
+import com.alibaba.fastjson.JSONObject;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -25,4 +27,8 @@ public class LoginInfo {
 	
 	@ApiModelProperty(value="机构代码",dataType="String")
 	private String organCode;
+	
+	public String buildJsonString() {
+		return JSONObject.toJSONString(this);
+	}
 }
