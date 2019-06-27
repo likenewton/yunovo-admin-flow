@@ -186,7 +186,7 @@ public class CcGprsPackServiceImpl extends ServiceImpl<ICcGprsPackMapper, CcGprs
 		}
 		
 		pack = iCcGprsPackMapper.getByOrgAndGprsAmountAndPrice(form.getOrg_id(), form.getGprs_amount(), form.getGprs_price());
-		if(pack != null && form.getPack_id() != pack.getPack_id()) {
+		if(pack != null && form.getPack_id().doubleValue() != pack.getPack_id().doubleValue()) {
 			log.warn("[update][该流量的价格套餐已存在！请勿重复操作]params={form:{},target:{},login:{}}", JSONObject.toJSONString(form),JSONObject.toJSONString(pack),JSONObject.toJSONString(info));
 			throw new BusinessException(-1, "该流量的价格套餐已存在！请勿重复操作");
 		}
