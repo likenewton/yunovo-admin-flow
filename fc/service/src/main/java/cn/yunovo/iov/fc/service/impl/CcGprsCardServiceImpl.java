@@ -26,6 +26,7 @@ import cn.yunovo.iov.fc.service.ICcStatsMonthService;
 import cn.yunovo.iov.fc.service.ICcUserService;
 import lombok.extern.slf4j.Slf4j;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -523,7 +524,7 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 				return null;
 			}else {
 				
-				card_info = JSONObject.toJSONString(card, SerializerFeature.WriteMapNullValue);
+				card_info = buildCacheString(card);
 				jedisPoolUtil.setEx(cachekey, card_info);
 				return card;
 			}
@@ -537,10 +538,24 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 		}
 	}
 
+	private String buildCacheString(CcGprsCard card) {
+		
+		String jsonString = JSONObject.toJSONString(card,SerializerFeature.WriteMapNullValue);
+		JSONObject data = JSONObject.parseObject(jsonString);
+		if(CcGprsCard.noCacheField != null) {
+			for(int i = 0; i < CcGprsCard.noCacheField.length ; i ++) {
+				
+				data.remove(CcGprsCard.noCacheField[i]);
+			}
+		}
+		return JSONObject.toJSONString(data, SerializerFeature.WriteMapNullValue);
+	}
+	
+	
 	@Override
 	public boolean updateCard(CcGprsCard card) {
 
-		int isOk = jedisPoolUtil.setEx(FcConstant.cardInfoKey(card.getCard_iccid()), JSONObject.toJSONString(card, SerializerFeature.WriteMapNullValue), 300 * 60);
+		int isOk = jedisPoolUtil.setEx(FcConstant.cardInfoKey(card.getCard_iccid()), buildCacheString(card), 300 * 60);
 		
 		if(isOk < 1) {
 			return this.updateById(card);

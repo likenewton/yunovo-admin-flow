@@ -29,6 +29,8 @@ import lombok.experimental.Accessors;
 public class CcGprsCard implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	public static final String[] noCacheField = new String[] {"card_type_name", "org_name", "none"};
 
 	@ApiModelProperty(value = "流量卡编号")
 	@TableId(value = "card_id", type = IdType.AUTO)
