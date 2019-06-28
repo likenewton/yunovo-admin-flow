@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="dead_status">
     <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item label="卡ICCID">
@@ -73,15 +73,16 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="100">
           <template slot-scope="scope" v-if="!scope.row.sums">
-            <el-button type="text">同步</el-button>
-            <el-button type="text" class="text_success" v-if="scope.row.unicom_stop">开启</el-button>
-            <el-button type="text" class="text_danger" v-else>停用</el-button>
+            <el-button type="text" @click="$refs.syncUniconData.getSyncUnicomData(scope)">同步</el-button>
+            <el-button type="text" class="text_success" v-if="scope.row.unicom_stop" @click="checkCardStop(scope, 0)">启用</el-button>
+            <el-button type="text" class="text_danger" v-else @click="checkCardStop(scope, 1)">停用</el-button>
           </template>
         </el-table-column>
       </el-table>
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
+    <v-sync-unicom-data ref="syncUniconData"></v-sync-unicom-data>
   </div>
 </template>
 <script>
@@ -119,29 +120,69 @@ export default {
           }])
         }
       })
+    },
+    // 卡开启/停用(card / deadstatus / useanomaly)
+    checkCardStop(scope, status) {
+      let prompt = ''
+      if (status === 1) {
+        prompt = '是否停用该流量卡？'
+      } else if (status === 0) {
+        prompt = '是否启用该流量卡？'
+      }
+      this.$confirm(prompt, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        _axios.send({
+          method: 'post',
+          url: _axios.ajaxAd.checkCardStop,
+          data: {
+            card_iccid: scope.row.card_iccid,
+            status
+          },
+          done: ((res) => {
+            setTimeout(() => {
+              this.modifiyData(this.list.data, scope.row, 'unicom_stop', status)
+              this.$message({
+                type: 'success',
+                message: '操作成功!'
+              })
+            }, 150)
+          })
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消操作'
+        })
+      })
     }
   }
 }
 
 </script>
 <style lang="scss">
-.el-pagination {
-  float: right;
-  margin: 25px 40px 0 0;
-}
+.dead_status {
+  .el-pagination {
+    float: right;
+    margin: 25px 40px 0 0;
+  }
 
-.el-table {
-  .table-head {}
+  .el-table {
+    .table-head {}
 
-  td {
-    * {
-      font-size: 14px;
+    td {
+      * {
+        font-size: 14px;
+      }
     }
   }
-}
 
-.el-date-editor .el-range-separator {
-  width: auto;
+  .el-date-editor .el-range-separator {
+    width: auto;
+  }
+
 }
 
 </style>

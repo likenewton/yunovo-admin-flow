@@ -5,9 +5,9 @@
         <el-tab-pane>
           <span slot="label">重置操作</span>
           <el-form class="editor-form" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="126px" size="small">
-            <el-form-item prop="iccid_list">
+            <el-form-item prop="iccids">
               <span slot="label">卡ICCID列表：</span>
-              <el-input type="textarea" v-model="ruleForm.iccid_list" rows="8"></el-input>
+              <el-input type="textarea" v-model="ruleForm.iccids" rows="8"></el-input>
               <div class="annotation">一行代表一个ICCID，多行代表多个ICCID，建议不超过100个ICCID</div>
             </el-form-item>
             <el-form-item>
@@ -83,6 +83,16 @@
         </el-tab-pane>
       </el-tabs>
     </el-card>
+    <el-dialog title="重置信息" :visible.sync="dialogResetVisible">
+      <div slot>
+        <div id="iccid_reset" style="width:100%;overflow: auto">
+          <el-table :data="resetData" border resizable size="mini" :max-height="winHeight / 2.2">
+            <el-table-column prop="iccid" label="卡iccid" min-width="200"></el-table-column>
+            <el-table-column prop="msg" label="执行结果" min-width="200"></el-table-column>
+          </el-table>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -96,12 +106,14 @@ export default {
       ruleForm: {},
       maxTableHeight: Api.UNITS.maxTableHeight(370),
       rules: {
-        iccid_list: [{
+        iccids: [{
           required: true,
           message: '请输入您需要重置的流量卡ICCID号',
           trigger: 'blur'
         }]
-      }
+      },
+      resetData: [],
+      dialogResetVisible: false
     }
   },
   mounted() {
@@ -111,11 +123,7 @@ export default {
     changeTab(para) {
       if (this.tabIndex === '1') {
         // 重置历史查询
-        if (this.list.data.length === 0) {
-          this.getData()
-        } else {
-          this.loadData = false
-        }
+        this.getData()
       }
     },
     getData() {
@@ -129,6 +137,19 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           // 验证通过
+          _axios.send({
+            method: 'post',
+            url: _axios.ajaxAd.addResetGprs,
+            data: this.ruleForm,
+            done: ((res) => {
+              this.dialogResetVisible = true
+              this.resetData = res.data
+              this.resetForm('ruleForm')
+              setTimeout(() => {
+                this.$message.success('操作成功！')
+              }, 150)
+            })
+          })
         } else {
           Api.UNITS.showMsgBox()
           return false;
@@ -164,6 +185,8 @@ export default {
       }
     }
   }
+
+  .iccid_reset {}
 }
 
 </style>

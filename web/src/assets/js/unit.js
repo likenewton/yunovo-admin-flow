@@ -76,7 +76,7 @@ module.exports = {
       }),
       done: (res) => {
         para.vue[para.loadData || 'loadData'] = false
-        list.data = res.data ? res.data.page.records : []
+        list.data = res.data ? (res.data.page.records ? res.data.page.records : []) : []
         list.total = res.data ? res.data.page.total : 0
         para.cb && para.cb(res)
       }

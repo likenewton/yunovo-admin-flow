@@ -75,8 +75,8 @@
         <el-table-column fixed="right" prop='unicom_stop' label="操作" width="125">
           <template slot-scope="scope">
             <el-button type="text" @click="toUnicomLink(scope.row.card_iccid)">套餐</el-button>
-            <el-button type="text" class="text_success" v-if="scope.row.unicom_stop == 1">启用</el-button>
-            <el-button type="text" class="text_danger" v-else>停用</el-button>
+            <el-button type="text" class="text_success" v-if="scope.row.unicom_stop == 1" @click="checkCardStop(scope, 0)">启用</el-button>
+            <el-button type="text" class="text_danger" v-else @click="checkCardStop(scope, 1)">停用</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -101,6 +101,43 @@ export default {
       Api.UNITS.getListData({
         vue: this,
         url: _axios.ajaxAd.getAbnormal
+      })
+    },
+    // 卡开启/停用(card / deadstatus / useanomaly)
+    checkCardStop(scope, status) {
+      let prompt = ''
+      if (status === 1) {
+        prompt = '是否停用该流量卡？'
+      } else if (status === 0) {
+        prompt = '是否启用该流量卡？'
+      }
+      this.$confirm(prompt, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        _axios.send({
+          method: 'post',
+          url: _axios.ajaxAd.checkCardStop,
+          data: {
+            card_iccid: scope.row.card_iccid,
+            status
+          },
+          done: ((res) => {
+            this.modifiyData(this.list.data, scope.row, 'unicom_stop', status)
+            setTimeout(() => {
+              this.$message({
+                type: 'success',
+                message: '操作成功!'
+              })
+            }, 150)
+          })
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消操作'
+        })
       })
     }
   }

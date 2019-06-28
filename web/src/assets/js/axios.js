@@ -76,8 +76,8 @@ class AXIOS {
       // 实名审核
       checkAudit: '/fc/api/realname/audit',
       // 停用/启用
-      checkComboStop: '/fc/api/gprs/pack/stop',
-      checkCardStop: '/fc/api/gprs/card/onoff',
+      checkComboStop: '/fc/api/gprs/pack/stop', // 套餐
+      checkCardStop: '/fc/api/gprs/card/onoff', // 卡
       // 数据同步
       checkSyncUnicomData: '/fc/api/gprs/card/syncUnicomData',
       // 图表
@@ -98,6 +98,7 @@ class AXIOS {
       updateSystemParams: '/fc/api/system/params/update',
       addGprsCombo: '/fc/api/gprs/pack/insert',
       updateGprsCombo: '/fc/api/gprs/pack/update',
+      addResetGprs: '/fc/api/card/reset/gprs', // 卡重置
       // 首页
       getPayCase: '/fc/api/home/payCase', // 数据看板
       getSiminfo: '/fc/api/home/siminfo', // 获取pie-card数据

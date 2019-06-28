@@ -100,7 +100,7 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="145">
           <template slot-scope="scope">
-            <el-button type="text" @click="showDetail(scope)">同步</el-button>
+            <el-button type="text" @click="$refs.syncUniconData.getSyncUnicomData(scope)">同步</el-button>
             <el-button type="text" @click="toUnicomLink(scope.row.card_iccid)">套餐</el-button>
             <el-button type="text" class="text_danger" v-if="scope.row.unicom_stop==0" @click="checkCardStop(scope, 1)">停用</el-button>
             <el-button type="text" class="text_success" v-else @click="checkCardStop(scope, 0)">启用</el-button>
@@ -117,57 +117,21 @@
         </el-pagination>
       </div>
     </el-dialog>
-    <el-dialog :title="'详细信息(' + selectData.card_iccid + ')'" :visible.sync="dialogDetailVisible" @close="closeDialogDetailVisible">
-      <div slot class="clearfix" v-loading="dialogDetailLoadData">
-        <div id="iccid_detail" style="width:100%">
-          <div class="item" v-if="selectData.card_sn">
-            <span class="fbs-left">MSISDN</span>
-            <span class="fbs-right">{{selectData.card_sn}}</span>
-          </div>
-          <div class="item" v-if="selectData.card_imsi">
-            <span class="fbs-left">IMSI</span>
-            <span class="fbs-right">{{selectData.card_imsi}}</span>
-          </div>
-          <div class="item" v-if="selectData.time_paid">
-            <span class="fbs-left">上次充值时间</span>
-            <span class="fbs-right">{{selectData.time_paid}}</span>
-          </div>
-          <div class="item" v-if="selectData.time_last">
-            <span class="fbs-left">设备更新时间</span>
-            <span class="fbs-right">{{selectData.time_last}}</span>
-          </div>
-          <div class="item" v-if="selectData.msg">
-            <span class="fbs-left">联通流量卡状态</span>
-            <span class="fbs-right">{{selectData.msg}}</span>
-          </div>
-          <div class="item" v-if="selectData.consumeDataAll || selectData.consumeDataAll===0">
-            <span class="fbs-left">联通当月使用流量</span>
-            <span class="fbs-right" v-html="formatFlowUnit(selectData.consumeDataAll)"></span>
-          </div>
-          <div class="item" v-if="selectData.consumeDataMon || selectData.consumeDataMon===0">
-            <span class="fbs-left">联通累计使用流量</span>
-            <span class="fbs-right" v-html="formatFlowUnit(selectData.consumeDataMon)"></span>
-          </div>
-        </div>
-      </div>
-    </el-dialog>
+    <v-sync-unicom-data ref="syncUniconData"></v-sync-unicom-data>
   </div>
 </template>
 <script>
 import Api from 'assets/js/api.js'
-import { mapState, mapMutations } from 'vuex'
 const _echart = new Api.ECHARTS()
 
 export default {
   data() {
     return {
       dialogChartLoadData: true,
-      dialogDetailLoadData: true,
       formInline: {
         card_id: Api.UNITS.getQuery('card_id'),
         org_id: Api.UNITS.getQuery('org_id')
       },
-      selectData: {}, // 当前选择的数据
       dialogList: {
         data: [],
         pagesize: Api.STATIC.pageSizes[0],
@@ -175,7 +139,6 @@ export default {
         total: 0,
       },
       dialogChartVisible: false,
-      dialogDetailVisible: false,
       // 图表实例
       myChart: null,
       options: {
@@ -275,33 +238,7 @@ export default {
         }
       })
     },
-    // 展示dialog iccid的详细
-    showDetail(scope) {
-      this.dialogDetailVisible = true
-      this.dialogDetailLoadData = true
-      this.selectData = scope.row
-      _axios.send({
-        method: 'get',
-        url: _axios.ajaxAd.checkSyncUnicomData,
-        params: { card_sn: scope.row.card_sn },
-        done: ((res) => {
-          if (res.data.status === -1) {
-            Vue.prototype.$notify.error({
-              title: '错误',
-              message: res.data.msg || '同步失败'
-            })
-          } else {
-            this.dialogDetailLoadData = false
-            this.selectData = Object.assign({}, scope.row, res.data)
-          }
-        })
-      })
-    },
-    closeDialogDetailVisible() {
-      this.selectData = {},
-        this.dialogDetailVisible = false
-    },
-    // 卡开启/停用
+    // 卡开启/停用(card / deadstatus / useanomaly)
     checkCardStop(scope, status) {
       let prompt = ''
       if (status === 1) {
@@ -322,7 +259,7 @@ export default {
             status
           },
           done: ((res) => {
-            this.getData()
+            this.modifiyData(this.list.data, scope.row, 'unicom_stop', status)
             setTimeout(() => {
               this.$message({
                 type: 'success',
@@ -368,21 +305,6 @@ export default {
     }
   }
 
-  #iccid_detail {
-    .item {
-      height: 34px;
-      line-height: 34px;
-
-      >span {
-        padding: 0 10px;
-        text-align: center;
-      }
-
-      .fbs-left {
-        width: 50%;
-      }
-    }
-  }
 }
 
 </style>

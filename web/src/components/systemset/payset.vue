@@ -3,7 +3,6 @@
     <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-table class="payset_page" ref="listTable" :data="list.data" border resizable size="mini">
         <el-table-column prop="name" label="支付方式" min-width="150" sortable></el-table-column>
-        </el-table-column>
         <el-table-column align="center" min-width="150">
           <template slot-scope="scope">
             <a class="pointer" :href="scope.row.link_url" target="blank">

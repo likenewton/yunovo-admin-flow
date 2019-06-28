@@ -21,6 +21,8 @@ export default {
   },
   methods: {
     ...mapMutations([
+      'SET_ASIDEFLAG',
+      'SET_ASIDECOLLAPSE',
       'SET_DIALOGVISIBLE'
     ]),
     // 操作导航条
@@ -55,6 +57,15 @@ export default {
       this.$refs[formName].resetFields()
       this.formInline = {}
       this.isUpdate && this.getData()
+    },
+    // 本地修改list.data中的值(因数据的修改存在延迟不好直接getData)
+    modifiyData(listData, itemData, modifiyKey, modifiyValue) {
+      let stringifyItemData = JSON.stringify(itemData)
+      listData.forEach((v, i) => {
+        if (JSON.stringify(v) === stringifyItemData) {
+          listData[i][modifiyKey] = modifiyValue
+        }
+      })
     },
     limitNumber: Api.UNITS.limitNumber,
     formatMoney: Api.UNITS.formatMoney,
