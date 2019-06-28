@@ -42,5 +42,7 @@ public interface ICcGprsBatchService extends IService<CcGprsBatch> {
 	 * @return
 	 */
 	CcGprsBatch getGiveInfoByBatchId(Integer batch_id);
+
+	Double getGprsAmountByBatchId(Integer batch_id);
 	
 }

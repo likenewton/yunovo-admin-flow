@@ -4,6 +4,10 @@ import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcResetLog;
+import cn.yunovo.iov.fc.model.result.CardResetForm;
+import cn.yunovo.iov.fc.model.result.CardRestBean;
+
+import java.util.List;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -29,5 +33,7 @@ public interface ICcResetLogService extends IService<CcResetLog> {
 	 */
 	PageData<CcResetLog, Object> getItemsPage(PageForm form, Integer org_id, String card_iccid, String date_start,
 			String date_end, LoginInfo info);
+
+	List<CardRestBean> cardReset(CardResetForm form, LoginInfo info);
 
 }

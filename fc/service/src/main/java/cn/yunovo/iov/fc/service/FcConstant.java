@@ -6,7 +6,7 @@ import cn.yunovo.iov.fc.common.utils.Md5Util;
 public class FcConstant {
 
 	public final static String CACHE_RESOURCE_PREFIX = "GPRS-MEM-RES-";
-	public final static String CACHE_SQL_PREFIX_NEW = "GPRS-MEM-SQL-NEW-";
+	public final static String CACHE_SQL_PREFIX_NEW = "GPRS-MEM-SQL-";
 	public final static String CACHE_SQL_PREFIX = "GPRS-MEM-SQL-";
 	
 	

@@ -43,4 +43,6 @@ public interface ICcGprsValueMapper extends BaseMapper<CcGprsValue> {
 	 * @return
 	 */
 	public CcGprsValue sumBalanceDvalByCardidAndHowMonth(@Param("card_id")Integer card_id, @Param("how_month")Integer how_month);
+	
+	public int updateHowmonthByCardidAndHowMonth(@Param("card_id")Integer card_id, @Param("month")Integer month);
 }

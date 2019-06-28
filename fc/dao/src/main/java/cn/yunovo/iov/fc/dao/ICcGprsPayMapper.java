@@ -121,5 +121,21 @@ public interface ICcGprsPayMapper extends BaseMapper<CcGprsPay> {
 	 */
 	public HashMap<String, Object> getJRActiveData(@Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 	
+	/**
+	 * 
+	 * @param card_id
+	 * @return
+	 */
+	public List<String> listPaysnByCardid(@Param("card_id")Integer card_id);
 	
+	/**
+	 * 
+	 * @param card_id
+	 * @return
+	 */
+	public List<String> listPaysnByCardidAndPaymethodAndIspaid(@Param("card_id")Integer card_id);
+
+	
+	public int updatePayMethodByCardid(@Param("card_id")Integer card_id);
+
 }

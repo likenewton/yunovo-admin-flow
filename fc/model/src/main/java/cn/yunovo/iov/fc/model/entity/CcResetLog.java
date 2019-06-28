@@ -56,13 +56,13 @@ public class CcResetLog implements Serializable {
 	private String batch_time;
 
 	@ApiModelProperty(value = "重置时卡主是否已绑定设备:0否1是")
-	private Short owner_bind;
+	private Integer owner_bind;
 
 	@ApiModelProperty(value = "重置时卡主是否已实名制:0否1是")
-	private Short owner_real;
+	private Integer owner_real;
 
 	@ApiModelProperty(value = "重置时卡主是否已完善资料:0否1是")
-	private Short owner_wszl;
+	private Integer owner_wszl;
 
 	@ApiModelProperty(value = "操作者编号")
 	private Integer user_id;

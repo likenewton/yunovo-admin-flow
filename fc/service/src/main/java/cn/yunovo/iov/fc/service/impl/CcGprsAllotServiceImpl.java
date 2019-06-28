@@ -4,15 +4,22 @@ import cn.yunovo.iov.fc.common.utils.DateUtil;
 import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
 import cn.yunovo.iov.fc.common.utils.math.MathUtils;
 import cn.yunovo.iov.fc.dao.ICcGprsAllotMapper;
+import cn.yunovo.iov.fc.dao.ICcGprsCardMapper;
+import cn.yunovo.iov.fc.dao.ICcGprsPayMapper;
 import cn.yunovo.iov.fc.dao.ICcGprsValueMapper;
+import cn.yunovo.iov.fc.dao.ICcRealnameMapper;
 import cn.yunovo.iov.fc.dao.ICcStatsMonthMapper;
 import cn.yunovo.iov.fc.model.GprsCalculateBean;
 import cn.yunovo.iov.fc.model.entity.CcGprsAllot;
 import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.CcGprsValue;
+import cn.yunovo.iov.fc.model.entity.CcRealname;
+import cn.yunovo.iov.fc.model.result.CardRestBean;
 import cn.yunovo.iov.fc.model.result.UnicomDataBean;
 import cn.yunovo.iov.fc.service.FcConstant;
+import cn.yunovo.iov.fc.service.ICcCardLogService;
 import cn.yunovo.iov.fc.service.ICcGprsAllotService;
+import cn.yunovo.iov.fc.service.ICcGprsBatchService;
 import cn.yunovo.iov.fc.service.ICcGprsCardService;
 import cn.yunovo.iov.fc.service.ICcGprsValueService;
 import cn.yunovo.iov.fc.service.ICcOnoffLogService;
@@ -80,6 +87,20 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 	@Autowired
 	private ICcOnoffLogService iCcOnoffLogService;
 	
+	@Autowired
+	private ICcGprsPayMapper  iCcGprsPayMapper;
+	
+	@Autowired
+	private ICcRealnameMapper iCcRealnameMapper;
+	
+	@Autowired
+	private ICcCardLogService iCcCardLogService;
+	
+	@Autowired
+	private ICcGprsBatchService iCcGprsBatchService;
+	
+	@Autowired
+	private ICcGprsCardMapper iCcGprsCardMapper;
 	
 	@Autowired
 	private M2mService m2mService;
@@ -473,6 +494,127 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 		
 		return iCcGprsCardService.updateCard(card) ? card : null;
 		
+	}
+	
+	@Override
+	public CardRestBean cardReset(CcGprsCard card) {
+		
+		CardRestBean result = new CardRestBean();
+		/**
+		 * 流量卡未激活不能重置
+		 */
+		if(StringUtils.isEmpty(card.getTime_active())) {
+			
+			result.setRet("unactivated");
+			result.setMsg("Card is not activated");
+			return result;
+		}
+		
+		/**
+		 * 判断流量卡是否充值过如果有则暂不能重置需待迁移后方可重置
+		 */
+		List<String>  res = iCcGprsPayMapper.listPaysnByCardidAndPaymethodAndIspaid(card.getCard_id());
+		if(!CollectionUtils.isEmpty(res)) {
+			result.setRet("havepay");
+			result.setMsg("Card have pay pack, need move it.");
+			return result;
+		}
+		
+		res = iCcGprsPayMapper.listPaysnByCardidAndPaymethodAndIspaid(card.getCard_id());
+		
+		//事务定义
+		DefaultTransactionDefinition definition = null;
+		TransactionStatus transactionStatus = null;
+		/**
+		 * 判断流量卡是拥有套餐
+		 */
+		if(!CollectionUtils.isEmpty(res)) {
+			definition = new DefaultTransactionDefinition();
+			definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+			transactionStatus = clwTransactionManager.getTransaction(definition);
+			
+			try {
+				/**
+				 * 将此流量卡下所有套餐过期
+				 */
+				iCcGprsAllotMapper.updateTimeExpireByCardidAndTimeexpire(card.getCard_id());
+				
+				/**
+				 * 将已分配的当前月套餐月份变成负数从而使用不期参流量运算
+				 */
+				Date now = DateUtil.now();
+				Date this_month = (card.getCard_type() >= 2 && DateUtil.getDayOfMonth(now) >= 27) ? DateUtils.addMonths(now, 1) : DateUtil.now();
+				Integer month = NumberUtils.createInteger(DateFormatUtils.format(this_month, "yyyyMM"));
+				iCcGprsValueMapper.updateHowmonthByCardidAndHowMonth(card.getCard_id(), month);
+				
+				/**
+				 * 将此流量卡下所有已付款的充值记录支付方式设置为-1,仅仅是为是前端不显示支付方式为-1的充值记录
+				 */
+				int isSuccess = iCcGprsPayMapper.updatePayMethodByCardid(card.getCard_id());
+				if(isSuccess < 1) {
+					
+					log.warn("[cardReset][Set card pay log of pay method to -1 failed]params={}",JSONObject.toJSONString(card));
+					clwTransactionManager.rollback(transactionStatus);
+					result.setRet("errorpay");
+					result.setMsg("Set card pay log of pay method to -1 failed");
+					return result;
+				}
+				
+				clwTransactionManager.commit(transactionStatus);
+			}catch(Exception e) {
+				log.error("[cardReset][exception]params={},exception={}",JSONObject.toJSONString(card),ExceptionUtils.getStackTrace(e));
+				clwTransactionManager.rollback(transactionStatus);
+				
+				result.setRet("errorpay");
+				result.setMsg("Set card pay log of pay method to -1 failed");
+				return result;
+			}
+			
+		}
+		
+		CcRealname realname = iCcRealnameMapper.getByCardId(card.getCard_id());
+		if(realname != null) {
+			realname.setTime_audit(DateUtil.nowStr());
+			iCcCardLogService.log10Rlname(realname, true);
+			iCcRealnameMapper.updateIccidByCardid(card.getCard_id());
+		}
+		
+		card.setOwner_real(0);
+		
+		iCcCardLogService.log9Reset(card.getCard_id(), card.getUnicom_month(), card.getUnicom_total(), DateUtil.nowStr());
+		
+		/**
+		 * 判断流量卡是否已停卡,如果已停卡需开启
+		 */
+		if(card.getUnicom_stop() == 1) {
+			if(this.cardOnoff(card, 0, 0, "reset")) {
+				card.setUnicom_stop((short)0);
+			}
+		}
+		
+		Double gprs_amount = iCcGprsBatchService.getGprsAmountByBatchId(card.getBatch_id());
+		gprs_amount = gprs_amount == null ? 0 : gprs_amount;
+		card.setCard_openid(null);
+		card.setOwner_bind(0);
+		card.setOwner_wszl(0);
+		card.setUsed_month(0D);
+		card.setMax_unused(gprs_amount);
+		card.setReset_diff(card.getReset_diff() + card.getUnicom_month());
+		card.setUnicom_month(0D);
+		card.setUnicom_unused(gprs_amount);
+		card.setUnicom_ctime(null);
+		card.setTime_active(null);
+		card.setTime_last(null);
+		card.setTime_paid(null);
+		card.setTime_expire(null);
+		
+		jedisPoolUtil.del(FcConstant.cardInfoKey(card.getCard_iccid()));
+		iCcGprsCardService.updateById(card);
+		
+		result.setRet("ok");
+		result.setMsg("Reset Succeed");
+		//iCcGprsCardService.updateby
+		return result;
 	}
 	
 	/**

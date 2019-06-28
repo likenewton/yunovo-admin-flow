@@ -29,5 +29,7 @@ public interface ICcCardLogService extends IService<CcCardLog> {
 	boolean log10Rlname(CcRealname res, boolean unbind);
 
 	boolean log5On6Off(CcOnoffLog res, boolean isSuccess);
+
+	public boolean log9Reset(Integer card_id, Double unicom_month, Double unicom_total, String nowStr);
 	
 }

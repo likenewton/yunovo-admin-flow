@@ -24,4 +24,6 @@ public interface ICcRealnameMapper extends BaseMapper<CcRealname> {
 	public Integer getRlnameTotalByStatus(@Param("cdi_status")Integer cdi_status, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 	
 	public CcRealname getByCardId(@Param("card_id")Integer card_id);
+	
+	public int updateIccidByCardid(@Param("card_id")Integer card_id);
 }

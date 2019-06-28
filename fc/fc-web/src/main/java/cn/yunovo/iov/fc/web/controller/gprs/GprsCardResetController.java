@@ -1,7 +1,10 @@
 package cn.yunovo.iov.fc.web.controller.gprs;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,6 +14,8 @@ import cn.yunovo.iov.fc.common.utils.ResultUtil;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcResetLog;
+import cn.yunovo.iov.fc.model.result.CardResetForm;
+import cn.yunovo.iov.fc.model.result.CardRestBean;
 import cn.yunovo.iov.fc.service.ICcResetLogService;
 import cn.yunovo.iov.fc.web.controller.BaseController;
 import io.swagger.annotations.Api;
@@ -40,4 +45,14 @@ public class GprsCardResetController extends BaseController{
 		PageData<CcResetLog, Object>  data = iCcResetLogService.getItemsPage(form, org_id, card_iccid, date_start, date_end, this.getLoginBaseInfo());
 		return ResultUtil.success(data);
 	}
+	
+	@ApiOperation(value="业务管理-流量卡重置接口")
+	@RequestMapping(path="/rest",method= {RequestMethod.GET, RequestMethod.POST})
+	public Result<List<CardRestBean>> cardReset(@RequestBody CardResetForm form) {
+		
+		List<CardRestBean>  data = iCcResetLogService.cardReset(form, this.getLoginBaseInfo());
+		return ResultUtil.success(data);
+	}
+	
+	
 }

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import cn.yunovo.iov.fc.model.GprsCalculateBean;
 import cn.yunovo.iov.fc.model.entity.CcGprsAllot;
 import cn.yunovo.iov.fc.model.entity.CcGprsCard;
+import cn.yunovo.iov.fc.model.result.CardRestBean;
 import cn.yunovo.iov.fc.model.result.UnicomDataBean;
 
 /**
@@ -35,5 +36,7 @@ public interface ICcGprsAllotService extends IService<CcGprsAllot> {
 	boolean cardOnoff(CcGprsCard card, int onoff, int userid, String username);
 
 	UnicomDataBean syncUnicomData(CcGprsCard card);
+
+	CardRestBean cardReset(CcGprsCard card);
 
 }

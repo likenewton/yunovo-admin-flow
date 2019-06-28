@@ -807,4 +807,17 @@
 		]]>
 	</select>
 
+
+	<select id="listPaysnByCardidAndPaymethodAndIspaid" resultType="java.util.List">
+		SELECT pay_sn FROM cc_gprs_pay WHERE card_id = #{card_id} AND pay_method > 0 AND is_paid = 1
+	</select>
+	
+	<select id="listPaysnByCardid" resultType="java.util.List">
+		SELECT pay_sn FROM cc_gprs_pay WHERE card_id = #{card_id} AND pay_method > 0 AND is_paid = 1
+	</select>
+	
+	<update id="updatePayMethodByCardid" >
+	
+			UPDATE cc_gprs_pay SET pay_method = -1, time_expire = NOW() WHERE card_id = #{card_id}
+	</update>
 </mapper>

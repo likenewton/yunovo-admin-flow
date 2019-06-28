@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
@@ -173,6 +174,32 @@ public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGp
 		}
 		
 		return data;
+	}
+	
+	@Override
+	public Double getGprsAmountByBatchId(Integer batch_id) {
+		
+		if(batch_id == null) {
+			return null;
+		}
+		String sql = "SELECT gprs_amount FROM cc_gprs_batch WHERE batch_id = "+batch_id;
+		
+		String cacheKey = FcConstant.memSqlNewKey(sql);
+		String cache = jedisPoolUtil.get(cacheKey);
+		CcGprsBatch data = null;
+		if(StringUtils.isEmpty(cache)) {
+			
+			data = iCcGprsBatchMapper.getGiveInfoByBatchId(batch_id);
+			if(data == null || data.getGprs_amount() == null) {
+				return null;
+			}else {
+				jedisPoolUtil.setEx(cacheKey, data.getGprs_amount().toString());
+				return data.getGprs_amount();
+			}
+		}else {
+			return NumberUtils.createDouble(cache);
+		}
+		
 	}
 	
 	

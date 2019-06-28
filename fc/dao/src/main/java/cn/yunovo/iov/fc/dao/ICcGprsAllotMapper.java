@@ -28,4 +28,6 @@ public interface ICcGprsAllotMapper extends BaseMapper<CcGprsAllot> {
 	
 	
 	public int addAssignedMonthById(@Param("allot_id")Integer allot_id);
+	
+	public int updateTimeExpireByCardidAndTimeexpire(@Param("card_id")Integer card_id);
 }

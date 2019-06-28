@@ -59,4 +59,9 @@
 	
 		SELECT SUM(balance_dval) AS balance_dval, MAX(time_expire) AS time_expire FROM cc_gprs_value WHERE card_id = #{card_id} AND how_month = #{how_month}
 	</select>
+	
+	<update id="updateHowmonthByCardidAndHowMonth" >
+	
+		UPDATE cc_gprs_value SET how_month = -how_month WHERE card_id = #{card_id} AND how_month = #{month}
+	</update>
 </mapper>

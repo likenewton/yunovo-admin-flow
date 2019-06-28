@@ -28,5 +28,10 @@
 	
 		UPDATE cc_gprs_allot SET assigned_month = assigned_month + 1 WHERE allot_id = #{allot_id}
 	</select>
+	
+	<select id="updateTimeExpireByCardidAndTimeexpire">
+	
+		UPDATE cc_gprs_allot SET time_expire = NOW() WHERE card_id = #{card_id} AND time_expire > NOW()
+	</select>
 
 </mapper>

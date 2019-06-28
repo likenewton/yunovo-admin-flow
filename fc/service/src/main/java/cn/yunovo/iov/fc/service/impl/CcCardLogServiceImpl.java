@@ -52,6 +52,8 @@ public class CcCardLogServiceImpl extends ServiceImpl<ICcCardLogMapper, CcCardLo
 	@Autowired
 	private JedisPoolUtil jedisPoolUtil;
 	
+	private final String INSERT_SQL = "INSERT INTO cc_card_log SET card_id = %s, log_type = %s, log_text = '%s', log_url = '%s', time_added = '%s'";
+	
 	
 	@Override
 	public PageData<CcCardLog, Object> logList(PageForm pageForm, Integer card_id, LoginInfo info) {
@@ -103,7 +105,15 @@ public class CcCardLogServiceImpl extends ServiceImpl<ICcCardLogMapper, CcCardLo
 		}
 		
 		CcCardLog log = build(res.getCard_id(), 10, log_text, log_url, res.getTime_audit());
-		return this.save(log);
+		
+		String sql = String.format("INSERT INTO cc_card_log SET card_id = %s, log_type = %s, log_text = '%s', log_url = '%s', time_added = '%s'", res.getCard_id(), 10,log_text, log_url, res.getTime_added());
+		boolean isOk = jedisPoolUtil.lpush(FcConstant.SQL_QUEUE_CACHEKEY, sql) > 0 ? true : false;
+		if(!isOk) {
+			
+			return this.save(log);
+		}
+		
+		return isOk;
 	}
 	
 	@Override
@@ -146,6 +156,28 @@ public class CcCardLogServiceImpl extends ServiceImpl<ICcCardLogMapper, CcCardLo
 		log.setLog_url(log_url);
 		log.setTime_added(time_added);
 		return log;
+	}
+
+	@Override
+	/**
+	 * 流量卡重置日志
+	 */
+	public boolean log9Reset(Integer card_id, Double unicom_month, Double unicom_total, String nowStr) {
+
+		String log_url = "";
+		String unicom_month_str = iCcGprsCardService.gprsFormat(unicom_month);
+		String unicom_total_str = iCcGprsCardService.gprsFormat(unicom_total);
+		String log_text = "流量卡重置时月用量"+unicom_month_str+" 总用量"+unicom_total_str;
+		
+		String sql = String.format(INSERT_SQL, card_id, 9,log_text, log_url, nowStr);
+		
+		boolean isOk = jedisPoolUtil.lpush(FcConstant.SQL_QUEUE_CACHEKEY, sql) > 0 ? true : false;
+		if(!isOk) {
+			CcCardLog log = build(card_id, 9, log_text, log_url, nowStr);
+			return this.save(log);
+		}
+		
+		return isOk;
 	}
 
 }
