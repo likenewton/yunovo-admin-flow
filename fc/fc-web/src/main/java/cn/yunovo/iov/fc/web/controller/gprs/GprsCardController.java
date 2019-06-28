@@ -2,6 +2,7 @@ package cn.yunovo.iov.fc.web.controller.gprs;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -191,7 +192,7 @@ public class GprsCardController extends BaseController{
 	
 	@ApiOperation(value = "业务管理-流量卡管理(开卡/停卡)")
 	@RequestMapping(path="/onoff",method= {RequestMethod.POST})
-	public Result<UnicomDataBean> onoff(CardOnoffForm form) {
+	public Result<UnicomDataBean> onoff(@RequestBody CardOnoffForm form) {
 		
 		boolean isSuccess = iCcGprsCardService.onoff(form, this.getLoginBaseInfo());
 		if(isSuccess) {

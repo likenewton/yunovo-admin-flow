@@ -142,16 +142,14 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 			Integer org_id, Integer max_unused, Integer unicom_diff, LoginInfo info) {
 
 		// 组装分页参数
-		Page<CcGprsCard> page = new Page<>();
-		page.setCurrent(pageForm.getCurrent());
-		page.setSize(pageForm.getSize());
-
+		Page<CcGprsCard> page = pageForm.build(CcGprsCard.class, "card_id",null);
+/*
 		if (ArrayUtils.isEmpty(pageForm.getAscs()) && ArrayUtils.isEmpty(pageForm.getDescs())) {
 			page.setAsc("card_id");
 		} else {
 			page.setAsc(pageForm.getAscs());
 			page.setDesc(pageForm.getDescs());
-		}
+		}*/
 		PageData<CcGprsCard, Object> p = new PageData<>();
 		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
 		if (StringUtils.isEmpty(orgpos)) {
