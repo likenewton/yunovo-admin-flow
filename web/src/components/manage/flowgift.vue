@@ -72,17 +72,17 @@
                 <span class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="gprs_amount" label="套餐流量" width="95" sortable="custom">
+            <el-table-column prop="gprs_amount" label="套餐流量" width="100" sortable="custom" align="right">
               <template slot-scope="scope">
                 <div v-html="formatComboFlow(scope.row.gprs_amount)"></div>
               </template>
             </el-table-column>
-            <el-table-column prop="allot_month" label="分配月数" width="95" sortable="custom">
+            <el-table-column prop="allot_month" label="分配月数" width="90" sortable="custom" align="right">
               <template slot-scope="scope">
-                <div>{{getLiveMonthAlias(scope.row.allot_month)}}</div>
+                <div>{{scope.row.allot_month}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="allot_value" label="月均流量" width="95" sortable="custom">
+            <el-table-column prop="allot_value" label="月均流量" width="100" sortable="custom" align="right">
               <template slot-scope="scope">
                 <div v-html="formatComboFlow(scope.row.allot_value)"></div>
               </template>

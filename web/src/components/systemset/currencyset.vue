@@ -12,7 +12,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="code" label="代码" min-width="140" sortable="custom"></el-table-column>
-        <el-table-column prop="value" label="汇率" min-width="140" sortable="custom"></el-table-column>
+        <el-table-column prop="value" label="汇率" min-width="140" sortable="custom" align="right"></el-table-column>
         <el-table-column prop="date_modified" label="最近更新" min-width="140" sortable="custom"></el-table-column>
         <el-table-column label="管理" width="100">
           <template slot-scope="scope">

@@ -37,27 +37,27 @@
             <span v-else class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="card_id" label="卡商名称" min-width="120" sortable="custom">
+        <el-table-column prop="card_id" label="卡商名称" min-width="140" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.card_type_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="org_id" label="所属机构" min-width="120" sortable="custom">
+        <el-table-column prop="org_id" label="所属机构" min-width="140" sortable="custom">
           <template slot-scope="scope" prop="org_name">
             <span class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="used_month" label="当月用量" width="95" sortable="custom">
+        <el-table-column prop="used_month" label="当月用量" width="100" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.used_month)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="used_total" label="累计用量" width="95" sortable="custom">
+        <el-table-column prop="used_total" label="累计用量" width="100" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.used_total)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="max_unused" label="剩余用量" width="95" sortable="custom">
+        <el-table-column prop="max_unused" label="剩余用量" width="100" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.max_unused)"></div>
           </template>
@@ -71,7 +71,7 @@
             <div v-if="!scope.row.sums" v-html="calcLeftTime(scope.row.time_expire)"></div>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" width="98">
+        <el-table-column fixed="right" label="操作" width="100">
           <template slot-scope="scope" v-if="!scope.row.sums">
             <el-button type="text">同步</el-button>
             <el-button type="text" class="text_success" v-if="scope.row.unicom_stop">开启</el-button>

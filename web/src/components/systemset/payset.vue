@@ -1,7 +1,7 @@
 <template>
   <div class="pay_set">
     <el-card class="clearfix" shadow="never" v-loading="loadData">
-      <el-table class="payset_page" ref="listTable" @selection-change="handleSelectionChange" :data="list.data" border resizable size="mini">
+      <el-table class="payset_page" ref="listTable" :data="list.data" border resizable size="mini">
         <el-table-column prop="name" label="支付方式" min-width="150" sortable></el-table-column>
         </el-table-column>
         <el-table-column align="center" min-width="150">
@@ -23,7 +23,6 @@
   </div>
 </template>
 <script>
-
 export default {
   data() {
     return {

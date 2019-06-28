@@ -44,6 +44,7 @@ export default {
       this.formInline = {}
       this.sort = {}
       this.$refs.listTable.clearSort()
+      this.$refs.listTable.clearSelection()
       this.getData()
     },
     searchData() {

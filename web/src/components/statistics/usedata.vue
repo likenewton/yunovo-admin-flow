@@ -22,41 +22,41 @@
         <el-button size="small" type="warning">导出</el-button>
       </el-button-group>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
-        <el-table-column prop="org_id" label="机构名称" min-width="170" sortable="custom">
+        <el-table-column prop="org_id" label="机构名称" min-width="200" sortable="custom">
           <template slot-scope="scope">
             <span v-if="scope.row.sums">{{scope.row.org_name}}</span>
             <span v-else class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="card_count" label="售卡数量" min-width="95" sortable="custom"></el-table-column>
-        <el-table-column prop="nonactivated" label="未激活数" min-width="95" sortable="custom"></el-table-column>
-        <el-table-column label="未激活率" min-width="80">
+        <el-table-column prop="card_count" label="售卡数量" min-width="100" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="nonactivated" label="未激活数" min-width="100" sortable="custom" align="right"></el-table-column>
+        <el-table-column label="未激活率" min-width="100" align="right">
           <template slot-scope="scope">
             <span>{{(scope.row.nonactivated/scope.row.card_count*100).toFixed(3)}}%</span>
           </template>
         </el-table-column>
-        <el-table-column prop="activated" label="已激活数" min-width="95" sortable="custom"></el-table-column>
-        <el-table-column label="已激活率" min-width="80">
+        <el-table-column prop="activated" label="已激活数" min-width="100" sortable="custom" align="right"></el-table-column>
+        <el-table-column label="已激活率" min-width="100" align="right">
           <template slot-scope="scope">
             <span>{{(scope.row.activated/scope.row.card_count*100).toFixed(3)}}%</span>
           </template>
         </el-table-column>
-        <el-table-column prop="pay_total" label="分配总流量" min-width="95">
+        <el-table-column prop="pay_total" label="分配总流量" min-width="100" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.used_count + scope.row.unused_count)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="used_count" label="使用流量" min-width="95" sortable="custom">
+        <el-table-column prop="used_count" label="使用流量" min-width="100" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.used_count)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="unused_count" label="剩余流量" min-width="95" sortable="custom">
+        <el-table-column prop="unused_count" label="剩余流量" min-width="100" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.unused_count)"></div>
           </template>
         </el-table-column>
-        <el-table-column label="使用流量率" min-width="100">
+        <el-table-column label="使用流量率" min-width="100" align="right">
           <template slot-scope="scope">
             <span>{{(scope.row.used_count/(scope.row.used_count + scope.row.unused_count)*100).toFixed(3)}}%</span>
           </template>

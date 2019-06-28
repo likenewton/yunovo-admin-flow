@@ -26,31 +26,31 @@
         <el-button size="small" type="warning">导出</el-button>
       </el-button-group>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
-        <el-table-column fixed="left" prop="card_iccid" label="卡ICCID" width="200" sortable="custom">
+        <el-table-column fixed="left" prop="card_iccid" label="卡ICCID" width="180" sortable="custom">
           <template slot-scope="scope">
             <span class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="card_id" label="卡商名称" min-width="140" sortable="custom">
+        <el-table-column prop="card_id" label="卡商名称" min-width="120" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.card_type_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="org_id" label="所属机构" min-width="140" sortable="custom">
+        <el-table-column prop="org_id" label="所属机构" min-width="180" sortable="custom">
           <template slot-scope="scope">
             <span class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="pay_count" label="充值次数" min-width="95" sortable="custom"></el-table-column>
-        <el-table-column prop="stop_num" label="停卡次数" min-width="95" sortable="custom"></el-table-column>
-        <el-table-column prop="stop_value" label="上次停卡流量" min-width="105">
+        <el-table-column prop="pay_count" label="充值次数" width="90" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="stop_num" label="停卡次数" width="90" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="stop_value" label="上次停卡流量" width="110" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.stop_value)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="time_paid" label="上次充值时间" min-width="155" sortable="custom"></el-table-column>
-        <el-table-column prop="time_stop" label="上次停卡时间" min-width="155" sortable="custom"></el-table-column>
-        <el-table-column prop="time_last" label="最后更新时间" min-width="155" sortable="custom"></el-table-column>
+        <el-table-column prop="time_paid" label="上次充值时间" width="155" sortable="custom"></el-table-column>
+        <el-table-column prop="time_stop" label="上次停卡时间" width="155" sortable="custom"></el-table-column>
+        <el-table-column prop="time_last" label="最后更新时间" width="155" sortable="custom"></el-table-column>
         <el-table-column fixed="right" label="操作" width="110">
           <template slot-scope="scope">
             <el-button type="text" @click="showStopCardDetail(scope.row)">详情</el-button>

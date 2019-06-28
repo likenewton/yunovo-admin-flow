@@ -24,35 +24,35 @@
     </el-card>
     <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border resizable size="mini">
-        <el-table-column prop="gprs_amount" label="套餐流量" min-width="110" sortable="custom">
+        <el-table-column prop="gprs_amount" label="套餐流量" min-width="110" sortable="custom" align="right">
           <template slot-scope="scope">
             <span v-if="scope.row.sums">总计</span>
             <div v-else v-html="formatComboFlow(scope.row.gprs_amount)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="gprs_price" label="套餐金额" min-width="110" sortable="custom">
+        <el-table-column prop="gprs_price" label="套餐金额" min-width="110" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-if="!scope.row.sums">￥{{scope.row.gprs_price|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="paid_count" label="已付次数" min-width="100" sortable="custom"></el-table-column>
-        <el-table-column prop="paid_money" label="已付金额" min-width="110" sortable="custom">
+        <el-table-column prop="paid_count" label="已付次数" min-width="110" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="paid_money" label="已付金额" min-width="110" sortable="custom" align="right">
           <template slot-scope="scope">
             <div>￥{{scope.row.paid_money|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="已付款率" min-width="100" sortable="custom">
+        <el-table-column label="已付款率" min-width="100" sortable="custom" align="right">
           <template slot-scope="scope">
             <span>{{(scope.row.paid_count/scope.row.pay_count*100).toFixed(3)}}%</span>
           </template>
         </el-table-column>
-        <el-table-column prop="nopaid_count" label="未付次数" min-width="100" sortable="custom"></el-table-column>
-        <el-table-column prop="nopaid_money" label="未付金额" min-width="110" sortable="custom">
+        <el-table-column prop="nopaid_count" label="未付次数" min-width="110" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="nopaid_money" label="未付金额" min-width="110" sortable="custom" align="right">
           <template slot-scope="scope">
             <div>￥{{scope.row.nopaid_money|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="未付款率" min-width="100">
+        <el-table-column label="未付款率" min-width="110" align="right">
           <template slot-scope="scope">
             <span>{{(scope.row.nopaid_count/scope.row.pay_count*100).toFixed(3)}}%</span>
           </template>

@@ -62,8 +62,8 @@
         <el-button size="small" type="warning">导出快照</el-button>
       </el-button-group>
       <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border resizable size="mini">
-        <el-table-column prop="pay_sn" label="订单编号" width="145" sortable="custom"></el-table-column>
-        <el-table-column prop="card_iccid" label="ICCID卡" width="182" sortable="custom">
+        <el-table-column prop="pay_sn" label="订单编号" width="137" sortable="custom"></el-table-column>
+        <el-table-column prop="card_iccid" label="ICCID卡" width="180" sortable="custom">
           <template slot-scope="scope">
             <span v-if="scope.row.sums">{{scope.row.card_iccid}}</span>
             <span v-else class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
@@ -85,18 +85,18 @@
             <span>{{scope.row.pay_method_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="transfer_id" label="支付流水号" min-width="140" sortable="custom"></el-table-column>
-        <el-table-column prop="gprs_amount" label="套餐流量" width="95" sortable="custom">
+        <el-table-column prop="transfer_id" label="支付流水号" width="135" sortable="custom"></el-table-column>
+        <el-table-column prop="gprs_amount" label="套餐流量" width="95" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.gprs_amount)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="gprs_price" label="套餐价格" width="120" sortable="custom">
+        <el-table-column prop="gprs_price" label="套餐价格" width="125" sortable="custom" align="right">
           <template slot-scope="scope">
             <div>￥{{scope.row.gprs_price|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column porp="rebate_money" label="返利金额" width="108" sortable="custom">
+        <el-table-column porp="rebate_money" label="返利金额" width="106" sortable="custom" align="right">
           <template slot-scope="scope">
             <div>￥{{scope.row.rebate_money|formatMoney}}</div>
           </template>

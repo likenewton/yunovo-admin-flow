@@ -24,18 +24,18 @@
             <span>{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="gprs_amount" label="套餐流量" min-width="90" sortable="custom">
+        <el-table-column prop="gprs_amount" label="套餐流量" min-width="100" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatComboFlow(scope.row.gprs_amount)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="gprs_price" label="套餐价格" min-width="90" sortable="custom">
+        <el-table-column prop="gprs_price" label="套餐价格" min-width="90" sortable="custom" align="right">
           <template slot-scope="scope">
             <span>￥{{formatMoney(scope.row.gprs_price)}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="allot_month" label="分配月数" min-width="90" sortable="custom"></el-table-column>
-        <el-table-column prop="allot_value" label="月均流量" min-width="90" sortable="custom">
+        <el-table-column prop="allot_month" label="分配月数" min-width="90" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="allot_value" label="月均流量" min-width="100" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatComboFlow(scope.row.allot_value)"></div>
           </template>
@@ -46,7 +46,7 @@
             <span v-else>不清零</span>
           </template>
         </el-table-column>
-        <el-table-column prop="live_month" label="有效周期" min-width="110" sortable="custom">
+        <el-table-column prop="live_month" label="有效周期" min-width="120" sortable="custom">
           <template slot-scope="scope">
             <div>{{getLiveMonthAlias(scope.row.live_month)}}</div>
           </template>
@@ -59,7 +59,7 @@
             <div style="font-size: 12px; line-height: 16px">{{scope.row.pack_memo}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="pack_rebate" label="返利金额" min-width="95" sortable="custom">
+        <el-table-column prop="pack_rebate" label="返利金额" min-width="95" sortable="custom" align="right">
           <template slot-scope="scope">
             <span>￥{{formatMoney(scope.row.pack_rebate)}}</span>
           </template>

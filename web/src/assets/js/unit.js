@@ -201,7 +201,7 @@ module.exports = {
       } else if (val == '99999999') {
         htmlStr = '<span style="font-weight:bold" class="text_danger">无限制</span>'
       } else {
-        htmlStr = this.formatFlowUnit(val, 0)
+        htmlStr = this.formatFlowUnit(val, 3)
       }
     } else {
       if (val == '0.01') {
@@ -211,7 +211,7 @@ module.exports = {
       } else if (val == '99999999') {
         htmlStr = '无限制'
       } else {
-        htmlStr = this.formatFlowUnit(val, 0, false)
+        htmlStr = this.formatFlowUnit(val, 3, false)
       }
     }
     return htmlStr

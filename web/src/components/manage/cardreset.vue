@@ -47,12 +47,12 @@
                 <span>{{scope.row.org_name}}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="card_used" label="已用流量" min-width="95" sortable="custom">
+            <el-table-column prop="card_used" label="已用流量" min-width="95" sortable="custom" align="right">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.card_used)"></div>
               </template>
             </el-table-column>
-            <el-table-column prop="card_unused" label="剩余流量" min-width="95" sortable="custom">
+            <el-table-column prop="card_unused" label="剩余流量" min-width="95" sortable="custom" align="right">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.card_unused)"></div>
               </template>

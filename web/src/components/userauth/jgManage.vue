@@ -26,12 +26,12 @@
           </template>
         </el-table-column>
         <el-table-column prop="partner_id" label="合作编号" min-width="140" sortable="custom"></el-table-column>
-        <el-table-column prop="partner_key" label="合作秘钥" min-width="200" sortable="custom"></el-table-column>
+        <el-table-column prop="partner_key" label="合作秘钥" width="150" sortable="custom"></el-table-column>
         <el-table-column prop="notify_url" label="异步通知地址" min-width="215" sortable="custom"></el-table-column>
-        <el-table-column prop="user_total" label="可开账户数量" width="113" sortable="custom"></el-table-column>
+        <el-table-column prop="user_total" label="可开账户数量" width="110" sortable="custom" align="right"></el-table-column>
         <el-table-column prop="email" label="负责人邮箱" min-width="105" sortable="custom"></el-table-column>
         <el-table-column prop="tel" label="负责人手机" min-width="108" sortable="custom"></el-table-column>
-        <el-table-column prop="rebate_value" label="返利比率" width="87" sortable="custom"></el-table-column>
+        <el-table-column prop="rebate_value" label="返利比率" width="90" sortable="custom" align="right"></el-table-column>
         <el-table-column prop="memo" label="机构描述" min-width="160" sortable="custom"></el-table-column>
         <el-table-column prop="user_id" label="创建者" min-width="80" sortable="custom">
           <template slot-scope="scope">
@@ -77,15 +77,6 @@ export default {
     // 处理列表多选
     handleSelectionChange(selectData) {
       this.selectData = selectData
-    },
-    // 重置列表
-    resetData() {
-      this.list.currentPage = 1 // 0、重置列表，当前页要重置到 1
-      this.formInline = {} // 1、重置查询表单
-      this.sort = {} // 2、重置排序
-      this.$refs.listTable.clearSort() // 3、清空排序样式
-      this.$refs.listTable.clearSelection() // 4、清空选中样式
-      this.getData()
     },
     // 获取列表数据
     getData() {

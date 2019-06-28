@@ -24,39 +24,39 @@
             <span class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="card_total" label="售卡总数" min-width="87" sortable="custom"></el-table-column>
-        <el-table-column prop="pay_total" label="累充成数" min-width="87" sortable="custom"></el-table-column>
-        <el-table-column prop="pay_count" label="日充次数" min-width="87" sortable="custom"></el-table-column>
-        <el-table-column prop="pay_failed" label="日充败数" min-width="87" sortable="custom"></el-table-column>
-        <el-table-column prop="pay_succeed" label="日充成数" min-width="87" sortable="custom"></el-table-column>
-        <el-table-column label="使用总数" min-width="73">
+        <el-table-column prop="card_total" label="售卡总数" min-width="87" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="pay_total" label="累充成数" min-width="87" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="pay_count" label="日充次数" min-width="87" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="pay_failed" label="日充败数" min-width="87" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="pay_succeed" label="日充成数" min-width="87" sortable="custom" align="right"></el-table-column>
+        <el-table-column label="使用总数" min-width="73" align="right">
           <template slot-scope="scope">
             <span>{{scope.row.online_api + scope.row.online_other}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="online_api" label="正常使用" min-width="87" sortable="custom"></el-table-column>
-        <el-table-column prop="online_other" label="异常使用" min-width="87" sortable="custom"></el-table-column>
-        <el-table-column prop="active_total" label="累计激活" min-width="87" sortable="custom"></el-table-column>
-        <el-table-column prop="active_count" label="激活总数" min-width="87" sortable="custom"></el-table-column>
-        <el-table-column label="非设备激活" min-width="82">
+        <el-table-column prop="online_api" label="正常使用" min-width="87" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="online_other" label="异常使用" min-width="87" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="active_total" label="累计激活" min-width="87" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="active_count" label="激活总数" min-width="87" sortable="custom" align="right"></el-table-column>
+        <el-table-column label="非设备激活" min-width="82" align="right">
           <template slot-scope="scope">
             <span>{{scope.row.active_count - scope.row.active_device}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="active_device" label="设备端激活" min-width="100" sortable="custom"></el-table-column>
-        <el-table-column prop="stop_total" label="累计停卡" min-width="87" sortable="custom"></el-table-column>
-        <el-table-column prop="stop_count" label="停卡数量" min-width="87" sortable="custom"></el-table-column>
-        <el-table-column prop="used_amount" label="消耗流量" min-width="95" sortable="custom">
+        <el-table-column prop="active_device" label="设备端激活" min-width="100" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="stop_total" label="累计停卡" min-width="87" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="stop_count" label="停卡数量" min-width="87" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="used_amount" label="消耗流量" min-width="95" sortable="custom" align="right">
           <template slot-scope="scope">
             <span v-html="formatFlowUnit(scope.row.used_amount)"></span>
           </template>
         </el-table-column>
-        <el-table-column prop="pay_succeed_money" label="已付金额" min-width="100" sortable="custom">
+        <el-table-column prop="pay_succeed_money" label="已付金额" min-width="100" sortable="custom" align="right">
           <template slot-scope="scope">
             <span>￥{{scope.row.pay_succeed_money|formatMoney}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="rebate_money" label="返利金额" min-width="87" sortable="custom">
+        <el-table-column prop="rebate_money" label="返利金额" min-width="87" sortable="custom" align="right">
           <template slot-scope="scope">
             <span>￥{{scope.row.rebate_money|formatMoney}}</span>
           </template>

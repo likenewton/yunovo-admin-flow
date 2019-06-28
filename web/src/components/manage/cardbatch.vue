@@ -32,17 +32,17 @@
             <span>{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="gprs_amount" label="套餐流量" width="105" sortable="custom">
+        <el-table-column prop="gprs_amount" label="套餐流量" width="105" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatComboFlow(scope.row.gprs_amount)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="live_month" label="有效周期" width="105" sortable="custom">
+        <el-table-column prop="live_month" label="有效周期" width="120" sortable="custom">
           <template slot-scope="scope">
             <div>{{getLiveMonthAlias(scope.row.live_month)}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="card_amount" label="入卡数量" width="105" sortable="custom"></el-table-column>
+        <el-table-column prop="card_amount" label="入卡数量" width="105" sortable="custom" align="right"></el-table-column>
         <el-table-column prop="batch_shipper" label="出货人名" width="105" sortable="custom"></el-table-column>
         <el-table-column label="销往城市" width="140">
           <template slot-scope="scope">

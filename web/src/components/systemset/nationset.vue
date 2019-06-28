@@ -56,6 +56,10 @@ export default {
     this.getData()
   },
   methods: {
+    // 处理列表选择
+    handleSelectionChange(data) {
+      this.selectData = data
+    },
     editor(scope) {
       this.$router.push({
         name: 'createnation',

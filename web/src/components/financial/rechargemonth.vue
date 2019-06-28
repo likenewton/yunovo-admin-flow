@@ -26,25 +26,25 @@
             <span v-else class="btn-link" @click="choiceOrgName(scope)">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="mdate" label="月份" min-width="100" sortable="custom"></el-table-column>
-        <el-table-column prop="paid_count" label="已付款次数" min-width="100" sortable="custom"></el-table-column>
-        <el-table-column prop="nopaid_count" label="未付款次数" min-width="100" sortable="custom"></el-table-column>
-        <el-table-column prop="gprs_amount" label="分配总流量" min-width="110" sortable="custom">
+        <el-table-column prop="mdate" label="月份" min-width="130" sortable="custom"></el-table-column>
+        <el-table-column prop="paid_count" label="已付款次数" min-width="130" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="nopaid_count" label="未付款次数" min-width="130" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="gprs_amount" label="分配总流量" min-width="130" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.gprs_amount)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="paid_money" label="充值总金额" min-width="130" sortable="custom">
+        <el-table-column prop="paid_money" label="充值总金额" min-width="130" sortable="custom" align="right">
           <template slot-scope="scope">
             <div>￥{{scope.row.paid_money|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="rebate_money" label="返利总金额" min-width="130" sortable="custom">
+        <el-table-column prop="rebate_money" label="返利总金额" min-width="130" sortable="custom" align="right">
           <template slot-scope="scope">
             <div>￥{{scope.row.rebate_money|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="nopaid_money" label="未付款金额" min-width="130" sortable="custom">
+        <el-table-column prop="nopaid_money" label="未付款金额" min-width="130" sortable="custom" align="right">
           <template slot-scope="scope">
             <div>￥{{scope.row.nopaid_money|formatMoney}}</div>
           </template>

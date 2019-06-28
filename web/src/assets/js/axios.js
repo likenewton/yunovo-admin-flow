@@ -77,6 +77,9 @@ class AXIOS {
       checkAudit: '/fc/api/realname/audit',
       // 停用/启用
       checkComboStop: '/fc/api/gprs/pack/stop',
+      checkCardStop: '/fc/api/gprs/card/onoff',
+      // 数据同步
+      checkSyncUnicomData: '/fc/api/gprs/card/syncUnicomData',
       // 图表
       getPayPie: '/fc/api/gprs/report/paylog/chart',
       getCardBar: '/fc/api/gprs/card/cardTotalByOrgidGroup',

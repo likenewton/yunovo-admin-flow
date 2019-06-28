@@ -16,23 +16,23 @@
     <el-card class="clearfix" shadow="never" v-loading="loadData">
       <h3 class="page-title">{{orgName}}--机构充值明细</h3>
       <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border resizable size="mini">
-        <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" min-width="200" sortable="custom">
+        <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" width="180" sortable="custom">
           <template slot-scope="scope">
             <span class="btn-link" @click="$router.push({name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="pay_count" label="充值总次数" min-width="140" sortable="custom"></el-table-column>
-        <el-table-column prop="gprs_amount" label="分配总流量" min-width="140" sortable="custom">
+        <el-table-column prop="pay_count" label="充值总次数" min-width="140" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="gprs_amount" label="分配总流量" min-width="140" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.gprs_amount)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="money_count" label="充值总金额" min-width="140" sortable="custom">
+        <el-table-column prop="money_count" label="充值总金额" min-width="140" sortable="custom" align="right">
           <template slot-scope="scope">
             <div>￥{{scope.row.money_count|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="money_rebate" label="返利总金额" min-width="140" sortable="custom">
+        <el-table-column prop="money_rebate" label="返利总金额" min-width="140" sortable="custom" align="right">
           <template slot-scope="scope">
             <div>￥{{scope.row.money_rebate|formatMoney}}</div>
           </template>

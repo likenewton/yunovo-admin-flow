@@ -36,12 +36,12 @@
         <el-button size="small" type="warning">导出</el-button>
       </el-button-group>
       <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border resizable size="mini">
-        <el-table-column fixed="left" prop="card_iccid" label="卡ICCID" width="182">
+        <el-table-column fixed="left" prop="card_iccid" label="卡ICCID" width="180">
           <template slot-scope="scope">
             <span class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="card_id" label="卡商名称" min-width="150" sortable="custom">
+        <el-table-column prop="card_id" label="卡商名称" min-width="120" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.card_type_name}}</span>
           </template>
@@ -51,28 +51,28 @@
             <span class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="unicom_diff" label="日差异流量" min-width="105" sortable="custom">
+        <el-table-column prop="unicom_diff" label="日差异流量" width="125" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.unicom_diff)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="max_unused" label="剩余用量" min-width="95" sortable="custom">
+        <el-table-column prop="max_unused" label="剩余用量" width="125" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.max_unused)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="used_total" label="平台使用总流量" min-width="130" sortable="custom">
+        <el-table-column prop="used_total" label="平台使用总流量" width="125" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.used_total)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="unicom_total" label="联通使用总流量" min-width="130" sortable="custom">
+        <el-table-column prop="unicom_total" label="联通使用总流量" width="125" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.unicom_total)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="time_last" label="设备更新时间" min-width="155" sortable="custom"></el-table-column>
-        <el-table-column fixed="right" prop='unicom_stop' label="操作" width="95">
+        <el-table-column prop="time_last" label="设备更新时间" width="155" sortable="custom"></el-table-column>
+        <el-table-column fixed="right" prop='unicom_stop' label="操作" width="125">
           <template slot-scope="scope">
             <el-button type="text" @click="toUnicomLink(scope.row.card_iccid)">套餐</el-button>
             <el-button type="text" class="text_success" v-if="scope.row.unicom_stop == 1">启用</el-button>

@@ -25,31 +25,31 @@
             <span class="btn-link" @click="$router.push({ name: 'orgList', query: { stats_date: scope.row.stats_date } })">{{scope.row.stats_date}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="card_total" label="售卡总数" width="73"></el-table-column>
-        <el-table-column prop="pay_total" label="累冲成数" width="73"></el-table-column>
-        <el-table-column prop="pay_count" label="日冲次数" width="90" sortable="custom"></el-table-column>
-        <el-table-column prop="pay_failed" label="日冲败数" width="90" sortable="custom"></el-table-column>
-        <el-table-column prop="pay_succeed" label="日冲成数" width="90" sortable="custom"></el-table-column>
-        <el-table-column prop="online_count" label="使用总量" width="73"></el-table-column>
-        <el-table-column prop="online_api" label="正常使用" width="90" sortable="custom"></el-table-column>
-        <el-table-column prop="online_other" label="异常使用" width="90" sortable="custom"></el-table-column>
-        <el-table-column prop="active_total" label="累计激活" width="73"></el-table-column>
-        <el-table-column prop="active_count" label="激活总数" width="90" sortable="custom"></el-table-column>
-        <el-table-column prop="active_unicom" label="非设备激活" width="102" sortable="custom"></el-table-column>
-        <el-table-column prop="active_device" label="设备端激活" width="102" sortable="custom"></el-table-column>
-        <el-table-column prop="stop_total" label="累计停卡" width="90" sortable="custom"></el-table-column>
-        <el-table-column prop="stop_count" label="停卡数量" width="90" sortable="custom"></el-table-column>
-        <el-table-column prop="used_amount" label="消耗流量" width="90" sortable="custom">
+        <el-table-column prop="card_total" label="售卡总数" width="73" align="right"></el-table-column>
+        <el-table-column prop="pay_total" label="累冲成数" width="73" align="right"></el-table-column>
+        <el-table-column prop="pay_count" label="日冲次数" width="90" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="pay_failed" label="日冲败数" width="90" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="pay_succeed" label="日冲成数" width="90" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="online_count" label="使用总量" width="73" align="right"></el-table-column>
+        <el-table-column prop="online_api" label="正常使用" width="90" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="online_other" label="异常使用" width="90" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="active_total" label="累计激活" width="73" align="right"></el-table-column>
+        <el-table-column prop="active_count" label="激活总数" width="90" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="active_unicom" label="非设备激活" width="102" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="active_device" label="设备端激活" width="102" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="stop_total" label="累计停卡" width="90" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="stop_count" label="停卡数量" width="90" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="used_amount" label="消耗流量" width="90" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.used_amount)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="pay_succeed_money" label="已付金额" min-width="106" sortable="custom">
+        <el-table-column prop="pay_succeed_money" label="已付金额" min-width="106" sortable="custom" align="right">
           <template slot-scope="scope">
             <div>￥{{scope.row.pay_succeed_money|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="rebate_money" label="返利金额" min-width="106" sortable="custom">
+        <el-table-column prop="rebate_money" label="返利金额" min-width="106" sortable="custom" align="right">
           <template slot-scope="scope">
             <div>￥{{scope.row.rebate_money|formatMoney}}</div>
           </template>

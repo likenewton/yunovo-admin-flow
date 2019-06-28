@@ -25,23 +25,23 @@
             <span v-else class="btn-link" @click="$router.push({name: 'jgrecharge', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="pay_count" label="充值次数" min-width="110" sortable="custom"></el-table-column>
-        <el-table-column prop="gprs_amount" label="分配总流量" min-width="110" sortable="custom">
+        <el-table-column prop="pay_count" label="充值次数" min-width="110" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="gprs_amount" label="分配总流量" min-width="110" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.gprs_amount)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="money_count" label="充值总金额" min-width="110" sortable="custom">
+        <el-table-column prop="money_count" label="充值总金额" min-width="110" sortable="custom" align="right">
           <template slot-scope="scope">
             <div>￥{{scope.row.money_count|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="rebate_money" label="返利总金额" min-width="110" sortable="custom">
+        <el-table-column prop="rebate_money" label="返利总金额" min-width="110" sortable="custom" align="right">
           <template slot-scope="scope">
             <div>￥{{scope.row.rebate_money|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="操作" min-width="80">
+        <el-table-column label="操作" width="100">
           <template slot-scope="scope">
             <el-button v-if="!scope.row.sums" type="text" @click="$router.push({ name: 'iccidList', query: { org_id: scope.row.org_id } })">详情</el-button>
           </template>

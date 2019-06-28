@@ -32,25 +32,25 @@
             <span v-else class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="card_count" label="售卡数量" min-width="95" sortable="custom"></el-table-column>
-        <el-table-column prop="nonactivated" label="未激活数" min-width="95" sortable="custom"></el-table-column>
-        <el-table-column prop="noactive_rate" label="未激活率" min-width="95">
+        <el-table-column prop="card_count" label="售卡数量" min-width="110" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="nonactivated" label="未激活数" min-width="110" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="noactive_rate" label="未激活率" min-width="110" align="right">
           <template slot-scope="scope">
             <span>{{(scope.row.nonactivated/scope.row.card_count*100).toFixed(3)}}%</span>
           </template>
         </el-table-column>
-        <el-table-column prop="activated" label="已激活数" min-width="95" sortable="custom"></el-table-column>
-        <el-table-column prop="active_rate" label="已激活率" min-width="95">
+        <el-table-column prop="activated" label="已激活数" min-width="110" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="active_rate" label="已激活率" min-width="110" align="right">
           <template slot-scope="scope">
             <span>{{(scope.row.activated/scope.row.card_count*100).toFixed(3)}}%</span>
           </template>
         </el-table-column>
-        <el-table-column prop="unicom_count" label="使用总流量" min-width="105" sortable="custom">
+        <el-table-column prop="unicom_count" label="使用总流量" min-width="110" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.unicom_count)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="month_count" label="当月使用流量" min-width="117" sortable="custom">
+        <el-table-column prop="month_count" label="当月使用流量" min-width="110" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.month_count)"></div>
           </template>

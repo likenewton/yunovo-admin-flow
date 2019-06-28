@@ -33,7 +33,7 @@
         </el-form-item>
         <el-form-item label="激活日期">
           <el-date-picker v-model="formInline.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
-          <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker"  type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
+          <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="searchData">查询</el-button>
@@ -53,7 +53,7 @@
             <span class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="card_type" label="卡商名称" min-width="120" sortable="custom">
+        <el-table-column prop="card_type" label="卡商名称" min-width="130" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.card_type_name}}</span>
           </template>
@@ -63,17 +63,17 @@
             <span>{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="unicom_month" label="当月用量" width="105" sortable="custom">
+        <el-table-column prop="unicom_month" label="当月用量" width="105" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.unicom_month)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="unicom_total" label="累计用量" width="105" sortable="custom">
+        <el-table-column prop="unicom_total" label="累计用量" width="105" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.unicom_total)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="unicom_unused" label="剩余用量" width="105" sortable="custom">
+        <el-table-column prop="unicom_unused" label="剩余用量" width="105" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.unicom_unused)"></div>
           </template>
@@ -102,20 +102,53 @@
           <template slot-scope="scope">
             <el-button type="text" @click="showDetail(scope)">同步</el-button>
             <el-button type="text" @click="toUnicomLink(scope.row.card_iccid)">套餐</el-button>
-            <el-button type="text" class="text_danger" v-if="scope.row.unicom_stop==0">停用</el-button>
-            <el-button type="text" class="text_success" v-else>启用</el-button>
+            <el-button type="text" class="text_danger" v-if="scope.row.unicom_stop==0" @click="checkCardStop(scope, 1)">停用</el-button>
+            <el-button type="text" class="text_success" v-else @click="checkCardStop(scope, 0)">启用</el-button>
           </template>
         </el-table-column>
       </el-table>
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
-    <v-dialog :dialogPara="dialogPara"></v-dialog>
     <el-dialog title="机构流量ICCID卡统计" :visible.sync="dialogChartVisible" width="70%" center>
       <div slot class="clearfix" v-loading="dialogChartLoadData">
         <div id="myChart" style="width:100%" :style="{height: winHeight / 2.2 + 'px'}"></div>
         <el-pagination @size-change="handleSizeChangeDetail" @current-change="handleCurrentChangeDetail" :current-page="dialogList.currentPage" :page-sizes="pageSizes" :page-size="dialogList.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="dialogList.total" class="clearfix">
         </el-pagination>
+      </div>
+    </el-dialog>
+    <el-dialog :title="'详细信息(' + selectData.card_iccid + ')'" :visible.sync="dialogDetailVisible" @close="closeDialogDetailVisible">
+      <div slot class="clearfix" v-loading="dialogDetailLoadData">
+        <div id="iccid_detail" style="width:100%">
+          <div class="item" v-if="selectData.card_sn">
+            <span class="fbs-left">MSISDN</span>
+            <span class="fbs-right">{{selectData.card_sn}}</span>
+          </div>
+          <div class="item" v-if="selectData.card_imsi">
+            <span class="fbs-left">IMSI</span>
+            <span class="fbs-right">{{selectData.card_imsi}}</span>
+          </div>
+          <div class="item" v-if="selectData.time_paid">
+            <span class="fbs-left">上次充值时间</span>
+            <span class="fbs-right">{{selectData.time_paid}}</span>
+          </div>
+          <div class="item" v-if="selectData.time_last">
+            <span class="fbs-left">设备更新时间</span>
+            <span class="fbs-right">{{selectData.time_last}}</span>
+          </div>
+          <div class="item" v-if="selectData.msg">
+            <span class="fbs-left">联通流量卡状态</span>
+            <span class="fbs-right">{{selectData.msg}}</span>
+          </div>
+          <div class="item" v-if="selectData.consumeDataAll || selectData.consumeDataAll===0">
+            <span class="fbs-left">联通当月使用流量</span>
+            <span class="fbs-right" v-html="formatFlowUnit(selectData.consumeDataAll)"></span>
+          </div>
+          <div class="item" v-if="selectData.consumeDataMon || selectData.consumeDataMon===0">
+            <span class="fbs-left">联通累计使用流量</span>
+            <span class="fbs-right" v-html="formatFlowUnit(selectData.consumeDataMon)"></span>
+          </div>
+        </div>
       </div>
     </el-dialog>
   </div>
@@ -129,12 +162,12 @@ export default {
   data() {
     return {
       dialogChartLoadData: true,
+      dialogDetailLoadData: true,
       formInline: {
         card_id: Api.UNITS.getQuery('card_id'),
         org_id: Api.UNITS.getQuery('org_id')
       },
-      // 要展开的对话框的参数
-      dialogPara: {},
+      selectData: {}, // 当前选择的数据
       dialogList: {
         data: [],
         pagesize: Api.STATIC.pageSizes[0],
@@ -142,6 +175,7 @@ export default {
         total: 0,
       },
       dialogChartVisible: false,
+      dialogDetailVisible: false,
       // 图表实例
       myChart: null,
       options: {
@@ -243,51 +277,67 @@ export default {
     },
     // 展示dialog iccid的详细
     showDetail(scope) {
-      this.dialogPara = {
-        loadDialog: true,
-        isShowCancelBtn: false,
-        title: `详细信息(${scope.row.card_iccid})`,
-        content: '<div style="height: 100px"></div>'
+      this.dialogDetailVisible = true
+      this.dialogDetailLoadData = true
+      this.selectData = scope.row
+      _axios.send({
+        method: 'get',
+        url: _axios.ajaxAd.checkSyncUnicomData,
+        params: { card_sn: scope.row.card_sn },
+        done: ((res) => {
+          if (res.data.status === -1) {
+            Vue.prototype.$notify.error({
+              title: '错误',
+              message: res.data.msg || '同步失败'
+            })
+          } else {
+            this.dialogDetailLoadData = false
+            this.selectData = Object.assign({}, scope.row, res.data)
+          }
+        })
+      })
+    },
+    closeDialogDetailVisible() {
+      this.selectData = {},
+        this.dialogDetailVisible = false
+    },
+    // 卡开启/停用
+    checkCardStop(scope, status) {
+      let prompt = ''
+      if (status === 1) {
+        prompt = '是否停用该流量卡？'
+      } else if (status === 0) {
+        prompt = '是否启用该流量卡？'
       }
-      this.SET_DIALOGVISIBLE({ dialogVisible: true })
-      this.getIccidDetailData(scope)
-    },
-    // 获取iccid详细信息
-    getIccidDetailData(scope) {
-      setTimeout(() => {
-        this.dialogPara.loadDialog = false
-        this.dialogPara.content = `<div class="iccid_detail">
-          <div class="item">
-            <span class="fbs-left">MSISDN</span>
-            <span class="fbs-right"></span>
-          </div>
-          <div class="item">
-            <span class="fbs-left">IMSI</span>
-            <span class="fbs-right">460064520075138</span>
-          </div>
-          <div class="item">
-            <span class="fbs-left">上次充值时间</span>
-            <span class="fbs-right">2019-04-15 09:20:20</span>
-          </div>
-          <div class="item">
-            <span class="fbs-left">设备更新时间</span>
-            <span class="fbs-right">2019-04-15 09:20:20</span>
-          </div>
-          <div class="item">
-            <span class="fbs-left">联通流量卡状态</span>
-            <span class="fbs-right">已启用</span>
-          </div>
-          <div class="item">
-            <span class="fbs-left">联通当月使用流量</span>
-            <span class="fbs-right">${this.formatFlowUnit(565.3)}</span>
-          </div>
-          <div class="item">
-            <span class="fbs-left">联通累计使用流量</span>
-            <span class="fbs-right">${this.formatFlowUnit(2565.3)}</span>
-          </div>
-        </div>`
-      }, 1000)
-    },
+      this.$confirm(prompt, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        _axios.send({
+          method: 'post',
+          url: _axios.ajaxAd.checkCardStop,
+          data: {
+            card_iccid: scope.row.card_iccid,
+            status
+          },
+          done: ((res) => {
+            this.getData()
+            setTimeout(() => {
+              this.$message({
+                type: 'success',
+                message: '操作成功!'
+              })
+            }, 150)
+          })
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消操作'
+        })
+      })
+    }
   },
   computed: {
     // 起始时间约数
@@ -318,10 +368,10 @@ export default {
     }
   }
 
-  .iccid_detail {
+  #iccid_detail {
     .item {
-      height: 30px;
-      line-height: 30px;
+      height: 34px;
+      line-height: 34px;
 
       >span {
         padding: 0 10px;

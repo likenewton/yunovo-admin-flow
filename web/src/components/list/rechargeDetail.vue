@@ -39,12 +39,12 @@
             </el-form-item>
           </el-form>
           <el-table ref="listTable" @sort-change="handleSortChange" :data="list_0.data" :max-height="maxTableHeight" border resizable size="mini">
-            <el-table-column prop="gprs_amount" label="分配总流量" width="110" sortable="custom">
+            <el-table-column prop="gprs_amount" label="分配总流量" width="110" sortable="custom" align="right">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.gprs_amount)"></div>
               </template>
             </el-table-column>
-            <el-table-column prop="gprs_price" label="流量价格" width="110" sortable="custom">
+            <el-table-column prop="gprs_price" label="流量价格" width="110" sortable="custom" align="right">
               <template slot-scope="scope">
                 <span>￥{{formatMoney(scope.row.gprs_price)}}</span>
               </template>
@@ -83,7 +83,7 @@
           <span slot="label">流量分配详情</span>
           <el-table @sort-change="handleSortChange" :data="list_1.data" :max-height="maxTableHeight" border resizable size="mini">
             <el-table-column prop="how_month" label="月份" min-width="85" sortable="custom"></el-table-column>
-            <el-table-column prop="gprs_value" label="套餐流量" min-width="190" sortable="custom">
+            <el-table-column prop="gprs_value" label="套餐流量" min-width="190" sortable="custom" align="right">
               <template slot-scope="scope">
                 <span v-html="formatComboFlow(calcComboFlow(scope))"></span>
                 <span v-if="scope.row.gprs_value != scope.row.allot_value" style="vertical-align: bottom">
@@ -93,12 +93,12 @@
                 </span>
               </template>
             </el-table-column>
-            <el-table-column prop="balance_dval" label="设备剩余流量" min-width="115" sortable="custom">
+            <el-table-column prop="balance_dval" label="设备剩余流量" min-width="115" sortable="custom" align="right">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.balance_dval)"></div>
               </template>
             </el-table-column>
-            <el-table-column prop="balance_value" label="联通剩余流量" min-width="115" sortable="custom">
+            <el-table-column prop="balance_value" label="联通剩余流量" min-width="115" sortable="custom" align="right">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.balance_value)"></div>
               </template>
@@ -109,18 +109,18 @@
                 <span v-else>月均套餐</span>
               </template>
             </el-table-column>
-            <el-table-column prop="allot_reset" label="是否清零" min-width="90" sortable="custom">
+            <el-table-column prop="allot_reset" label="是否清零" min-width="100" sortable="custom">
               <template slot-scope="scope">
                 <span v-if="scope.row.allot_reset==1">会清零</span>
                 <span v-else>不清零</span>
               </template>
             </el-table-column>
-            <el-table-column prop="allot_month" label="分配月数" min-width="120" sortable="custom">
+            <el-table-column prop="allot_month" label="分配月数" min-width="100" sortable="custom" align="right">
               <template slot-scope="scope">
-                <span>{{getLiveMonthAlias(scope.row.allot_month)}}</span>
+                <span>{{scope.row.allot_month}}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="gprs_value" label="月均流量" min-width="95">
+            <el-table-column prop="gprs_value" label="月均流量" min-width="100" align="right">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.gprs_value)"></div>
               </template>
@@ -154,28 +154,28 @@
         <el-tab-pane v-loading="loadData">
           <span slot="label">日使用情况</span>
           <el-table @sort-change="handleSortChange" :data="list_3.data" :max-height="maxTableHeight" border resizable size="mini">
-            <el-table-column prop="stats_date" label="统计日期" min-width="100" sortable="custom"></el-table-column>
-            <el-table-column prop="day_used" label="日使用流量" min-width="100" sortable="custom">
+            <el-table-column prop="stats_date" label="统计日期" min-width="120" sortable="custom"></el-table-column>
+            <el-table-column prop="day_used" label="日使用流量" min-width="120" sortable="custom" align="right">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.day_used)"></div>
               </template>
             </el-table-column>
-            <el-table-column prop="day_over" label="日超标流量" min-width="100" sortable="custom">
+            <el-table-column prop="day_over" label="日超标流量" min-width="120" sortable="custom" align="right">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.day_over)"></div>
               </template>
             </el-table-column>
-            <el-table-column prop="day_wlist" label="日白名单用量" min-width="100" sortable="custom">
+            <el-table-column prop="day_wlist" label="日白名单用量" min-width="120" sortable="custom" align="right">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.day_wlist)"></div>
               </template>
             </el-table-column>
-            <el-table-column prop="ayer_unused" label="昨日剩余流量" min-width="100" sortable="custom">
+            <el-table-column prop="ayer_unused" label="昨日剩余流量" min-width="120" sortable="custom" align="right">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.ayer_unused)"></div>
               </template>
             </el-table-column>
-            <el-table-column prop="today_unused" label="今日剩余流量" min-width="100" sortable="custom">
+            <el-table-column prop="today_unused" label="今日剩余流量" min-width="120" sortable="custom" align="right">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.today_unused)"></div>
               </template>
@@ -189,22 +189,22 @@
           <span slot="label">月使用情况</span>
           <el-table @sort-change="handleSortChange" :data="list_4.data" :max-height="maxTableHeight" border resizable size="mini">
             <el-table-column prop="how_month" label="统计年月" min-width="100" sortable="custom"></el-table-column>
-            <el-table-column prop="month_used" label="月使用流量" min-width="100" sortable="custom">
+            <el-table-column prop="month_used" label="月使用流量" min-width="100" sortable="custom" align="right">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.month_used)"></div>
               </template>
             </el-table-column>
-            <el-table-column prop="month_unused" label="月剩余流量" min-width="100" sortable="custom">
+            <el-table-column prop="month_unused" label="月剩余流量" min-width="100" sortable="custom" align="right">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.month_unused)"></div>
               </template>
             </el-table-column>
-            <el-table-column prop="month_over" label="月超标流量" min-width="100" sortable="custom">
+            <el-table-column prop="month_over" label="月超标流量" min-width="100" sortable="custom" align="right">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.month_over)"></div>
               </template>
             </el-table-column>
-            <el-table-column prop="month_wlist" label="月白名单用量" min-width="100" sortable="custom">
+            <el-table-column prop="month_wlist" label="月白名单用量" min-width="100" sortable="custom" align="right">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.month_wlist)"></div>
               </template>
