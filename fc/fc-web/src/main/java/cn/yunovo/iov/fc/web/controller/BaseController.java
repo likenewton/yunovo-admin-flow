@@ -45,14 +45,14 @@ public class BaseController {
 	public Result<?> formValidateException(FormValidateException e) {
 		
 		log.error("[formValidateException][exception]params={},exception={}", e.getParams(), ExceptionUtils.getStackTrace(e));
-		return ResultUtil.build(e.getCode(), e.getMessage());
+		return ResultUtil.build(e.getCode(), e.getMessage(),e.getFiled());
 	}
 	
 	@ExceptionHandler(value=HttpMessageNotReadableException.class)
 	public Result<?> httpMessageNotReadableException(HttpMessageNotReadableException e) {
 		
 		log.error("[httpMessageNotReadableException][exception]params={},exception={}", JSONObject.toJSONString(WebRequestUtil.request().getParameterMap()), ExceptionUtils.getStackTrace(e));
-		return ResultUtil.build(400, "请求参数有误");
+		return ResultUtil.build(402, "请求参数有误");
 	}
 	
 	
