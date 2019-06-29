@@ -32,7 +32,7 @@
         <el-table-column prop="email" label="负责人邮箱" min-width="105" sortable="custom"></el-table-column>
         <el-table-column prop="tel" label="负责人手机" min-width="108" sortable="custom"></el-table-column>
         <el-table-column prop="rebate_value" label="返利比率" width="90" sortable="custom" align="right"></el-table-column>
-        <el-table-column prop="memo" label="机构描述" min-width="160" sortable="custom"></el-table-column>
+        <el-table-column prop="memo" label="机构描述" show-overflow-tooltip min-width="160" sortable="custom"></el-table-column>
         <el-table-column prop="user_id" label="创建者" min-width="80" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.create_by_name}}</span>
@@ -101,21 +101,27 @@ export default {
           done: ((res) => {
             this.getData()
             setTimeout(() => {
-              this.$message.success(res.msg || '删除成功')
+              this.showMsgBox({
+                type: 'success',
+                message: res.msg || '删除成功！'
+              })
             }, 150)
           })
         })
       }).catch(() => {
-        this.$message({
+        this.showMsgBox({
           type: 'info',
-          message: '该操作已取消'
+          message: '该操作已取消！'
         })
       })
     },
     // 批量删除机构
     deleteOrgs() {
       if (this.selectData.length === 0) {
-        this.$message.warning('请先勾选要卸载的项')
+        this.showMsgBox({
+          type: 'warning',
+          message: '请先勾选要卸载的机构！'
+        })
       } else {
         this.$confirm(`您选中了${this.selectData.length}项，是否确认删除?`, '提示', {
           confirmButtonText: '确定',
@@ -131,14 +137,17 @@ export default {
             done: ((res) => {
               this.getData()
               setTimeout(() => {
-                this.$message.success(res.msg || '删除成功')
+                this.showMsgBox({
+                  type: 'success',
+                  message: res.msg || '删除成功！'
+                })
               }, 150)
             })
           })
         }).catch(() => {
-          this.$message({
+          this.showMsgBox({
             type: 'info',
-            message: '该操作已取消'
+            message: '该操作已取消！'
           })
         })
       }

@@ -85,12 +85,15 @@ export default {
           done: ((res) => {
             this.getData()
             setTimeout(() => {
-              this.$message.success(res.msg || '删除成功')
+              this.showMsgBox({
+                type: 'success',
+                message: '删除成功'
+              })
             }, 150)
           })
         })
       }).catch(() => {
-        this.$message({
+        this.showMsgBox({
           type: 'info',
           message: '操作已取消'
         })
@@ -99,7 +102,10 @@ export default {
     // 批量删除
     deleteDatas() {
       if (this.selectData.length === 0) {
-        this.$message.warning('请先勾选要删除的项')
+        this.showMsgBox({
+          type: 'warning',
+          message: '请先勾选要删除的地区！'
+        })
       } else {
         this.$confirm(`您选中了${this.selectData.length}项，是否确认删除?`, '提示', {
           confirmButtonText: '确定',
@@ -115,13 +121,18 @@ export default {
             done: ((res) => {
               this.getData()
               setTimeout(() => {
-                this.$message.success(res.msg || '删除成功')
+                this.showMsgBox({
+                  type: 'success',
+                  title: '成功',
+                  message: '删除成功'
+                })
               }, 150)
             })
           })
         }).catch(() => {
-          this.$message({
+          this.showMsgBox({
             type: 'info',
+            title: '温馨提示',
             message: '操作已取消'
           })
         })

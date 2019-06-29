@@ -29,7 +29,7 @@
             <div v-html="formatComboFlow(scope.row.gprs_amount)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="gprs_price" label="套餐价格" min-width="90" sortable="custom" align="right">
+        <el-table-column prop="gprs_price" label="套餐价格" min-width="100" sortable="custom" align="right">
           <template slot-scope="scope">
             <span>￥{{formatMoney(scope.row.gprs_price)}}</span>
           </template>
@@ -59,7 +59,7 @@
             <div style="font-size: 12px; line-height: 16px">{{scope.row.pack_memo}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="pack_rebate" label="返利金额" min-width="95" sortable="custom" align="right">
+        <el-table-column prop="pack_rebate" label="返利金额" min-width="100" sortable="custom" align="right">
           <template slot-scope="scope">
             <span>￥{{formatMoney(scope.row.pack_rebate)}}</span>
           </template>
@@ -136,17 +136,17 @@ export default {
           done: ((res) => {
             this.getData()
             setTimeout(() => {
-              this.$message({
+              this.showMsgBox({
                 type: 'success',
-                message: '操作成功!'
+                message: '操作成功！'
               })
             }, 150)
           })
         })
       }).catch(() => {
-        this.$message({
+        this.showMsgBox({
           type: 'info',
-          message: '已取消操作'
+          message: '已取消操作！'
         })
       })
     },

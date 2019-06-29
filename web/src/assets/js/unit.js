@@ -1,12 +1,27 @@
 module.exports = {
   // 获取权限菜单列表
   getAuthMenu(asideData = [], resources = []) {
+    // 排序
+    resources.sort((v1, v2) => {
+      return v1.seqNum - v2.seqNum
+    })
+    resources.forEach((v) => {
+      v.childResources.sort((v1, v2) => {
+        return v1.seqNum - v2.seqNum
+      })
+    })
+    // 如果后台配置的页面在所有已开发的页面中都找不到不让其加到菜单列表当中
     resources.forEach((v1, i1) => {
+      let level_1 = false
       asideData.forEach((v2, i2) => {
         if (v1.resUrl === v2.name) {
           v1.icon = v2.icon
+          level_1 = true
         }
       })
+      if (!level_1) {
+        resources.splice(i1, 1)
+      }
     })
     return resources
   },
@@ -356,7 +371,7 @@ module.exports = {
   showMsgBox(para = {}) {
     Vue.prototype.$notify({
       type: para.type || 'error',
-      title: para.title || '错误',
+      title: para.title || (para.type === 'error' || !para.type ? '错误' : '温馨提示'),
       message: para.message || '提交的表单数据不符合规范！'
     })
   },

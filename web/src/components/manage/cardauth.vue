@@ -154,16 +154,16 @@ export default {
           },
           done: ((res) => {
             this.authDialogVisible = false
-            this.$message({
+            this.showMsgBox({
               type: 'success',
-              message: '操作成功!'
+              message: '操作成功！'
             })
           })
         })
       }).catch(() => {
-        this.$message({
+        this.showMsgBox({
           type: 'info',
-          message: '已取消操作'
+          message: '已取消操作！'
         })
       })
     },
@@ -182,16 +182,16 @@ export default {
           },
           done: ((res) => {
             this.authDialogVisible = false
-            this.$message({
+            this.showMsgBox({
               type: 'success',
-              message: '操作成功!'
+              message: '操作成功！'
             })
           })
         })
       }).catch(() => {
-        this.$message({
+        this.showMsgBox({
           type: 'info',
-          message: '已取消操作'
+          message: '已取消操作！'
         })
       })
     }

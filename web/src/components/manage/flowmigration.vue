@@ -2,20 +2,20 @@
   <div class="flow_migration">
     <el-card shadow="never">
       <el-tabs @tab-click="changeTab" v-model="tabIndex">
-        <el-tab-pane>
+        <el-tab-pane v-loading="loadData">
           <span slot="label">流量迁移</span>
           <el-form class="editor-form" :model="formInline" :rules="rules" ref="ruleForm" label-width="126px" size="small" :status-icon="true">
-            <el-form-item prop="old_iccid">
+            <el-form-item prop="old_card_iccid">
               <span slot="label">旧卡ICCID：</span>
-              <el-input v-model="formInline.old_iccid" @input="formInline.old_iccid = limitNumber(formInline.old_iccid, 20)" placeholder="请输入旧卡ICCID"></el-input>
+              <el-input v-model="formInline.old_card_iccid" @input="formInline.old_card_iccid = limitNumber(formInline.old_card_iccid, 20)" placeholder="请输入旧卡ICCID"></el-input>
             </el-form-item>
-            <el-form-item prop="new_iccid">
+            <el-form-item prop="new_card_iccid">
               <span slot="label">新卡ICCID：</span>
-              <el-input v-model="formInline.new_iccid" @input="formInline.new_iccid = limitNumber(formInline.new_iccid, 20)" placeholder="请输入新卡ICCID"></el-input>
+              <el-input v-model="formInline.new_card_iccid" @input="formInline.new_card_iccid = limitNumber(formInline.new_card_iccid, 20)" placeholder="请输入新卡ICCID"></el-input>
             </el-form-item>
-            <el-form-item prop="migration_remark">
+            <el-form-item prop="move_memo">
               <span slot="label">迁移备注：</span>
-              <el-input type="textarea" v-model="formInline.migration_remark" placeholder="" rows="4"></el-input>
+              <el-input type="textarea" v-model="formInline.move_memo" placeholder="" rows="4"></el-input>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
@@ -67,7 +67,7 @@
                 <span>{{scope.row.org_name}}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="move_memo" label="迁移备注" min-width="160" sortable="custom"></el-table-column>
+            <el-table-column prop="move_memo" label="迁移备注" show-overflow-tooltip min-width="160" sortable="custom"></el-table-column>
             <el-table-column prop="user_id" label="操作者" min-width="80" sortable="custom">
               <template slot-scope="scope">
                 <span>{{scope.row.first_name}}</span>
@@ -90,21 +90,26 @@ export default {
   data() {
     return {
       maxTableHeight: Api.UNITS.maxTableHeight(370),
-      tabIndex: Api.UNITS.getQuery('tabIndex') || '1',
+      tabIndex: Api.UNITS.getQuery('tabIndex') || '0',
       searchForm: {
         old_card_iccid: Api.UNITS.getQuery('old_card_iccid'),
         card_iccid: Api.UNITS.getQuery('card_iccid')
       },
       rules: {
-        old_iccid: [{
+        old_card_iccid: [{
           required: true,
           message: '请输入旧卡ICCID',
           trigger: 'blur'
         }],
-        new_iccid: [{
+        new_card_iccid: [{
           required: true,
           message: '请输入新卡ICCID',
           trigger: 'blur'
+        }],
+        move_memo: [{
+          max: 200,
+          message: '最多200个字符',
+          trigger: ['blur', 'change']
         }]
       }
     }
@@ -117,11 +122,7 @@ export default {
       // 当切换tab栏到'1'的时候，如果没有数据要加载数据
       if (this.tabIndex === '1') {
         // 这里应当是ajax请求数据
-        if (this.list.data.length === 0) {
-          this.getData()
-        } else {
-          this.loadData = false
-        }
+        this.getData()
       }
     },
     // 重置列表
@@ -139,10 +140,31 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          this.loadData = true
           // 验证通过
+          _axios.send({
+            method: 'post',
+            url: _axios.ajaxAd.addCardMove,
+            data: this.formInline,
+            done: ((res) => {
+              this.loadData = false
+              if (res.status === 400) {
+                this.formInline[res.data] = ''
+                this.$refs.ruleForm.validateField([res.data])
+              } else {
+                this.resetForm('ruleForm')
+                setTimeout(() => {
+                  this.showMsgBox({
+                    type: 'success',
+                    message: '迁移成功'
+                  })
+                }, 150)
+              }
+            })
+          })
         } else {
           Api.UNITS.showMsgBox()
-          return false;
+          return false
         }
       });
     },

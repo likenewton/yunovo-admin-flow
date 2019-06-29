@@ -30,31 +30,31 @@ class AXIOS {
       getNationSelect: '/fc/api/select/api/select/nation',
       getLiveMonth: '/fc/api/select/api/select/liveMonth',
       // table列表
-      getStats: '/fc/api/gprs/stats/',
-      getHalt: '/fc/api/gprs/halt/',
-      getOnOffLog: '/fc/api/gprs/onoffLog/',
-      getAbnormal: '/fc/api/gprs/abnormal/',
-      getSell2pay: '/fc/api/gprs/sell2pay/',
-      getCardUsed: '/fc/api/gprs/cardUsed/',
-      getUnicomStat: '/fc/api/gprs/unicomStat/',
-      getPayOnline: '/fc/api/gprs/payOnline/',
-      getNotifysFrom: '/fc/api/gprs/notifyFrom/',
+      getStats: '/fc/api/gprs/stats/', // 月度用量
+      getHalt: '/fc/api/gprs/halt/', // 已停卡况
+      getOnOffLog: '/fc/api/gprs/onoffLog/', // 停卡日志
+      getAbnormal: '/fc/api/gprs/abnormal/', // 用量异常
+      getSell2pay: '/fc/api/gprs/sell2pay/', // 续费数据
+      getCardUsed: '/fc/api/gprs/cardUsed/', // 累计用量
+      getUnicomStat: '/fc/api/gprs/unicomStat/', // 联通流量卡
+      getPayOnline: '/fc/api/gprs/payOnline/', // 运营统计
+      getNotifysFrom: '/fc/api/gprs/notifyFrom/', // 通知来源
       getOrgPayReport: '/fc/api/gprs/report/orgPayReport',
       getReport: '/fc/api/gprs/report/',
       getPayListPage: '/fc/api/gprs/report/getPayListPage',
       getpayPack: '/fc/api/gprs/report/payPack',
       getMonthReport: '/fc/api/gprs/report/monthReport',
-      getOrgList: '/fc/api/user/org/',
-      getNations: '/fc/api/system/nations/',
-      getPays: '/fc/api/system/pays/',
-      getCurrency: '/fc/api/system/currency/',
-      getCards: '/fc/api/gprs/card/',
-      getCardReset: '/fc/api/card/reset/',
-      getBatchs: '/fc/api/gprs/batch/',
-      getPacks: '/fc/api/gprs/pack/',
-      getGift: '/fc/api/gprs/gift/',
-      getMoves: '/fc/api/gprs/move/',
-      getRealNames: '/fc/api/realname/',
+      getOrgList: '/fc/api/user/org/', // 机构管理
+      getNations: '/fc/api/system/nations/', // 国家区域
+      getPays: '/fc/api/system/pays/', // 支付
+      getCurrency: '/fc/api/system/currency/', // 货币列表
+      getCards: '/fc/api/gprs/card/', // 流量卡
+      getCardReset: '/fc/api/card/reset/', // 卡重置
+      getBatchs: '/fc/api/gprs/batch/', // 卡批次
+      getPacks: '/fc/api/gprs/pack/', // 流量套餐
+      getGift: '/fc/api/gprs/gift/', // 流量赠送
+      getMoves: '/fc/api/gprs/move/history', // 流量迁移
+      getRealNames: '/fc/api/realname/', // 卡实名
       // 明细
       getReportPayDetail: '/fc/api/gprs/report/payDetail',
       getPayDetail: '/fc/api/system/pays/detail',
@@ -99,6 +99,7 @@ class AXIOS {
       addGprsCombo: '/fc/api/gprs/pack/insert',
       updateGprsCombo: '/fc/api/gprs/pack/update',
       addResetGprs: '/fc/api/card/reset/gprs', // 卡重置
+      addCardMove: '/fc/api/gprs/move/', // 卡迁移
       // 首页
       getPayCase: '/fc/api/home/payCase', // 数据看板
       getSiminfo: '/fc/api/home/siminfo', // 获取pie-card数据
@@ -144,12 +145,16 @@ class AXIOS {
         localStorage.setItem('loginCount', '0')
         // status === 0 为正常返回, 表示已经登录了
         if (res.data.status === 0) {
-          data.done && data.done(res.data)
+          return data.done && data.done(res.data)
         } else {
           Vue.prototype.$notify.error({
             title: '错误',
             message: res.data.msg
           })
+        }
+        if (res.data.status === 400) {
+          // 400 表单提交业务验证异常
+          return data.done && data.done(res.data)
         }
       }
     }).catch(error => {

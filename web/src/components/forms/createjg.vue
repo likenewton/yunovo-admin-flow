@@ -83,7 +83,7 @@ export default {
           min: 0,
           max: 255,
           message: '机构备注不能多于255个字符',
-          trigger: 'blur'
+          trigger: ['blur', 'change']
         }],
         notify_url: [{
           required: true,
@@ -150,7 +150,10 @@ export default {
                 this.$router.push({ name: 'jgManage' })
                 setTimeout(() => {
                   // 加个延迟，动画更流畅
-                  this.$message.success(res.msg || '修改成功')
+                  this.showMsgBox({
+                    type: 'success',
+                    message: res.msg || '修改成功！'
+                  })
                 }, 150)
               })
             })
@@ -163,7 +166,10 @@ export default {
                 this.$router.push({ name: 'jgManage' })
                 setTimeout(() => {
                   // 加个延迟，动画更流畅
-                  this.$message.success(res.msg || '新增成功')
+                  this.showMsgBox({
+                    type: 'success',
+                    message: res.msg || '新增成功！'
+                  })
                 }, 150)
               })
             })

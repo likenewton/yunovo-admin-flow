@@ -254,23 +254,40 @@ export default {
           required: true,
           message: '请输入系统名称',
           trigger: 'blur'
+        }, {
+          min: 2,
+          max: 32,
+          message: '系统名称必须在2至32个字符之间！',
+          trigger: ['blur', 'change']
         }],
         config_owner: [{
           required: true,
           message: '请输入系统拥有者',
           trigger: 'blur'
+        }, {
+          min: 3,
+          max: 64,
+          message: '系统拥有者必须在3至64个字符之间！',
+          trigger: ['blur', 'change']
         }],
         config_address: [{
           required: true,
           message: '请输入联系地址',
           trigger: 'blur'
+        }, {
+          min: 10,
+          max: 255,
+          message: '联系地址必须在10到255个字符之间！',
+          trigger: ['blur', 'change']
         }],
         config_email: [{
           required: true,
           message: '请输入电子邮箱',
           trigger: 'blur'
         }, {
-          validator: this.validatorEmall,
+          type: 'email',
+          message: '电子邮箱格式不正确',
+          // validator: this.validatorEmall,
           trigger: 'blur'
         }],
         config_telephone: [{
@@ -287,6 +304,11 @@ export default {
           required: true,
           message: '请输入首页标题',
           trigger: 'blur'
+        }, {
+          min: 2,
+          max: 32,
+          message: '首页标题必须在2至32个字符之间！',
+          trigger: ['blur', 'change']
         }],
         config_template: [{
           required: true,
@@ -373,9 +395,16 @@ export default {
             url: _axios.ajaxAd.updateSystemParams,
             data,
             done: ((res) => {
-              // 调用resetForm来清除表单验证的样式
-              this.resetForm()
-              this.$message.success(res.msg || '操作成功！')
+              if (res.status === 400) {
+
+              } else {
+                // 调用resetForm来清除表单验证的样式
+                this.resetForm()
+                this.showMsgBox({
+                  type: 'success',
+                  message: res.msg || '操作成功！'
+                })
+              }
             })
           })
         } else {
@@ -386,7 +415,7 @@ export default {
     },
     resetForm(formName) {
       // 5个表单的数据都是从getData取得，所以重置要重置5个表单
-      for(let i = 0; i < 5; i++) {
+      for (let i = 0; i < 5; i++) {
         this.$refs[`ruleForm_${i}`].resetFields()
         this[`formInline_${i}`] = {}
       }

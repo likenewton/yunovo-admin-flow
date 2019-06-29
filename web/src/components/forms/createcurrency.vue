@@ -126,7 +126,10 @@ export default {
               done: ((res) => {
                 this.$router.push({ name: 'currencyset' })
                 setTimeout(() => {
-                  this.$message.success(res.msg || '操作成功')
+                  this.showMsgBox({
+                    type: 'success',
+                    message: res.msg || '操作成功！'
+                  })
                 }, 150)
               })
             })
@@ -138,7 +141,10 @@ export default {
               done: ((res) => {
                 this.$router.push({ name: 'currencyset' })
                 setTimeout(() => {
-                  this.$message.success(res.msg || '操作成功')
+                  this.showMsgBox({
+                    type: 'success',
+                    message: res.msg || '操作成功！'
+                  })
                 }, 150)
               })
             })

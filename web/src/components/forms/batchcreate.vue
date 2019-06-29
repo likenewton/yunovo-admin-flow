@@ -272,7 +272,10 @@ export default {
       if (fileList[0].raw) {
         let type = fileList[0].raw.name
         if (!/\.txt$/.test(type) && !/\.xlsx$/.test(type)) {
-          this.$message.error('只能上传.txt/.xlsx文件');
+          this.showMsgBox({
+            type: 'error',
+            message: '只能上传.txt/.xlsx文件！'
+          })
           this.fileList = []
           return false
         }
@@ -280,7 +283,10 @@ export default {
     },
     // 文件上传成功回调函数
     uploadHandleSuccess(res, file) {
-      this.$message.success('文件上传成功')
+      this.showMsgBox({
+        type: 'success',
+        message: '文件上传成功！'
+      })
     },
     limitNumber: Api.UNITS.limitNumber
   },

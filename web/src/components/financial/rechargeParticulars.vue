@@ -310,7 +310,10 @@ export default {
           let methodChart = res.data.methodChart || []
           let paidChart = res.data.paidChart || []
           if (methodChart.length === 0 && paidChart.length === 0) {
-            this.$message('暂无数据！')
+            this.showMsgBox({
+              type: 'info',
+              message: '暂无数据！'
+            })
           }
           methodChart.forEach((v) => {
             legend.push(v.name)

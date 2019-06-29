@@ -144,17 +144,17 @@ export default {
           done: ((res) => {
             setTimeout(() => {
               this.modifiyData(this.list.data, scope.row, 'unicom_stop', status)
-              this.$message({
+              this.showMsgBox({
                 type: 'success',
-                message: '操作成功!'
+                message: '操作成功！'
               })
             }, 150)
           })
         })
       }).catch(() => {
-        this.$message({
+        this.showMsgBox({
           type: 'info',
-          message: '已取消操作'
+          message: '已取消操作！'
         })
       })
     }

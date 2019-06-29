@@ -116,6 +116,10 @@ export default {
           required: true,
           message: '请输入套餐名称',
           trigger: 'blur'
+        }, {
+          max: 50,
+          message: '套餐名称最多50个字符',
+          trigger: ['blur', 'change']
         }],
         gprs_amount: [{
           required: true,
@@ -153,6 +157,11 @@ export default {
         pack_rebate: [{
           validator: this.limitPackRebate,
           trigger: 'blur'
+        }],
+        pack_memo: [{
+          max: 200,
+          message: '不能超过200字符',
+          trigger: ['blur', 'change']
         }]
       }
     }
@@ -176,10 +185,18 @@ export default {
               url: _axios.ajaxAd.updateGprsCombo,
               data: this.formInline,
               done: ((res) => {
-                this.$router.push({ name: 'cardcombo' })
-                setTimeout(() => {
-                  this.$message.success(res.msg || '新增成功')
-                }, 150)
+                if (res.status === 400) {
+                  this.formInline[res.data] = ''
+                  this.$refs.ruleForm.validateField([res.data])
+                } else {
+                  this.$router.push({ name: 'cardcombo' })
+                  setTimeout(() => {
+                    this.showMsgBox({
+                      type: 'success',
+                      message: res.msg || '新增成功！'
+                    })
+                  }, 150)
+                }
               })
             })
           } else {
@@ -188,10 +205,18 @@ export default {
               url: _axios.ajaxAd.addGprsCombo,
               data: this.formInline,
               done: ((res) => {
-                this.$router.push({ name: 'cardcombo' })
-                setTimeout(() => {
-                  this.$message.success(res.msg || '编辑成功')
-                }, 150)
+                if (res.status === 400) {
+                  this.formInline[res.data] = ''
+                  this.$refs.ruleForm.validateField([res.data])
+                } else {
+                  this.$router.push({ name: 'cardcombo' })
+                  setTimeout(() => {
+                    this.showMsgBox({
+                      type: 'success',
+                      message: res.msg || '编辑成功！'
+                    })
+                  }, 150)
+                }
               })
             })
           }

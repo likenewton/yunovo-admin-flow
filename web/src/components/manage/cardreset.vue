@@ -88,7 +88,13 @@
         <div id="iccid_reset" style="width:100%;overflow: auto">
           <el-table :data="resetData" border resizable size="mini" :max-height="winHeight / 2.2">
             <el-table-column prop="iccid" label="卡iccid" min-width="200"></el-table-column>
-            <el-table-column prop="msg" label="执行结果" min-width="200"></el-table-column>
+            <el-table-column prop="msg" label="执行结果" min-width="200">
+              <template slot-scope="scope">
+                <span class="text_danger bold" v-if="scope.row.msg.indexOf('不可重置') > -1">{{scope.row.msg}}</span>
+                <span class="text_warning bold" v-else-if="scope.row.msg.indexOf('无需重置') > -1">{{scope.row.msg}}</span>
+                <span class="text_success bold" v-else>{{scope.row.msg}}</span>
+              </template>
+            </el-table-column>
           </el-table>
         </div>
       </div>
@@ -102,7 +108,7 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
-      tabIndex: '1',
+      tabIndex: '0',
       ruleForm: {},
       maxTableHeight: Api.UNITS.maxTableHeight(370),
       rules: {
@@ -146,7 +152,10 @@ export default {
               this.resetData = res.data
               this.resetForm('ruleForm')
               setTimeout(() => {
-                this.$message.success('操作成功！')
+                this.showMsgBox({
+                  type: 'success',
+                  message: '批量重置操作成功！'
+                })
               }, 150)
             })
           })

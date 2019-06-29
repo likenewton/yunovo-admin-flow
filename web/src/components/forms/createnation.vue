@@ -81,7 +81,10 @@ export default {
               done: ((res) => {
                 this.$router.push({ name: 'nationset', query: { ntid: this.formInline.parent } })
                 setTimeout(() => {
-                  this.$message.success(res.msg || '修改成功')
+                  this.showMsgBox({
+                    type: 'success',
+                    message: res.msg || '修改成功！'
+                  })
                 }, 150)
               })
             })
@@ -93,7 +96,10 @@ export default {
               done: ((res) => {
                 this.$router.push({ name: 'nationset', query: { ntid: this.formInline.parent } })
                 setTimeout(() => {
-                  this.$message.success(res.msg || '新增成功')
+                  this.showMsgBox({
+                    type: 'success',
+                    message: res.msg || '新增成功！'
+                  })
                 }, 150)
               })
             })

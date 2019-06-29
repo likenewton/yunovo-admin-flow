@@ -57,14 +57,17 @@ export default {
           done: ((res) => {
             this.getData()
             setTimeout(() => {
-              this.$message.success(res.msg || '操作成功')
+              this.showMsgBox({
+                type: 'success',
+                message: res.msg || '操作成功！'
+              })
             }, 150)
           })
         })
       }).catch(() => {
-        this.$message({
+        this.showMsgBox({
           type: 'info',
-          message: '已取消操作'
+          message: '已取消操作！'
         })
       })
     },
@@ -80,14 +83,17 @@ export default {
           done: ((res) => {
             this.getData()
             setTimeout(() => {
-              this.$message.success(res.msg || '操作成功')
+              this.showMsgBox({
+                type: 'success',
+                message: res.msg || '操作成功！'
+              })
             }, 150)
           })
         })
       }).catch(() => {
-        this.$message({
+        this.showMsgBox({
           type: 'info',
-          message: '已取消操作'
+          message: '已取消操作！'
         })
       })
     },
