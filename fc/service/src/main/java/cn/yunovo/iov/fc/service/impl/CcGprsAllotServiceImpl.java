@@ -105,8 +105,6 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 	@Autowired
 	private M2mService m2mService;
 	
-	private Double GPRS_CAL_OFFSET = 0.001;
-	
 	@Autowired
 	@Qualifier("clwTransactionManager")
 	private DataSourceTransactionManager clwTransactionManager;
@@ -870,5 +868,13 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 		result.setConsumeDataMon(gprs_month);
 		result.setConsumeDataAll(gprs_total);
 		return result;
+	}
+	
+	@Override
+	public Integer getThisMonth(Integer card_type) {
+		
+		Date now = DateUtil.now();
+		Date month = (card_type >= 2 && DateUtil.getDayOfMonth(now) >= 27) ? DateUtils.addMonths(now, 1) : now;
+		return NumberUtils.createInteger(DateFormatUtils.format(month, "yyyyMM"));
 	}
 }

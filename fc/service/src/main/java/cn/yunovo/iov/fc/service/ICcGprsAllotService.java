@@ -18,7 +18,7 @@ import cn.yunovo.iov.fc.model.result.UnicomDataBean;
  */
 public interface ICcGprsAllotService extends IService<CcGprsAllot> {
 
-	
+	public final static  Double GPRS_CAL_OFFSET = 0.001;
 	/**
 	 * @param card_id
 	 * @return
@@ -38,5 +38,7 @@ public interface ICcGprsAllotService extends IService<CcGprsAllot> {
 	UnicomDataBean syncUnicomData(CcGprsCard card);
 
 	CardRestBean cardReset(CcGprsCard card);
+
+	Integer getThisMonth(Integer card_type);
 
 }

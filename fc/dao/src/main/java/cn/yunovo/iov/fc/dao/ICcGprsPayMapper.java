@@ -137,5 +137,7 @@ public interface ICcGprsPayMapper extends BaseMapper<CcGprsPay> {
 
 	
 	public int updatePayMethodByCardid(@Param("card_id")Integer card_id);
+	
+	public List<String> isBuyOtherGprs(@Param("card_id")Integer card_id);
 
 }

@@ -4,6 +4,7 @@ import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcCardLog;
+import cn.yunovo.iov.fc.model.entity.CcGprsMove;
 import cn.yunovo.iov.fc.model.entity.CcOnoffLog;
 import cn.yunovo.iov.fc.model.entity.CcRealname;
 
@@ -31,5 +32,12 @@ public interface ICcCardLogService extends IService<CcCardLog> {
 	boolean log5On6Off(CcOnoffLog res, boolean isSuccess);
 
 	public boolean log9Reset(Integer card_id, Double unicom_month, Double unicom_total, String nowStr);
+
+	/**
+	 * 流量卡套餐迁移日志
+	 * @param res
+	 * @return
+	 */
+	boolean log8Move(CcGprsMove res);
 	
 }

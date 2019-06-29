@@ -10,6 +10,7 @@ import cn.yunovo.iov.fc.model.form.OrgForm;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -49,4 +50,10 @@ public interface ICcOrgService extends IService<CcOrg> {
 	 * @return true | false, true 表示拥有该机构的管理权，false 则表示没有权限
 	 */
 	boolean hasPermission(Integer org_id, String orgpos);
+
+	/**
+	 * 机构字典接口
+	 * @return
+	 */
+	JSONObject orgMaps();
 }

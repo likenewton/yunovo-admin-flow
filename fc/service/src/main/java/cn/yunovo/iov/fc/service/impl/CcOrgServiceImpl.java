@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -398,6 +399,31 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 		
 		return iCcOrgMapper.deleteBatchIds(Arrays.asList(orgs));
 		
+	}
+	
+	@Override
+	public JSONObject orgMaps() {
+		
+		String sql = "SELECT org_id, `name` FROM cc_org";
+		String cacheKey = FcConstant.memSqlKey(sql);
+		
+		String cache = jedisPoolUtil.get(sql);
+		if(StringUtils.isEmpty(cache)) {
+			
+			List<CcOrg> orgs = iCcOrgMapper.getAllOrg();
+			Map<Integer, String> data = null;
+			if(!CollectionUtils.isEmpty(orgs)) {
+				
+				data = orgs.stream().collect(Collectors.toMap(CcOrg::getOrg_id, CcOrg::getName));
+				cache = JSONObject.toJSONString(data);
+				jedisPoolUtil.setEx(cacheKey, cache);
+				return JSONObject.parseObject(cache);
+			}else {
+				return new JSONObject();
+			}
+		}else {
+			return JSONObject.parseObject(cache);
+		}
 	}
 	
 	

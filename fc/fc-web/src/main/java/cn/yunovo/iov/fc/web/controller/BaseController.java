@@ -37,7 +37,7 @@ public class BaseController {
 	@ExceptionHandler(value=BusinessException.class)
 	public Result<String> businessException(BusinessException e) {
 		
-		log.error("[businessException][exception]params={},exception={}", JSONObject.toJSONString(WebRequestUtil.request().getParameterMap()), ExceptionUtils.getStackTrace(e));
+//		log.error("[businessException][exception]params={},exception={}", JSONObject.toJSONString(WebRequestUtil.request().getParameterMap()), ExceptionUtils.getStackTrace(e));
 		return ResultUtil.build(e.getException_code(), e.getMessage());
 	}
 	

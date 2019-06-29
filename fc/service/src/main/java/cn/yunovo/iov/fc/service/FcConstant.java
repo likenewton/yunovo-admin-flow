@@ -23,6 +23,9 @@ public class FcConstant {
 	 */
 	public final static String MONTH_END_TYPE_CACHEKEY = "MONTH_END_TYPE";
 	
+	/**
+	 * 前一日激活
+	 */
 	public final static String YESTERDAY_ACTIVE_CACHEKEY = "YESTERDAY_ACTIVE";
 	
 	public final static String CARD_INFO_CACHEKEY = "CARD-INFO-%s";

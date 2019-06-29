@@ -46,5 +46,10 @@
 		</if>
 		
 	</select>
+	
+	<select id="getAllOrg" resultType="cn.yunovo.iov.fc.model.entity.CcOrg">
+		
+		SELECT org_id, `name` FROM cc_org
+	</select>
 
 </mapper>

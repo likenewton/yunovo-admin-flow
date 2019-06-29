@@ -1,5 +1,6 @@
 package cn.yunovo.iov.fc.service.impl;
 
+import cn.yunovo.iov.fc.common.utils.DateUtil;
 import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
 import cn.yunovo.iov.fc.dao.ICcCardLogMapper;
 import cn.yunovo.iov.fc.model.LoginInfo;
@@ -7,13 +8,16 @@ import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcCardLog;
 import cn.yunovo.iov.fc.model.entity.CcGprsCard;
+import cn.yunovo.iov.fc.model.entity.CcGprsMove;
 import cn.yunovo.iov.fc.model.entity.CcOnoffLog;
 import cn.yunovo.iov.fc.model.entity.CcRealname;
 import cn.yunovo.iov.fc.service.FcConstant;
 import cn.yunovo.iov.fc.service.ICcCardLogService;
 import cn.yunovo.iov.fc.service.ICcGprsCardService;
 import cn.yunovo.iov.fc.service.ICcOnoffLogService;
+import cn.yunovo.iov.fc.service.ICcOrgService;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -51,6 +55,9 @@ public class CcCardLogServiceImpl extends ServiceImpl<ICcCardLogMapper, CcCardLo
 	
 	@Autowired
 	private JedisPoolUtil jedisPoolUtil;
+	
+	@Autowired
+	private ICcOrgService iCcOrgService;
 	
 	private final String INSERT_SQL = "INSERT INTO cc_card_log SET card_id = %s, log_type = %s, log_text = '%s', log_url = '%s', time_added = '%s'";
 	
@@ -178,6 +185,34 @@ public class CcCardLogServiceImpl extends ServiceImpl<ICcCardLogMapper, CcCardLo
 		}
 		
 		return isOk;
+	}
+	
+	@Override
+	public boolean log8Move(CcGprsMove res) {
+		
+		JSONObject orgMaps = iCcOrgService.orgMaps();
+		
+		String old_org = orgMaps.getString(String.valueOf(res.getOld_orgid()));
+		String new_org = orgMaps.getString(String.valueOf(res.getNew_orgid()));
+		String log_url = "gprs/move/history?oiccid="+res.getOld_iccid();
+		String log_text = String.format("将名下套餐从机构 %s 迁移到 %s 机构下ICCID为 %s 的卡下",old_org, new_org, res.getNew_iccid());
+		String sql = String.format(INSERT_SQL, res.getOld_cardid(), 8,log_text, log_url, DateUtil.nowStr());
+		boolean isOk = jedisPoolUtil.lpush(FcConstant.SQL_QUEUE_CACHEKEY, sql) > 0 ? true : false;
+		if(!isOk) {
+			CcCardLog log = build(res.getOld_cardid(), 9, log_text, log_url, DateUtil.nowStr());
+			this.save(log);
+		}
+		
+		log_url =  "gprs/move/history?iccid="+res.getNew_iccid();
+		log_text = String.format("获得 “%s” 机构下ICCID为 %s的卡名下套餐", old_org, res.getOld_iccid());
+		
+		sql = String.format(INSERT_SQL, res.getNew_cardid(), 8,log_text, log_url, DateUtil.nowStr());
+		isOk = jedisPoolUtil.lpush(FcConstant.SQL_QUEUE_CACHEKEY, sql) > 0 ? true : false;
+		if(!isOk) {
+			CcCardLog log = build(res.getOld_cardid(), 9, log_text, log_url, DateUtil.nowStr());
+			this.save(log);
+		}
+		return true;
 	}
 
 }

@@ -2,6 +2,7 @@ package cn.yunovo.iov.fc.web.controller.gprs;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +13,7 @@ import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcGprsMove;
 import cn.yunovo.iov.fc.model.entity.CcResetLog;
+import cn.yunovo.iov.fc.model.form.GprsMoveForm;
 import cn.yunovo.iov.fc.service.ICcGprsMoveService;
 import cn.yunovo.iov.fc.web.controller.BaseController;
 import io.swagger.annotations.Api;
@@ -41,6 +43,14 @@ public class MoveController extends BaseController{
 		
 		PageData<CcGprsMove, Object>  data = iCcGprsMoveService.getItemsPage(form, org_id, card_iccid, old_card_iccid, date_start, date_end, this.getLoginBaseInfo());
 		return ResultUtil.success(data);
+	}
+	
+	@ApiOperation(value="业务管理-流量卡重置")
+	@RequestMapping(path="/card",method= {RequestMethod.POST})
+	public Result<String> move(@RequestBody GprsMoveForm form) {
+		
+		iCcGprsMoveService.move(form, this.getLoginBaseInfo());
+		return ResultUtil.successCN(null);
 	}
 	
 }

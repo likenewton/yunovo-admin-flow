@@ -813,7 +813,12 @@
 	</select>
 	
 	<select id="listPaysnByCardid" resultType="java.util.List">
-		SELECT pay_sn FROM cc_gprs_pay WHERE card_id = #{card_id} AND pay_method > 0 AND is_paid = 1
+		SELECT pay_sn FROM cc_gprs_pay WHERE card_id = #{card_id} 
+	</select>
+	
+	<select id="isBuyOtherGprs" resultType="java.util.List">
+	
+		SELECT pay_sn FROM cc_gprs_pay WHERE card_id = #{card_id} AND pay_method > 0 AND is_paid = 1 AND gprs_amount != 0.02
 	</select>
 	
 	<update id="updatePayMethodByCardid" >
