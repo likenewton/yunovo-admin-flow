@@ -37,7 +37,7 @@ public class MoveController extends BaseController{
 			@ApiImplicitParam(name = "date_start", value = "迁移时间-开始日期（YYYY-MM-DD）", required = false, dataType = "String",paramType = "query"),
 			@ApiImplicitParam(name = "date_end", value = "迁移时间-结束日期（YYYY-MM-DD）", required = false, dataType = "String",paramType = "query")
 			})
-	@RequestMapping(path="/",method= {RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(path="/history",method= {RequestMethod.GET, RequestMethod.POST})
 	public Result<PageData<CcGprsMove, Object>> list(PageForm form, String card_iccid, Integer org_id, String date_start,
 			String date_end, String old_card_iccid) {
 		
@@ -46,7 +46,7 @@ public class MoveController extends BaseController{
 	}
 	
 	@ApiOperation(value="业务管理-流量卡重置")
-	@RequestMapping(path="/card",method= {RequestMethod.POST})
+	@RequestMapping(path="/",method= {RequestMethod.POST})
 	public Result<String> move(@RequestBody GprsMoveForm form) {
 		
 		iCcGprsMoveService.move(form, this.getLoginBaseInfo());
