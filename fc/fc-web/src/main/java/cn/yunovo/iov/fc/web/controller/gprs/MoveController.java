@@ -12,7 +12,6 @@ import cn.yunovo.iov.fc.common.utils.ResultUtil;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcGprsMove;
-import cn.yunovo.iov.fc.model.entity.CcResetLog;
 import cn.yunovo.iov.fc.model.form.GprsMoveForm;
 import cn.yunovo.iov.fc.service.ICcGprsMoveService;
 import cn.yunovo.iov.fc.web.controller.BaseController;
@@ -49,6 +48,7 @@ public class MoveController extends BaseController{
 	@RequestMapping(path="/",method= {RequestMethod.POST})
 	public Result<String> move(@RequestBody GprsMoveForm form) {
 		
+		form.validate();
 		iCcGprsMoveService.move(form, this.getLoginBaseInfo());
 		return ResultUtil.successCN(null);
 	}
