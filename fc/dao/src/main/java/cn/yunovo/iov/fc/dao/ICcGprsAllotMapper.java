@@ -30,4 +30,22 @@ public interface ICcGprsAllotMapper extends BaseMapper<CcGprsAllot> {
 	public int addAssignedMonthById(@Param("allot_id")Integer allot_id);
 	
 	public int updateTimeExpireByCardidAndTimeexpire(@Param("card_id")Integer card_id);
+	
+	/**
+	 * 获取与判断充值卡是否已拥有此套餐，如果有则增加充值有效周期
+	 * @param card_id
+	 * @param allot_value
+	 * @return
+	 */
+	public int getAllotIdByCardidAndValueAndTimeexpire(@Param("card_id")Integer card_id, @Param("allot_value")Double allot_value);
+	
+	/**
+	 * 
+	 * @param live_month
+	 * @param allot_id 
+	 * @return
+	 */
+	public int updateTimeExpireById(@Param("live_month")Float live_month, @Param("allot_id")Integer allot_id);
+	
+	public int UpdateGprsAmountAndAllotMonthAndTimeExById(@Param("gprs_amount")Double gprs_amount, @Param("allot_month")Integer allot_month, @Param("live_month")Float live_month, @Param("allot_id")Integer allot_id);
 }

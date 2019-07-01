@@ -4,6 +4,10 @@ import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcGprsGift;
+import cn.yunovo.iov.fc.model.form.GprsGiftForm;
+import cn.yunovo.iov.fc.model.result.CardGiftBean;
+
+import java.util.List;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -30,4 +34,12 @@ public interface ICcGprsGiftService extends IService<CcGprsGift> {
 	 */
 	PageData<CcGprsGift, Object> getItemsPage(PageForm form, Integer org_id, String card_iccid, String date_start,
 			String date_end, LoginInfo info);
+
+	/**
+	 * 流量赠送
+	 * @param form
+	 * @param info
+	 * @return
+	 */
+	List<CardGiftBean> gift(GprsGiftForm form, LoginInfo info);
 }

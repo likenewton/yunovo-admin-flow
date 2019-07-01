@@ -1,7 +1,10 @@
 package cn.yunovo.iov.fc.web.controller.gprs;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,6 +14,8 @@ import cn.yunovo.iov.fc.common.utils.ResultUtil;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcGprsGift;
+import cn.yunovo.iov.fc.model.form.GprsGiftForm;
+import cn.yunovo.iov.fc.model.result.CardGiftBean;
 import cn.yunovo.iov.fc.service.ICcGprsGiftService;
 import cn.yunovo.iov.fc.web.controller.BaseController;
 import io.swagger.annotations.Api;
@@ -33,11 +38,23 @@ public class GprsGiftController extends BaseController{
 			@ApiImplicitParam(name = "date_start", value = "重置时间-开始日期（YYYY-MM-DD）", required = false, dataType = "String",paramType = "query"),
 			@ApiImplicitParam(name = "date_end", value = "重置时间-结束日期（YYYY-MM-DD）", required = false, dataType = "String",paramType = "query")
 			})
-	@RequestMapping(path="/",method= {RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(path="/history",method= {RequestMethod.GET, RequestMethod.POST})
 	public Result<PageData<CcGprsGift, Object>> list(PageForm form, String card_iccid, Integer org_id, String date_start,
 			String date_end) {
 		
 		PageData<CcGprsGift, Object>  data = iCcGprsGiftService.getItemsPage(form, org_id, card_iccid, date_start, date_end, this.getLoginBaseInfo());
 		return ResultUtil.success(data);
 	}
+	
+	@SuppressWarnings("unchecked")
+	@ApiOperation(value="业务管理-流量赠送接口")
+	@RequestMapping(path="/",method= {RequestMethod.GET, RequestMethod.POST})
+	public Result<List<CardGiftBean>> gift(@RequestBody GprsGiftForm form) {
+		
+		form.validate();
+		List<CardGiftBean>  data = iCcGprsGiftService.gift(form, this.getLoginBaseInfo());
+		return ResultUtil.success(data);
+	}
+	
+	
 }

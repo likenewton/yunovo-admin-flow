@@ -33,5 +33,20 @@
 	
 		UPDATE cc_gprs_allot SET time_expire = NOW() WHERE card_id = #{card_id} AND time_expire > NOW()
 	</select>
+	
+	<select id="getAllotIdByCardidAndValueAndTimeexpire" resultType="int">
+		SELECT allot_id FROM cc_gprs_allot WHERE card_id = #{card_id} AND allot_value = #{allot_value} AND time_expire > NOW()
+	</select>
+	
+	<update id="updateTimeExpireById">
+	
+		UPDATE cc_gprs_allot SET time_expire = DATE_ADD(IF(time_expire > NOW(), time_expire, NOW()), INTERVAL #{live_month} MONTH) WHERE allot_id = #{allot_id}
+	</update>
+	
+	<update id="UpdateGprsAmountAndAllotMonthAndTimeExById">
+	
+		UPDATE cc_gprs_allot SET gprs_amount = gprs_amount + #{gprs_amount}, allot_month = allot_month + #{allot_month},
+					time_expire = DATE_ADD(IF(time_expire > NOW(), time_expire, NOW()), #{live_month} MONTH) WHERE allot_id = #{allot_id}
+	</update>
 
 </mapper>

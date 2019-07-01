@@ -20,7 +20,7 @@ public abstract class BaseForm {
 		return (Validator) ApplicationContextProvider.getBean("hibernateValidator");
 	}
 	
-	public void validate(Class<? extends ValidateGroup>... groups) {
+	public void validate(@SuppressWarnings("unchecked") Class<? extends ValidateGroup>... groups) {
 		
 		Validator validator = this.validator();
 		Set<ConstraintViolation<BaseForm>>  errorSet = validator.validate(this, groups);

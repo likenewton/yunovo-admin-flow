@@ -47,17 +47,17 @@ public class PackController extends BaseController{
 	public Result<String> insert(@RequestBody GprsPackForm form) {
 		
 		form.validate(InsertGroupValidate.class);
-		form.setAllot_value(form.computeAllotValue());
+		form.setAllot_value(GprsPackForm.computeAllotValue(form.getGprs_amount(), form.getAllot_month()));
 		iCcGprsPackService.save(form, this.getLoginBaseInfo());
 		return ResultUtil.successCN(null);
 	}
 	
-	@ApiOperation(value="业务管理-套餐新增接口")
+	@ApiOperation(value="业务管理-套餐修改接口")
 	@RequestMapping(path="/update",method= {RequestMethod.POST})
 	public Result<String> update(@RequestBody GprsPackForm form) {
 		
 		form.validate(UpdateGroupValidate.class);
-		form.setAllot_value(form.computeAllotValue());
+		form.setAllot_value(GprsPackForm.computeAllotValue(form.getGprs_amount(), form.getAllot_month()));
 		iCcGprsPackService.update(form, this.getLoginBaseInfo());
 		return ResultUtil.successCN(null);
 	}

@@ -825,4 +825,47 @@
 	
 			UPDATE cc_gprs_pay SET pay_method = -1, time_expire = NOW() WHERE card_id = #{card_id}
 	</update>
+	
+	<insert id="savePay" parameterType="cn.yunovo.iov.fc.model.entity.CcGprsPay" >
+	
+		INSERT INTO cc_gprs_pay (
+			pay_sn,
+			card_id,
+			org_id,
+			pack_id,
+			gprs_amount,
+			gprs_price,
+			live_month,
+			pay_from,
+			pay_memo,
+			pay_method,
+			rebate_value,
+			rebate_money,
+			transfer_id,
+			is_paid,
+			time_paid,
+			time_added,
+			time_expire
+		)
+		VALUES
+			(
+			#{pay.pay_sn},
+			#{pay.card_id},
+			#{pay.org_id},
+			#{pay.pack_id},
+			#{pay.gprs_amount},
+			#{pay.gprs_price},
+			#{pay.live_month},
+			#{pay.pay_from},
+			#{pay.pay_memo},
+			#{pay.pay_method},
+			#{pay.rebate_value},
+			#{pay.rebate_money},
+			#{pay.transfer_id},
+			#{pay.is_paid},
+			#{pay.time_paid},
+			#{pay.time_added},
+			#{pay.time_expire}
+			)
+	</insert>
 </mapper>
