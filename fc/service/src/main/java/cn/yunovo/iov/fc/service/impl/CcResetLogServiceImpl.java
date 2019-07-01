@@ -158,6 +158,7 @@ public class CcResetLogServiceImpl extends ServiceImpl<ICcResetLogMapper, CcRese
 				if(card == null) {
 					temp = new CardRestBean();
 					temp.setIccid(iccid);
+					temp.setRet("2");
 					temp.setMsg("非本公司卡不可重置");
 					result.add(temp);
 					continue;
@@ -166,6 +167,7 @@ public class CcResetLogServiceImpl extends ServiceImpl<ICcResetLogMapper, CcRese
 				exeResult = iCcGprsAllotService.cardReset(card);
 				temp = new CardRestBean();
 				temp.setIccid(iccid);
+				temp.setRet(StringUtils.equals("ok", exeResult.getRet()) ? "0":"1");
 				temp.setMsg(arr_ret.get(exeResult.getRet()));
 				result.add(temp);
 				
@@ -174,6 +176,7 @@ public class CcResetLogServiceImpl extends ServiceImpl<ICcResetLogMapper, CcRese
 				temp = new CardRestBean();
 				temp.setIccid(iccid);
 				temp.setMsg("执行异常");
+				temp.setRet("1");
 				result.add(temp);
 				continue;
 			}

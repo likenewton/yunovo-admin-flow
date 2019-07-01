@@ -46,6 +46,7 @@ public class GprsCardResetController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@ApiOperation(value="业务管理-流量卡重置接口")
 	@RequestMapping(path="/gprs",method= {RequestMethod.POST})
 	public Result<List<CardRestBean>> cardReset(@RequestBody CardResetForm form) {

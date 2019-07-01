@@ -193,12 +193,16 @@ public class CcGprsGiftServiceImpl extends ServiceImpl<ICcGprsGiftMapper, CcGprs
 				if(card == null) {
 					temp.setIccid(iccid);
 					temp.setMsg(arr_ret.get("notfound"));
+					temp.setRet("2");
+					returnData.add(temp);
 					continue;
 				}
 				
 				if(!orgs.containsKey(card.getOrg_id().toString())) {
 					temp.setIccid(iccid);
 					temp.setMsg(arr_ret.get("notyour"));
+					temp.setRet("2");
+					returnData.add(temp);
 					continue;
 				}
 				
@@ -207,11 +211,13 @@ public class CcGprsGiftServiceImpl extends ServiceImpl<ICcGprsGiftMapper, CcGprs
 				 */
 				String topupresutl = this._topup(card, pack, form.getPack_mode());
 				temp.setIccid(iccid);
+				temp.setRet(StringUtils.equals("success", topupresutl) ? "0":"1");
 				temp.setMsg(arr_ret.get(topupresutl));
 			} catch (Exception e) {
 				
 				log.error("[gift][exception]params={form:{},user:{}},exception={}",form.buildJsonString(), JSONObject.toJSONString(info), ExceptionUtils.getStackTrace(e));
 				temp.setIccid(iccid);
+				temp.setRet("1");
 				temp.setMsg(arr_ret.get("exception"));
 			}
 			returnData.add(temp);
