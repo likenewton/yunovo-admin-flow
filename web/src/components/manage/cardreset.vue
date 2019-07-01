@@ -87,11 +87,11 @@
       <div slot>
         <div id="iccid_reset" style="width:100%;overflow: auto">
           <el-table :data="resetData" border resizable size="mini" :max-height="winHeight / 2.2">
-            <el-table-column prop="iccid" label="卡iccid" min-width="200"></el-table-column>
+            <el-table-column prop="iccid" label="卡iccid" min-width="200" show-overflow-tooltip></el-table-column>
             <el-table-column prop="msg" label="执行结果" min-width="200">
               <template slot-scope="scope">
-                <span class="text_danger bold" v-if="scope.row.msg.indexOf('不可重置') > -1">{{scope.row.msg}}</span>
-                <span class="text_warning bold" v-else-if="scope.row.msg.indexOf('无需重置') > -1">{{scope.row.msg}}</span>
+                <span class="text_danger bold" v-if="scope.row.ret === '2'">{{scope.row.msg}}</span>
+                <span class="text_warning bold" v-else-if="scope.row.ret === '1'">{{scope.row.msg}}</span>
                 <span class="text_success bold" v-else>{{scope.row.msg}}</span>
               </template>
             </el-table-column>
@@ -114,8 +114,11 @@ export default {
       rules: {
         iccids: [{
           required: true,
-          message: '请输入您需要重置的流量卡ICCID号',
+          message: '请输入您的流量卡ICCID号',
           trigger: 'blur'
+        }, {
+          validator: this.validateIccidCount,
+          trigger: ['blur']
         }]
       },
       resetData: [],
@@ -142,6 +145,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          this.ruleForm.iccids = this.ruleForm.iccids.split('\n').filter((v) => v.trim()).join('\n') // 去除为空的行
           // 验证通过
           _axios.send({
             method: 'post',
@@ -149,12 +153,16 @@ export default {
             data: this.ruleForm,
             done: ((res) => {
               this.dialogResetVisible = true
-              this.resetData = res.data
+              this.resetData = res.data || []
               this.resetForm('ruleForm')
+              let count = 0
+              this.resetData.forEach((v) => {
+                if (v.ret === '0') count++
+              })
               setTimeout(() => {
                 this.showMsgBox({
                   type: 'success',
-                  message: '批量重置操作成功！'
+                  message: `操作成功！本次重置 ${count} 张卡`
                 })
               }, 150)
             })
@@ -164,6 +172,16 @@ export default {
           return false;
         }
       })
+    },
+    validateIccidCount(rule, value, callback) {
+      let iccidList = value.split('\n').filter((v) => v.trim())
+      if (iccidList.length > 100) {
+        callback(new Error('一次最多处理100张iccid卡'))
+      } else if (iccidList.length === 0) {
+        callback(new Error('请输入您的流量卡ICCID号'))
+      } else {
+        callback()
+      }
     }
   },
   computed: {

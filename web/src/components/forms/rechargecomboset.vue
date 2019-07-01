@@ -193,7 +193,7 @@ export default {
                   setTimeout(() => {
                     this.showMsgBox({
                       type: 'success',
-                      message: res.msg || '新增成功！'
+                      message: res.msg || '编辑成功！'
                     })
                   }, 150)
                 }
@@ -213,7 +213,7 @@ export default {
                   setTimeout(() => {
                     this.showMsgBox({
                       type: 'success',
-                      message: res.msg || '编辑成功！'
+                      message: res.msg || '新增成功！'
                     })
                   }, 150)
                 }

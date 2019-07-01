@@ -178,7 +178,9 @@ module.exports = {
         htmlStr = `<span>${(count / 1024 / 1024).toFixed(fix)}</span><span style="font-weight:bold" class="text_danger">&nbsp;T</span>`
       }
     } else {
-      if (Math.abs(count / 1024) < 1) {
+      if (isNaN(count) || count == '99999999') {
+        htmlStr = '无限制'
+      } else if (Math.abs(count / 1024) < 1) {
         htmlStr = `${count.toFixed(fix)} M`
       } else if (Math.abs(count / 1024 / 1024) < 1) {
         htmlStr = `${(count / 1024).toFixed(fix)} G`
