@@ -1,5 +1,7 @@
 package cn.yunovo.iov.fc.service.impl;
 
+import cn.yunovo.iov.fc.common.utils.BusinessException;
+import cn.yunovo.iov.fc.common.utils.DateUtil;
 import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
 import cn.yunovo.iov.fc.dao.ICcGprsBatchMapper;
 import cn.yunovo.iov.fc.model.LoginInfo;
@@ -9,11 +11,14 @@ import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcGprsBatch;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
 import cn.yunovo.iov.fc.model.entity.CcResetLog;
+import cn.yunovo.iov.fc.model.form.CcGprsBatchForm;
+import cn.yunovo.iov.fc.model.result.GprsBatchBean;
 import cn.yunovo.iov.fc.service.FcConstant;
 import cn.yunovo.iov.fc.service.ICcGprsBatchService;
 import cn.yunovo.iov.fc.service.ICcNationService;
 import cn.yunovo.iov.fc.service.ICcOrgService;
 import cn.yunovo.iov.fc.service.ICcUserService;
+import lombok.extern.slf4j.Slf4j;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
@@ -29,6 +34,7 @@ import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
@@ -43,6 +49,7 @@ import org.springframework.util.CollectionUtils;
  * @since 2019-06-13
  */
 @Service
+@Slf4j
 @ConfigurationProperties(prefix = "fc.gprs")
 public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGprsBatch> implements ICcGprsBatchService {
 
@@ -200,6 +207,26 @@ public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGp
 			return NumberUtils.createDouble(cache);
 		}
 		
+	}
+	
+	
+	public Object save(List<GprsBatchBean> cards, CcGprsBatchForm form, LoginInfo info) {
+		
+		CcGprsBatch batch = new CcGprsBatch();
+		BeanUtils.copyProperties(form, batch);
+		batch.setTime_added(DateUtil.nowStr());
+		batch.setUser_id(info.getId());
+		if(!this.save(batch)) {
+			log.error("[save][保存批次信息出错]params={form:{},info:{}}", form.buildJsonString(), JSONObject.toJSONString(info));
+			throw new BusinessException(-1, "系统提示：保存批次信息出错");
+		}
+		
+		Integer batch_id = batch.getBatch_id();
+		if(!CollectionUtils.isEmpty(cards)) {
+			
+		}
+		
+		return null;
 	}
 	
 	

@@ -1,9 +1,10 @@
 package cn.yunovo.iov.fc.model.form;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import cn.yunovo.iov.fc.model.BaseForm;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -22,7 +23,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @ApiModel(value = "CcGprsBatchForm对象", description = "流量卡出货批次表单")
-public class CcGprsBatchForm implements Serializable {
+public class CcGprsBatchForm extends BaseForm implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -82,5 +83,8 @@ public class CcGprsBatchForm implements Serializable {
 
 	@ApiModelProperty(value = "车主绑定设备后赠送流量有效周期：>=1按月，(>0<1)*100按天")
 	private Float bind_live_month;
+	
+	@ApiModelProperty("文件")
+	private MultipartFile file;
 
 }
