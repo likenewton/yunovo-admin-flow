@@ -19,23 +19,23 @@
         <el-button size="small" type="success" @click="$router.push({ name: 'rechargecomboset' })">新增</el-button>
       </el-button-group>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
-        <el-table-column prop="org_id" label="机构名称" min-width="140" sortable="custom">
+        <el-table-column prop="org_id" label="机构名称" min-width="135" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="gprs_amount" label="套餐流量" min-width="100" sortable="custom" align="right">
+        <el-table-column prop="gprs_amount" label="套餐流量" min-width="88" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatComboFlow(scope.row.gprs_amount)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="gprs_price" label="套餐价格" min-width="100" sortable="custom" align="right">
+        <el-table-column prop="gprs_price" label="套餐价格" min-width="90" sortable="custom" align="right">
           <template slot-scope="scope">
             <span>￥{{formatMoney(scope.row.gprs_price)}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="allot_month" label="分配月数" min-width="90" sortable="custom" align="right"></el-table-column>
-        <el-table-column prop="allot_value" label="月均流量" min-width="100" sortable="custom" align="right">
+        <el-table-column prop="allot_month" label="分配月数" min-width="86" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="allot_value" label="月均流量" min-width="88" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatComboFlow(scope.row.allot_value)"></div>
           </template>
@@ -51,7 +51,7 @@
             <div>{{getLiveMonthAlias(scope.row.live_month)}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="套餐描述" min-width="250">
+        <el-table-column label="套餐描述" min-width="200">
           <template slot-scope="scope">
             <div>
               <span>{{scope.row.pack_name}}</span>
@@ -59,7 +59,7 @@
             <div style="font-size: 12px; line-height: 16px">{{scope.row.pack_memo}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="pack_rebate" label="返利金额" min-width="100" sortable="custom" align="right">
+        <el-table-column prop="pack_rebate" label="返利金额" min-width="90" sortable="custom" align="right">
           <template slot-scope="scope">
             <span>￥{{formatMoney(scope.row.pack_rebate)}}</span>
           </template>
@@ -72,17 +72,17 @@
         </el-table-column>
         <el-table-column prop="time_added" label="添加时间" min-width="155" sortable="custom"></el-table-column>
         <el-table-column prop="time_modify" label="更改时间" min-width="155" sortable="custom"></el-table-column>
-        <el-table-column prop="user_id" label="创建者" width="90" sortable="custom">
+        <el-table-column prop="user_id" label="创建者" width="75" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.first_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="alter_id" label="更改者" width="90" sortable="custom">
+        <el-table-column prop="alter_id" label="更改者" width="75" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.alter_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" width="105">
+        <el-table-column fixed="right" label="操作" width="88">
           <template slot-scope="scope">
             <el-button type="text" class="text_editor" @click="$router.push({name: 'rechargecomboset', query: {type: 'update', pack_id: scope.row.pack_id}})">编辑</el-button>
             <el-button type="text" class="text_danger" v-if="scope.row.pack_status==1" @click="checkComboStop(scope, 0)">停用</el-button>

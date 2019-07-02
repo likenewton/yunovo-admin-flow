@@ -37,12 +37,12 @@
             <span v-else class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="card_id" label="卡商名称" min-width="140" sortable="custom">
+        <el-table-column prop="card_id" label="卡商名称" min-width="135" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.card_type_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="org_id" label="所属机构" min-width="140" sortable="custom">
+        <el-table-column prop="org_id" label="所属机构" min-width="135" sortable="custom">
           <template slot-scope="scope" prop="org_name">
             <span class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
           </template>
@@ -66,12 +66,12 @@
         <el-table-column prop="time_active" label="激活时间" width="153" sortable="custom"></el-table-column>
         <el-table-column prop="time_last" label="设备更新时间" width="153" sortable="custom"></el-table-column>
         <el-table-column prop="time_stop" label="上次停用时间" width="153" sortable="custom"></el-table-column>
-        <el-table-column prop="time_expire" label="过期时间" width="210">
+        <el-table-column prop="time_expire" label="过期时间" width="153">
           <template slot-scope="scope">
             <div v-if="!scope.row.sums" v-html="calcLeftTime(scope.row.time_expire)"></div>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" width="100">
+        <el-table-column fixed="right" label="操作" width="90">
           <template slot-scope="scope" v-if="!scope.row.sums">
             <el-button type="text" @click="$refs.syncUniconData.getSyncUnicomData(scope)">同步</el-button>
             <el-button type="text" class="text_success" v-if="scope.row.unicom_stop" @click="checkCardStop(scope, 0)">启用</el-button>

@@ -5,40 +5,12 @@
         <el-form-item label="卡ICCID">
           <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20)" placeholder="请输入"></el-input>
         </el-form-item>
-        <el-form-item label="卡商名称">
-          <el-select v-model="formInline.card_type" filterable clearable placeholder="请选择">
-            <el-option v-for="(item, index) in cardTypes" :key="index" :label="item.label" :value="item.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="机构名称">
-          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择">
-            <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="激活状态">
-          <el-select v-model="formInline.status" filterable clearable placeholder="请选择">
-            <el-option v-for="(item, index) in activeSelect" :key="index" :label="item.label" :value="item.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="是否过期">
-          <el-select v-model="formInline.time_expire" filterable clearable placeholder="请选择">
-            <el-option v-for="(item, index) in exceedSelect" :key="index" :label="item.label" :value="item.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="运行状态">
-          <el-select v-model="formInline.unicom_stop" filterable clearable placeholder="请选择">
-            <el-option label="正常运行" value="0"></el-option>
-            <el-option label="已停卡" value="1"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="激活日期">
-          <el-date-picker v-model="formInline.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
-          <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
-        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="searchData">查询</el-button>
+          <el-button type="primary"  @click="searchVipVisible = true">高级查询</el-button>
           <el-button type="warning" @click="resetData">重置</el-button>
         </el-form-item>
+
       </el-form>
     </el-card>
     <el-card class="clearfix" shadow="never" v-loading="loadData">
@@ -48,7 +20,7 @@
         <el-button size="small" type="warning">导出</el-button>
       </el-button-group>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border size="mini">
-        <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" width="182" sortable="custom">
+        <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" width="178" sortable="custom">
           <template slot-scope="scope">
             <span class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
           </template>
@@ -63,42 +35,42 @@
             <span>{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="unicom_month" label="当月用量" width="105" sortable="custom" align="right">
+        <el-table-column prop="unicom_month" label="当月用量" width="100" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.unicom_month)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="unicom_total" label="累计用量" width="105" sortable="custom" align="right">
+        <el-table-column prop="unicom_total" label="累计用量" width="100" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.unicom_total)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="unicom_unused" label="剩余用量" width="105" sortable="custom" align="right">
+        <el-table-column prop="unicom_unused" label="剩余用量" width="100" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.unicom_unused)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="time_added" label="导卡时间" min-width="155" sortable="custom"></el-table-column>
-        <el-table-column prop="time_active" label="激活时间" min-width="155" sortable="custom"></el-table-column>
-        <el-table-column prop="time_last" label="设备更新时间" min-width="155" sortable="custom"></el-table-column>
-        <el-table-column prop="time_expire" label="过期时间" min-width="220" sortable="custom">
+        <el-table-column prop="time_added" label="导卡时间" min-width="151" sortable="custom"></el-table-column>
+        <el-table-column prop="time_active" label="激活时间" min-width="151" sortable="custom"></el-table-column>
+        <el-table-column prop="time_last" label="设备更新时间" min-width="151" sortable="custom"></el-table-column>
+        <el-table-column prop="time_expire" label="过期时间" min-width="151" sortable="custom">
           <template slot-scope="scope">
             <div v-html="calcLeftTime(scope.row.time_expire)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="unicom_stop" label="运行状态" width="85">
+        <el-table-column prop="unicom_stop" label="运行状态" width="78">
           <template slot-scope="scope">
             <span class="text_success bold" v-if="scope.row.unicom_stop==0">正常运行</span>
             <span class="text_danger bold" v-else>已停卡</span>
           </template>
         </el-table-column>
-        <el-table-column label="激活状态" width="75">
+        <el-table-column label="激活状态" width="70">
           <template slot-scope="scope">
             <span v-if="scope.row.time_active">已激活</span>
             <span v-else>未激活</span>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" width="145">
+        <el-table-column fixed="right" label="操作" width="125">
           <template slot-scope="scope">
             <el-button type="text" @click="$refs.syncUniconData.getSyncUnicomData(scope)">同步</el-button>
             <el-button type="text" @click="toUnicomLink(scope.row.card_iccid)">套餐</el-button>
@@ -118,6 +90,51 @@
       </div>
     </el-dialog>
     <v-sync-unicom-data ref="syncUniconData"></v-sync-unicom-data>
+    <el-dialog title="高级查询" :visible.sync="searchVipVisible">
+      <div slot>
+        <div class="searchForm_vip" style="width:100%;overflow: auto">
+          <el-form :inline="true" :model="formInline" size="small">
+            <el-form-item label="卡ICCID">
+              <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20)" placeholder="请输入"></el-input>
+            </el-form-item>
+            <el-form-item label="卡商名称">
+              <el-select v-model="formInline.card_type" filterable clearable placeholder="请选择">
+                <el-option v-for="(item, index) in cardTypes" :key="index" :label="item.label" :value="item.value"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="机构名称">
+              <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择">
+                <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="激活状态">
+              <el-select v-model="formInline.status" filterable clearable placeholder="请选择">
+                <el-option v-for="(item, index) in activeSelect" :key="index" :label="item.label" :value="item.value"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="是否过期">
+              <el-select v-model="formInline.time_expire" filterable clearable placeholder="请选择">
+                <el-option v-for="(item, index) in exceedSelect" :key="index" :label="item.label" :value="item.value"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="运行状态">
+              <el-select v-model="formInline.unicom_stop" filterable clearable placeholder="请选择">
+                <el-option label="正常运行" value="0"></el-option>
+                <el-option label="已停卡" value="1"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="激活日期">
+              <el-date-picker v-model="formInline.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
+              <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="searchData">查询</el-button>
+              <el-button type="warning" @click="resetData">重置</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>

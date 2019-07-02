@@ -120,6 +120,14 @@
   .caret-wrapper {
     width: 17px !important;
   }
+
+  .el-button--text {
+    margin-left: 2px;
+
+    &:first-of-type {
+      margin-left: 0;
+    }
+  }
 }
 
 .el-date-editor .el-range-separator {
@@ -156,4 +164,10 @@
 .editor-form {
   width: 50%;
   min-width: 750px;
+}
+
+.searchForm_vip {
+  .el-form {
+
+  }
 }

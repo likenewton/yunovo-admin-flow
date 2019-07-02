@@ -6,6 +6,7 @@ export default {
   data() {
     return {
       loadData: true,
+      searchVipVisible: true, // 是否显示高级查询dialog
       pageSizes: Api.STATIC.pageSizes,
       maxTableHeight: Api.UNITS.maxTableHeight(),
       list: {

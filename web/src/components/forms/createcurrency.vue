@@ -3,7 +3,7 @@
     <div slot="header" class="clearfix">
       <span>货币设置</span>
     </div>
-    <el-form class="editor-form" v-loading="loadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="140px" size="small" :status-icon="true">
+    <el-form class="editor-form" v-loading="loadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="140px" size="small">
       <el-form-item prop="title">
         <span slot="label">货币名称：</span>
         <el-input v-model="formInline.title" placeholder="请输入货币名称"></el-input>

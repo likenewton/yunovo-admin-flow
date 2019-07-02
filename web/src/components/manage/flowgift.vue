@@ -2,9 +2,9 @@
   <div class="flow_gift">
     <el-card class="reset-card" shadow="never">
       <el-tabs @tab-click="changeTab" v-model="tabIndex">
-        <el-tab-pane>
+        <el-tab-pane v-loading="loadData">
           <span slot="label">赠送流量</span>
-          <el-form class="editor-form" :model="formInline" :rules="rules" ref="ruleForm" label-width="126px" size="small" :status-icon="true">
+          <el-form class="editor-form" :model="formInline" :rules="rules" ref="ruleForm" label-width="126px" size="small">
             <el-form-item prop="iccids">
               <span slot="label">卡ICCID列表：</span>
               <el-input type="textarea" v-model="formInline.iccids" rows="4" placeholder="请输入卡ICCID"></el-input>

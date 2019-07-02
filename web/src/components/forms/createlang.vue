@@ -3,7 +3,7 @@
     <div slot="header" class="clearfix">
       <span>语言设置</span>
     </div>
-    <el-form class="editor-form" v-loading="isLoadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="120px" size="small" :status-icon="true">
+    <el-form class="editor-form" v-loading="isLoadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="120px" size="small">
       <el-form-item prop="lang_name">
         <span slot="label">语言名称：</span>
         <el-input v-model="formInline.lang_name" placeholder="请输入语言名称"></el-input>

@@ -49,7 +49,7 @@ class AXIOS {
       getCurrency: '/fc/api/system/currency/', // 货币列表
       getCards: '/fc/api/gprs/card/', // 流量卡
       getCardReset: '/fc/api/card/reset/', // 卡重置
-      getBatchs: '/fc/api/gprs/batch/', // 卡批次
+      getBatchs: '/fc/api/gprs/batch/history', // 卡批次
       getPacks: '/fc/api/gprs/pack/', // 流量套餐
       getGift: '/fc/api/gprs/gift/history', // 流量赠送
       getMoves: '/fc/api/gprs/move/history', // 流量迁移
@@ -101,6 +101,7 @@ class AXIOS {
       addResetGprs: '/fc/api/card/reset/gprs', // 卡重置
       addCardMove: '/fc/api/gprs/move/', // 卡迁移
       addGprsGift: '/fc/api/gprs/gift/', // 流量赠送
+      addBatch: '/fc/api/gprs/batch/insert', // 新建批次
       // 首页
       getPayCase: '/fc/api/home/payCase', // 数据看板
       getSiminfo: '/fc/api/home/siminfo', // 获取pie-card数据

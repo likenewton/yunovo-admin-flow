@@ -3,7 +3,7 @@
     <div slot="header" class="clearfix">
       <span>支付宝支付</span>
     </div>
-    <el-form class="editor-form" v-loading="loadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="140px" size="small" :status-icon="true">
+    <el-form class="editor-form" v-loading="loadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="140px" size="small">
       <el-form-item prop="alipay_partner">
         <span slot="label">签约账号：</span>
         <el-input v-model="formInline.alipay_partner"></el-input>

@@ -5,7 +5,7 @@
         <!-- 编辑项目 -->
         <el-tab-pane>
           <span slot="label"></i>编辑项目</span>
-          <el-form class="editor-form" v-loading="loadData" :inline="false" :model="formInline_0" :rules="rules_0" ref="ruleForm_0" label-width="140px" size="small" :status-icon="true">
+          <el-form class="editor-form" v-loading="loadData" :inline="false" :model="formInline_0" :rules="rules_0" ref="ruleForm_0" label-width="140px" size="small">
             <el-form-item prop="config_name">
               <span slot="label">系统名称：</span>
               <el-input v-model="formInline_0.config_name" placeholder="请输入系统名称"></el-input>
@@ -39,7 +39,7 @@
         <!-- 系统设置 -->
         <el-tab-pane>
           <span slot="label">系统设置</span>
-          <el-form class="editor-form" v-loading="loadData" :inline="false" :model="formInline_1" :rules="rules_1" ref="ruleForm_1" label-width="140px" size="small" :status-icon="true">
+          <el-form class="editor-form" v-loading="loadData" :inline="false" :model="formInline_1" :rules="rules_1" ref="ruleForm_1" label-width="140px" size="small">
             <el-form-item prop="config_title">
               <span slot="label">首页标题：</span>
               <el-input v-model="formInline_1.config_title" placeholder="请输入首页标题"></el-input>
@@ -69,7 +69,7 @@
         <!-- 本地化设置 -->
         <el-tab-pane>
           <span slot="label">本地化设置</span>
-          <el-form class="editor-form" v-loading="loadData" :inline="false" :model="formInline_2" :rules="rules_2" ref="ruleForm_2" label-width="220px" size="small" :status-icon="true">
+          <el-form class="editor-form" v-loading="loadData" :inline="false" :model="formInline_2" :rules="rules_2" ref="ruleForm_2" label-width="220px" size="small">
             <el-form-item prop="config_language">
               <span slot="label">前台语言：</span>
               <el-select v-model="formInline_2.config_language" placeholder="请选择">
@@ -113,7 +113,7 @@
         <!-- 邮件协议 -->
         <el-tab-pane>
           <span slot="label">邮件协议</span>
-          <el-form class="editor-form" v-loading="loadData" :inline="false" :model="formInline_3" :rules="rules_3" ref="ruleForm_3" label-width="140px" size="small" :status-icon="true">
+          <el-form class="editor-form" v-loading="loadData" :inline="false" :model="formInline_3" :rules="rules_3" ref="ruleForm_3" label-width="140px" size="small">
             <el-form-item prop="config_mail_protocol">
               <span slot="label">邮件协议：</span>
               <el-select v-model="formInline_3.config_mail_protocol" placeholder="请选择邮件协议">
@@ -156,7 +156,7 @@
         <!-- 服务器设置 -->
         <el-tab-pane>
           <span slot="label">服务器设置</span>
-          <el-form class="editor-form" v-loading="loadData" :inline="false" :model="formInline_4" :rules="rules_4" ref="ruleForm_4" label-width="170px" size="small" :status-icon="true">
+          <el-form class="editor-form" v-loading="loadData" :inline="false" :model="formInline_4" :rules="rules_4" ref="ruleForm_4" label-width="170px" size="small">
             <el-form-item prop="config_use_ssl">
               <span slot="label">使用 SSL：</span>
               <el-radio v-model="formInline_4.config_use_ssl" label="1">是</el-radio>

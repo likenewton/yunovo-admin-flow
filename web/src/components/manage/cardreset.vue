@@ -2,7 +2,7 @@
   <div class="card_reset">
     <el-card shadow="never">
       <el-tabs @tab-click="changeTab" v-model="tabIndex">
-        <el-tab-pane>
+        <el-tab-pane v-loading="loadData">
           <span slot="label">重置操作</span>
           <el-form class="editor-form" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="126px" size="small">
             <el-form-item prop="iccids">
@@ -145,6 +145,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          this.loadData = true
           this.ruleForm.iccids = this.ruleForm.iccids.split('\n').filter((v) => v.trim()).join('\n') // 去除为空的行
           // 验证通过
           _axios.send({
@@ -152,6 +153,7 @@ export default {
             url: _axios.ajaxAd.addResetGprs,
             data: this.ruleForm,
             done: ((res) => {
+              this.loadData = false
               this.dialogResetVisible = true
               this.resetData = res.data || []
               this.resetForm('ruleForm')

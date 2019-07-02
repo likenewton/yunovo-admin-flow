@@ -3,7 +3,7 @@
     <div slot="header" class="clearfix">
       <span>微信支付</span>
     </div>
-    <el-form class="editor-form" v-loading="loadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="190px" size="small" :status-icon="true">
+    <el-form class="editor-form" v-loading="loadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="190px" size="small">
       <el-form-item prop="wxpay_appid">
         <span slot="label">支付APPID：</span>
         <el-input v-model="formInline.wxpay_appid"></el-input>
