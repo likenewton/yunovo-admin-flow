@@ -173,43 +173,48 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 		DefaultTransactionDefinition definition = null;
 		TransactionStatus transactionStatus = null;
 		
+		/**
+		 * 分配流量卡拥有的未过期套餐
+		 */
 		for (CcGprsAllot ccGprsAllot : unAllotGprsPack) {
+			
+			temp = iCcGprsValueService.allotValueMapForHowmonth(ccGprsAllot.getCard_id(), ccGprsAllot.getAllot_id(), howMonth);
+			if(temp.containsKey(NumberUtils.createInteger(curt_month))) {//判断当前月是否已分配流量,如果已分配则无需分配
+				
+				value = new CcGprsValue();
+				value.setGprs_vid(temp.get(curt_month_int).getGprs_vid());
+				value.setTime_expire(ccGprsAllot.getTime_expire());
+				value.setTime_modify(DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+				if(!iCcGprsValueService.updateById(value)) {
+					log.warn("[gprsAllot][更新流量分配信息失败]params={value:{},gprsAllot:{}}", JSONObject.toJSONString(value), JSONObject.toJSONString(ccGprsAllot));
+				}
+				continue;
+			}
+			
+			if(temp.containsKey(last_month_int)) {
+				
+				value = temp.get(last_month_int);
+			
+			}else {
+				
+				value = new CcGprsValue();
+				value.setCard_id(ccGprsAllot.getCard_id());
+				value.setAllot_id(ccGprsAllot.getAllot_id());
+				value.setTime_expire(ccGprsAllot.getTime_expire());
+				value.setGprs_value(0.0);
+				value.setBalance_dval(0.0);
+				value.setBalance_value(0.0);
+			}
+			
+			value.setGprs_vid(null);
+			value.setHow_month(curt_month_int);
+			value.setTime_added(DateUtil.nowStr());
+			value.setTime_modify(null);
+			
 			definition = new DefaultTransactionDefinition();
 			definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
 			transactionStatus = clwTransactionManager.getTransaction(definition);
 			try {
-				temp = iCcGprsValueService.allotValueMapForHowmonth(ccGprsAllot.getCard_id(), ccGprsAllot.getAllot_id(), howMonth);
-				if(!CollectionUtils.isEmpty(temp) && temp.containsKey(curt_month)) {//判断当前月是否已分配流量,如果已分配则无需分配
-					
-					value = new CcGprsValue();
-					value.setGprs_vid(temp.get(curt_month_int).getGprs_vid());
-					value.setTime_expire(ccGprsAllot.getTime_expire());
-					value.setTime_modify(DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
-					if(!iCcGprsValueService.updateById(value)) {
-						log.warn("[gprsAllot][更新流量分配信息失败]params={value:{},gprsAllot:{}}", JSONObject.toJSONString(value), JSONObject.toJSONString(ccGprsAllot));
-					}
-					continue;
-				}
-				
-				if(temp.containsKey(last_month_int)) {
-					
-					value = temp.get(last_month_int);
-				
-				}else {
-					
-					value = new CcGprsValue();
-					value.setCard_id(ccGprsAllot.getCard_id());
-					value.setAllot_id(ccGprsAllot.getAllot_id());
-					value.setTime_expire(ccGprsAllot.getTime_expire());
-					value.setGprs_value(0.0);
-					value.setBalance_dval(0.0);
-					value.setBalance_value(0.0);
-				}
-				
-				value.setGprs_vid(null);
-				value.setHow_month(curt_month_int);
-				value.setTime_added(DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
-				value.setTime_modify(null);
 				
 				/**
 				 * 判断是否还有未分配的流量

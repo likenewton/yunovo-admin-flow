@@ -13,6 +13,7 @@ import cn.yunovo.iov.fc.service.ICcGprsValueService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -53,7 +54,7 @@ public class CcGprsValueServiceImpl extends ServiceImpl<ICcGprsValueMapper, CcGp
 		
 		List<CcGprsValue>  data = iCcGprsValueMapper.getByCardidAndAllotidAndHowmonth(card_id, allot_id, how_month);
 		if(CollectionUtils.isEmpty(data)) {
-			return null;
+			return Collections.emptyMap();
 		}
 		
 		Map<Integer, CcGprsValue> map = data.stream().collect(Collectors.toMap(CcGprsValue::getHow_month, Function.identity()));

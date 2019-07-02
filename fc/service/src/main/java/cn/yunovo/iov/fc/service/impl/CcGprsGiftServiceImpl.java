@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -72,6 +73,8 @@ public class CcGprsGiftServiceImpl extends ServiceImpl<ICcGprsGiftMapper, CcGprs
 		arr_ret.put("notyour", "非您机构的卡不可赠送");
 		arr_ret.put("unactivated", "暂未激活不可赠送");
 		arr_ret.put("exception", "流量赠送异常");
+		arr_ret.put("gprsAllotFail", "流量分配失败");
+		arr_ret.put("gprsCalculateFail", "流量计算失败");
 	}
 	
 	
@@ -259,9 +262,11 @@ public class CcGprsGiftServiceImpl extends ServiceImpl<ICcGprsGiftMapper, CcGprs
 		DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
 		definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
 		TransactionStatus transactionStatus = clwTransactionManager.getTransaction(definition);
-		
+		CcGprsPay pay = null;
 		try {
 			
+			pack.setCard_iccid(card.getCard_iccid());
+			pack.setCard_id(card.getCard_id());
 			/**
 			 * 增加赠送记录
 			 */
@@ -274,7 +279,7 @@ public class CcGprsGiftServiceImpl extends ServiceImpl<ICcGprsGiftMapper, CcGprs
 			/**
 			 * 增加流水支付记录
 			 */
-			CcGprsPay pay = new CcGprsPay();
+			pay = new CcGprsPay();
 			pay.setOrg_id(card.getOrg_id());
 			pay.setCard_id(card.getCard_id());
 			pay.setGprs_amount(pack.getGprs_amount());
@@ -344,8 +349,23 @@ public class CcGprsGiftServiceImpl extends ServiceImpl<ICcGprsGiftMapper, CcGprs
 			}
 			
 			clwTransactionManager.commit(transactionStatus);//所有流程处理正确提交时务成功到数据库
+			
+		}catch(Exception e) {
+			
+			log.error("[_topup][exception]params={card:{},pack:{}},exception={}", JSONObject.toJSONString(card), JSONObject.toJSONString(pack), ExceptionUtils.getStackTrace(e));
+			clwTransactionManager.rollback(transactionStatus);
+			return "fail";
+		}
+		
+		try {
 			iCcGprsAllotService.gprsAllot(card.getCard_id());//根据套餐分配流量
 			
+		} catch (Exception e) {
+			log.error("[_topup][exception]params={card:{},pack:{}},exception={}", JSONObject.toJSONString(card), JSONObject.toJSONString(pack), ExceptionUtils.getStackTrace(e));
+			return "gprsAllotFail";
+		}
+		
+		try {
 			/*
 			 * 流量卡的可使用流量增加,并重新计算可使用流量
 			 */
@@ -356,21 +376,23 @@ public class CcGprsGiftServiceImpl extends ServiceImpl<ICcGprsGiftMapper, CcGprs
 			gprs.setIs_unicom(false);
 			gprs.setOpen_card(true);
 			iCcGprsAllotService.gprsCalculate(card, gprs);
-			
-			/**
-			 * 充值成功通知队列
-			 */
+		} catch (Exception e) {
+			log.error("[_topup][exception]params={card:{},pack:{}},exception={}", JSONObject.toJSONString(card), JSONObject.toJSONString(pack), ExceptionUtils.getStackTrace(e));
+			return "gprsCalculateFail";
+		}
+		
+		/**
+		 * 充值成功通知队列
+		 */
+		try {
 			JSONObject pay_queue = new JSONObject();
 			pay_queue.put("payid", pay.getPack_id());
 			pay_queue.put("iccid", card.getCard_iccid());
 			jedisPoolUtil.lpush(FcConstant.PAY_QUEUE_CACHEKEY, pay_queue.toJSONString());
-			return "success";
-		}catch(Exception e) {
-			
-			log.error("[_topup][exception]params={card:{},pack:{}},exception={}", JSONObject.toJSONString(card), JSONObject.toJSONString(pack), ExceptionUtils.getStackTrace(e));
-			clwTransactionManager.rollback(transactionStatus);
-			return "fail";
+		} catch (Exception e) {
+			log.warn("[_topup][warn]params={card:{},pack:{}},exception={}", JSONObject.toJSONString(card), JSONObject.toJSONString(pack), ExceptionUtils.getStackTrace(e));
 		}
+		return "success";
 	}
 
 }
