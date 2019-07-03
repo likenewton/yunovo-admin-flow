@@ -71,17 +71,20 @@ public class CcGprsBatchForm extends BaseForm implements Serializable {
 	private Integer district_id;
 
 	@ApiModelProperty(value = "车联网设备入库批次编号")
-	private Integer clw_batch_id;
+	private Integer clw_batch_id = 0;
 
 	@NotNull(message="请填写流量值", groups= {InsertGroupValidate.class})
 	@DecimalMin(value = "0", message="请填写正确的流量值", groups= {InsertGroupValidate.class})
 	@ApiModelProperty(value = "套餐总量(MB)")
 	private Double gprs_amount;
-
 	
 	@ApiModelProperty(value = "分配几个月")
 	private Integer allot_month;
+	
+	@ApiModelProperty(value = "分配流量值(MB)")
+	private Double allot_value;
 
+	@Range(min = 0, max = 1, message="请填选择正确分的配流量是否清零", groups= {InsertGroupValidate.class})
 	@ApiModelProperty(value = "分配流量是否清零:0不清 1清零")
 	private Short allot_reset;
 
@@ -106,7 +109,7 @@ public class CcGprsBatchForm extends BaseForm implements Serializable {
 	private Double bind_value = 0D;
 
 	@ApiModelProperty(value = "车主绑定设备后赠送流量有效周期：>=1按月，(>0<1)*100按天")
-	private Float bind_live_month;
+	private Float bind_live_month = 0F;
 	
 	@NotNull(message="请填选择正确流量卡商", groups= {InsertGroupValidate.class})
 	@Range(min = 0, max = 5, message="请填选择正确流量卡商", groups= {InsertGroupValidate.class})

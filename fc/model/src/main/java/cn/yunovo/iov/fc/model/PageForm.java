@@ -37,6 +37,9 @@ public class PageForm implements Serializable {
      */
 	@ApiModelProperty(value="每页大少")
     private Integer size = 50;
+	
+	@ApiModelProperty(value="模糊搜索条件")
+	private String seach;
     
     /**
      * 当前页码
@@ -56,7 +59,6 @@ public class PageForm implements Serializable {
 			page.setDesc(this.getDescs());
 			page.setAsc(this.getAscs());
 		}
-		
 		page.setCurrent(this.getCurrent());
 		page.setSize(this.getSize());
 		
