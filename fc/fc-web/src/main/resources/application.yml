@@ -4,7 +4,7 @@ server:
     context-path: /fc
   tomcat: 
     uri-encoding: UTF-8
-BasePath: /fc
+#BasePath: /fc
 
 
 loging: 

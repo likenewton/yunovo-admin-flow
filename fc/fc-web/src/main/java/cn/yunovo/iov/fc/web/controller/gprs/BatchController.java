@@ -79,7 +79,7 @@ public class BatchController extends BaseController{
 
 	@ApiOperation(value="业务管理-流量卡批次信息变更接口")
 	@RequestMapping(path="/update",method= {RequestMethod.POST})
-	public Result<BatchSaveResultBean> update(CcGprsBatchForm form) {
+	public Result<BatchSaveResultBean> update(@RequestBody CcGprsBatchForm form) {
 		form.validate(UpdateGroupValidate.class);
 		
 		if(iCcGprsBatchService.updateBatchInfo(form, this.getLoginBaseInfo())) {
