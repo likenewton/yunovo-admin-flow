@@ -17,6 +17,7 @@ import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcGprsBatch;
 import cn.yunovo.iov.fc.model.entity.CcResetLog;
 import cn.yunovo.iov.fc.model.form.CcGprsBatchForm;
+import cn.yunovo.iov.fc.model.result.BatchSaveResultBean;
 import cn.yunovo.iov.fc.service.ICcGprsBatchService;
 import cn.yunovo.iov.fc.web.controller.BaseController;
 import io.swagger.annotations.Api;
@@ -51,8 +52,9 @@ public class BatchController extends BaseController{
 	
 	@ApiOperation(value="业务管理-流量卡批次新增接口")
 	@RequestMapping(path="/insert",method= {RequestMethod.POST})
-	public Result<PageData<CcGprsBatch, Object>> insert(@ModelAttribute CcGprsBatchForm form) {
-		//log.info("[inset]form={}", form.buildJsonString());
-		return ResultUtil.successCN(null);
+	public Result<BatchSaveResultBean> insert(@ModelAttribute CcGprsBatchForm form) {
+		
+		BatchSaveResultBean result = iCcGprsBatchService.saveBatch(form, this.getLoginBaseInfo());
+		return ResultUtil.successCN(result);
 	}
 }

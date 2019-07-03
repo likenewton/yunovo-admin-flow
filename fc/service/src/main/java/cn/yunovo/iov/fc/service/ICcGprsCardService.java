@@ -154,6 +154,16 @@ public interface ICcGprsCardService extends IService<CcGprsCard> {
 	public UnicomDataBean syncUnicomData(String card_sn, LoginInfo loginBaseInfo);
 
 	public boolean onoff(CardOnoffForm form, LoginInfo loginBaseInfo);
+
+	CcGprsCard getByIccidOnlyCache(String iccid);
+
+	int cacheCardInfo(CcGprsCard card);
+
+	/**
+	 * 请求流量卡缓存信息
+	 * @param iccid 流量卡iccid
+	 */
+	void removCardCacheInfo(String iccid);
 	
 	
 	

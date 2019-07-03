@@ -5,6 +5,8 @@ import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcGprsBatch;
+import cn.yunovo.iov.fc.model.form.CcGprsBatchForm;
+import cn.yunovo.iov.fc.model.result.BatchSaveResultBean;
 
 import java.util.List;
 
@@ -44,5 +46,7 @@ public interface ICcGprsBatchService extends IService<CcGprsBatch> {
 	CcGprsBatch getGiveInfoByBatchId(Integer batch_id);
 
 	Double getGprsAmountByBatchId(Integer batch_id);
+
+	BatchSaveResultBean saveBatch(CcGprsBatchForm form, LoginInfo info);
 	
 }

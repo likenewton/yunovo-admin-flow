@@ -4,27 +4,37 @@ import cn.yunovo.iov.fc.common.utils.BusinessException;
 import cn.yunovo.iov.fc.common.utils.DateUtil;
 import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
 import cn.yunovo.iov.fc.dao.ICcGprsBatchMapper;
+import cn.yunovo.iov.fc.dao.ICcGprsCardMapper;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcGprsBatch;
+import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
-import cn.yunovo.iov.fc.model.entity.CcResetLog;
 import cn.yunovo.iov.fc.model.form.CcGprsBatchForm;
+import cn.yunovo.iov.fc.model.result.BatchSaveResultBean;
 import cn.yunovo.iov.fc.model.result.GprsBatchBean;
 import cn.yunovo.iov.fc.service.FcConstant;
+import cn.yunovo.iov.fc.service.ICcCardLogService;
 import cn.yunovo.iov.fc.service.ICcGprsBatchService;
+import cn.yunovo.iov.fc.service.ICcGprsCardService;
 import cn.yunovo.iov.fc.service.ICcNationService;
 import cn.yunovo.iov.fc.service.ICcOrgService;
 import cn.yunovo.iov.fc.service.ICcUserService;
 import lombok.extern.slf4j.Slf4j;
 
+import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.ExcelReader;
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -39,6 +49,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * <p>
@@ -70,6 +81,15 @@ public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGp
 	
 	@Autowired
 	private JedisPoolUtil jedisPoolUtil;
+	
+	@Autowired
+	private ICcGprsCardMapper iCcGprsCardMapper;
+	
+	@Autowired
+	private ICcGprsCardService iCcGprsCardService;
+	
+	@Autowired
+	private ICcCardLogService iCcCardLogService;
 	
 	@Override
 	public PageData<CcGprsBatch, Object> getItemsPage(PageForm form, Integer org_id, String batch_sn, String date_start,
@@ -209,9 +229,38 @@ public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGp
 		
 	}
 	
-	
-	public Object save(List<GprsBatchBean> cards, CcGprsBatchForm form, LoginInfo info) {
+	@Override
+	public BatchSaveResultBean saveBatch(CcGprsBatchForm form, LoginInfo info) {
 		
+		InputStream is = null;
+		try {
+			is = form.getFile().getInputStream();
+		} catch (IOException e1) {
+			
+			form.setFile(null);
+			log.error("[save][文件读取失败]params={form:{},user:{}}", form.buildJsonString(), JSONObject.toJSONString(info));
+			throw new BusinessException(-1, "系统提示：文件读取失败");
+		}
+		
+		
+		//文件读取
+//		List<Object> datas = EasyExcelFactory.read(is, new Sheet(1, 0, GprsBatchBean.class));
+		List<GprsBatchBean> cards = new ArrayList<>();
+		
+		new ExcelReader(is, null, new AnalysisEventListener<GprsBatchBean>() {
+            @Override
+            public void invoke(GprsBatchBean object, AnalysisContext context) {
+            	if(StringUtils.isNotEmpty(object.getICCID())) {
+            		cards.add(object);
+            	}
+            }
+
+            @Override
+            public void doAfterAllAnalysed(AnalysisContext context) {
+            }
+        }, true).read(new Sheet(1, 1, GprsBatchBean.class));
+		
+		form.setFile(null);
 		CcGprsBatch batch = new CcGprsBatch();
 		BeanUtils.copyProperties(form, batch);
 		batch.setTime_added(DateUtil.nowStr());
@@ -221,12 +270,129 @@ public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGp
 			throw new BusinessException(-1, "系统提示：保存批次信息出错");
 		}
 		
+		CcGprsCard card_data = null;
+		CcGprsCard res = null;
 		Integer batch_id = batch.getBatch_id();
+		
+		if(batch_id == null || batch_id < 1 ) {
+			log.error("[save][保存批次信息出错,batch_id is null]params={form:{},info:{}}", form.buildJsonString(), JSONObject.toJSONString(info));
+			throw new BusinessException(-1, "系统提示：保存批次信息出错");
+		}
+		CcGprsCard cardCache = null;
+		JSONObject log_data = null;
+		BatchSaveResultBean bean = new BatchSaveResultBean();
+		Integer iccid_count = 0,success_count = 0, update_count = 0,failed_count = 0;
 		if(!CollectionUtils.isEmpty(cards)) {
+			iccid_count = cards.size();
+			List<String> failed_iccid = new ArrayList<>(), update_iccid = new ArrayList<>();
 			
+			for (GprsBatchBean gprsBatchBean : cards) {
+				card_data = new CcGprsCard();
+				card_data.setCard_type(form.getCard_type());
+				card_data.setCard_sn(gprsBatchBean.getMSISDN());
+				card_data.setCard_iccid(gprsBatchBean.getICCID());
+				card_data.setCard_imsi(gprsBatchBean.getIMSI());
+				/**
+				 * 如果导入ICCID卡已存在，则更新ICCID的相关信息
+				 */
+				res = iCcGprsCardMapper.getGprsCardByIccid(gprsBatchBean.getICCID());
+				if(res != null) {
+					
+					card_data.setBatch_id(batch_id);
+					card_data.setCard_id(res.getCard_id());
+					card_data.setOrg_id(batch.getOrg_id());
+					
+					/**
+					 * 如果ICCID卡已经激活使用，只需要更新机构编号与卡类型
+					 */
+					if(StringUtils.isEmpty(res.getTime_active())) {
+						
+						/**
+						 * 更新流量卡缓存
+						 */
+						cardCache = iCcGprsCardService.getByIccidOnlyCache(res.getCard_iccid());
+						if(cardCache != null) {
+							
+							cardCache.setBatch_id(batch_id);
+							cardCache.setOrg_id(card_data.getOrg_id());
+							cardCache.setCard_type(card_data.getCard_type());
+							iCcGprsCardService.cacheCardInfo(cardCache);
+							
+							card_data.setMax_unused(cardCache.getMax_unused() - 0.01);
+						}
+					}else {
+						
+						/**
+						 * 流量卡未激活需更新流量套餐、导卡时间
+						 */
+						card_data.setMax_unused(batch.getGprs_amount());
+						card_data.setUnicom_unused(batch.getGprs_amount());
+						card_data.setTime_added(DateUtil.nowStr());
+					}
+					
+					if(iCcGprsCardService.updateById(card_data)) {
+						update_count ++;
+						update_iccid.add(gprsBatchBean.getICCID());
+						
+						if(res.getOrg_id().intValue() != batch.getOrg_id().intValue()) {
+							//重新入库不同机构才记录变更机构日志
+							log_data = new JSONObject();
+							log_data.put("card_id", res.getCard_id());
+							log_data.put("org_id", res.getOrg_id());
+							log_data.put("org2id", batch.getOrg_id());
+							log_data.put("batch_id", batch_id);
+							log_data.put("live_month", batch.getLive_month());
+							log_data.put("gprs_amount", batch.getGprs_amount());
+							log_data.put("time_added", DateUtil.nowStr());
+							iCcCardLogService.log7Change(log_data);
+							
+						}
+					}
+					
+					iCcGprsCardService.removCardCacheInfo(res.getCard_iccid());
+					
+				}else {
+					
+					/**
+					 * 插入流量卡数据
+					 */
+					card_data.setBatch_id(batch_id);
+					card_data.setOrg_id(batch.getOrg_id());
+					card_data.setMax_unused(batch.getGprs_amount());
+					card_data.setUnicom_unused(batch.getGprs_amount());
+					card_data.setTime_added(DateUtil.nowStr());
+					if(iCcGprsCardService.save(card_data)) {
+						success_count ++;
+						if(card_data.getOrg_id() != 1) {//导入到非(自营)机构下的卡记录入库日志
+							iCcCardLogService.log1Storage(card_data, batch.getLive_month(), batch.getGprs_amount());
+						}
+						continue;
+					}
+					
+					failed_count ++;
+					failed_iccid.add(gprsBatchBean.getICCID());
+				}
+			}
+			
+			if(success_count == 0 && update_count == 0) {
+				this.removeById(batch_id);
+			}else {
+				iCcGprsBatchMapper.updateCardAmount();
+			}
+			form.setFile(null);
+			log.info("[save][批次录入记录]params={form:{},iccid_count:{},failed_count:{},update_count:{},success_count:{},failed_iccid:{},update_iccid:{},cards:{},user:{}}", 
+					form.buildJsonString(),iccid_count,failed_count,update_count,success_count, JSONObject.toJSONString(failed_iccid),JSONObject.toJSONString(update_iccid),
+					JSONObject.toJSONString(cards),JSONObject.toJSONString(info));
 		}
 		
-		return null;
+		
+		bean.setBatch_sn(batch.getBatch_sn());
+		bean.setFailed_count(failed_count);
+		bean.setIccid_count(iccid_count);
+		bean.setSuccess_count(success_count);
+		bean.setUpdate_count(update_count);
+		
+		return bean;
 	}
 	
 	

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import cn.yunovo.iov.fc.common.utils.BusinessException;
 import cn.yunovo.iov.fc.common.utils.DateUtil;
+import cn.yunovo.iov.fc.common.utils.math.MathUtils;
 import cn.yunovo.iov.fc.dao.ICcGprsPackMapper;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
@@ -19,11 +20,13 @@ import cn.yunovo.iov.fc.service.ICcOrgService;
 import cn.yunovo.iov.fc.service.ICcUserService;
 import lombok.extern.slf4j.Slf4j;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -228,4 +231,17 @@ public class CcGprsPackServiceImpl extends ServiceImpl<ICcGprsPackMapper, CcGprs
 		}
 	}
 
+	
+	/**
+	 * 格式化套餐有效周期
+	 *
+	 * @param float $live_month 有效周期
+	 * @return string 有效周期
+	 */
+	@Override
+	public String liveFormat(Float live_month) {
+		
+		return (live_month < 1) ? ((MathUtils.round(live_month, 2).intValue() * 100) + "天") : (live_month == 999 ? "无限期": live_month.intValue() + "个月" );
+	}
+	
 }

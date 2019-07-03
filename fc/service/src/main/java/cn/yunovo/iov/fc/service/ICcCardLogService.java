@@ -4,10 +4,12 @@ import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcCardLog;
+import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.CcGprsMove;
 import cn.yunovo.iov.fc.model.entity.CcOnoffLog;
 import cn.yunovo.iov.fc.model.entity.CcRealname;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -39,5 +41,9 @@ public interface ICcCardLogService extends IService<CcCardLog> {
 	 * @return
 	 */
 	boolean log8Move(CcGprsMove res);
+
+	public boolean log7Change(JSONObject log);
+
+	boolean log1Storage(CcGprsCard card_data, Float live_month, Double gprs_amount);
 	
 }

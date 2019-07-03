@@ -32,5 +32,7 @@ public interface ICcGprsPackService extends IService<CcGprsPack> {
 	CcGprsPack detail(Integer pack_id, LoginInfo info);
 
 	public void stop(GprsPackForm form, LoginInfo loginBaseInfo);
+
+	String liveFormat(Float live_month);
 	
 }

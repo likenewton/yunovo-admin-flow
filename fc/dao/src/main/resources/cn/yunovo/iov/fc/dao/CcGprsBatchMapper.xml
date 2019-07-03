@@ -53,4 +53,11 @@
 		SELECT give_value, give_live_month, gprs_amount FROM cc_gprs_batch WHERE batch_id = #{batch_id}
 	</select>
 	
+	<update id="updateCardAmount">
+	
+		UPDATE cc_gprs_batch B,
+		(SELECT batch_id, COUNT(batch_id) AS bnum FROM cc_gprs_card GROUP BY batch_id) G
+		SET B.card_amount = G.bnum WHERE B.batch_id = G.batch_id
+	</update>
+	
 </mapper>

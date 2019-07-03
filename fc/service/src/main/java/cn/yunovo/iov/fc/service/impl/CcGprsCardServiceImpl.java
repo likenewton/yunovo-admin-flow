@@ -537,6 +537,34 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 			}
 		}
 	}
+	
+	/**
+	 * 通过ICCID获取流量卡数据, 只从缓存中获取
+	 * @param iccid 流量卡号
+	 * @return 
+	 */
+	@Override
+	public CcGprsCard getByIccidOnlyCache(String iccid) {
+		
+		//iccid 的长度必须 >= 19位
+		if(StringUtils.isEmpty(iccid) || iccid.length() < 19) {
+			return null;
+		}
+		String cachekey = FcConstant.cardInfoKey(iccid);
+		CcGprsCard card = null;
+		String card_info = jedisPoolUtil.get(cachekey);
+		if(StringUtils.isEmpty(card_info)) {
+			
+			return null;
+		}else {
+			card = JSONObject.parseObject(card_info, CcGprsCard.class);
+			if(card == null || StringUtils.isEmpty(card.getCard_iccid())) {
+				return null;
+			}else {
+				return card;
+			}
+		}
+	}
 
 	private String buildCacheString(CcGprsCard card) {
 		
@@ -551,11 +579,22 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 		return JSONObject.toJSONString(data, SerializerFeature.WriteMapNullValue);
 	}
 	
+	@Override
+	public int cacheCardInfo(CcGprsCard card) {
+		
+		return jedisPoolUtil.setEx(FcConstant.cardInfoKey(card.getCard_iccid()), buildCacheString(card), 300 * 60);
+	}
+	
+	@Override
+	public void removCardCacheInfo(String iccid) {
+		
+		jedisPoolUtil.del(FcConstant.cardInfoKey(iccid));
+	}
 	
 	@Override
 	public boolean updateCard(CcGprsCard card) {
 
-		int isOk = jedisPoolUtil.setEx(FcConstant.cardInfoKey(card.getCard_iccid()), buildCacheString(card), 300 * 60);
+		int isOk = cacheCardInfo(card);
 		
 		if(isOk < 1) {
 			return this.updateById(card);
