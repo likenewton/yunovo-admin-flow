@@ -36,11 +36,11 @@
 		</choose>
 	
 		<if test="date_start != null">
-			<![CDATA[  AND time_added >= #{date_start} ]]>
+			<![CDATA[  AND stats_date >= #{date_start} ]]>
 		</if>
 
 		<if test="date_end != null">
-			<![CDATA[ AND time_added <= #{date_end} ]]>
+			<![CDATA[ AND stats_date <= #{date_end} ]]>
 		</if>
 		
 		 GROUP BY stats_date
