@@ -868,4 +868,24 @@
 			#{pay.time_expire}
 			)
 	</insert>
+	
+	
+	<select id="getAllMonth" resultType="java.lang.String">
+	
+		SELECT LEFT(time_added, 7) AS mdate FROM cc_gprs_pay  WHERE 1 = 1
+		<choose>
+			<when test='orgpos == "*"'>
+
+			</when>
+			<otherwise>
+				AND org_id IN
+				<foreach collection="orgs" item="id" index="index"
+					open="(" close=")" separator=",">
+					#{id}
+				</foreach>
+			</otherwise>
+		</choose>
+		
+		 GROUP BY mdate ORDER BY mdate DESC
+	</select>
 </mapper>

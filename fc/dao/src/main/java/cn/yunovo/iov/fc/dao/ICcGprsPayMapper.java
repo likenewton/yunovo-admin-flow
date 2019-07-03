@@ -141,5 +141,13 @@ public interface ICcGprsPayMapper extends BaseMapper<CcGprsPay> {
 	public List<String> isBuyOtherGprs(@Param("card_id")Integer card_id);
 	
 	public int savePay(@Param("pay")CcGprsPay pay);
+	
+	/**
+	 * 获取当前机构下所有月份
+	 * @param orgpos
+	 * @param orgs
+	 * @return
+	 */
+	public List<String> getAllMonth(@Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 
 }

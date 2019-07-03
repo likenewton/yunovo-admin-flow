@@ -19,6 +19,7 @@ import cn.yunovo.iov.fc.model.entity.CcResetLog;
 import cn.yunovo.iov.fc.model.form.CcGprsBatchForm;
 import cn.yunovo.iov.fc.model.form.GprsPackForm;
 import cn.yunovo.iov.fc.model.form.group.InsertGroupValidate;
+import cn.yunovo.iov.fc.model.form.group.UpdateGroupValidate;
 import cn.yunovo.iov.fc.model.result.BatchSaveResultBean;
 import cn.yunovo.iov.fc.service.ICcGprsBatchService;
 import cn.yunovo.iov.fc.web.controller.BaseController;
@@ -37,7 +38,7 @@ public class BatchController extends BaseController{
 	@Autowired
 	private ICcGprsBatchService iCcGprsBatchService;
 	
-	@ApiOperation(value="业务管理-流量卡重置历史查询接口")
+	@ApiOperation(value="业务管理-流量卡批次查询接口")
 	@ApiImplicitParams(value = { 
 			@ApiImplicitParam(name = "org_id", value = "机构id", required = false, dataType = "int",paramType = "query"),
 			@ApiImplicitParam(name = "batch_sn", value = "批次号", required = false, dataType = "String",paramType = "query"),
@@ -52,12 +53,44 @@ public class BatchController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
+	@ApiOperation(value="业务管理-流量批次详情接口")
+	@ApiImplicitParams(value = { 
+			@ApiImplicitParam(name = "batch_id", value = "批次id", required = false, dataType = "int",paramType = "query"),
+	})
+	@RequestMapping(path="/detail",method= {RequestMethod.GET, RequestMethod.POST})
+	public Result<CcGprsBatch> detail(Integer batch_id) {
+		
+		CcGprsBatch  data = iCcGprsBatchService.getInfoByBatchId(batch_id, this.getLoginBaseInfo());
+		return ResultUtil.success(data);
+	}
+	
+	
+	
 	@ApiOperation(value="业务管理-流量卡批次新增接口")
 	@RequestMapping(path="/insert",method= {RequestMethod.POST})
 	public Result<BatchSaveResultBean> insert(@ModelAttribute CcGprsBatchForm form) {
 		form.validate(InsertGroupValidate.class);
+		form.setBatch_id(null);
 		form.setAllot_value(GprsPackForm.computeAllotValue(form.getGprs_amount(), form.getAllot_month()));
 		BatchSaveResultBean result = iCcGprsBatchService.saveBatch(form, this.getLoginBaseInfo());
 		return ResultUtil.successCN(result);
 	}
+	
+
+	@ApiOperation(value="业务管理-流量卡批次信息变更接口")
+	@RequestMapping(path="/update",method= {RequestMethod.POST})
+	public Result<BatchSaveResultBean> update(CcGprsBatchForm form) {
+		form.validate(UpdateGroupValidate.class);
+		
+		if(iCcGprsBatchService.updateBatchInfo(form, this.getLoginBaseInfo())) {
+			
+			return ResultUtil.successCN(null);
+		}else {
+			return ResultUtil.build(-1, "更新批次信息失败");
+		}
+		//BatchSaveResultBean result = iCcGprsBatchService.saveBatch(form, this.getLoginBaseInfo());
+		//return ResultUtil.successCN(result);
+	}
+	
+	
 }

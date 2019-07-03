@@ -3,7 +3,6 @@ package cn.yunovo.iov.fc.model;
 import java.io.Serializable;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.util.CollectionUtils;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 

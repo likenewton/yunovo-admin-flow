@@ -48,5 +48,15 @@ public interface ICcGprsBatchService extends IService<CcGprsBatch> {
 	Double getGprsAmountByBatchId(Integer batch_id);
 
 	BatchSaveResultBean saveBatch(CcGprsBatchForm form, LoginInfo info);
+
+	/**
+	 * 通过批次id获取批次详情信息
+	 * @param batch_id
+	 * @param info
+	 * @return
+	 */
+	CcGprsBatch getInfoByBatchId(Integer batch_id, LoginInfo info);
+
+	boolean updateBatchInfo(CcGprsBatchForm form, LoginInfo info);
 	
 }

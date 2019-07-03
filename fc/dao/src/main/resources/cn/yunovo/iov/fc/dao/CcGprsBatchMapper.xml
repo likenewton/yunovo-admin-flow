@@ -49,6 +49,35 @@
 		</if>
 	</select>
 	
+	<select id="getInfoById" resultType="cn.yunovo.iov.fc.model.entity.CcGprsBatch" >
+		
+		SELECT
+			batch_id,batch_sn,batch_name,batch_memo,batch_shipper,card_amount,org_id,
+			user_id,alter_id,province_id,city_id,district_id,clw_batch_id,gprs_amount,
+			allot_month,allot_value,allot_reset,live_month,give_value,give_live_month,
+			wszl_value,wszl_live_month,bind_value,bind_live_month,time_added,time_modify
+		FROM
+			cc_gprs_batch
+		WHERE
+		    batch_id = #{batch_id}
+
+			
+			<choose>
+				<when test='orgpos == "*"'>
+
+				</when>
+				<otherwise>
+					AND org_id IN
+					<foreach collection="orgs" item="id" index="index"
+						open="(" close=")" separator=",">
+						#{id}
+					</foreach>
+				</otherwise>
+			</choose>
+		
+		
+	</select>
+	
 	<select id="getGiveInfoByBatchId" resultType="cn.yunovo.iov.fc.model.entity.CcGprsBatch">
 		SELECT give_value, give_live_month, gprs_amount FROM cc_gprs_batch WHERE batch_id = #{batch_id}
 	</select>

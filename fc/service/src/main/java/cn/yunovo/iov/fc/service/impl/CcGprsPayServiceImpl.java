@@ -1,5 +1,6 @@
 package cn.yunovo.iov.fc.service.impl;
 
+import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
 import cn.yunovo.iov.fc.dao.ICcGprsPayMapper;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
@@ -13,12 +14,14 @@ import cn.yunovo.iov.fc.model.result.PayCountResultBean;
 import cn.yunovo.iov.fc.model.result.PayListChartDataResultBean;
 import cn.yunovo.iov.fc.model.result.PayListTotalResulBean;
 import cn.yunovo.iov.fc.model.result.PayPackResultBean;
+import cn.yunovo.iov.fc.service.FcConstant;
 import cn.yunovo.iov.fc.service.ICcGprsCardService;
 import cn.yunovo.iov.fc.service.ICcGprsPayService;
 import cn.yunovo.iov.fc.service.ICcNotifyService;
 import cn.yunovo.iov.fc.service.ICcOrgService;
 import cn.yunovo.iov.fc.service.ICcUserService;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -65,6 +68,11 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 	
 	@Autowired
 	private ICcGprsCardService iCcGprsCardService;
+	
+	@Autowired
+	private JedisPoolUtil jedisPoolUtil;
+	
+	private final String GET_ALL_MONTH_SQL = "SELECT LEFT(time_added, 7) AS mdate FROM cc_gprs_pay  WHERE 1 = 1 AND org_id = %s GROUP BY mdate ORDER BY mdate DESC";
 	
 	@Override
 	public PageData<PayCountResultBean, PayCountResultBean> getPayCountPage(PageForm pageForm, Integer org_id, String date_start,
@@ -425,5 +433,42 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 		return data;
 	}
 	
+	public List<String> getAllMonth(LoginInfo info){
+		
+		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
+		
+		String cacheKey = FcConstant.memSqlKey(String.format(GET_ALL_MONTH_SQL, orgpos));
+		String cache = jedisPoolUtil.get(cacheKey);
+		
+		List<String> returnData = null;
+		
+		if(StringUtils.isEmpty(cache)) {
+			
+			returnData = iCcGprsPayMapper.getAllMonth(orgpos, orgpos.split(","));
+			if(!CollectionUtils.isEmpty(returnData)) {
+				
+				jedisPoolUtil.setEx(cacheKey, JSONObject.toJSONString(returnData));
+			}
+		}else {
+			returnData = JSONObject.parseArray(cache, String.class);
+		}
+		
+		return returnData;
+	}
 	
+	@Override
+	public List<SelectBean> monthSelect(LoginInfo info){
+		
+		List<String> months = this.getAllMonth(info);
+		if(CollectionUtils.isEmpty(months)) {
+			return null;
+		}
+		List<SelectBean> data = new ArrayList<>(months.size());
+		for (String string : months) {
+			data.add(new SelectBean(string,string));
+		}
+		
+		return data;
+		
+	}
 }

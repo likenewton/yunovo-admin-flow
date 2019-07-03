@@ -35,6 +35,10 @@ import lombok.experimental.Accessors;
 public class CcGprsBatchForm extends BaseForm implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	@NotNull(message="请选择您要变更的批次", groups= {UpdateGroupValidate.class})
+	@ApiModelProperty(value = "批次id,修改时该参数必传")
+	private Integer batch_id;
 
 	@NotEmpty(message="请填写批次编号", groups= {InsertGroupValidate.class,UpdateGroupValidate.class})
 	@Size(max=50, message="批次编号长度不能超过50个字", groups= {InsertGroupValidate.class,UpdateGroupValidate.class})

@@ -178,4 +178,12 @@ public class SelectController extends BaseController{
 		List<SelectBean> nation = iCcGprsBatchService.select();
 		return ResultUtil.success("ok", nation);
 	}
+	
+	@ApiOperation(notes="月度充值-充值月份下拉", value = "月度充值-充值月份下拉")
+	@RequestMapping(path="/api/select/payMonths", method= {RequestMethod.GET})
+	public Result<List<SelectBean>> payMonths() {
+		
+		List<SelectBean> nation = iCcGprsPayService.monthSelect(this.getLoginBaseInfo());
+		return ResultUtil.success("ok", nation);
+	}
 }

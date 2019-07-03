@@ -43,6 +43,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -229,8 +230,7 @@ public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGp
 		
 	}
 	
-	@Override
-	public BatchSaveResultBean saveBatch(CcGprsBatchForm form, LoginInfo info) {
+	public List<GprsBatchBean> getCards(CcGprsBatchForm form, LoginInfo info){
 		
 		InputStream is = null;
 		try {
@@ -242,25 +242,67 @@ public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGp
 			throw new BusinessException(-1, "系统提示：文件读取失败");
 		}
 		
-		
+		form.setFile(null);
 		//文件读取
 //		List<Object> datas = EasyExcelFactory.read(is, new Sheet(1, 0, GprsBatchBean.class));
 		List<GprsBatchBean> cards = new ArrayList<>();
 		
-		new ExcelReader(is, null, new AnalysisEventListener<GprsBatchBean>() {
-            @Override
-            public void invoke(GprsBatchBean object, AnalysisContext context) {
-            	if(StringUtils.isNotEmpty(object.getICCID())) {
-            		cards.add(object);
-            	}
-            }
+		try {
+			new ExcelReader(is, null, new AnalysisEventListener<GprsBatchBean>() {
+			    @Override
+			    public void invoke(GprsBatchBean object, AnalysisContext context) {
+			    	if(StringUtils.isNotEmpty(object.getICCID())) {
+			    		cards.add(object);
+			    	}
+			    }
 
-            @Override
-            public void doAfterAllAnalysed(AnalysisContext context) {
-            }
-        }, true).read(new Sheet(1, 1, GprsBatchBean.class));
+			    @Override
+			    public void doAfterAllAnalysed(AnalysisContext context) {
+			    }
+			}, true).read(new Sheet(1, 1, GprsBatchBean.class));
+		}catch(Exception e){
+			log.error("[saveBatch][exception]exception={}",ExceptionUtils.getStackTrace(e));
+			throw new BusinessException("文件解析异常");
+		}finally {
+			try {
+				is.close();
+			} catch (IOException e) {
+				log.error("[saveBatch][exception]exception={}",ExceptionUtils.getStackTrace(e));
+			}
+		}
 		
-		form.setFile(null);
+		if(CollectionUtils.isEmpty(cards)) {
+			log.error("[save][导入的流量卡列表为空]params={form:{},info:{}}", form.buildJsonString(), JSONObject.toJSONString(info));
+			throw new BusinessException("导入的流量卡列表为空");
+		}
+		
+		//数据校验
+		for (GprsBatchBean bean : cards) {
+			
+			if(bean.getMSISDN() != null && bean.getMSISDN().length() > 15 ) {
+				log.error("[save][导入的数据中存在无效MSISDN]params={data:{},info:{}}", JSONObject.toJSONString(bean), JSONObject.toJSONString(info));
+				throw new BusinessException("导入的数据中存在无效的MSISDN【"+bean.getMSISDN()+"】");
+			}
+			
+			if(bean.getIMSI() != null && bean.getIMSI().length() > 15 ) {
+				log.error("[save][导入的数据中存在无效IMSI]params={data:{},info:{}}", JSONObject.toJSONString(bean), JSONObject.toJSONString(info));
+				throw new BusinessException("导入的数据中存在无效的IMSI【"+bean.getMSISDN()+"】");
+			}
+			
+			if(bean.getICCID() != null && (bean.getICCID().length() < 19 || bean.getICCID().length() > 20)) {
+				log.error("[save][导入的数据中存在无效ICCID]params={data:{},info:{}}", JSONObject.toJSONString(bean), JSONObject.toJSONString(info));
+				throw new BusinessException("导入的数据中存在无效的ICCID【"+bean.getICCID()+"】");
+			}
+		}
+		
+		return cards;
+	}
+	
+	@Override
+	public BatchSaveResultBean saveBatch(CcGprsBatchForm form, LoginInfo info) {
+		
+		List<GprsBatchBean> cards = getCards(form, info);
+		
 		CcGprsBatch batch = new CcGprsBatch();
 		BeanUtils.copyProperties(form, batch);
 		batch.setTime_added(DateUtil.nowStr());
@@ -393,6 +435,37 @@ public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGp
 		bean.setUpdate_count(update_count);
 		
 		return bean;
+	}
+	
+	@Override
+	public CcGprsBatch getInfoByBatchId(Integer batch_id, LoginInfo info) {
+		
+		if(batch_id == null) {
+			return null;
+		}
+		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
+		return iCcGprsBatchMapper.getInfoById(batch_id, orgpos, orgpos.split(","));
+	}
+	
+	@Override
+	public boolean updateBatchInfo(CcGprsBatchForm form, LoginInfo info) {
+		
+		CcGprsBatch batch = this.getInfoByBatchId(form.getBatch_id(), info);
+		if(batch == null) {
+			log.warn("[update][未找到对应的出货批次信息]params={form:{},info:{}}", form.buildJsonString(), info.buildJsonString());
+			throw new BusinessException(-1, "未找到对应的出货批次信息");
+		}
+		
+		batch.setAlter_id(info.getId());
+		batch.setBatch_sn(form.getBatch_sn());
+		batch.setBatch_name(form.getBatch_name());
+		batch.setBatch_memo(form.getBatch_memo());
+		batch.setBatch_shipper(form.getBatch_shipper());
+		batch.setProvince_id(form.getProvince_id());
+		batch.setCity_id(form.getCity_id());
+		batch.setDistrict_id(form.getDistrict_id());
+		batch.setTime_modify(DateUtil.nowStr());
+		return this.updateById(batch);
 	}
 	
 	

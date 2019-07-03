@@ -42,5 +42,13 @@ public interface ICcGprsPayService extends IService<CcGprsPay> {
 	PageData<MonthPayReportResultBean, OrgPayReportResultBean> getMonthCountPage(PageForm pageForm, Integer org_id, String mdate, LoginInfo info);
 	
 	Map<String, List<PayListChartDataResultBean>> getPaylogChart(Integer org_id, String pay_sn, String card_iccid, Integer card_id, Integer card_type, String transfer_id, Double gprs_amount, String pay_from, Short pay_method, Short is_paid, String date_start, String date_end, String  paid_start, String paid_end, LoginInfo info);
+
+	
+	/**
+	 * 月充值-月份下拉
+	 * @param info
+	 * @return
+	 */
+	List<SelectBean> monthSelect(LoginInfo info);
 	
 }
