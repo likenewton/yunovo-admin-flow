@@ -171,7 +171,8 @@ public class CcGprsGiftServiceImpl extends ServiceImpl<ICcGprsGiftMapper, CcGprs
 		Date time_expire = CcRealnameServiceImpl.liveMonthConverToExpireTime(form.getLive_month(), DateUtil.now());
 		// 初始套餐信息
 		CcGprsGift pack = new CcGprsGift();
-		pack.setUser_id(info.getId());
+//		pack.setUser_id(info.getId());
+		pack.setUser_id(0);
 		pack.setGprs_amount(form.getGprs_amount());
 		pack.setAllot_month(form.getAllot_month());
 		pack.setAllot_value(GprsPackForm.computeAllotValue(form.getGprs_amount(), form.getAllot_month()));

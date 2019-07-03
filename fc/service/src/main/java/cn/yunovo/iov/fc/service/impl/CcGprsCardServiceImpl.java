@@ -678,7 +678,8 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 		
 		boolean isSuccess = true;
 		try {
-			isSuccess = iCcGprsAllotService.cardOnoff(card, form.getStatus(), loginBaseInfo.getId(), loginBaseInfo.getLoginName());
+//			isSuccess = iCcGprsAllotService.cardOnoff(card, form.getStatus(), loginBaseInfo.getId(), loginBaseInfo.getLoginName());
+			isSuccess = iCcGprsAllotService.cardOnoff(card, form.getStatus(), 0, loginBaseInfo.getLoginName());
 		} catch (Exception e) {
 			
 			log.error("[onoff][exception]params={},logininfo={},exception={}", form.buildJsonString(), loginBaseInfo.buildJsonString(),ExceptionUtils.getStackTrace(e));

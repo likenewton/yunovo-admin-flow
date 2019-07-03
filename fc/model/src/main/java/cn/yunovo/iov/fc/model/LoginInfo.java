@@ -23,7 +23,7 @@ public class LoginInfo {
 	private String ucIndexUrl;
 	
 	@ApiModelProperty(value="用户id",dataType="String")
-	private Integer id;
+	private String id;
 	
 	@ApiModelProperty(value="机构代码",dataType="String")
 	private String organCode;

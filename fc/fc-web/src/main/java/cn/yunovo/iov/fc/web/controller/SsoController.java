@@ -3,6 +3,7 @@ package cn.yunovo.iov.fc.web.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.sunshine.dcda.system.service.model.SystemResourceVo;
 
 import cn.yunovo.iov.cas.client.authentication.AbstractClientAuthenticationFilter;
 import cn.yunovo.iov.cas.client.configuration.SpringCasProperties;
@@ -25,6 +27,7 @@ import cn.yunovo.iov.cas.client.util.TokenUtil;
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
 import cn.yunovo.iov.fc.model.LoginInfo;
+import cn.yunovo.iov.fc.service.ISystemResourceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -35,6 +38,9 @@ public class SsoController extends BaseController{
 
 	@Autowired
 	private SpringCasProperties springCasProperties;
+	
+	@Autowired
+	private ISystemResourceService iSystemResourceService;
 	
 	@GetMapping(path = "/isLogin", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "获取用户登录是否登录", notes="data = true, 表示用户属于已登录状态")
@@ -108,5 +114,28 @@ public class SsoController extends BaseController{
 		
 	}
 	
+
+	/**
+	 * 获取登录菜单信息
+	 * @return
+	 */
+	@ApiOperation(notes="获取当前用户菜单列表", value = "获取当前用户菜单列表")
+	@GetMapping(path = "/menus", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Result<List<SystemResourceVo>> menus() {
+		
+		List<SystemResourceVo> menus = iSystemResourceService.menus(this.getLoginBaseInfo().getId());
+		return ResultUtil.success(menus);
+	}
 	
+	/**
+	 * 获取登录菜单信息
+	 * @return
+	 */
+	@ApiOperation(notes="获取当前用户对应按钮权限", value = "获取当前用户对应按钮权限")
+	@GetMapping(path = "/buttons", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Result<List<SystemResourceVo>> buttons(String super_resource_id) {
+		
+		List<SystemResourceVo> menus = iSystemResourceService.buttons(this.getLoginBaseInfo().getId(), super_resource_id);
+		return ResultUtil.success(menus);
+	}
 }

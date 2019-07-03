@@ -65,7 +65,7 @@ public class BaseController {
 		LoginInfo loginInfo = new LoginInfo();
 		loginInfo.setLoginName(String.valueOf(attr.get("loginName")));
 		loginInfo.setUserName(String.valueOf(attr.get("userName")));
-		loginInfo.setId(NumberUtils.createInteger(String.valueOf(attr.get("id"))));
+		loginInfo.setId(String.valueOf(attr.get("id")));
 		loginInfo.setOrganCode(String.valueOf(attr.get("organCode")));
 		return loginInfo;
 	}

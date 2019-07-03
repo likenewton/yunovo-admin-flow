@@ -182,7 +182,8 @@ public class CcResetLogServiceImpl extends ServiceImpl<ICcResetLogMapper, CcRese
 			}
 			
 			if(StringUtils.equals("ok", exeResult.getRet())) {
-				this.cardResetLog(card, info.getId(), info.getLoginName());
+				this.cardResetLog(card, 0, info.getLoginName());
+//				this.cardResetLog(card, info.getId(), info.getLoginName());
 			}
 		}
 		

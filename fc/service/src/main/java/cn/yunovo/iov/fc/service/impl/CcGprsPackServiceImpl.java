@@ -150,7 +150,8 @@ public class CcGprsPackServiceImpl extends ServiceImpl<ICcGprsPackMapper, CcGprs
 		BeanUtils.copyProperties(form, pack);
 		pack.setPack_id(null);
 		pack.setTime_added(DateUtil.nowStr());
-		pack.setUser_id(info.getId());
+//		pack.setUser_id(info.getId());
+		pack.setUser_id(0);
 		pack.setPack_status((short)1);
 		boolean  isOk = this.save(pack);
 		if(!isOk) {
@@ -196,7 +197,8 @@ public class CcGprsPackServiceImpl extends ServiceImpl<ICcGprsPackMapper, CcGprs
 		
 		CcGprsPack target = new CcGprsPack();
 		BeanUtils.copyProperties(form, target);
-		target.setAlter_id(info.getId());
+		target.setAlter_id(0);
+//		target.setAlter_id(info.getId());
 		target.setTime_modify(DateUtil.nowStr());
 		target.setPack_status(null);
 		boolean  isOk = this.updateById(target);
@@ -220,7 +222,8 @@ public class CcGprsPackServiceImpl extends ServiceImpl<ICcGprsPackMapper, CcGprs
 		}
 		
 		pack = new CcGprsPack();
-		pack.setAlter_id(info.getId());
+//		pack.setAlter_id(info.getId());
+		pack.setAlter_id(0);
 		pack.setPack_id(form.getPack_id());
 		pack.setPack_status(form.getPack_status() == null ? 0 : form.getPack_status());
 		boolean  isOk = this.updateById(pack);

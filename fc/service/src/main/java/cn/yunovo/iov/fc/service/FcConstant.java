@@ -4,6 +4,8 @@ package cn.yunovo.iov.fc.service;
 import cn.yunovo.iov.fc.common.utils.Md5Util;
 
 public class FcConstant {
+	
+	public final static String SITE_CODE = "FLOW_CLOUD_PLATFORM";
 
 	public final static String CACHE_RESOURCE_PREFIX = "GPRS-MEM-RES-";
 	public final static String CACHE_SQL_PREFIX_NEW = "GPRS-MEM-SQL-";
