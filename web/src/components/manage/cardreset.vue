@@ -19,17 +19,17 @@
         <el-tab-pane v-loading="loadData">
           <span slot="label"></i>重置历史</span>
           <el-form class="search-form" :inline="true" :model="formInline" size="small">
-            <el-form-item label="卡ICCID">
-              <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20)" placeholder="请输入"></el-input>
+            <el-form-item>
+              <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20)" @keyup.enter.native="searchData" placeholder="卡ICCID"></el-input>
             </el-form-item>
-            <el-form-item label="机构名称">
-              <el-select v-model="formInline.org_id" filterable placeholder="请选择">
+            <el-form-item>
+              <el-select v-model="formInline.org_id" filterable clearable placeholder="机构名称" @change="searchData">
                 <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="重置时间">
-              <el-date-picker v-model="formInline.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
-              <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
+            <el-form-item>
+              <el-date-picker v-model="formInline.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="重置时间开始"></el-date-picker> -
+              <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="选重置时间结束"></el-date-picker>
             </el-form-item>
             <el-form-item>
               <el-button size="small" type="primary" @click="searchData">查询</el-button>
@@ -86,7 +86,7 @@
     <el-dialog title="重置信息" :visible.sync="dialogResetVisible">
       <div slot>
         <div id="iccid_reset" style="width:100%;overflow: auto">
-          <el-table :data="resetData" border resizable size="mini" :max-height="winHeight / 2.2">
+          <el-table :data="resetResultData" border resizable size="mini" :max-height="winHeight / 2.2">
             <el-table-column prop="iccid" label="卡iccid" min-width="200" show-overflow-tooltip></el-table-column>
             <el-table-column prop="msg" label="执行结果" min-width="200">
               <template slot-scope="scope">
@@ -121,7 +121,7 @@ export default {
           trigger: ['blur']
         }]
       },
-      resetData: [],
+      resetResultData: [],
       dialogResetVisible: false
     }
   },
@@ -155,10 +155,10 @@ export default {
             done: ((res) => {
               this.loadData = false
               this.dialogResetVisible = true
-              this.resetData = res.data || []
+              this.resetResultData = res.data || []
               this.resetForm('ruleForm')
               let count = 0
-              this.resetData.forEach((v) => {
+              this.resetResultData.forEach((v) => {
                 if (v.ret === '0') count++
               })
               setTimeout(() => {

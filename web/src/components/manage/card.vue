@@ -1,46 +1,42 @@
 <template>
   <div class="card">
-    <el-card class="box-card search-card" style="margin-bottom: 20px" shadow="never">
-      <el-form :inline="true" :model="formInline" class="search-form" size="small">
-        <el-form-item label="卡ICCID">
-          <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20)" placeholder="请输入"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="searchData">查询</el-button>
-          <el-button type="primary"  @click="searchVipVisible = true">高级查询</el-button>
-          <el-button type="warning" @click="resetData">重置</el-button>
-        </el-form-item>
-
-      </el-form>
-    </el-card>
     <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
         <el-button size="small" type="primary" @click="showEcharts">图表</el-button>
         <el-button size="small" type="warning" @click="$router.push({name: 'cardbatch'})">导入</el-button>
         <el-button size="small" type="warning">导出</el-button>
       </el-button-group>
+      <el-form :inline="true" :model="formInline" class="search-form" size="small" @submit.native.prevent>
+        <el-form-item>
+          <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20)" @keyup.enter.native="simpleSearchData" placeholder="卡ICCID"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="simpleSearchData">查询</el-button>
+          <el-button type="primary" @click="searchVipVisible = true">高级查询</el-button>
+        </el-form-item>
+      </el-form>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border size="mini">
         <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" width="178" sortable="custom">
           <template slot-scope="scope">
             <span class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="card_type" label="卡商名称" min-width="130" sortable="custom">
+        <el-table-column prop="card_type" label="卡商名称" width="130" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.card_type_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="org_id" label="机构名称" min-width="135" sortable="custom">
+        <el-table-column prop="org_id" label="机构名称" min-width="130" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="unicom_month" label="当月用量" width="100" sortable="custom" align="right">
+        <el-table-column prop="unicom_month" label="当月用量" width="98" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.unicom_month)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="unicom_total" label="累计用量" width="100" sortable="custom" align="right">
+        <el-table-column prop="unicom_total" label="累计用量" width="98" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.unicom_total)"></div>
           </template>
@@ -50,10 +46,10 @@
             <div v-html="formatFlowUnit(scope.row.unicom_unused)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="time_added" label="导卡时间" min-width="151" sortable="custom"></el-table-column>
-        <el-table-column prop="time_active" label="激活时间" min-width="151" sortable="custom"></el-table-column>
-        <el-table-column prop="time_last" label="设备更新时间" min-width="151" sortable="custom"></el-table-column>
-        <el-table-column prop="time_expire" label="过期时间" min-width="151" sortable="custom">
+        <el-table-column prop="time_added" label="导卡时间" width="153" sortable="custom"></el-table-column>
+        <el-table-column prop="time_active" label="激活时间" width="153" sortable="custom"></el-table-column>
+        <el-table-column prop="time_last" label="设备更新时间" width="153" sortable="custom"></el-table-column>
+        <el-table-column prop="time_expire" label="过期时间" min-width="153" sortable="custom">
           <template slot-scope="scope">
             <div v-html="calcLeftTime(scope.row.time_expire)"></div>
           </template>
@@ -90,10 +86,10 @@
       </div>
     </el-dialog>
     <v-sync-unicom-data ref="syncUniconData"></v-sync-unicom-data>
-    <el-dialog title="高级查询" :visible.sync="searchVipVisible">
+    <el-dialog title="高级查询" :visible.sync="searchVipVisible" :width="searchVipWidth">
       <div slot>
         <div class="searchForm_vip" style="width:100%;overflow: auto">
-          <el-form :inline="true" :model="formInline" size="small">
+          <el-form :inline="false" :model="formInline" size="small" label-width="90px">
             <el-form-item label="卡ICCID">
               <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20)" placeholder="请输入"></el-input>
             </el-form-item>
@@ -144,9 +140,10 @@ const _echart = new Api.ECHARTS()
 export default {
   data() {
     return {
+      maxTableHeight: Api.UNITS.maxTableHeight(315),
       dialogChartLoadData: true,
       formInline: {
-        card_id: Api.UNITS.getQuery('card_id'),
+        card_iccid: Api.UNITS.getQuery('card_iccid'),
         org_id: Api.UNITS.getQuery('org_id')
       },
       dialogList: {
@@ -221,12 +218,32 @@ export default {
       this.dialogList.currentPage = val
       this.getEchartsData()
     },
+    // 简单查询
+    simpleSearchData() {
+      let card_iccid = this.formInline.card_iccid
+      this.formInline = {
+        card_iccid,
+        org_id: Api.UNITS.getQuery('org_id')
+      }
+      this.searchData()
+    },
     // 获取列表数据
     getData() {
       Api.UNITS.getListData({
         vue: this,
         url: _axios.ajaxAd.getCards
       })
+    },
+    resetData() {
+      this.list.currentPage = 1
+      this.formInline = {
+        card_iccid: Api.UNITS.getQuery('card_iccid'),
+        org_id: Api.UNITS.getQuery('org_id')
+      }
+      this.sort = {}
+      this.$refs.listTable.clearSort()
+      this.$refs.listTable.clearSelection()
+      this.getData()
     },
     showEcharts() {
       this.dialogChartVisible = true

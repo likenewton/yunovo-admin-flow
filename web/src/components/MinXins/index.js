@@ -6,12 +6,13 @@ export default {
   data() {
     return {
       loadData: true,
-      searchVipVisible: true, // 是否显示高级查询dialog
+      searchVipVisible: false, // 是否显示高级查询dialog
+      searchVipWidth: '400px',
       pageSizes: Api.STATIC.pageSizes,
       maxTableHeight: Api.UNITS.maxTableHeight(),
       list: {
         data: [],
-        pagesize: Api.STATIC.pageSizes[1],
+        pagesize: Api.STATIC.pageSizes[2],
         currentPage: 1,
         total: 0,
       },

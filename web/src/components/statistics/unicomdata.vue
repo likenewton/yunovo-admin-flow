@@ -1,30 +1,28 @@
 <template>
   <div>
-    <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
+    <el-card class="clearfix" style="margin-bottom: 20px" shadow="never" v-loading="loadData">
+      <el-button-group style="margin-bottom: 10px">
+        <el-button size="small" type="warning">导出</el-button>
+      </el-button-group>
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
-        <el-form-item label="机构名称">
-          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择机构">
+        <el-form-item>
+          <el-select v-model="formInline.org_id" filterable clearable placeholder="机构名称" @change="searchData">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="导卡日期">
-          <el-date-picker v-model="formInline.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
-          <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
+        <el-form-item>
+          <el-date-picker v-model="formInline.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="导卡日期开始"></el-date-picker> -
+          <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="导卡日期结束"></el-date-picker>
         </el-form-item>
-        <el-form-item label="激活日期">
-          <el-date-picker v-model="formInline.jstart" :picker-options="startDatePicker_2" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
-          <el-date-picker v-model="formInline.jend" :picker-options="endDatePicker_2" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
+        <el-form-item>
+          <el-date-picker v-model="formInline.jstart" :picker-options="startDatePicker_2" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="激活日期开始"></el-date-picker> -
+          <el-date-picker v-model="formInline.jend" :picker-options="endDatePicker_2" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="激活日期结束"></el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="searchData">查询</el-button>
           <el-button type="warning" @click="resetData">重置</el-button>
         </el-form-item>
       </el-form>
-    </el-card>
-    <el-card class="clearfix" style="margin-bottom: 20px" shadow="never" v-loading="loadData">
-      <el-button-group style="margin-bottom: 10px">
-        <el-button size="small" type="warning">导出</el-button>
-      </el-button-group>
       <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border size="mini" resizable>
         <el-table-column fixed="left" prop="org_id" label="机构名称" min-width="180" sortable="custom">
           <template slot-scope="scope">
@@ -57,8 +55,8 @@
         </el-table-column>
         <el-table-column fixed="right" label="导出" width="140">
           <template slot-scope="scope">
-            <el-button type="text" class="text_warning">已激活</el-button>
-            <el-button type="text" class="text_warning">未激活</el-button>
+            <el-button type="text" class="text_success">已激活</el-button>
+            <el-button type="text" class="text_danger">未激活</el-button>
           </template>
         </el-table-column>
       </el-table>

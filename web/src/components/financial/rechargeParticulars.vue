@@ -1,75 +1,29 @@
 <template>
   <div class="recharge_particulars">
-    <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
-      <el-form class="search-form" :inline="true" :model="formInline" size="small">
-        <el-form-item label="订单编号">
-          <el-input v-model="formInline.pay_sn" placeholder="请输入订单编号"></el-input>
-        </el-form-item>
-        <el-form-item label="卡ICCID">
-          <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20)" placeholder="请输入卡的iccid"></el-input>
-        </el-form-item>
-        <el-form-item label="支付流水号">
-          <el-input v-model="formInline.transfer_id" placeholder="请输入支付流水号"></el-input>
-        </el-form-item>
-        <el-form-item label="卡商名称">
-          <el-select v-model="formInline.card_type" filterable clearable placeholder="请选择卡商">
-            <el-option v-for="(item, index) in cardTypes" :key="index" :label="item.label" :value="item.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="机构名称">
-          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择机构">
-            <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="订单来源">
-          <el-select v-model="formInline.pay_from" filterable clearable placeholder="请选择订单来源">
-            <el-option v-for="(item, index) in notifysFrom" :key="index" :label="item.label" :value="item.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="支付状态">
-          <el-select v-model="formInline.is_paid" filterable clearable placeholder="请选择支付状态">
-            <el-option v-for="(item, index) in paySelect" :key="index" :label="item.label" :value="item.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="套餐流量">
-          <el-select v-model="formInline.gprs_amount" filterable clearable placeholder="请选择套餐流量">
-            <el-option v-for="(item, index) in gprsAmount" :key="index" :label="item.label" :value="item.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="充值日期">
-          <el-date-picker v-model="formInline.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
-          <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
-        </el-form-item>
-        <el-form-item label="付款日期">
-          <el-date-picker v-model="formInline.paid_start" :picker-options="startDatePicker_2" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
-          <el-date-picker v-model="formInline.paid_end" :picker-options="endDatePicker_2" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
-        </el-form-item>
-        <el-form-item label="付款方式">
-          <el-select v-model="formInline.pay_method" filterable clearable placeholder="请选择">
-            <el-option v-for="(item, index) in payMethodSelect" :key="index" :label="item.label" :value="item.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="searchData">查询</el-button>
-          <el-button type="warning" @click="resetData">重置</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
     <el-card class="box-card clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
         <el-button size="small" type="primary" @click="showEcharts()">图表</el-button>
         <el-button size="small" type="warning">导出明细</el-button>
         <el-button size="small" type="warning">导出快照</el-button>
       </el-button-group>
+      <el-form class="search-form" :inline="true" :model="formInline" size="small" @submit.native.prevent>
+        <el-form-item>
+          <el-input v-model="formInline.pay_sn" placeholder="订单编号" @keyup.enter.native="simpleSearchData"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="simpleSearchData">查询</el-button>
+          <el-button type="primary" @click="searchVipVisible = true">高级查询</el-button>
+        </el-form-item>
+      </el-form>
       <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border resizable size="mini">
-        <el-table-column prop="pay_sn" label="订单编号" width="137" sortable="custom"></el-table-column>
-        <el-table-column prop="card_iccid" label="ICCID卡" width="180" sortable="custom">
+        <el-table-column prop="pay_sn" label="订单编号" width="145" sortable="custom"></el-table-column>
+        <el-table-column prop="card_iccid" label="ICCID卡" width="178" sortable="custom">
           <template slot-scope="scope">
             <span v-if="scope.row.sums">{{scope.row.card_iccid}}</span>
             <span v-else class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="card_id" label="卡商名称" width="140" sortable="custom">
+        <el-table-column prop="card_id" label="卡商名称" width="135" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.card_type_name}}</span>
           </template>
@@ -119,6 +73,65 @@
       </el-pagination>
     </el-card>
     <v-dialog :dialogPara="dialogPara"></v-dialog>
+    <el-dialog title="高级查询" :visible.sync="searchVipVisible" :width="searchVipWidth">
+      <div slot>
+        <div class="searchForm_vip" style="width:100%;overflow: auto">
+          <el-form :inline="false" :model="formInline" size="small" label-width="100px">
+            <el-form-item label="订单编号">
+              <el-input v-model="formInline.pay_sn" placeholder="请输入订单编号"></el-input>
+            </el-form-item>
+            <el-form-item label="卡ICCID">
+              <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20)" placeholder="请输入卡的iccid"></el-input>
+            </el-form-item>
+            <el-form-item label="支付流水号">
+              <el-input v-model="formInline.transfer_id" placeholder="请输入支付流水号"></el-input>
+            </el-form-item>
+            <el-form-item label="卡商名称">
+              <el-select v-model="formInline.card_type" filterable clearable placeholder="请选择卡商">
+                <el-option v-for="(item, index) in cardTypes" :key="index" :label="item.label" :value="item.value"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="机构名称">
+              <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择机构">
+                <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="订单来源">
+              <el-select v-model="formInline.pay_from" filterable clearable placeholder="请选择订单来源">
+                <el-option v-for="(item, index) in notifysFrom" :key="index" :label="item.label" :value="item.value"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="支付状态">
+              <el-select v-model="formInline.is_paid" filterable clearable placeholder="请选择支付状态">
+                <el-option v-for="(item, index) in paySelect" :key="index" :label="item.label" :value="item.value"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="套餐流量">
+              <el-select v-model="formInline.gprs_amount" filterable clearable placeholder="请选择套餐流量">
+                <el-option v-for="(item, index) in gprsAmount" :key="index" :label="item.label" :value="item.value"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="付款方式">
+              <el-select v-model="formInline.pay_method" filterable clearable placeholder="请选择">
+                <el-option v-for="(item, index) in payMethodSelect" :key="index" :label="item.label" :value="item.value"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="充值日期">
+              <el-date-picker v-model="formInline.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
+              <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
+            </el-form-item>
+            <el-form-item label="付款日期">
+              <el-date-picker v-model="formInline.paid_start" :picker-options="startDatePicker_2" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
+              <el-date-picker v-model="formInline.paid_end" :picker-options="endDatePicker_2" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="searchData">查询</el-button>
+              <el-button type="warning" @click="resetData">重置</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -267,6 +280,15 @@ export default {
       this.sort = {} // 2、重置排序
       this.$refs.listTable.clearSort() // 3、清空排序样式
       this.getData()
+    },
+    // 简单查询
+    simpleSearchData() {
+      let pay_sn = this.formInline.pay_sn
+      this.formInline = { 
+        pay_sn,
+        org_id: Api.UNITS.getQuery('org_id')
+      }
+      this.searchData()
     },
     // 获取列表数据
     getData() {

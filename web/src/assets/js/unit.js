@@ -78,7 +78,6 @@ module.exports = {
     let list = para.vue[para.list || 'list']
     let sort = para.vue[para.sort || 'sort']
     let formInline = para.vue[para.formInline || 'formInline'] || []
-
     para.vue[para.loadData || 'loadData'] = true
     _axios.send({
       method: para.method || 'get',
@@ -332,7 +331,7 @@ module.exports = {
     if (attr) return queryObj[attr]
     else return queryObj
   },
-  maxTableHeight(leftHeight = 405) {
+  maxTableHeight(leftHeight = 315) {
     // let height = $(window).height() - (220 + 300000 / ($(window).height() + 1000))
     // if (height < 400) height = 400
     let winWidth = $(window).width()

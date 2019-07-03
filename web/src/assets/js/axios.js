@@ -18,10 +18,12 @@ class AXIOS {
       // 公共
       isLogin: '/fc/api/sso/isLogin',
       getLoginInfo: '/fc/api/sso/getLoginInfo',
+      getAuthMenu: '/fc/api/sso/menus',
       // 下拉列表
       getCardTypes: '/fc/api/select/api/select/cardTypes',
       getOrgs: '/fc/api/select/api/select/orgs',
       getMonths: '/fc/api/select/api/select/stats/getMonths',
+      getPayMonths: '/fc/api/select/api/select/payMonths',
       getNotifySelect: '/fc/api/select/api/select/notifyFrom/select',
       getPayMethodSelect: '/fc/api/select/api/select/payMethod/select',
       getComboFlow: '/fc/api/select/api/select/pack',
@@ -70,6 +72,7 @@ class AXIOS {
       getMonthUse: '/fc/api/gprs/card/monthUse',
       getCardDetail: '/fc/api/gprs/card/detail',
       getComboDetail: '/fc/api/gprs/pack/detail',
+      getBatchDetail: '/fc/api/gprs/batch/detail', // 编辑批次
       // 导出
       statsExport: '/fc/api/gprs/stats/export',
       // 实名审核
@@ -102,6 +105,7 @@ class AXIOS {
       addCardMove: '/fc/api/gprs/move/', // 卡迁移
       addGprsGift: '/fc/api/gprs/gift/', // 流量赠送
       addBatch: '/fc/api/gprs/batch/insert', // 新建批次
+      updateBatch: '/fc/api/gprs/batch/update', // 编辑批次
       // 首页
       getPayCase: '/fc/api/home/payCase', // 数据看板
       getSiminfo: '/fc/api/home/siminfo', // 获取pie-card数据
@@ -117,6 +121,7 @@ class AXIOS {
   send(para) {
     let data = Object.assign({}, this.constData, para)
     data.headers = Object.assign(this.constData.headers, para.headers || {
+      'Content-Type': 'application/json',
       'iov-token': localStorage.getItem('iov-token') || '' // 每次的请求都要在headers中携带token过去
     })
 

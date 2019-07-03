@@ -63,11 +63,12 @@ router.beforeEach((to, from, next) => {
       // 这里一定登录了
       if (store.state.authMenu.length === 0) {
         // 如果权限列表为空就从后台拉取菜单权限信息
+        // '../flowCenter/static/authMenu.json'
         _axios.send({
           method: 'get', // 模拟获取菜单权限
-          url: '../flowCenter/static/authMenu.json', // 这里因config/index.js中配置了flowCenter/static
+          url: _axios.ajaxAd.getAuthMenu,
           done: ((res) => {
-            let resources = res.userResources
+            let resources = res.data
             let asideData = Api.STATIC.asideData
             let authMenu = Api.UNITS.getAuthMenu(asideData, resources) // 这里将本地的asideData与后台提交的数据生成authMenu
             let dynamicMenuRoute = Api.UNITS.getMenuRoute(menuRoute, resources) // 这里将本地的菜单路由与后台提供的数据生成动态路由

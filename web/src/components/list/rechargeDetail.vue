@@ -15,23 +15,23 @@
         <el-tab-pane v-loading="loadData">
           <span slot="label"></i>充值详情列表</span>
           <el-form class="search-form" :inline="true" :model="formInline_0" size="small">
-            <el-form-item label="付款方式">
-              <el-select v-model="formInline_0.pay_method" clearable placeholder="请选择付款方式">
+            <el-form-item>
+              <el-select v-model="formInline_0.pay_method" clearable placeholder="付款方式" @change="searchData">
                 <el-option v-for="(item, index) in payMethodSelect" :key="index" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="支付状态">
-              <el-select v-model="formInline_0.is_paid" clearable placeholder="请选择支付状态">
+            <el-form-item>
+              <el-select v-model="formInline_0.is_paid" clearable placeholder="支付状态" @change="searchData">
                 <el-option v-for="(item, index) in paySelect" :key="index" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="充值日期">
-              <el-date-picker v-model="formInline_0.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
-              <el-date-picker v-model="formInline_0.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
+            <el-form-item>
+              <el-date-picker v-model="formInline_0.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="充值日期开始"></el-date-picker> -
+              <el-date-picker v-model="formInline_0.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="充值日期结束"></el-date-picker>
             </el-form-item>
-            <el-form-item label="付款日期">
-              <el-date-picker v-model="formInline_0.paid_start" :picker-options="startDatePicker_2" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
-              <el-date-picker v-model="formInline_0.paid_end" :picker-options="endDatePicker_2" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
+            <el-form-item>
+              <el-date-picker v-model="formInline_0.paid_start" :picker-options="startDatePicker_2" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="付款日期开始"></el-date-picker> -
+              <el-date-picker v-model="formInline_0.paid_end" :picker-options="endDatePicker_2" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="付款日期结束"></el-date-picker>
             </el-form-item>
             <el-form-item>
               <el-button size="small" type="primary" @click="searchData">查询</el-button>
@@ -226,7 +226,7 @@ export default {
     return {
       tabIndex: '0', // 当前激活的tab的下标值
       cardDetail: {},
-      maxTableHeight: Api.UNITS.maxTableHeight(410),
+      maxTableHeight: Api.UNITS.maxTableHeight(358),
       // 列表数据
       list_0: { // 充值详情列表
         data: [],

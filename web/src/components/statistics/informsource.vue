@@ -1,23 +1,21 @@
 <template>
   <div>
-    <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
+    <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
-        <el-form-item label="通知或来源">
-          <el-select v-model="formInline.ntf_type" filterable clearable placeholder="请选择">
+        <el-form-item>
+          <el-select v-model="formInline.ntf_type" filterable clearable placeholder="通知或来源" @change="searchData">
             <el-option v-for="(item, index) in notifysFrom" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="统计日期">
-          <el-date-picker v-model="formInline.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
-          <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
+        <el-form-item>
+          <el-date-picker v-model="formInline.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="选择开始日期"></el-date-picker> -
+          <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="选择结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="searchData">查询</el-button>
           <el-button type="warning" @click="resetData">重置</el-button>
         </el-form-item>
       </el-form>
-    </el-card>
-    <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column prop="ntf_date" label="统计日期" min-width="100" sortable="custom">
           <template slot-scope="scope">
@@ -70,9 +68,7 @@ import { mapState } from 'vuex'
 
 export default {
   data() {
-    return {
-      maxTableHeight: Api.UNITS.maxTableHeight(360)
-    }
+    return {}
   },
   mounted() {
     this.getData()

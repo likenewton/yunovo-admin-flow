@@ -1,9 +1,12 @@
 <template>
   <div>
-    <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
-      <el-form :inline="true" :model="formInline" class="search-form" size="small">
-        <el-form-item label="机构名称">
-          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择机构">
+    <el-card class="clearfix" shadow="never" v-loading="loadData">
+      <el-button-group style="margin-bottom: 10px">
+        <el-button size="small" type="warning">导出</el-button>
+      </el-button-group>
+      <el-form :inline="true" :model="formInline" class="search-form" size="small" @submit.native.prevent>
+        <el-form-item>
+          <el-select v-model="formInline.org_id" filterable clearable placeholder="机构名称" @change="searchData">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
@@ -12,11 +15,6 @@
           <el-button type="warning" @click="resetData">重置</el-button>
         </el-form-item>
       </el-form>
-    </el-card>
-    <el-card class="clearfix" shadow="never" v-loading="loadData">
-      <el-button-group style="margin-bottom: 10px">
-        <el-button size="small" type="warning">导出</el-button>
-      </el-button-group>
       <el-table ref="listTable" @sort-change="handleSortChange" :max-height="maxTableHeight" :data="list.data" border resizable size="mini">
         <el-table-column prop="org_id" fixed="left" label="机构名称" min-width="126" sortable="custom">
           <template slot-scope="scope">

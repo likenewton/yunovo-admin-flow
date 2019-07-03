@@ -1,28 +1,26 @@
 <template>
   <div class="combo_recharge">
-    <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
+    <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-form class="search-form" :inline="true" :model="formInline" size="small">
-        <el-form-item label="机构名称">
-          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择机构">
+        <el-form-item>
+          <el-select v-model="formInline.org_id" filterable clearable placeholder="机构名称" @change="searchData">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="付款方式">
-          <el-select v-model="formInline.pay_method" clearable placeholder="请选择付款方式">
+        <el-form-item>
+          <el-select v-model="formInline.pay_method" clearable placeholder="付款方式" @change="searchData">
             <el-option v-for="(item, index) in payMethodSelect" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="起止日期">
-          <el-date-picker v-model="formInline.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
-          <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
+        <el-form-item>
+          <el-date-picker v-model="formInline.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="开始日期"></el-date-picker> -
+          <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="searchData">查询</el-button>
           <el-button type="warning" @click="resetData">重置</el-button>
         </el-form-item>
       </el-form>
-    </el-card>
-    <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column prop="gprs_amount" label="套餐流量" min-width="110" sortable="custom" align="right">
           <template slot-scope="scope">
@@ -70,8 +68,7 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
-      tabIndex: '0',
-      maxTableHeight: Api.UNITS.maxTableHeight(360),
+      tabIndex: '0'
     }
   },
   mounted() {

@@ -1,29 +1,27 @@
 <template>
   <div class="card_batch">
-    <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
+    <el-card class="clearfix" shadow="never" v-loading="loadData">
+      <el-button-group style="margin-bottom: 10px">
+        <el-button size="small" type="success" @click="$router.push({ name: 'batchcreate' })">新增</el-button>
+      </el-button-group>
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
-        <el-form-item label="批次编号">
-          <el-input v-model="formInline.batch_sn" placeholder="请输入批次编号"></el-input>
+        <el-form-item>
+          <el-input v-model="formInline.batch_sn" placeholder="批次编号" @keyup.enter.native="searchData"></el-input>
         </el-form-item>
-        <el-form-item label="机构名称">
-          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择机构名称">
+        <el-form-item>
+          <el-select v-model="formInline.org_id" filterable clearable placeholder="机构名称" @change="searchData">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="添加时间">
-          <el-date-picker v-model="formInline.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
-          <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
+        <el-form-item>
+          <el-date-picker v-model="formInline.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="添加时间开始"></el-date-picker> -
+          <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="添加时间结束"></el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="searchData">查询</el-button>
           <el-button type="warning" @click="resetData">重置</el-button>
         </el-form-item>
       </el-form>
-    </el-card>
-    <el-card class="clearfix" shadow="never" v-loading="loadData">
-      <el-button-group style="margin-bottom: 10px">
-        <el-button size="small" type="success" @click="$router.push({ name: 'batchcreate' })">新增</el-button>
-      </el-button-group>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column prop="batch_sn" label="批次编号" width="105" sortable="custom"></el-table-column>
         <el-table-column prop="batch_name" label="批次名称" min-width="140" sortable="custom"></el-table-column>
@@ -63,7 +61,7 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="80">
           <template slot-scope="scope">
-            <el-button type="text" class="text_editor">编辑</el-button>
+            <el-button type="text" class="text_editor" @click="$router.push({name: 'batchcreate', query:{type:'update', batch_id: scope.row.batch_id}})">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>

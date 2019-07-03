@@ -1,17 +1,5 @@
 <template>
   <div>
-    <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
-      <el-form :inline="true" :model="formInline" class="search-form" size="small">
-        <el-form-item label="统计日期">
-          <el-date-picker v-model="formInline.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
-          <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="searchData">查询</el-button>
-          <el-button type="warning" @click="resetData">重置</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
     <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
         <el-button size="small" type="primary" @click="showEcharts('0')">支付图表</el-button>
@@ -19,6 +7,16 @@
         <el-button size="small" type="primary" @click="showEcharts('2')">激活图表</el-button>
         <el-button size="small" type="warning">导出</el-button>
       </el-button-group>
+      <el-form :inline="true" :model="formInline" class="search-form" size="small">
+        <el-form-item>
+          <el-date-picker v-model="formInline.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="统计日期开始"></el-date-picker> -
+          <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="统计日期结束"></el-date-picker>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="searchData">查询</el-button>
+          <el-button type="warning" @click="resetData">重置</el-button>
+        </el-form-item>
+      </el-form>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border size="mini" resizable>
         <el-table-column prop="stats_date" label="统计日期" width="95" sortable="custom">
           <template slot-scope="scope">

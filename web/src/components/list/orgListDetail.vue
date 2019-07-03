@@ -1,14 +1,14 @@
 <template>
   <div>
-    <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
+    <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
-        <el-form-item label="机构名称">
-          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择机构">
+        <el-form-item>
+          <el-select v-model="formInline.org_id" filterable clearable placeholder="机构名称" @change="searchData">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="通知或来源">
-          <el-select v-model="formInline.ntf_type" filterable clearable placeholder="请选择">
+        <el-form-item>
+          <el-select v-model="formInline.ntf_type" filterable clearable placeholder="通知或来源" @change="searchData">
             <el-option v-for="(item, index) in notifysFrom" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
@@ -17,8 +17,6 @@
           <el-button type="warning" @click="resetData">重置</el-button>
         </el-form-item>
       </el-form>
-    </el-card>
-    <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-table ref="listTable" @sort-change="handleSortChange" :max-height="maxTableHeight" :data="list.data" border resizable size="mini">
         <el-table-column prop="org_id" label="机构名称" min-width="220" sortable="custom">
           <template slot-scope="scope">
@@ -73,7 +71,6 @@ export default {
   data() {
     return {
       tabIndex: '0',
-      maxTableHeight: Api.UNITS.maxTableHeight(360),
       formInline: {
         ntf_date: Api.UNITS.getQuery('ntf_date')
       }

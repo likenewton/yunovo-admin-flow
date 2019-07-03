@@ -1,20 +1,17 @@
 <template>
   <div class="iccid_list">
-    <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
+    <el-card class="clearfix" shadow="never" v-loading="loadData">
+      <h3 class="page-title">{{orgName}}--机构充值明细</h3>
       <el-form class="search-form" :inline="true" :model="formInline" size="small">
-        <el-form-item label="起止日期">
-          <el-date-picker v-model="formInline.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
-          <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
+        <el-form-item>
+          <el-date-picker v-model="formInline.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="开始日期"></el-date-picker> -
+          <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="searchData">查询</el-button>
           <el-button type="warning" @click="resetData">重置</el-button>
-          <el-button @click="$router.back()">返回</el-button>
         </el-form-item>
       </el-form>
-    </el-card>
-    <el-card class="clearfix" shadow="never" v-loading="loadData">
-      <h3 class="page-title">{{orgName}}--机构充值明细</h3>
       <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" width="180" sortable="custom">
           <template slot-scope="scope">
@@ -112,8 +109,9 @@ export default {
   }
 
   .page-title {
+    display: inline-block;
     font-size: 16px;
-    margin: 0 0 10px 0;
+    margin-top: 15px;
     color: #333;
   }
 

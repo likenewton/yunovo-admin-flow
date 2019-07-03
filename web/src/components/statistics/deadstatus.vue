@@ -1,22 +1,25 @@
 <template>
   <div class="dead_status">
-    <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
+    <el-card class="clearfix" shadow="never" v-loading="loadData">
+      <el-button-group style="margin-bottom: 10px">
+        <el-button size="small" type="warning">导出</el-button>
+      </el-button-group>
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
-        <el-form-item label="卡ICCID">
-          <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20)" placeholder="请输入卡的iccid"></el-input>
+        <el-form-item>
+          <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20)" @keyup.enter.native="searchData" placeholder="卡ICCID"></el-input>
         </el-form-item>
-        <el-form-item label="卡商名称">
-          <el-select v-model="formInline.card_type" filterable clearable placeholder="请选择">
+        <el-form-item>
+          <el-select v-model="formInline.card_type" filterable clearable placeholder="卡商名称" @change="searchData">
             <el-option v-for="(item, index) in cardTypes" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="所属机构">
-          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择">
+        <el-form-item>
+          <el-select v-model="formInline.org_id" filterable clearable placeholder="所属机构" @change="searchData">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="是否过期">
-          <el-select v-model="formInline.time_expire" filterable clearable placeholder="请选择">
+        <el-form-item>
+          <el-select v-model="formInline.time_expire" filterable clearable placeholder="是否过期" @change="searchData">
             <el-option v-for="(item, index) in exceedSelect" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
@@ -25,11 +28,6 @@
           <el-button type="warning" @click="resetData">重置</el-button>
         </el-form-item>
       </el-form>
-    </el-card>
-    <el-card class="clearfix" shadow="never" v-loading="loadData">
-      <el-button-group style="margin-bottom: 10px">
-        <el-button size="small" type="warning">导出</el-button>
-      </el-button-group>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column fixed="left" prop="card_iccid" label="卡ICCID" width="178" sortable="custom">
           <template slot-scope="scope">
@@ -37,7 +35,7 @@
             <span v-else class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="card_id" label="卡商名称" min-width="135" sortable="custom">
+        <el-table-column prop="card_id" label="卡商名称" width="130" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.card_type_name}}</span>
           </template>
@@ -66,7 +64,7 @@
         <el-table-column prop="time_active" label="激活时间" width="153" sortable="custom"></el-table-column>
         <el-table-column prop="time_last" label="设备更新时间" width="153" sortable="custom"></el-table-column>
         <el-table-column prop="time_stop" label="上次停用时间" width="153" sortable="custom"></el-table-column>
-        <el-table-column prop="time_expire" label="过期时间" width="153">
+        <el-table-column prop="time_expire" label="过期时间" min-width="153">
           <template slot-scope="scope">
             <div v-if="!scope.row.sums" v-html="calcLeftTime(scope.row.time_expire)"></div>
           </template>

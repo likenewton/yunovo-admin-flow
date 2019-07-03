@@ -26,20 +26,20 @@
         <el-tab-pane>
           <span slot="label"></i>历史迁移</span>
           <el-form class="search-form" :inline="true" :model="searchForm" size="small">
-            <el-form-item label="旧卡ICCID">
-              <el-input v-model="searchForm.old_card_iccid" @input="searchForm.old_card_iccid = limitNumber(searchForm.old_card_iccid, 20)" placeholder="请输入旧卡ICCID"></el-input>
+            <el-form-item>
+              <el-input v-model="searchForm.old_card_iccid" @input="searchForm.old_card_iccid = limitNumber(searchForm.old_card_iccid, 20)" @keyup.enter.native="searchData" placeholder="旧卡ICCID"></el-input>
             </el-form-item>
-            <el-form-item label="新卡ICCID">
-              <el-input v-model="searchForm.card_iccid" @input="searchForm.card_iccid = limitNumber(searchForm.card_iccid, 20)" placeholder="请输入新卡ICCID"></el-input>
+            <el-form-item>
+              <el-input v-model="searchForm.card_iccid" @input="searchForm.card_iccid = limitNumber(searchForm.card_iccid, 20)" @keyup.enter.native="searchData" placeholder="新卡ICCID"></el-input>
             </el-form-item>
-            <el-form-item label="新卡机构">
-              <el-select v-model="searchForm.org_id" filterable clearable placeholder="请选择新卡机构">
+            <el-form-item>
+              <el-select v-model="searchForm.org_id" filterable clearable placeholder="新卡机构" @change="searchData">
                 <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="迁移时间">
-              <el-date-picker v-model="searchForm.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
-              <el-date-picker v-model="searchForm.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
+            <el-form-item>
+              <el-date-picker v-model="searchForm.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="迁移时间开始"></el-date-picker> -
+              <el-date-picker v-model="searchForm.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="迁移时间结束"></el-date-picker>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="searchData">查询</el-button>

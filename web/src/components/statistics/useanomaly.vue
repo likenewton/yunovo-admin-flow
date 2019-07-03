@@ -1,27 +1,30 @@
 <template>
   <div>
-    <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
+    <el-card class="clearfix" shadow="never" v-loading="loadData">
+      <el-button-group style="margin-bottom: 10px">
+        <el-button size="small" type="warning">导出</el-button>
+      </el-button-group>
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
-        <el-form-item label="卡ICCID">
-          <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20)" placeholder="请输入卡的iccid"></el-input>
+        <el-form-item>
+          <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20)" @keyup.enter.native="searchData" placeholder="卡ICCID"></el-input>
         </el-form-item>
-        <el-form-item label="卡商名称">
-          <el-select v-model="formInline.card_type" filterable clearable placeholder="请选择卡商">
+        <el-form-item>
+          <el-select v-model="formInline.card_type" filterable clearable placeholder="卡商名称" @change="searchData">
             <el-option v-for="(item, index) in cardTypes" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="机构名称">
-          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择机构">
+        <el-form-item>
+          <el-select v-model="formInline.org_id" filterable clearable placeholder="机构名称" @change="searchData">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="日差异流量">
-          <el-select v-model="formInline.unicom_diff" filterable clearable placeholder="请选择">
+        <el-form-item>
+          <el-select v-model="formInline.unicom_diff" filterable clearable placeholder="日差异流量" @change="searchData">
             <el-option v-for="(item, index) in unicomDiffSelect" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="剩余流量">
-          <el-select v-model="formInline.max_unused" filterable clearable placeholder="请选择">
+        <el-form-item>
+          <el-select v-model="formInline.max_unused" filterable clearable placeholder="剩余流量" @change="searchData">
             <el-option v-for="(item, index) in maxUnusedSelect" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
@@ -30,11 +33,6 @@
           <el-button type="warning" @click="resetData">重置</el-button>
         </el-form-item>
       </el-form>
-    </el-card>
-    <el-card class="clearfix" shadow="never" v-loading="loadData">
-      <el-button-group style="margin-bottom: 10px">
-        <el-button size="small" type="warning">导出</el-button>
-      </el-button-group>
       <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column fixed="left" prop="card_iccid" label="卡ICCID" width="180">
           <template slot-scope="scope">

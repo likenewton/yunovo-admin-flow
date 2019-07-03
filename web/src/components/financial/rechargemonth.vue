@@ -1,15 +1,15 @@
 <template>
   <div class="recharge_month">
-    <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
+    <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-form class="search-form" :inline="true" :model="formInline" size="small">
-        <el-form-item label="机构名称">
-          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择机构">
+        <el-form-item>
+          <el-select v-model="formInline.org_id" filterable clearable placeholder="机构名称" @change="searchData">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="月份">
-          <el-select v-model="formInline.mdate" filterable clearable placeholder="请选择月份">
-            <el-option v-for="(item, index) in months" :key="index" :label="item.label" :value="item.value"></el-option>
+        <el-form-item>
+          <el-select v-model="formInline.mdate" filterable clearable placeholder="月份" @change="searchData">
+            <el-option v-for="(item, index) in payMonths" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -17,8 +17,6 @@
           <el-button type="warning" @click="resetData">重置</el-button>
         </el-form-item>
       </el-form>
-    </el-card>
-    <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" :default-sort="defaultSort" border resizable size="mini">
         <el-table-column prop="org_id" label="机构名称" min-width="200" sortable="custom">
           <template slot-scope="scope">
@@ -83,12 +81,11 @@ export default {
       // 列表数据
       list: {
         data: [],
-        pagesize: Api.STATIC.pageSizes[2],
         currentPage: 1,
         total: 0,
       },
+      payMonths: [],
       defaultSort: { prop: 'org_id', order: 'ascending' },
-      maxTableHeight: Api.UNITS.maxTableHeight(360),
       chartConst: {
         '0': {
           title: '次数统计',
@@ -108,6 +105,7 @@ export default {
   },
   mounted() {
     // 有默认的排序，所以会执行一次handleSortChange，不用再getData了
+    this.getPayMonths()
   },
   methods: {
     changeTab(para) {
@@ -117,6 +115,15 @@ export default {
         this.myChart.resize()
       })
       this.setEchartOption()
+    },
+    getPayMonths() {
+      _axios.send({
+        method: 'get',
+        url: _axios.ajaxAd.getPayMonths,
+        done: ((res) => {
+          this.payMonths = res.data
+        })
+      })
     },
     // 获取列表数据
     getData() {

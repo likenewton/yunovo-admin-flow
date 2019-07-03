@@ -1,9 +1,12 @@
 <template>
   <div class="card_combo">
-    <el-card class="search-card" style="margin-bottom: 20px" shadow="never">
-      <el-form :inline="true" :model="formInline" class="search-form" size="small">
-        <el-form-item label="机构名称">
-          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择机构">
+    <el-card class="clearfix" shadow="never" v-loading="loadData">
+      <el-button-group style="margin-bottom: 10px">
+        <el-button size="small" type="success" @click="$router.push({ name: 'rechargecomboset' })">新增</el-button>
+      </el-button-group>
+      <el-form :inline="true" :model="formInline" class="search-form" size="small" @submit.native.prevent>
+        <el-form-item>
+          <el-select v-model="formInline.org_id" filterable clearable placeholder="机构名称" @change="searchData">
             <el-option :key="Newton" label="公共套餐" value="0"></el-option>
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
@@ -13,45 +16,40 @@
           <el-button type="warning" @click="resetData">重置</el-button>
         </el-form-item>
       </el-form>
-    </el-card>
-    <el-card class="clearfix" shadow="never" v-loading="loadData">
-      <el-button-group style="margin-bottom: 10px">
-        <el-button size="small" type="success" @click="$router.push({ name: 'rechargecomboset' })">新增</el-button>
-      </el-button-group>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
-        <el-table-column prop="org_id" label="机构名称" min-width="135" sortable="custom">
+        <el-table-column prop="org_id" label="机构名称" min-width="130" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="gprs_amount" label="套餐流量" min-width="88" sortable="custom" align="right">
+        <el-table-column prop="gprs_amount" label="套餐流量" width="95" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatComboFlow(scope.row.gprs_amount)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="gprs_price" label="套餐价格" min-width="90" sortable="custom" align="right">
+        <el-table-column prop="gprs_price" label="套餐价格" width="100" sortable="custom" align="right">
           <template slot-scope="scope">
             <span>￥{{formatMoney(scope.row.gprs_price)}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="allot_month" label="分配月数" min-width="86" sortable="custom" align="right"></el-table-column>
-        <el-table-column prop="allot_value" label="月均流量" min-width="88" sortable="custom" align="right">
+        <el-table-column prop="allot_month" label="分配月数" width="85" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="allot_value" label="月均流量" width="95" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatComboFlow(scope.row.allot_value)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="allot_reset" label="是否清零" min-width="90" sortable="custom">
+        <el-table-column prop="allot_reset" label="是否清零" width="85" sortable="custom">
           <template slot-scope="scope">
             <span v-if="scope.row.allot_reset==1">会清零</span>
             <span v-else>不清零</span>
           </template>
         </el-table-column>
-        <el-table-column prop="live_month" label="有效周期" min-width="120" sortable="custom">
+        <el-table-column prop="live_month" label="有效周期" width="120" sortable="custom">
           <template slot-scope="scope">
             <div>{{getLiveMonthAlias(scope.row.live_month)}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="套餐描述" min-width="200">
+        <el-table-column label="套餐描述" min-width="190">
           <template slot-scope="scope">
             <div>
               <span>{{scope.row.pack_name}}</span>
@@ -59,19 +57,19 @@
             <div style="font-size: 12px; line-height: 16px">{{scope.row.pack_memo}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="pack_rebate" label="返利金额" min-width="90" sortable="custom" align="right">
+        <el-table-column prop="pack_rebate" label="返利金额" width="90" sortable="custom" align="right">
           <template slot-scope="scope">
             <span>￥{{formatMoney(scope.row.pack_rebate)}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="pack_recom" label="是否推荐" min-width="95" sortable="custom">
+        <el-table-column prop="pack_recom" label="是否推荐" width="85" sortable="custom">
           <template slot-scope="scope">
             <span v-if="scope.row.pack_recom==1">是</span>
             <span v-else>否</span>
           </template>
         </el-table-column>
-        <el-table-column prop="time_added" label="添加时间" min-width="155" sortable="custom"></el-table-column>
-        <el-table-column prop="time_modify" label="更改时间" min-width="155" sortable="custom"></el-table-column>
+        <el-table-column prop="time_added" label="添加时间" width="153" sortable="custom"></el-table-column>
+        <el-table-column prop="time_modify" label="更改时间" width="153" sortable="custom"></el-table-column>
         <el-table-column prop="user_id" label="创建者" width="75" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.first_name}}</span>
