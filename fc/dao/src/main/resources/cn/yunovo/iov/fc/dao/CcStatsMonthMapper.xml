@@ -110,7 +110,7 @@
 			AND s.how_month = #{mdate}
 		</if>
 		
-		order by 
+		order by s.time_modify desc
 	</select>
 
 	<select id="queryItemsPageCount" resultType="Long">
