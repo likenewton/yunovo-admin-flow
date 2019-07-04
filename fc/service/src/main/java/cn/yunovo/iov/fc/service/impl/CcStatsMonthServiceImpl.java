@@ -200,7 +200,7 @@ public class CcStatsMonthServiceImpl extends ServiceImpl<ICcStatsMonthMapper, Cc
 			return;
 		}
 
-		List<CcStatsMonth> records = iCcStatsMonthMapper.queryItemsPage(page, org_id, card_type, card_iccid, mdate,
+		List<CcStatsMonth> records = iCcStatsMonthMapper.queryItemsPageExport(org_id, card_type, card_iccid, mdate,
 				orgpos, orgpos.split(","));
 
 		if (!CollectionUtils.isEmpty(records)) {
@@ -218,10 +218,10 @@ public class CcStatsMonthServiceImpl extends ServiceImpl<ICcStatsMonthMapper, Cc
 		response.setCharacterEncoding("utf-8");
 		String fileName = new String(("月度用量" + new SimpleDateFormat("yyyy-MM-dd").format(new Date())).getBytes(), "UTF-8");
 		response.setHeader("Content-disposition", "attachment;filename="+fileName+".xlsx");
-		ExcelWriter writer = new ExcelWriter(out, ExcelTypeEnum.XLSX, false);
+		ExcelWriter writer = new ExcelWriter(out, ExcelTypeEnum.XLSX, true);
 		
 		Sheet sheet1 = new Sheet(1, 0, CcStatsMonth.class);
-		sheet1.setSheetName("第一个sheet");
+		sheet1.setSheetName(fileName);
 		writer.write(records, sheet1);
 		writer.finish();
 

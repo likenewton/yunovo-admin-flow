@@ -24,6 +24,8 @@ import org.sunshine.dcda.system.service.model.SystemResourceQueryBean;
 import org.sunshine.dcda.system.service.model.SystemResourceVo;
 import org.sunshine.dcda.view.system.viewcomponent.ISystemResourceViewComponent;
 
+import com.alibaba.fastjson.JSONObject;
+
 import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
 import cn.yunovo.iov.fc.model.ResourcesBean;
 import cn.yunovo.iov.fc.model.UserResourceInfoBean;
@@ -129,7 +131,7 @@ public class SystemResourceServiceImpl implements ISystemResourceService{
 		} catch (Exception e) {
 			log.error("[allResourceBySiteCode][exception]params={site_code:{}},exception:{}",site_code, ExceptionUtils.getStackTrace(e));
 		}
-		
+		log.debug("[allResourceBySiteCode][resources]params={site_code:{}},data:{}", site_code, JSONObject.toJSONString(resourceList));
 		if(CollectionUtils.isEmpty(resourceList)) {
 			return Collections.emptyList();
 		}
@@ -147,7 +149,7 @@ public class SystemResourceServiceImpl implements ISystemResourceService{
 		} catch (Exception e) {
 			log.error("[allResourceBySiteCodeAndUserid][exception]params={site_code:{}},exception:{}",site_code, ExceptionUtils.getStackTrace(e));
 		}
-		
+		log.debug("[allResourceBySiteCodeAndUserid][resources]params={site_code:{},user_id:{}},data:{}", site_code,user_id, JSONObject.toJSONString(resourceList));
 		if(CollectionUtils.isEmpty(resourceList)) {
 			return Collections.emptyList();
 		}

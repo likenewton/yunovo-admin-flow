@@ -218,7 +218,7 @@ public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcReal
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
-						log.error("[audit][exception]params={},errmsg={}", JSONObject.toJSONString(data), ExceptionUtils.getStackTrace(e));
+						log.error("[audit][exception]params={},exception={}", JSONObject.toJSONString(data), ExceptionUtils.getStackTrace(e));
 						throw new BusinessException("实名审核失败");
 					}
 					is_update = 1;
@@ -284,14 +284,21 @@ public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcReal
 					//time_expire = (live_month < 1) ? ("+"+()):();
 					//$time_expire = ($live_month < 1) ? ('+' . (round($live_month, 2) * 100) . ' day') : ($live_month == 999 ? '2038-01-01 01:01:01' : "+{$live_month} month");
 				}catch(BusinessException e) {
+					log.error("[audit][exception]params={},exception={}", JSONObject.toJSONString(data), ExceptionUtils.getStackTrace(e));
 					clwTransactionManager.rollback(transactionStatus);
 					throw e;
 				}catch (Exception e) {
-					log.error("[audit][exception]params={},errmsg={}", JSONObject.toJSONString(data), ExceptionUtils.getStackTrace(e));
+					log.error("[audit][exception]params={},exception={}", JSONObject.toJSONString(data), ExceptionUtils.getStackTrace(e));
 					clwTransactionManager.rollback(transactionStatus);
+					throw new BusinessException(-1, "实名审核异常！");
 				}
 				
-				iCcGprsAllotService.gprsAllot(card_id);
+				try {
+					iCcGprsAllotService.gprsAllot(card_id);
+				} catch (Exception e) {
+					log.error("[audit][exception]params={card_id:{}},exception={}", card_id, ExceptionUtils.getStackTrace(e));
+					throw new BusinessException(-1, "实名赠送流量分配异常！");
+				}
 				
 				//充值成功通知队列
 				JSONObject pay_queue = new JSONObject();
@@ -324,7 +331,7 @@ public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcReal
 		}
 		
 		UpdateWrapper<CcRealname> updateWrapper = new UpdateWrapper<>();
-		updateWrapper.eq("card_id", opData.getCard_id());
+		updateWrapper.eq("card_id", form.getCard_id());
 		ret = this.update(opData, updateWrapper);
 		this.getByIccid(data.getCard_iccid(), true);
 		return ret;

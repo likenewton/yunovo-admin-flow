@@ -164,6 +164,9 @@ fc:
 ---
 spring: 
   profiles: dev
+fc: 
+  gprs: 
+    file_dir_root: E://PHP
 casClient: 
   casEnabled: true
   casServerHost: tcas.yunovo.cn
