@@ -121,7 +121,8 @@
         <!-- 这里演示了如何在提交表单的时候再开始上传文件 -->
         <el-upload ref="upload" action="" :on-change="uploadHandleChange" :on-exceed="fileExceed" :before-remove="beforeRemove" :with-credentials="true" :limit="1" :file-list="fileList" :auto-upload="false">
           <el-button type="primary">点击上传</el-button>
-          <div slot="tip" class="el-upload__tip">只能上传.xlsx文件</div>
+          <div slot="tip" class="el-upload__tip">只能上传.xlsx文件 <el-button type="text" @click="dialogXlsxPreviewVisible = true">(.xlsx格式预览)</el-button>
+          </div>
         </el-upload>
       </el-form-item>
       <el-form-item>
@@ -130,6 +131,30 @@
         <el-button type="warning" @click="resetForm('ruleForm')">重置</el-button>
       </el-form-item>
     </el-form>
+    <el-dialog title="xlsx文件上传内容规范" :visible.sync="dialogXlsxPreviewVisible" width="400px">
+      <div slot>
+        <div id="xlsx_preview" style="width:100%;overflow: auto">
+          <el-row class="title">
+            <el-col :span="8">MSISDN</el-col>
+            <el-col :span="8">ICCID</el-col>
+            <el-col :span="8">IMSI</el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="8">861064604869453</el-col>
+            <el-col :span="8">89860619000004125005</el-col>
+            <el-col :span="8">460064520076453</el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="8">861064604868004</el-col>
+            <el-col :span="8">89860619000004110510</el-col>
+            <el-col :span="8">460064520075004</el-col>
+          </el-row>
+        </div>
+      </div>
+      <div slot="footer">
+        <el-button size="small" type="warning" @click="download">xlsx案例文件下载</el-button>
+      </div>
+    </el-dialog>
   </el-card>
 </template>
 <script>
@@ -140,11 +165,12 @@ export default {
   data() {
     return {
       isUpdate: false,
+      dialogXlsxPreviewVisible: false,
       provinceData: [], // 省份
       cityData: [], // 城市
       districtData: [], // 县区
       formInline: {
-        allot_month: 1,
+        allot_month: 1
       },
       formData: new FormData(), // new FormData() 对象
       fileList: [], // 文件上传列表
@@ -279,7 +305,9 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields()
-      this.formInline = {}
+      this.formInline = {
+        allot_month: 1
+      }
       this.fileList = []
       this.isUpdate && this.getData()
     },
@@ -335,11 +363,18 @@ export default {
                   this.formInline[res.data] = ''
                   this.$refs.ruleForm.validateField([res.data])
                 } else {
+                  let data = res.data
                   this.$router.push({ name: 'cardbatch' })
                   setTimeout(() => {
                     this.showMsgBox({
                       type: 'success',
-                      message: `操作成功！`
+                      duration: 0,
+                      message: `操作成功！
+                      批次号 ${data.batch_sn} ，
+                      本次导入 ${data.iccid_count} 张手机卡，
+                      导入成功 ${data.success_count} 张，
+                      失败 ${data.failed_count} 张，
+                      更新 ${data.update_count} 张`
                     })
                   }, 150)
                 }
@@ -355,6 +390,7 @@ export default {
     beforeRemove(file) {
       this.fileList = []
     },
+    // 上传文件超出上限的钩子
     fileExceed() {
       this.showMsgBox({
         type: 'error',
@@ -397,6 +433,10 @@ export default {
         }
       }
     },
+    // 下载xlsx模板文件
+    download() {
+      window.open('../../../flowCenter/static/template.xlsx')
+    }
   },
   computed: {
     gprsMonth() {
@@ -417,6 +457,19 @@ export default {
   .el-transfer-panel {
     width: 30%;
     min-width: 250px;
+  }
+
+  #xlsx_preview {
+    .title {
+      .el-col {
+        font-weight: bold;
+      }
+    }
+
+    .el-col {
+      line-height: 30px;
+      text-align: center;
+    }
   }
 }
 

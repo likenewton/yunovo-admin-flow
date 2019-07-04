@@ -64,8 +64,8 @@
               <el-date-picker v-model="searchForm.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="添加时间结束"></el-date-picker>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="searchData">查询</el-button>
-              <el-button type="warning" @click="resetData">重置</el-button>
+              <el-button type="primary" @click="searchData" :disabled="pageAuthBtn.FCP_01_005_CHECK01">查询</el-button>
+              <el-button type="warning" @click="resetData" :disabled="pageAuthBtn.FCP_01_005_CHECK01">重置</el-button>
             </el-form-item>
           </el-form>
           <el-table v-loading="loadData" ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">

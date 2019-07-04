@@ -2,7 +2,7 @@
   <div class="v-store-container"></div>
 </template>
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 
 // 该组件主要用于vuex 中获取只需获取一次的数据，用于公共的展示
 export default {
@@ -11,7 +11,7 @@ export default {
     return {}
   },
   mounted() {
-    // 首页不加载
+    this.getAuthButtons()
     if (this.cardTypes.length === 0) this.getCardTypes()
     if (this.orgs.length === 0) this.getOrgs()
     if (this.notifysFrom.length === 0) this.getNotifySelect()
@@ -21,6 +21,7 @@ export default {
   },
   methods: {
     ...mapActions([
+      'getAuthButtons',
       'getCardTypes',
       'getOrgs',
       'getNotifySelect',
@@ -28,16 +29,6 @@ export default {
       'getPayMethodSelect',
       'getLiveMonth',
     ])
-  },
-  computed: {
-    ...mapState({
-      cardTypes: 'cardTypes', // 卡商列表
-      orgs: 'orgs', // 机构列表
-      notifysFrom: 'notifysFrom', // 通知来源
-      months: 'months', // 月份
-      payMethodSelect: 'payMethodSelect', // 支付方式
-      liveMonthSelect: 'liveMonthSelect', // 有效周期
-    })
   }
 }
 

@@ -10,11 +10,11 @@
             </a>
           </template>
         </el-table-column>
-        <el-table-column label="管理" width="140">
+        <el-table-column label="管理" width="140" v-if="pageAuthBtn.FCP_05_001_UPDATE01 || pageAuthBtn.FCP_05_001_DELETE01">
           <template slot-scope="scope">
-            <el-button v-if="!scope.row.is_install" type="text" class="text_success" @click="installData(scope)">安装</el-button>
-            <el-button v-if="scope.row.is_install" type="text" class="text_editor" @click="editorData(scope)">编辑</el-button>
-            <el-button v-if="scope.row.is_install" type="text" class="text_danger" @click="deleteData(scope)">卸载</el-button>
+            <el-button v-if="!scope.row.is_install && pageAuthBtn.FCP_05_001_UPDATE01" type="text" class="text_success" @click="installData(scope)">安装</el-button>
+            <el-button v-if="scope.row.is_install && pageAuthBtn.FCP_05_001_UPDATE01" type="text" class="text_editor" @click="editorData(scope)">编辑</el-button>
+            <el-button v-if="scope.row.is_install && pageAuthBtn.FCP_05_001_DELETE01" type="text" class="text_danger" @click="deleteData(scope)">卸载</el-button>
           </template>
         </el-table-column>
       </el-table>

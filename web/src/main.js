@@ -5,7 +5,6 @@ import upperFirst from 'lodash/upperFirst'
 import camelCase from 'lodash/camelCase'
 import Api from 'assets/js/api.js'
 import MinXin from '@/components/MinXins/index.js'
-import menuRoute from './router/menuRoute.js' // 菜单页面路由
 import 'babel-polyfill'
 import '../theme/index.css'
 import '../static/iconfont/iconfont.css'
@@ -56,27 +55,13 @@ router.beforeEach((to, from, next) => {
     // 当页面重定向过来的时候带的token 要保存进去
     localStorage.setItem(Api.STATIC.token, Api.UNITS.getQuery(Api.STATIC.token))
   }
+
   _axios.send({
     method: 'get',
     url: _axios.ajaxAd.isLogin,
     done: (res) => {
       // 这里一定登录了
-      if (store.state.authMenu.length === 0) {
-        // 如果权限列表为空就从后台拉取菜单权限信息
-        // '../flowCenter/static/authMenu.json'
-        _axios.send({
-          method: 'get', // 模拟获取菜单权限
-          url: _axios.ajaxAd.getAuthMenu,
-          done: ((res) => {
-            let resources = res.data
-            let asideData = Api.STATIC.asideData
-            let authMenu = Api.UNITS.getAuthMenu(asideData, resources) // 这里将本地的asideData与后台提交的数据生成authMenu
-            let dynamicMenuRoute = Api.UNITS.getMenuRoute(menuRoute, resources) // 这里将本地的菜单路由与后台提供的数据生成动态路由
-            store.commit('SET_AUTHMENU', { authMenu }) // 保存动态菜单
-            router.addRoutes([dynamicMenuRoute]) // 生成动态路由
-          })
-        })
-      }
+      if (store.state.authMenu.length === 0) store.dispatch('getAuthMenu')
       next()
     }
   })

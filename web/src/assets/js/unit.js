@@ -374,7 +374,8 @@ module.exports = {
     Vue.prototype.$notify({
       type: para.type || 'error',
       title: para.title || (para.type === 'error' || !para.type ? '错误' : '温馨提示'),
-      message: para.message || '提交的表单数据不符合规范！'
+      message: para.message || '提交的表单数据不符合规范！',
+      duration: isNaN(para.duration) ? 4500 : para.duration
     })
   },
   toUnicomLink(iccid) {

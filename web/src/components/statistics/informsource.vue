@@ -12,14 +12,15 @@
           <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="选择结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="searchData">查询</el-button>
-          <el-button type="warning" @click="resetData">重置</el-button>
+          <el-button type="primary" @click="searchData" :disabled="!pageAuthBtn.FCP_02_009_CHECK01">查询</el-button>
+          <el-button type="warning" @click="resetData" :disabled="!pageAuthBtn.FCP_02_009_CHECK01">重置</el-button>
         </el-form-item>
       </el-form>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column prop="ntf_date" label="统计日期" min-width="100" sortable="custom">
           <template slot-scope="scope">
-            <span class="btn-link" @click="$router.push({ name: 'orgListDetail', query: { 'ntf_date': scope.row.ntf_date } })">{{scope.row.ntf_date}}</span>
+            <span v-if="pageAuthBtn.FCP_02_009_LINK01" class="btn-link" @click="$router.push({ name: 'orgListDetail', query: { 'ntf_date': scope.row.ntf_date } })">{{scope.row.ntf_date}}</span>
+            <span v-else>{{scope.row.ntf_date}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="ntf_type" label="通知或来源" min-width="220" sortable="custom">

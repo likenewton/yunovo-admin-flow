@@ -132,6 +132,12 @@
     .cell {
       padding: 0 9px !important;
     }
+
+    th {
+      .cell {
+        font-weight: bold;
+      }
+    }
   }
 
   .el-date-editor .el-range-separator {

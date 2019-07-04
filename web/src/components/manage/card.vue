@@ -2,23 +2,24 @@
   <div class="card">
     <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="small" type="primary" @click="showEcharts">图表</el-button>
-        <el-button size="small" type="warning" @click="$router.push({name: 'cardbatch'})">导入</el-button>
-        <el-button size="small" type="warning">导出</el-button>
+        <el-button size="small" type="primary" @click="showEcharts" :disabled="!pageAuthBtn.FCP_01_001_ECHART01">图表</el-button>
+        <el-button size="small" type="warning" @click="$router.push({name: 'cardbatch'})" :disabled="!pageAuthBtn.FCP_01_001_LINK2">导入</el-button>
+        <el-button size="small" type="warning" :disabled="!pageAuthBtn.FCP_01_001_EXPORT01">导出</el-button>
       </el-button-group>
       <el-form :inline="true" :model="formInline" class="search-form" size="small" @submit.native.prevent>
         <el-form-item>
           <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20)" @keyup.enter.native="simpleSearchData" placeholder="卡ICCID"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="simpleSearchData">查询</el-button>
-          <el-button type="primary" @click="searchVipVisible = true">高级查询</el-button>
+          <el-button type="primary" @click="simpleSearchData" :disabled="!pageAuthBtn.FCP_01_001_CHECK01">查询</el-button>
+          <el-button type="primary" @click="searchVipVisible = true" :disabled="!pageAuthBtn.FCP_01_001_CHECK01">高级查询</el-button>
         </el-form-item>
       </el-form>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border size="mini">
         <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" width="178" sortable="custom">
           <template slot-scope="scope">
-            <span class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
+            <span v-if="pageAuthBtn.FCP_01_001_LINK1" class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
+            <span v-else>{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="card_type" label="卡商名称" width="130" sortable="custom">
@@ -68,10 +69,10 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="125">
           <template slot-scope="scope">
-            <el-button type="text" @click="$refs.syncUniconData.getSyncUnicomData(scope)">同步</el-button>
+            <el-button type="text" @click="$refs.syncUniconData.getSyncUnicomData(scope)" v-if="pageAuthBtn.FCP_01_001_OP01">同步</el-button>
             <el-button type="text" @click="toUnicomLink(scope.row.card_iccid)">套餐</el-button>
-            <el-button type="text" class="text_danger" v-if="scope.row.unicom_stop==0" @click="checkCardStop(scope, 1)">停用</el-button>
-            <el-button type="text" class="text_success" v-else @click="checkCardStop(scope, 0)">启用</el-button>
+            <el-button type="text" class="text_danger" v-if="scope.row.unicom_stop==0 && pageAuthBtn.FCP_01_001_OP02" @click="checkCardStop(scope, 1)">停用</el-button>
+            <el-button type="text" class="text_success" v-else-if="scope.row.unicom_stop==1 && pageAuthBtn.FCP_01_001_OP02" @click="checkCardStop(scope, 0)">启用</el-button>
           </template>
         </el-table-column>
       </el-table>

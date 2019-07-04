@@ -2,7 +2,7 @@
   <div>
     <el-card class="clearfix" style="margin-bottom: 20px" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="small" type="warning">导出</el-button>
+        <el-button size="small" type="warning" :disabled="!pageAuthBtn.FCP_02_007_EXPORT03">导出</el-button>
       </el-button-group>
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item>
@@ -19,14 +19,14 @@
           <el-date-picker v-model="formInline.jend" :picker-options="endDatePicker_2" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="激活日期结束"></el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="searchData">查询</el-button>
-          <el-button type="warning" @click="resetData">重置</el-button>
+          <el-button type="primary" @click="searchData" :disabled="!pageAuthBtn.FCP_02_007_CHECK01">查询</el-button>
+          <el-button type="warning" @click="resetData" :disabled="!pageAuthBtn.FCP_02_007_CHECK01">重置</el-button>
         </el-form-item>
       </el-form>
       <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border size="mini" resizable>
         <el-table-column fixed="left" prop="org_id" label="机构名称" min-width="180" sortable="custom">
           <template slot-scope="scope">
-            <span v-if="scope.row.sums">{{scope.row.org_name}}</span>
+            <span v-if="scope.row.sums || !pageAuthBtn.FCP_02_007_LINK01">{{scope.row.org_name}}</span>
             <span v-else class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
@@ -53,10 +53,10 @@
             <div v-html="formatFlowUnit(scope.row.month_count)"></div>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="导出" width="140">
+        <el-table-column fixed="right" label="导出" width="140" v-if="pageAuthBtn.FCP_02_007_EXPORT01 || pageAuthBtn.FCP_02_007_EXPORT02">
           <template slot-scope="scope">
-            <el-button type="text" class="text_success">已激活</el-button>
-            <el-button type="text" class="text_danger">未激活</el-button>
+            <el-button type="text" class="text_success" v-if="pageAuthBtn.FCP_02_007_EXPORT01">已激活</el-button>
+            <el-button type="text" class="text_danger" v-if="pageAuthBtn.FCP_02_007_EXPORT02">未激活</el-button>
           </template>
         </el-table-column>
       </el-table>

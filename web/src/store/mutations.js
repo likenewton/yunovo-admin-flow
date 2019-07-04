@@ -2,6 +2,7 @@ const SET_ASIDECOLLAPSE = 'SET_ASIDECOLLAPSE' // 侧边栏是否处于折叠状�
 const SET_ASIDEFLAG = 'SET_ASIDEFLAG' // 设置面包屑
 const SET_DIALOGVISIBLE = 'SET_DIALOGVISIBLE' // 公共dialog对话框是否显示
 const SET_AUTHMENU = 'SET_AUTHMENU' // 设置菜单权限列表
+const SET_AUTHBUTTONS = 'SET_AUTHBUTTONS' // 设置授权页面中的功能按钮权限
 const SET_ISLOGIN = 'SET_ISLOGIN' // 是否登录
 const SET_CARDTYPES = 'SET_CARDTYPES' // 设置卡商列表
 const SET_ORGS = 'SET_ORGS' // 设置机构列表
@@ -22,6 +23,9 @@ export default {
   },
   [SET_AUTHMENU](state, paras) {
     state.authMenu = paras.authMenu
+  },
+  [SET_AUTHBUTTONS](state, paras) {
+    state.authButtons = paras.authButtons
   },
   [SET_ISLOGIN](state, paras) {
     state.isLogin = paras.isLogin

@@ -2,7 +2,7 @@
   <div>
     <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="small" type="warning">导出</el-button>
+        <el-button size="small" type="warning" :disabled="!pageAuthBtn.FCP_02_004_EXPORT01">导出</el-button>
       </el-button-group>
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item>
@@ -29,14 +29,15 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="searchData">查询</el-button>
-          <el-button type="warning" @click="resetData">重置</el-button>
+          <el-button type="primary" @click="searchData" :disabled="!pageAuthBtn.FCP_02_004_CHECK01">查询</el-button>
+          <el-button type="warning" @click="resetData" :disabled="!pageAuthBtn.FCP_02_004_CHECK01">重置</el-button>
         </el-form-item>
       </el-form>
       <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column fixed="left" prop="card_iccid" label="卡ICCID" width="180">
           <template slot-scope="scope">
-            <span class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
+            <span v-if="pageAuthBtn.FCP_02_004_LINK01" class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
+            <span v-else>{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="card_id" label="卡商名称" min-width="120" sortable="custom">
@@ -46,7 +47,8 @@
         </el-table-column>
         <el-table-column prop="org_id" label="机构名称" min-width="180" sortable="custom">
           <template slot-scope="scope">
-            <span class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
+            <span v-if="pageAuthBtn.FCP_02_004_LINK02" class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
+            <span v-else>{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="unicom_diff" label="日差异流量" width="125" sortable="custom" align="right">
@@ -73,8 +75,8 @@
         <el-table-column fixed="right" prop='unicom_stop' label="操作" width="125">
           <template slot-scope="scope">
             <el-button type="text" @click="toUnicomLink(scope.row.card_iccid)">套餐</el-button>
-            <el-button type="text" class="text_success" v-if="scope.row.unicom_stop == 1" @click="checkCardStop(scope, 0)">启用</el-button>
-            <el-button type="text" class="text_danger" v-else @click="checkCardStop(scope, 1)">停用</el-button>
+            <el-button type="text" class="text_success" v-if="scope.row.unicom_stop == 1 && pageAuthBtn.FCP_02_004_OP01" @click="checkCardStop(scope, 0)">启用</el-button>
+            <el-button type="text" class="text_danger" v-else-if="scope.row.unicom_stop == 0 && pageAuthBtn.FCP_02_004_OP01" @click="checkCardStop(scope, 1)">停用</el-button>
           </template>
         </el-table-column>
       </el-table>

@@ -2,7 +2,7 @@
   <div class="card_combo">
     <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="small" type="success" @click="$router.push({ name: 'rechargecomboset' })">新增</el-button>
+        <el-button size="small" type="success" @click="$router.push({ name: 'rechargecomboset' })" :disabled="!pageAuthBtn.FCP_01_004_ADD01">新增</el-button>
       </el-button-group>
       <el-form :inline="true" :model="formInline" class="search-form" size="small" @submit.native.prevent>
         <el-form-item>
@@ -12,8 +12,8 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="searchData">查询</el-button>
-          <el-button type="warning" @click="resetData">重置</el-button>
+          <el-button type="primary" @click="searchData" :disabled="!pageAuthBtn.FCP_01_004_CHECK01">查询</el-button>
+          <el-button type="warning" @click="resetData" :disabled="!pageAuthBtn.FCP_01_004_CHECK01">重置</el-button>
         </el-form-item>
       </el-form>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
@@ -80,11 +80,11 @@
             <span>{{scope.row.alter_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" width="88">
+        <el-table-column fixed="right" label="操作" width="88" v-if="pageAuthBtn.FCP_01_004_UPDATE01 || pageAuthBtn.FCP_01_004_OP02">
           <template slot-scope="scope">
-            <el-button type="text" class="text_editor" @click="$router.push({name: 'rechargecomboset', query: {type: 'update', pack_id: scope.row.pack_id}})">编辑</el-button>
-            <el-button type="text" class="text_danger" v-if="scope.row.pack_status==1" @click="checkComboStop(scope, 0)">停用</el-button>
-            <el-button type="text" class="text_success" v-else @click="checkComboStop(scope, 1)">启用</el-button>
+            <el-button v-if="pageAuthBtn.FCP_01_004_UPDATE01" type="text" class="text_editor" @click="$router.push({name: 'rechargecomboset', query: {type: 'update', pack_id: scope.row.pack_id}})">编辑</el-button>
+            <el-button type="text" class="text_danger" v-if="scope.row.pack_status==1 && pageAuthBtn.FCP_01_004_OP02" @click="checkComboStop(scope, 0)">停用</el-button>
+            <el-button type="text" class="text_success" v-else-if="scope.row.pack_status==0 && pageAuthBtn.FCP_01_004_OP02" @click="checkComboStop(scope, 1)">启用</el-button>
           </template>
         </el-table-column>
       </el-table>

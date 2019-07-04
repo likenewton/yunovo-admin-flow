@@ -31,7 +31,7 @@
               <el-input v-model="formInline_0.config_fax" placeholder="请输入传真号码"></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="submitForm('ruleForm_0')">保存</el-button>
+              <el-button type="primary" @click="submitForm('ruleForm_0')" :disabled="!pageAuthBtn.FCP_05_004_UPDATE01">保存</el-button>
               <el-button type="warning" @click="resetForm('ruleForm_0')">重置</el-button>
             </el-form-item>
           </el-form>
@@ -61,7 +61,7 @@
               </el-card>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="submitForm('ruleForm_1')">保存</el-button>
+              <el-button type="primary" @click="submitForm('ruleForm_1')" :disabled="!pageAuthBtn.FCP_05_004_UPDATE01">保存</el-button>
               <el-button type="warning" @click="resetForm('ruleForm_1')">重置</el-button>
             </el-form-item>
           </el-form>
@@ -105,7 +105,7 @@
               <div class="annotation">确定每页显示多少管理项目（订单，客户等）</div>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="submitForm('ruleForm_2')">保存</el-button>
+              <el-button type="primary" @click="submitForm('ruleForm_2')" :disabled="!pageAuthBtn.FCP_05_004_UPDATE01">保存</el-button>
               <el-button type="warning" @click="resetForm('ruleForm_2')">重置</el-button>
             </el-form-item>
           </el-form>
@@ -148,7 +148,7 @@
               <el-input v-model="formInline_3.config_smtp_timeout" @input="formInline_3.config_smtp_timeout = limitNumber(formInline_3.config_smtp_timeout, 5, 0)" placeholder="请输入SMTP 超时时间"></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="submitForm('ruleForm_3')">保存</el-button>
+              <el-button type="primary" @click="submitForm('ruleForm_3')" :disabled="!pageAuthBtn.FCP_05_004_UPDATE01">保存</el-button>
               <el-button type="warning" @click="resetForm('ruleForm_3')">重置</el-button>
             </el-form-item>
           </el-form>
@@ -219,7 +219,7 @@
               <div class="annotation">登录您的 <a class="text_primary" href="http://www.google.com/analytics/" target="blank">Google Analytics</a> 账户，创建您的系统概述拷贝并粘贴统计代码到框内</div>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="submitForm('ruleForm_4')">保存</el-button>
+              <el-button type="primary" @click="submitForm('ruleForm_4')" :disabled="!pageAuthBtn.FCP_05_004_UPDATE01">保存</el-button>
               <el-button type="warning" @click="resetForm('ruleForm_4')">重置</el-button>
             </el-form-item>
           </el-form>

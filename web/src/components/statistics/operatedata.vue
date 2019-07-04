@@ -2,10 +2,10 @@
   <div>
     <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="small" type="primary" @click="showEcharts('0')">支付图表</el-button>
-        <el-button size="small" type="primary" @click="showEcharts('1')">在线图表</el-button>
-        <el-button size="small" type="primary" @click="showEcharts('2')">激活图表</el-button>
-        <el-button size="small" type="warning">导出</el-button>
+        <el-button size="small" type="primary" @click="showEcharts('0')" :disabled="!pageAuthBtn.FCP_02_008_ECHART01">支付图表</el-button>
+        <el-button size="small" type="primary" @click="showEcharts('1')" :disabled="!pageAuthBtn.FCP_02_008_ECHART02">在线图表</el-button>
+        <el-button size="small" type="primary" @click="showEcharts('2')" :disabled="!pageAuthBtn.FCP_02_008_ECHART03">激活图表</el-button>
+        <el-button size="small" type="warning" :disabled="!pageAuthBtn.FCP_02_008_EXPORT01">导出</el-button>
       </el-button-group>
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item>
@@ -13,14 +13,15 @@
           <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="统计日期结束"></el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="searchData">查询</el-button>
-          <el-button type="warning" @click="resetData">重置</el-button>
+          <el-button type="primary" @click="searchData" :disabled="!pageAuthBtn.FCP_02_008_CHECK01">查询</el-button>
+          <el-button type="warning" @click="resetData" :disabled="!pageAuthBtn.FCP_02_008_CHECK01">重置</el-button>
         </el-form-item>
       </el-form>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border size="mini" resizable>
         <el-table-column prop="stats_date" label="统计日期" width="95" sortable="custom">
           <template slot-scope="scope">
-            <span class="btn-link" @click="$router.push({ name: 'orgList', query: { stats_date: scope.row.stats_date } })">{{scope.row.stats_date}}</span>
+            <span v-if="pageAuthBtn.FCP_02_008_LINK1" class="btn-link" @click="$router.push({ name: 'orgList', query: { stats_date: scope.row.stats_date } })">{{scope.row.stats_date}}</span>
+            <span v-else>{{scope.row.stats_date}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="card_total" label="售卡总数" width="73" align="right"></el-table-column>

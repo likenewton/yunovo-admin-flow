@@ -2,7 +2,7 @@
   <div class="month_used">
     <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="small" type="warning" @click="exportExcel">导出</el-button>
+        <el-button size="small" type="warning" @click="exportExcel" :disabled="!pageAuthBtn.FCP_02_001_EXPORT01">导出</el-button>
       </el-button-group>
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item>
@@ -24,14 +24,14 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="searchData">查询</el-button>
-          <el-button type="warning" @click="resetData">重置</el-button>
+          <el-button type="primary" @click="searchData" :disabled="!pageAuthBtn.FCP_02_001_CHECK01">查询</el-button>
+          <el-button type="warning" @click="resetData" :disabled="!pageAuthBtn.FCP_02_001_CHECK01">重置</el-button>
         </el-form-item>
       </el-form>
       <el-table class="list_table" ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" width="200">
           <template slot-scope="scope">
-            <span v-if="scope.row.sums">{{scope.row.card_iccid}}</span>
+            <span v-if="scope.row.sums || !pageAuthBtn.FCP_02_001_LINK1">{{scope.row.card_iccid}}</span>
             <span v-else class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
@@ -42,7 +42,8 @@
         </el-table-column>
         <el-table-column prop="org_id" label="所属机构" min-width="160" sortable="custom">
           <template slot-scope="scope">
-            <span class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
+            <span v-if="pageAuthBtn.FCP_02_001_LINK2" class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
+            <span v-else>{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="time_active" label="卡激活时间" width="155" sortable="custom"></el-table-column>

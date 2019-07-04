@@ -81,8 +81,10 @@ export default {
     ...mapState({
       orgs: 'orgs', // 机构
       months: 'months', // 月份
+      authMenu: 'authMenu', // 菜单权限
       paySelect: 'paySelect',
       cardTypes: 'cardTypes', // 卡商列表
+      authButtons: 'authButtons', // 按钮权限
       notifysFrom: 'notifysFrom',
       statusSelect: 'statusSelect',
       exceedSelect: 'exceedSelect', // 是否过期
@@ -93,6 +95,15 @@ export default {
       maxUnusedSelect: 'maxUnusedSelect', // 剩余流量
       payMethodSelect: 'payMethodSelect',
       unicomDiffSelect: 'unicomDiffSelect', // 日差异流量
-    })
+    }),
+    routeName() {
+      return this.$route.name
+    },
+    pageAuthBtn() {
+      let authArr = this.authButtons[`FCP_${this.routeName}`]
+      if (!authArr) return {}
+      console.log(authArr)
+      return authArr
+    }
   }
 }

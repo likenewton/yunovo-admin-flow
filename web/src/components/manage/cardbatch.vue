@@ -2,7 +2,7 @@
   <div class="card_batch">
     <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="small" type="success" @click="$router.push({ name: 'batchcreate' })">新增</el-button>
+        <el-button size="small" type="success" @click="$router.push({ name: 'batchcreate' })" :disabled="!pageAuthBtn.FCP_01_003_ADD01">新增</el-button>
       </el-button-group>
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item>
@@ -18,8 +18,8 @@
           <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="添加时间结束"></el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="searchData">查询</el-button>
-          <el-button type="warning" @click="resetData">重置</el-button>
+          <el-button type="primary" @click="searchData" :disabled="!pageAuthBtn.FCP_01_003_CHECK01">查询</el-button>
+          <el-button type="warning" @click="resetData" :disabled="!pageAuthBtn.FCP_01_003_CHECK01">重置</el-button>
         </el-form-item>
       </el-form>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
@@ -59,7 +59,7 @@
             <span>{{scope.row.alter_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" width="80">
+        <el-table-column fixed="right" label="操作" width="80" v-if="pageAuthBtn.FCP_01_003_UPDATE01">
           <template slot-scope="scope">
             <el-button type="text" class="text_editor" @click="$router.push({name: 'batchcreate', query:{type:'update', batch_id: scope.row.batch_id}})">编辑</el-button>
           </template>

@@ -2,8 +2,8 @@
   <div class="jg_manage">
     <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="small" type="success" @click="$router.push({ name: 'createjg' })">新增</el-button>
-        <el-button size="small" type="danger" @click="deleteOrgs">删除</el-button>
+        <el-button size="small" type="success" @click="$router.push({ name: 'createjg' })" :disabled="!pageAuthBtn.FPC_04_001_ADD01">新增</el-button>
+        <el-button size="small" type="danger" @click="deleteOrgs" :disabled="!pageAuthBtn.FCP_04_001_DELETE01">删除</el-button>
       </el-button-group>
       <el-form :inline="true" :model="formInline" class="search-form" size="small" @submit.native.prevent>
         <el-form-item>
@@ -12,15 +12,16 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="searchData">查询</el-button>
-          <el-button type="warning" @click="resetData">重置</el-button>
+          <el-button type="primary" @click="searchData" :disabled="!pageAuthBtn.FPC_04_001_CHECK01">查询</el-button>
+          <el-button type="warning" @click="resetData" :disabled="!pageAuthBtn.FPC_04_001_CHECK01">重置</el-button>
         </el-form-item>
       </el-form>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" @selection-change="handleSelectionChange" :row-key="getRowKeys" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column fixed="left" type="selection" :reserve-selection="true" min-width="60"></el-table-column>
         <el-table-column prop="org_id" fixed="left" label="机构名称" min-width="160" sortable="custom">
           <template slot-scope="scope">
-            <span class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.name}}</span>
+            <span v-if="pageAuthBtn.FCP_04_001_LINK01" class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.name}}</span>
+            <span v-else>{{scope.row.name}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="partner_id" label="合作编号" min-width="140" sortable="custom"></el-table-column>
@@ -41,10 +42,10 @@
             <span>{{scope.row.update_by_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="管理" width="100">
+        <el-table-column fixed="right" label="管理" width="100" v-if="pageAuthBtn.FCP_04_001_UPDATE01 || pageAuthBtn.FCP_04_001_DELETE01">
           <template slot-scope="scope">
-            <el-button type="text" class="text_editor" @click="$router.push({ name: 'createjg', query: { type: 'update', org_id: scope.row.org_id } })">编辑</el-button>
-            <el-button type="text" class="text_danger" @click="deleteOrg(scope)">删除</el-button>
+            <el-button v-if="pageAuthBtn.FCP_04_001_UPDATE01" type="text" class="text_editor" @click="$router.push({ name: 'createjg', query: { type: 'update', org_id: scope.row.org_id } })">编辑</el-button>
+            <el-button v-if="pageAuthBtn.FCP_04_001_DELETE01" type="text" class="text_danger" @click="deleteOrg(scope)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

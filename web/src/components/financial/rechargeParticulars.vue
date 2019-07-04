@@ -2,24 +2,24 @@
   <div class="recharge_particulars">
     <el-card class="box-card clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="small" type="primary" @click="showEcharts()">图表</el-button>
-        <el-button size="small" type="warning">导出明细</el-button>
-        <el-button size="small" type="warning">导出快照</el-button>
+        <el-button size="small" type="primary" @click="showEcharts()" :disabled="!pageAuthBtn.FCP_03_003_ECAHRT01">图表</el-button>
+        <el-button size="small" type="warning" :disabled="!pageAuthBtn.FCP_03_003_EXPORT01">导出明细</el-button>
+        <el-button size="small" type="warning" :disabled="!pageAuthBtn.FCP_03_003_EXPORT02">导出快照</el-button>
       </el-button-group>
       <el-form class="search-form" :inline="true" :model="formInline" size="small" @submit.native.prevent>
         <el-form-item>
           <el-input v-model="formInline.pay_sn" placeholder="订单编号" @keyup.enter.native="simpleSearchData"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="simpleSearchData">查询</el-button>
-          <el-button type="primary" @click="searchVipVisible = true">高级查询</el-button>
+          <el-button type="primary" @click="simpleSearchData" :disabled="!pageAuthBtn.FCP_03_003_CHECK01">查询</el-button>
+          <el-button type="primary" @click="searchVipVisible = true" :disabled="!pageAuthBtn.FCP_03_003_CHECK01">高级查询</el-button>
         </el-form-item>
       </el-form>
       <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column prop="pay_sn" label="订单编号" width="145" sortable="custom"></el-table-column>
         <el-table-column prop="card_iccid" label="ICCID卡" width="178" sortable="custom">
           <template slot-scope="scope">
-            <span v-if="scope.row.sums">{{scope.row.card_iccid}}</span>
+            <span v-if="scope.row.sums|| !pageAuthBtn.FCP_03_003_LINK01">{{scope.row.card_iccid}}</span>
             <span v-else class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
@@ -30,7 +30,7 @@
         </el-table-column>
         <el-table-column prop="org_id" label="机构名称" min-width="135" sortable="custom">
           <template slot-scope="scope">
-            <span v-if="scope.row.sums">{{scope.row.org_name}}</span>
+            <span v-if="scope.row.sums || !pageAuthBtn.FCP_03_003_LINK02">{{scope.row.org_name}}</span>
             <span v-else class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>

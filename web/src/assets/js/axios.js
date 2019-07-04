@@ -19,6 +19,7 @@ class AXIOS {
       isLogin: '/fc/api/sso/isLogin',
       getLoginInfo: '/fc/api/sso/getLoginInfo',
       getAuthMenu: '/fc/api/sso/menus',
+      getAuthButtons: '/fc/api/sso/buttons',
       // 下拉列表
       getCardTypes: '/fc/api/select/api/select/cardTypes',
       getOrgs: '/fc/api/select/api/select/orgs',

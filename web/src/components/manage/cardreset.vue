@@ -11,7 +11,7 @@
               <div class="annotation">一行代表一个ICCID，多行代表多个ICCID，建议不超过100个ICCID</div>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+              <el-button type="primary" @click="submitForm('ruleForm')" :disabled="!pageAuthBtn.FCP_01_002_ADD01">保存</el-button>
               <el-button type="warning" @click="resetForm('ruleForm')">重置</el-button>
             </el-form-item>
           </el-form>
@@ -32,14 +32,15 @@
               <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="选重置时间结束"></el-date-picker>
             </el-form-item>
             <el-form-item>
-              <el-button size="small" type="primary" @click="searchData">查询</el-button>
-              <el-button size="small" type="warning" @click="resetData">重置</el-button>
+              <el-button size="small" type="primary" @click="searchData" :disabled="!pageAuthBtn.FCP_01_002_CHECK01">查询</el-button>
+              <el-button size="small" type="warning" @click="resetData" :disabled="!pageAuthBtn.FCP_01_002_CHECK01">重置</el-button>
             </el-form-item>
           </el-form>
           <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
             <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" width="182" sortable="custom">
               <template slot-scope="scope">
-                <span class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
+                <span v-if="pageAuthBtn.FCP_01_002_LINK01" class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
+                <span v-else>{{scope.row.card_iccid}}</span>
               </template>
             </el-table-column>
             <el-table-column prop="org_id" label="机构名称" min-width="200">

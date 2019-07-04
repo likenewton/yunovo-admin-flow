@@ -7,8 +7,8 @@
         <el-breadcrumb-item v-for="(item, index) in list.other" :key="index" :to="{name: 'nationset', query: {ntid: item.ntid}}">{{item.ntname}}</el-breadcrumb-item>
       </el-breadcrumb>
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="small" type="success" @click="addData">新增</el-button>
-        <el-button size="small" type="danger" @click="deleteDatas">删除</el-button>
+        <el-button size="small" type="success" @click="addData" :disabled="!pageAuthBtn.FCP_05_003_ADD01">新增</el-button>
+        <el-button size="small" type="danger" @click="deleteDatas" :disabled="!pageAuthBtn.FCP_05_003_DELETE01">删除</el-button>
       </el-button-group>
       <el-table ref="listTable" :data="list.data" @selection-change="handleSelectionChange" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column fixed="left" type="selection" min-width="60"></el-table-column>
@@ -18,10 +18,10 @@
           </template>
         </el-table-column>
         <el-table-column prop="zipcode" label="邮政编码" min-width="140" sortable="custom"></el-table-column>
-        <el-table-column label="管理" width="120">
+        <el-table-column label="管理" width="120" v-if="pageAuthBtn.FCP_05_003_UPDATE01 || pageAuthBtn.FCP_05_003_DELETE01">
           <template slot-scope="scope">
-            <el-button type="text" class="text_editor" @click="editor(scope)">编辑</el-button>
-            <el-button type="text" class="text_danger" @click="deleteData(scope)">删除</el-button>
+            <el-button type="text" class="text_editor" @click="editor(scope)" v-if="pageAuthBtn.FCP_05_003_UPDATE01">编辑</el-button>
+            <el-button type="text" class="text_danger" @click="deleteData(scope)" v-if="pageAuthBtn.FCP_05_003_DELETE01">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

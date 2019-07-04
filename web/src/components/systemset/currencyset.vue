@@ -2,7 +2,7 @@
   <div class="currency_set">
     <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="small" type="success" @click="$router.push({ name: 'createcurrency' })">新增</el-button>
+        <el-button size="small" type="success" @click="$router.push({ name: 'createcurrency' })" :disabled="!pageAuthBtn.FCP_05_002_ADD01">新增</el-button>
       </el-button-group>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" border resizable size="mini">
         <el-table-column prop="title" label="货币名称" min-width="150" sortable="custom">
@@ -14,7 +14,7 @@
         <el-table-column prop="code" label="代码" min-width="140" sortable="custom"></el-table-column>
         <el-table-column prop="value" label="汇率" min-width="140" sortable="custom" align="right"></el-table-column>
         <el-table-column prop="date_modified" label="最近更新" min-width="140" sortable="custom"></el-table-column>
-        <el-table-column label="管理" width="100">
+        <el-table-column label="管理" width="100" v-if="pageAuthBtn.FCP_05_002_UPDATE01">
           <template slot-scope="scope">
             <el-button type="text" class="text_editor" @click="editorData(scope)">编辑</el-button>
           </template>
