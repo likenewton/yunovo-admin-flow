@@ -4,6 +4,7 @@ import cn.yunovo.iov.fc.common.utils.BusinessException;
 import cn.yunovo.iov.fc.common.utils.DateUtil;
 import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
 import cn.yunovo.iov.fc.dao.ICcRealnameMapper;
+import cn.yunovo.iov.fc.model.FcProperties;
 import cn.yunovo.iov.fc.model.GprsCalculateBean;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
@@ -101,8 +102,8 @@ public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcReal
 	@Qualifier("clwTransactionManager")
 	private DataSourceTransactionManager clwTransactionManager;
 	
-	@Value("fc.gprs.file_dir_root")
-	private String file_dir_root;
+	@Autowired
+	private FcProperties fcProperties;
 	
 	@Override
 	public PageData<CcRealname, Object> getItemsPage(PageForm form, Integer org_id, String card_iccid,
@@ -145,6 +146,9 @@ public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcReal
 
 				ccRealname.setOrg_name(orgs.get(String.valueOf(ccRealname.getOrg_id())).getName());
 				ccRealname.setFirst_name(userMap.get(ccRealname.getUser_id()));
+				ccRealname.setCdi_img1(fcProperties.getFile_server_url()+ccRealname.getCdi_img1());
+				ccRealname.setCdi_img2(fcProperties.getFile_server_url()+ccRealname.getCdi_img2());
+				ccRealname.setCdi_img3(fcProperties.getFile_server_url()+ccRealname.getCdi_img3());
 			}
 		}
 		
@@ -354,8 +358,8 @@ public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcReal
 		String month = DateFormatUtils.format(new Date(), "yyyyMM");
 		String filenew = source.replace("real/", String.format("realname/%s/", month));
 		
-		File srcFile = new File(file_dir_root +"/www/img/"+source);
-		File destFile = new File(file_dir_root +"/www/img/"+filenew);
+		File srcFile = new File(fcProperties.getFile_dir_root() +"/www/img/"+source);
+		File destFile = new File(fcProperties.getFile_dir_root() +"/www/img/"+filenew);
 		File parentFile = destFile.getParentFile();
 		if(!parentFile.exists()) {
 			parentFile.mkdirs();

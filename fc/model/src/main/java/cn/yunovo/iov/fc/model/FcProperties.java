@@ -7,6 +7,9 @@ public class FcProperties {
 
 	private CdpService cdp = new CdpService();
 	
+	private String file_server_url = "";
+	
+	private String file_dir_root = "";
 	
 	@Data
 	public static class CdpService{
