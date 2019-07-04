@@ -24,6 +24,7 @@ import cn.yunovo.iov.cas.client.util.token.JWTTokenBuilder;
 import cn.yunovo.iov.cas.client.util.token.TokenBuilder;
 import cn.yunovo.iov.cas.client.validation.AbstractTicketValidationFilter;
 import cn.yunovo.iov.cas.client.validation.H5ClientCas20ProxyReceivingTicketValidationFilter;
+import cn.yunovo.iov.fc.service.ISystemResourceService;
 import cn.yunovo.iov.fc.web.filter.H5LoginUserAdapterFilter;
 import redis.clients.jedis.JedisPool;
 
@@ -152,11 +153,12 @@ public class CasClientConfig {
 	 * 这个类把Assertion信息放在ThreadLocal变量中，这样应用程序不在web层也能够获取到当前登录信息
 	 */
 	@Bean
-	public FilterRegistrationBean<H5LoginUserAdapterFilter> assertionThreadLocalFilter(SpringCasProperties springCasProperties) {
+	public FilterRegistrationBean<H5LoginUserAdapterFilter> assertionThreadLocalFilter(SpringCasProperties springCasProperties, ISystemResourceService systemResourceService) {
 		FilterRegistrationBean<H5LoginUserAdapterFilter> filterRegistration = new FilterRegistrationBean<H5LoginUserAdapterFilter>();
 		
 		H5LoginUserAdapterFilter filter = new H5LoginUserAdapterFilter();
 		filter.setSpringCasProperties(springCasProperties);
+		filter.setSystemResourceService(systemResourceService);
 		filterRegistration.setFilter(filter);
 		filterRegistration.setEnabled(springCasProperties.getCasClient().getCasEnabled());
 		filterRegistration.addUrlPatterns("/api/*");

@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.jasig.cas.client.validation.Assertion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,6 +21,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.sunshine.dcda.system.service.model.SystemResourceVo;
 
+import cn.yunovo.iov.cas.client.Resource;
 import cn.yunovo.iov.cas.client.authentication.AbstractClientAuthenticationFilter;
 import cn.yunovo.iov.cas.client.configuration.SpringCasProperties;
 import cn.yunovo.iov.cas.client.constant.CasConstant;
@@ -27,7 +29,9 @@ import cn.yunovo.iov.cas.client.util.TokenUtil;
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
 import cn.yunovo.iov.fc.model.LoginInfo;
+import cn.yunovo.iov.fc.model.ResourcesBean;
 import cn.yunovo.iov.fc.service.ISystemResourceService;
+import cn.yunovo.iov.fc.web.filter.H5LoginUserAdapterFilter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -121,10 +125,20 @@ public class SsoController extends BaseController{
 	 */
 	@ApiOperation(notes="获取当前用户菜单列表", value = "获取当前用户菜单列表")
 	@GetMapping(path = "/menus", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Result<List<SystemResourceVo>> menus() {
+	public Result<List<ResourcesBean>> menus() {
 		
-		List<SystemResourceVo> menus = iSystemResourceService.menus(this.getLoginBaseInfo().getId());
-		return ResultUtil.success(menus);
+		Assertion assertion = this.getAssertion();
+		if(assertion == null) {
+			return ResultUtil.success(null);
+		}
+		Map<String, Object> attrs = assertion.getPrincipal().getAttributes();
+		
+		List<ResourcesBean> res = attrs.get(H5LoginUserAdapterFilter.USER_RESOURCE_LIST_KEY) == null ? null : (List<ResourcesBean>)attrs.get(H5LoginUserAdapterFilter.USER_RESOURCE_LIST_KEY);
+		if(CollectionUtils.isEmpty(res)) {
+			return ResultUtil.success(null);
+		}
+		
+		return ResultUtil.success(iSystemResourceService.listToTreeMenu(res));
 	}
 	
 	/**
@@ -135,7 +149,8 @@ public class SsoController extends BaseController{
 	@GetMapping(path = "/buttons", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Result<List<SystemResourceVo>> buttons(String super_resource_id) {
 		
-		List<SystemResourceVo> menus = iSystemResourceService.buttons(this.getLoginBaseInfo().getId(), super_resource_id);
-		return ResultUtil.success(menus);
+		
+		return null;
+		//return ResultUtil.success(menus);
 	}
 }

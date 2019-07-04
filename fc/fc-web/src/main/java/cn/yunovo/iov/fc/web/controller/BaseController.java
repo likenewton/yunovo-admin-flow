@@ -23,8 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 public class BaseController {
 
 	public Assertion getAssertion() {
-
-		return (Assertion) WebRequestUtil.getAttribute(H5ClientAuthenticationFilter.CONST_CAS_ASSERTION);
+		return  WebRequestUtil.getAttribute(H5ClientAuthenticationFilter.CONST_CAS_ASSERTION) != null ? (Assertion)WebRequestUtil.getAttribute(H5ClientAuthenticationFilter.CONST_CAS_ASSERTION) : null;
 	}
 	
 	@ExceptionHandler(value=Exception.class)
