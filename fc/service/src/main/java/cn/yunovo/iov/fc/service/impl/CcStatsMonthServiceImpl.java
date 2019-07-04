@@ -11,6 +11,7 @@ import cn.yunovo.iov.fc.model.entity.CcOrg;
 import cn.yunovo.iov.fc.model.entity.CcStatsDay;
 import cn.yunovo.iov.fc.model.entity.CcStatsMonth;
 import cn.yunovo.iov.fc.model.entity.CcUser;
+import cn.yunovo.iov.fc.model.export.CcStatsMonthExportBean;
 import cn.yunovo.iov.fc.service.FcConstant;
 import cn.yunovo.iov.fc.service.ICcGprsCardService;
 import cn.yunovo.iov.fc.service.ICcOrgService;
@@ -200,13 +201,13 @@ public class CcStatsMonthServiceImpl extends ServiceImpl<ICcStatsMonthMapper, Cc
 			return;
 		}
 
-		List<CcStatsMonth> records = iCcStatsMonthMapper.queryItemsPageExport(org_id, card_type, card_iccid, mdate,
+		List<CcStatsMonthExportBean> records = iCcStatsMonthMapper.queryItemsPageExport(org_id, card_type, card_iccid, mdate,
 				orgpos, orgpos.split(","));
 
 		if (!CollectionUtils.isEmpty(records)) {
 			Map<String, String> cardTypes = iCcGprsCardService.getCard_type();
 			Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
-			for (CcStatsMonth ccStatsMonth : records) {
+			for (CcStatsMonthExportBean ccStatsMonth : records) {
 
 				ccStatsMonth.setOrg_name(orgs.get(ccStatsMonth.getOrg_id()).getName());
 				ccStatsMonth.setCard_type_name(cardTypes.get(ccStatsMonth.getCard_type()));
@@ -220,7 +221,7 @@ public class CcStatsMonthServiceImpl extends ServiceImpl<ICcStatsMonthMapper, Cc
 		response.setHeader("Content-disposition", "attachment;filename="+fileName+".xlsx");
 		ExcelWriter writer = new ExcelWriter(out, ExcelTypeEnum.XLSX, true);
 		
-		Sheet sheet1 = new Sheet(1, 0, CcStatsMonth.class);
+		Sheet sheet1 = new Sheet(1, 0, CcStatsMonthExportBean.class);
 		sheet1.setSheetName(fileName);
 		writer.write(records, sheet1);
 		writer.finish();
