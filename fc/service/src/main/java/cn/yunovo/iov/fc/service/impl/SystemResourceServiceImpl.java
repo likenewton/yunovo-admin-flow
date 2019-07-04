@@ -16,6 +16,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.sunshine.dcda.basecomponent.enums.StatusEnum;
@@ -23,7 +24,9 @@ import org.sunshine.dcda.system.service.model.SystemResourceQueryBean;
 import org.sunshine.dcda.system.service.model.SystemResourceVo;
 import org.sunshine.dcda.view.system.viewcomponent.ISystemResourceViewComponent;
 
+import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
 import cn.yunovo.iov.fc.model.ResourcesBean;
+import cn.yunovo.iov.fc.model.UserResourceInfoBean;
 import cn.yunovo.iov.fc.service.FcConstant;
 import cn.yunovo.iov.fc.service.ISystemResourceService;
 import lombok.extern.slf4j.Slf4j;
@@ -32,8 +35,36 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SystemResourceServiceImpl implements ISystemResourceService{
 
+	@Autowired
+	private JedisPoolUtil jedisPoolUtil;
+	
 	@Resource
 	private ISystemResourceViewComponent systemResourceViewComponent;
+	
+	@Override
+	public UserResourceInfoBean getUserResourceInfo(String token, String user_id) {
+		
+		String cacheKey = FcConstant.SITE_CODE+"#UserResource#"+token;
+		UserResourceInfoBean bean = jedisPoolUtil.get(cacheKey, UserResourceInfoBean.class);
+		if(bean == null) {
+			List<ResourcesBean>  all_resource = this.allResourceBySiteCode(FcConstant.SITE_CODE);
+			List<ResourcesBean>  user_resource = this.allResourceBySiteCodeAndUserid(user_id, FcConstant.SITE_CODE);
+			Map<String, String> needFilter = this.getNeedFilterResource(all_resource);
+			Set<String> userRes = this.getUserResUrl(user_resource);
+			
+			bean = new UserResourceInfoBean();
+			bean.setNeed_filter_resource_map(needFilter);
+			bean.setUser_resource_url_set(userRes);
+			bean.setUser_resource(user_resource);
+			
+			jedisPoolUtil.setEx(cacheKey, bean);
+		}
+		
+		return bean;
+		
+	}
+	
+	
 	
 	private List<ResourcesBean> converToResourceBean(List<SystemResourceVo> resources) {
 		
@@ -53,6 +84,10 @@ public class SystemResourceServiceImpl implements ISystemResourceService{
 	@Override
 	public List<ResourcesBean> listToTreeMenu(List<ResourcesBean> data){
 		
+		
+		if(CollectionUtils.isEmpty(data)) {
+			return null;
+		}
 		List<ResourcesBean> tree = new ArrayList<>();
 		Map<String, ResourcesBean> hash = data.stream().collect(Collectors.toMap(ResourcesBean::getId, Function.identity()));
 		
@@ -150,26 +185,32 @@ public class SystemResourceServiceImpl implements ISystemResourceService{
 	}
 	
 	@Override
-	public Map<String, List<ResourcesBean>> buttonGroup(List<ResourcesBean> data) {
+	public Map<String, Map<String, Boolean>> buttonGroup(List<ResourcesBean> data) {
 		
 		Stream<ResourcesBean> filter = data.stream().filter(bean -> "2".equals(bean.getRescType()));
-		
 		Map<String, String> hash = data.stream().collect(Collectors.toMap(ResourcesBean::getId, ResourcesBean::getRescCode));
-		
 		Map<String, List<ResourcesBean>> group =  filter.collect(Collectors.groupingBy(ResourcesBean::getSupperResId));
 		if(group == null || group.isEmpty()) {
 			return null;
 		}
 		
-		Map<String, List<ResourcesBean>> resultData = new HashMap<>();
-		
+		Map<String, Map<String, Boolean>> resultData = new HashMap<>();
 		Set<String> keys = group.keySet();
 		
 		keys.forEach((key) -> {
-			
 			if(hash.containsKey(key)) {
 				
-				resultData.put(hash.get(key), group.get(key));
+				List<ResourcesBean> temp = group.get(key);
+				
+				Map<String, Boolean> temp2 = temp.stream().collect(Collectors.toMap(ResourcesBean::getRescCode, new Function<ResourcesBean, Boolean>(){
+
+					@Override
+					public Boolean apply(ResourcesBean t) {
+						return true;
+					}
+					
+				}));
+				resultData.put(hash.get(key), temp2);
 			}
 		});
 		

@@ -48,16 +48,6 @@ public class H5LoginUserAdapterFilter implements javax.servlet.Filter {
 	
 	private SpringCasProperties springCasProperties;
 	
-	private ISystemResourceService systemResourceService;
-
-	public ISystemResourceService getSystemResourceService() {
-		return systemResourceService;
-	}
-
-	public void setSystemResourceService(ISystemResourceService systemResourceService) {
-		this.systemResourceService = systemResourceService;
-	}
-
 	public SpringCasProperties getSpringCasProperties() {
 		return springCasProperties;
 	}
@@ -110,25 +100,6 @@ public class H5LoginUserAdapterFilter implements javax.servlet.Filter {
 			//log.info("当前登陆系统：用户中心。登录系统的用户名为：" + loginName);
 			
 			String user_id = String.valueOf(map.get("id"));
-			
-			Object temp = map.get(NEED_FILTER_RESOURCE_MAP_KEY);
-			Object temp2 = map.get(USER_RESOURCE_LIST_KEY);
-			if(temp == null || temp2 == null) {
-				
-				List<ResourcesBean>  all_resource = systemResourceService.allResourceBySiteCode(FcConstant.SITE_CODE);
-				List<ResourcesBean>  user_resource = systemResourceService.allResourceBySiteCodeAndUserid(user_id, FcConstant.SITE_CODE);
-				Map<String, String> needFilter = systemResourceService.getNeedFilterResource(all_resource);
-				Set<String> userRes = systemResourceService.getUserResUrl(user_resource);
-				if(!(CollectionUtils.isEmpty(all_resource) || CollectionUtils.isEmpty(user_resource))) {
-					
-					map.put(USER_RESOURCE_LIST_KEY, user_resource);
-					map.put(NEED_FILTER_RESOURCE_MAP_KEY, needFilter);
-					map.put(USER_RESOURCE_URL_SET_KEY, userRes);
-					request.setAttribute(AbstractCasFilter.CONST_CAS_ASSERTION, object);
-					CasClientUtil.getCasJedisPoolUtil().set(AbstractCasFilter.CONST_CAS_ASSERTION + "#" + token, object);
-				}
-				
-			}
 			
 			chain.doFilter(request, response);
 		} catch (Exception e) {

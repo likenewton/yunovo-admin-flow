@@ -22,8 +22,10 @@ import cn.yunovo.iov.cas.client.constant.CasConstant;
 import cn.yunovo.iov.cas.client.util.TokenUtil;
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
+import cn.yunovo.iov.fc.common.utils.web.WebRequestUtil;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.ResourcesBean;
+import cn.yunovo.iov.fc.model.UserResourceInfoBean;
 import cn.yunovo.iov.fc.service.ISystemResourceService;
 import cn.yunovo.iov.fc.web.filter.H5LoginUserAdapterFilter;
 import io.swagger.annotations.Api;
@@ -121,18 +123,14 @@ public class SsoController extends BaseController{
 	@GetMapping(path = "/menus", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Result<List<ResourcesBean>> menus() {
 		
-		Assertion assertion = this.getAssertion();
-		if(assertion == null) {
-			return ResultUtil.success(null);
-		}
-		Map<String, Object> attrs = assertion.getPrincipal().getAttributes();
+		LoginInfo info = this.getLoginBaseInfo();
+		UserResourceInfoBean bean = iSystemResourceService.getUserResourceInfo(TokenUtil.getToken(WebRequestUtil.request()), info.getId());
 		
-		List<ResourcesBean> res = attrs.get(H5LoginUserAdapterFilter.USER_RESOURCE_LIST_KEY) == null ? null : (List<ResourcesBean>)attrs.get(H5LoginUserAdapterFilter.USER_RESOURCE_LIST_KEY);
-		if(CollectionUtils.isEmpty(res)) {
+		if(bean == null) {
 			return ResultUtil.success(null);
 		}
 		
-		return ResultUtil.success(iSystemResourceService.listToTreeMenu(res));
+		return ResultUtil.success(iSystemResourceService.listToTreeMenu(bean.getUser_resource()));
 	}
 	
 	/**
@@ -141,19 +139,15 @@ public class SsoController extends BaseController{
 	 */
 	@ApiOperation(notes="获取当前用户对应按钮权限", value = "获取当前用户对应按钮权限")
 	@GetMapping(path = "/buttons", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Result<Map<String, List<ResourcesBean>>> buttons(String super_resource_id) {
+	public Result<Map<String, Map<String, Boolean>>> buttons() {
 		
-		Assertion assertion = this.getAssertion();
-		if(assertion == null) {
+		LoginInfo info = this.getLoginBaseInfo();
+		UserResourceInfoBean bean = iSystemResourceService.getUserResourceInfo(TokenUtil.getToken(WebRequestUtil.request()), info.getId());
+		
+		if(bean == null) {
 			return ResultUtil.success(null);
 		}
-		Map<String, Object> attrs = assertion.getPrincipal().getAttributes();
 		
-		List<ResourcesBean> res = attrs.get(H5LoginUserAdapterFilter.USER_RESOURCE_LIST_KEY) == null ? null : (List<ResourcesBean>)attrs.get(H5LoginUserAdapterFilter.USER_RESOURCE_LIST_KEY);
-		if(CollectionUtils.isEmpty(res)) {
-			return ResultUtil.success(null);
-		}
-		return ResultUtil.success(iSystemResourceService.buttonGroup(res));
-		//return ResultUtil.success(menus);
+		return ResultUtil.success(iSystemResourceService.buttonGroup(bean.getUser_resource()));
 	}
 }

@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import cn.yunovo.iov.fc.model.ResourcesBean;
+import cn.yunovo.iov.fc.model.UserResourceInfoBean;
 
 public interface ISystemResourceService{
 
@@ -18,7 +19,9 @@ public interface ISystemResourceService{
 
 	Set<String> getUserResUrl(List<ResourcesBean> data);
 
-	Map<String, List<ResourcesBean>> buttonGroup(List<ResourcesBean> data);
+	Map<String, Map<String, Boolean>> buttonGroup(List<ResourcesBean> data);
+
+	UserResourceInfoBean getUserResourceInfo(String token, String user_id);
 
 	
 }

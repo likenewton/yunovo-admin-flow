@@ -158,7 +158,6 @@ public class CasClientConfig {
 		
 		H5LoginUserAdapterFilter filter = new H5LoginUserAdapterFilter();
 		filter.setSpringCasProperties(springCasProperties);
-		filter.setSystemResourceService(systemResourceService);
 		filterRegistration.setFilter(filter);
 		filterRegistration.setEnabled(springCasProperties.getCasClient().getCasEnabled());
 		filterRegistration.addUrlPatterns("/api/*");
