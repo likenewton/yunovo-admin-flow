@@ -17,12 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.sunshine.dcda.system.service.model.SystemResourceVo;
-
-import cn.yunovo.iov.cas.client.Resource;
-import cn.yunovo.iov.cas.client.authentication.AbstractClientAuthenticationFilter;
 import cn.yunovo.iov.cas.client.configuration.SpringCasProperties;
 import cn.yunovo.iov.cas.client.constant.CasConstant;
 import cn.yunovo.iov.cas.client.util.TokenUtil;
