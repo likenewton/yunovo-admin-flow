@@ -147,10 +147,19 @@ public class SsoController extends BaseController{
 	 */
 	@ApiOperation(notes="获取当前用户对应按钮权限", value = "获取当前用户对应按钮权限")
 	@GetMapping(path = "/buttons", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Result<List<SystemResourceVo>> buttons(String super_resource_id) {
+	public Result<Map<String, List<ResourcesBean>>> buttons(String super_resource_id) {
 		
+		Assertion assertion = this.getAssertion();
+		if(assertion == null) {
+			return ResultUtil.success(null);
+		}
+		Map<String, Object> attrs = assertion.getPrincipal().getAttributes();
 		
-		return null;
+		List<ResourcesBean> res = attrs.get(H5LoginUserAdapterFilter.USER_RESOURCE_LIST_KEY) == null ? null : (List<ResourcesBean>)attrs.get(H5LoginUserAdapterFilter.USER_RESOURCE_LIST_KEY);
+		if(CollectionUtils.isEmpty(res)) {
+			return ResultUtil.success(null);
+		}
+		return ResultUtil.success(iSystemResourceService.buttonGroup(res));
 		//return ResultUtil.success(menus);
 	}
 }
