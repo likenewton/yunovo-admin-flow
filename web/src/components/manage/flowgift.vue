@@ -43,7 +43,7 @@
               <el-input type="textarea" v-model="formInline.gift_name" placeholder="请输入赠者&备注" rows="4"></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+              <el-button type="primary" @click="submitForm('ruleForm')" :disabled="!pageAuthBtn.FCP_01_005_ADD01">保存</el-button>
               <el-button type="warning" @click="resetForm('ruleForm')">重置</el-button>
             </el-form-item>
           </el-form>
@@ -64,19 +64,21 @@
               <el-date-picker v-model="searchForm.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="添加时间结束"></el-date-picker>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="searchData" :disabled="pageAuthBtn.FCP_01_005_CHECK01">查询</el-button>
-              <el-button type="warning" @click="resetData" :disabled="pageAuthBtn.FCP_01_005_CHECK01">重置</el-button>
+              <el-button type="primary" @click="searchData" :disabled="!pageAuthBtn.FCP_01_005_CHECK01">查询</el-button>
+              <el-button type="warning" @click="resetData" :disabled="!pageAuthBtn.FCP_01_005_CHECK01">重置</el-button>
             </el-form-item>
           </el-form>
           <el-table v-loading="loadData" ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
             <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" width="182" sortable="custom">
               <template slot-scope="scope">
-                <span class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
+                <span v-if="pageAuthBtn.FCP_01_005_LINK01" class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
+                <span v-else>{{scope.row.card_iccid}}</span>
               </template>
             </el-table-column>
             <el-table-column prop="org_id" label="机构名称" min-width="140" sortable="custom">
               <template slot-scope="scope">
-                <span class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
+                <span v-if="pageAuthBtn.FCP_01_005_LINK2" class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
+                <span v-else>{{scope.row.org_name}}</span>
               </template>
             </el-table-column>
             <el-table-column prop="gprs_amount" label="套餐流量" width="100" sortable="custom" align="right">

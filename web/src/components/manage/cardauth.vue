@@ -2,7 +2,7 @@
   <div class="card_auth">
     <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="small" type="warning">导出实名信息</el-button>
+        <el-button size="small" type="warning" :disabled="!pageAuthBtn.FCP_01_007_EXPORT01">导出实名信息</el-button>
       </el-button-group>
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item>
@@ -25,14 +25,15 @@
           <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="申请时间结束"></el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="searchData">查询</el-button>
-          <el-button type="warning" @click="resetData">重置</el-button>
+          <el-button type="primary" @click="searchData" :disabled="!pageAuthBtn.FCP_01_007_CHECK01">查询</el-button>
+          <el-button type="warning" @click="resetData" :disabled="!pageAuthBtn.FCP_01_007_CHECK01">重置</el-button>
         </el-form-item>
       </el-form>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" width="182" sortable="custom">
           <template slot-scope="scope">
-            <span class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
+            <span v-if="pageAuthBtn.FCP_01_007_LINK01" class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
+            <span v-else>{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="org_id" label="机构名称" width="140" sortable="custom">
@@ -65,7 +66,7 @@
             <span>{{scope.row.first_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" width="115">
+        <el-table-column fixed="right" label="操作" width="115" v-if="pageAuthBtn.FCP_01_007_OP01">
           <template slot-scope="scope">
             <el-button type="text" @click="showDialog(scope)">审核实名证件</el-button>
           </template>
