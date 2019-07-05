@@ -1,5 +1,6 @@
 package cn.yunovo.iov.fc.service.impl;
 
+import cn.yunovo.iov.fc.common.utils.DateUtil;
 import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
 import cn.yunovo.iov.fc.common.utils.web.WebRequestUtil;
 import cn.yunovo.iov.fc.dao.ICcStatsMonthMapper;
@@ -40,6 +41,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -217,12 +219,13 @@ public class CcStatsMonthServiceImpl extends ServiceImpl<ICcStatsMonthMapper, Cc
 		ServletOutputStream out = response.getOutputStream();
 		response.setContentType("multipart/form-data");
 		response.setCharacterEncoding("utf-8");
-		String fileName = new String(("月度用量" + new SimpleDateFormat("yyyy-MM-dd").format(new Date())).getBytes(), "UTF-8");
+		String name = "月度用量" + DateFormatUtils.format(DateUtil.now(), "yyyy-MM-dd");
+		String fileName = new String(name.getBytes(), "ISO-8859-1");
 		response.setHeader("Content-disposition", "attachment;filename="+fileName+".xlsx");
 		ExcelWriter writer = new ExcelWriter(out, ExcelTypeEnum.XLSX, true);
 		
 		Sheet sheet1 = new Sheet(1, 0, CcStatsMonthExportBean.class);
-		sheet1.setSheetName(fileName);
+		sheet1.setSheetName(name);
 		writer.write(records, sheet1);
 		writer.finish();
 
