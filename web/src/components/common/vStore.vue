@@ -10,14 +10,14 @@ export default {
   data() {
     return {}
   },
-  mounted() {
+  created() {
     this.getAuthButtons()
-    if (this.cardTypes.length === 0) this.getCardTypes()
-    if (this.orgs.length === 0) this.getOrgs()
-    if (this.notifysFrom.length === 0) this.getNotifySelect()
-    if (this.months.length === 0) this.getMonths()
-    if (this.payMethodSelect.length === 0) this.getPayMethodSelect()
-    if (this.liveMonthSelect.length === 0) this.getLiveMonth()
+    this.getCardTypes()
+    this.getOrgs()
+    this.getNotifySelect()
+    this.getMonths()
+    this.getPayMethodSelect()
+    this.getLiveMonth()
   },
   methods: {
     ...mapActions([

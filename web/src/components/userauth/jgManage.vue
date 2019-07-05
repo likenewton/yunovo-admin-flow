@@ -12,7 +12,7 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="searchData" :disabled="!pageAuthBtn.FPC_04_001_CHECK01">查询</el-button>
+          <!-- <el-button type="primary" @click="searchData" :disabled="!pageAuthBtn.FPC_04_001_CHECK01">查询</el-button> -->
           <el-button type="warning" @click="resetData" :disabled="!pageAuthBtn.FPC_04_001_CHECK01">重置</el-button>
         </el-form-item>
       </el-form>

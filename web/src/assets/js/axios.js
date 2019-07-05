@@ -76,8 +76,12 @@ class AXIOS {
       getBatchDetail: '/fc/api/gprs/batch/detail', // 编辑批次
       // 导出
       statsExport: '/fc/api/gprs/stats/export',
+      cardExport: '/fc/api/gprs/card/export',
+      cardAuthExport: '/fc/api/realname/export',
+      deadstatusExport: '/fc/api/gprs/halt/export',
       // 实名审核
       checkAudit: '/fc/api/realname/audit',
+      unbindRealname: '/fc/api/realname/unbind', // 解除实名
       // 停用/启用
       checkComboStop: '/fc/api/gprs/pack/stop', // 套餐
       checkCardStop: '/fc/api/gprs/card/onoff', // 卡

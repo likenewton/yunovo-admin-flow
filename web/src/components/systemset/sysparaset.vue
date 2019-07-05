@@ -359,7 +359,9 @@ export default {
           this.loadData = false
           Vue.nextTick(() => {
             // 清除该字段在数据填充的时候表现的验证通过的样式
-            this.$refs.ruleForm_1.clearValidate(['config_template'])
+            this.$refs.ruleForm_0.clearValidate()
+            this.$refs.ruleForm_1.clearValidate()
+            this.$refs.ruleForm_2.clearValidate()
           })
         })
       })

@@ -4,7 +4,7 @@
       <el-button-group style="margin-bottom: 10px">
         <el-button size="small" type="primary" @click="showEcharts" :disabled="!pageAuthBtn.FCP_01_001_ECHART01">图表</el-button>
         <el-button size="small" type="warning" @click="$router.push({name: 'cardbatch'})" :disabled="!pageAuthBtn.FCP_01_001_LINK2">导入</el-button>
-        <el-button size="small" type="warning" :disabled="!pageAuthBtn.FCP_01_001_EXPORT01">导出</el-button>
+        <el-button size="small" type="warning" :disabled="!pageAuthBtn.FCP_01_001_EXPORT01" @click="exportExcel">导出</el-button>
       </el-button-group>
       <el-form :inline="true" :model="formInline" class="search-form" size="small" @submit.native.prevent>
         <el-form-item>
@@ -218,6 +218,10 @@ export default {
     handleCurrentChangeDetail(val) {
       this.dialogList.currentPage = val
       this.getEchartsData()
+    },
+    // 导出excel
+    exportExcel() {
+      Api.UNITS.exportExcel(_axios.ajaxAd.cardExport, this.formInline)
     },
     // 简单查询
     simpleSearchData() {

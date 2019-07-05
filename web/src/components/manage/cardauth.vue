@@ -2,7 +2,7 @@
   <div class="card_auth">
     <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="small" type="warning" :disabled="!pageAuthBtn.FCP_01_007_EXPORT01">导出实名信息</el-button>
+        <el-button size="small" type="warning" :disabled="!pageAuthBtn.FCP_01_007_EXPORT01" @click="exportExcel">导出实名信息</el-button>
       </el-button-group>
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item>
@@ -68,7 +68,8 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="115" v-if="pageAuthBtn.FCP_01_007_OP01">
           <template slot-scope="scope">
-            <el-button type="text" @click="showDialog(scope)">审核实名证件</el-button>
+            <el-button type="text" v-if="scope.row.cdi_status == 2" @click="showDialog(scope)">查看实名证件</el-button>
+            <el-button type="text" v-else @click="showDialog(scope)">审核实名证件</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -79,22 +80,35 @@
       <div slot class="auth_dialog">
         <div class="content" :style="{'maxHeight': winHeight/2 + 'px'}">
           <div class="item">
-            <div class="title">身份证正面图</div>
-            <img src="../../assets/images/no-image-800x500.jpg" height="224" width="224">
+            <span class="demonstration">身份证正面图</span>
+            <el-image :src="choiceItem.cdi_img1" fit="contain">
+              <div slot="error" class="image-slot">
+                <img src="../../assets/images/no-image-800x500.jpg">
+              </div>
+            </el-image>
           </div>
           <div class="item">
-            <div class="title">身份证背面图</div>
-            <img src="../../assets/images/no-image-800x500.jpg" height="224" width="224">
+            <span class="demonstration">身份证背面图</span>
+            <el-image :src="choiceItem.cdi_img2" fit="contain">
+              <div slot="error" class="image-slot">
+                <img src="../../assets/images/no-image-800x500.jpg">
+              </div>
+            </el-image>
           </div>
           <div class="item">
-            <div class="title">手持身份证照</div>
-            <img src="../../assets/images/no-image-800x500.jpg" height="224" width="224">
+            <span class="demonstration">手持身份证照</span>
+            <el-image :src="choiceItem.cdi_img3" fit="contain">
+              <div slot="error" class="image-slot">
+                <img src="../../assets/images/no-image-800x500.jpg">
+              </div>
+            </el-image>
           </div>
         </div>
       </div>
       <div slot="footer">
-        <el-button size="small" type="danger" @click="authInvalid">实名信息无效</el-button>
-        <el-button size="small" type="success" @click="authValid">实名信息通过</el-button>
+        <el-button size="small" v-if="choiceItem.cdi_status != 2" type="danger" @click="authInvalid">实名信息无效</el-button>
+        <el-button size="small" v-if="choiceItem.cdi_status != 2" type="success" @click="authValid">实名信息通过</el-button>
+        <el-button size="small" v-if="choiceItem.cdi_status == 2" type="danger" @click="relieveAuth">解除实名绑定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -117,6 +131,10 @@ export default {
     this.getData()
   },
   methods: {
+    // 导出excel
+    exportExcel() {
+      Api.UNITS.exportExcel(_axios.ajaxAd.cardAuthExport, this.formInline)
+    },
     resetData() {
       this.list.currentPage = 1
       this.formInline = {
@@ -153,10 +171,13 @@ export default {
           },
           done: ((res) => {
             this.authDialogVisible = false
-            this.showMsgBox({
-              type: 'success',
-              message: '操作成功！'
-            })
+            this.getData()
+            setTimeout(() => {
+              this.showMsgBox({
+                type: 'success',
+                message: '操作成功，实名信息已无效！'
+              })
+            }, 150)
           })
         })
       }).catch(() => {
@@ -166,6 +187,7 @@ export default {
         })
       })
     },
+    // 实名验证通过
     authValid() {
       this.$confirm(`该实名信息是否通过?`, '提示', {
         confirmButtonText: '确定',
@@ -181,10 +203,49 @@ export default {
           },
           done: ((res) => {
             this.authDialogVisible = false
-            this.showMsgBox({
-              type: 'success',
-              message: '操作成功！'
-            })
+            this.getData()
+            setTimeout(() => {
+              this.showMsgBox({
+                type: 'success',
+                message: '操作成功，实名信息已通过！'
+              })
+            }, 150)
+          })
+        })
+      }).catch(() => {
+        this.showMsgBox({
+          type: 'info',
+          message: '已取消操作！'
+        })
+      })
+    },
+    // 解除实名绑定
+    relieveAuth() {
+      if (this.choiceItem.card_iccid.indexOf('_') > -1) {
+        this.showMsgBox({
+          type: 'warning',
+          message: '该卡尚未进行实名绑定'
+        })
+        return
+      }
+      this.$confirm(`是否解除该实名绑定？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        _axios.send({
+          method: 'post',
+          url: _axios.ajaxAd.unbindRealname,
+          data: { card_id: this.choiceItem.card_id },
+          done: ((res) => {
+            this.authDialogVisible = false
+            this.getData()
+            setTimeout(() => {
+              this.showMsgBox({
+                type: 'success',
+                message: '操作成功，实名信息绑定已解除！'
+              })
+            }, 150)
           })
         })
       }).catch(() => {
@@ -229,9 +290,12 @@ export default {
     overflow: auto;
 
     .item {
+      width: 300px;
+      margin: 0 auto;
       text-align: center;
 
-      .title {
+      .demonstration {
+        display: inline-block;
         line-height: 20px;
         margin: 20px 0;
         font-size: 18px;
