@@ -3,6 +3,7 @@ package cn.yunovo.iov.fc.web.controller.gprs;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,7 +52,7 @@ public class RealnameController extends BaseController{
 	
 	@ApiOperation(value="业务管理-流量卡实名审批接口")
 	@RequestMapping(path="/audit",method= {RequestMethod.POST})
-	public Result<String> audit(RealnameForm form) {
+	public Result<String> audit(@RequestBody RealnameForm form) {
 
 		try {
 			form.validate();
