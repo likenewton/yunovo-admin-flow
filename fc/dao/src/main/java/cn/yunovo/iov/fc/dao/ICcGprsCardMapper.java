@@ -11,6 +11,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.SellPayResultBean;
+import cn.yunovo.iov.fc.model.export.AbnormalExportBean;
+import cn.yunovo.iov.fc.model.export.CcGprsCardExportBean;
+import cn.yunovo.iov.fc.model.export.HaltPageExportBean;
 import cn.yunovo.iov.fc.model.result.CardTotalByOrgidInfoBean;
 import cn.yunovo.iov.fc.model.result.CardUsedResultBean;
 import cn.yunovo.iov.fc.model.result.PayDetailResultBean;
@@ -26,11 +29,29 @@ import cn.yunovo.iov.fc.model.result.UnicomStatResultBean;
  */
 public interface ICcGprsCardMapper extends BaseMapper<CcGprsCard> {
 
+	/**
+	 * 已停卡况列表查询
+	 * @param page
+	 * @param card_iccid
+	 * @param card_type
+	 * @param org_id
+	 * @param time_expire
+	 * @param orgpos
+	 * @param orgs
+	 * @return
+	 */
 	public List<CcGprsCard> getHaltPage(IPage<CcGprsCard> page, @Param("card_iccid")String card_iccid, @Param("card_type")Integer card_type, @Param("org_id")Integer org_id, @Param("time_expire")Integer time_expire,@Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	
+	public List<HaltPageExportBean> getHaltPageExport(@Param("card_iccid")String card_iccid, @Param("card_type")Integer card_type, @Param("org_id")Integer org_id, @Param("time_expire")Integer time_expire,@Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 	
 	public HashMap<String, Double>  getHaltTotal(@Param("card_iccid")String card_iccid, @Param("card_type")Integer card_type, @Param("org_id")Integer org_id, @Param("time_expire")Integer time_expire,@Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 	
+	/**
+	 * 统计分析-用量异常查询
+	 * @return
+	 */
 	public List<CcGprsCard> getItemsPage(IPage<CcGprsCard> page, @Param("card_iccid")String card_iccid, @Param("card_type")Integer card_type, @Param("org_id")Integer org_id, @Param("max_unused")Integer max_unused, @Param("unicom_diff")Integer unicom_diff, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	public List<AbnormalExportBean> getItemsPageExport(@Param("card_iccid")String card_iccid, @Param("card_type")Integer card_type, @Param("org_id")Integer org_id, @Param("max_unused")Integer max_unused, @Param("unicom_diff")Integer unicom_diff, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 	
 	//public Long getItemsPageCount(@Param("card_iccid")String card_iccid, @Param("card_type")Integer card_type, @Param("org_id")Integer org_id, @Param("max_unused")Integer max_unused, @Param("unicom_diff")Integer unicom_diff, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 	
@@ -103,6 +124,12 @@ public interface ICcGprsCardMapper extends BaseMapper<CcGprsCard> {
 	 * @return
 	 */
 	public List<CcGprsCard> queryCardListPage(IPage<CcGprsCard> page, @Param("card_iccid")String card_iccid, @Param("card_type")Integer card_type, @Param("org_id")Integer org_id, @Param("date_start")String date_start, @Param("date_end")String date_end, @Param("time_expire")Integer time_expire, @Param("unicom_stop")Integer unicom_stop, @Param("status")Integer status, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	
+	/**
+	 * 流量卡列表导出
+	 * @return
+	 */
+	public List<CcGprsCardExportBean> queryCardListPageExport(@Param("card_iccid")String card_iccid, @Param("card_type")Integer card_type, @Param("org_id")Integer org_id, @Param("date_start")String date_start, @Param("date_end")String date_end, @Param("time_expire")Integer time_expire, @Param("unicom_stop")Integer unicom_stop, @Param("status")Integer status, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 	
 	
 	/**

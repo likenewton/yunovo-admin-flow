@@ -55,6 +55,58 @@
 		
 	</select>
 	
+	<select id="getItemsPageExport" resultType="cn.yunovo.iov.fc.model.export.CcRealnameExportBean">
+	
+		SELECT R.device_sn,R.card_iccid,R.owner_name,R.owner_cdi,
+			R.cdi_img1,R.cdi_img2,R.cdi_img3,R.cdi_status,R.time_added
+		FROM
+			cc_realname AS R
+		INNER JOIN cc_gprs_card C ON C.card_id = R.card_id
+		WHERE
+			1 = 1
+		
+		<choose>
+
+			<when test="org_id != null">
+				AND C.org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND C.org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+		
+		<if test="card_iccid != null">
+			<bind name="card_iccid_bind" value="'%'+card_iccid+'%'" />
+			AND R.card_iccid LIKE #{card_iccid_bind}
+		</if>
+		
+		<if test="date_start != null">
+			<![CDATA[  AND R.time_added >= #{date_start} ]]>
+		</if>
+
+		<if test="date_end != null">
+			<![CDATA[ AND R.time_added <= #{date_end} ]]>
+		</if>
+		
+		<if test="status != null">
+			<![CDATA[ AND R.cdi_status <= #{status} ]]>
+		</if>
+		
+		order by R.cdi_status desc,R.time_added desc
+	</select>
+	
 	<!-- 获取实名卡数 -->
 	<select id="getRlnameTotalByStatus" resultType="Integer">
 		

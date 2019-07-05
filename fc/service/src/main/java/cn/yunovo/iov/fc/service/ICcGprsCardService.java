@@ -13,6 +13,7 @@ import cn.yunovo.iov.fc.model.result.PayDetailResultBean;
 import cn.yunovo.iov.fc.model.result.UnicomDataBean;
 import cn.yunovo.iov.fc.model.result.UnicomStatResultBean;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,8 +32,30 @@ public interface ICcGprsCardService extends IService<CcGprsCard> {
 	
 	public Map<String, String> getCard_type();
 	
+	/**
+	 * 已停卡况-列表查询
+	 * @param pageForm
+	 * @param card_iccid
+	 * @param card_type
+	 * @param org_id
+	 * @param time_expire
+	 * @param info
+	 * @return
+	 */
 	public PageData<CcGprsCard, HashMap<String, Double>> getHaltPage(PageForm pageForm, String card_iccid,
 			Integer card_type, Integer org_id, Integer time_expire, LoginInfo info);
+	
+	/**
+	 * 已停卡况-列表查询导出
+	 * @param card_iccid
+	 * @param card_type
+	 * @param org_id
+	 * @param time_expire
+	 * @param info
+	 * @throws IOException
+	 */
+	void getHaltPageExport(String card_iccid, Integer card_type, Integer org_id, Integer time_expire, LoginInfo info)
+			throws IOException;
 	
 	/**
 	 * 用量异常查询接口
@@ -47,6 +70,9 @@ public interface ICcGprsCardService extends IService<CcGprsCard> {
 	 */
 	public PageData<CcGprsCard, Object>  getItemsPage(PageForm pageForm, String card_iccid,
 			Integer card_type, Integer org_id, Integer max_unused, Integer unicom_diff, LoginInfo info);
+	void getItemsPageExport(String card_iccid, Integer card_type, Integer org_id, Integer max_unused,
+			Integer unicom_diff, LoginInfo info) throws IOException;
+	
 	
 	/**
 	 * 统计分析-续费数据
@@ -164,6 +190,19 @@ public interface ICcGprsCardService extends IService<CcGprsCard> {
 	 * @param iccid 流量卡iccid
 	 */
 	void removCardCacheInfo(String iccid);
+
+	/**
+	 * 流量卡列表导出接口
+	 * @throws Exception 
+	 *
+	 */
+	public void queryCardListPageExport(String card_iccid, Integer org_id, String date_start, String date_end,
+			Integer time_expire, Integer unicom_stop, Integer status, LoginInfo loginBaseInfo, Integer card_type) throws Exception;
+
+	
+	
+
+	
 	
 	
 	

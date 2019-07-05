@@ -1,5 +1,7 @@
 package cn.yunovo.iov.fc.web.controller.gprs;
 
+import java.io.IOException;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -49,6 +51,21 @@ public class RealnameController extends BaseController{
 		
 		PageData<CcRealname, Object>  data = iCcRealnameService.getItemsPage(form, org_id, card_iccid, date_start, date_end, status, this.getLoginBaseInfo());
 		return ResultUtil.success(data);
+	}
+	
+	@ApiOperation(value="业务管理-流量卡实名列表接口")
+	@ApiImplicitParams(value = { 
+			@ApiImplicitParam(name = "org_id", value = "机构id", required = false, dataType = "int",paramType = "query"),
+			@ApiImplicitParam(name = "card_iccid", value = "卡iccid", required = false, dataType = "String",paramType = "query"),
+			@ApiImplicitParam(name = "status", value = "审批状态", required = false, dataType = "int",paramType = "query"),
+			@ApiImplicitParam(name = "date_start", value = "申请时间-开始日期（YYYY-MM-DD）", required = false, dataType = "String",paramType = "query"),
+			@ApiImplicitParam(name = "date_end", value = "申请时间-结束日期（YYYY-MM-DD）", required = false, dataType = "String",paramType = "query")
+	})
+	@RequestMapping(path="/export",method= {RequestMethod.GET, RequestMethod.POST})
+	public void export(PageForm form, String card_iccid, Integer org_id, String date_start,
+			String date_end, Integer status) throws IOException {
+		
+		iCcRealnameService.getItemsPageExport(org_id, card_iccid, date_start, date_end, status, this.getLoginBaseInfo());
 	}
 	
 	@ApiOperation(value="业务管理-流量卡实名审批接口")

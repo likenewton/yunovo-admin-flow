@@ -6,6 +6,8 @@ import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcRealname;
 import cn.yunovo.iov.fc.model.form.RealnameForm;
 
+import java.io.IOException;
+
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -30,4 +32,7 @@ public interface ICcRealnameService extends IService<CcRealname> {
 	boolean audit(RealnameForm form, LoginInfo loginInfo);
 
 	boolean unbind(RealnameForm form, LoginInfo loginBaseInfo);
+
+	void getItemsPageExport(Integer org_id, String card_iccid, String date_start, String date_end, Integer status,
+			LoginInfo info) throws IOException;
 }

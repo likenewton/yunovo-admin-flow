@@ -56,6 +56,62 @@
 
 		</choose>
 	</select>
+	
+	<select id="getHaltPageExport"
+		resultType="cn.yunovo.iov.fc.model.export.HaltPageExportBean">
+
+		SELECT org_id,card_iccid,used_total,used_month,max_unused,
+			time_stop,time_active,time_added,time_last,time_expire FROM cc_gprs_card WHERE unicom_stop = 1
+
+		<choose>
+
+			<when test="org_id != null">
+				AND org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+
+		<if test="card_type != null">
+			AND card_type = #{card_type}
+		</if>
+
+		<if test="card_iccid != null">
+			<bind name="card_iccid_bind" value="'%'+card_iccid+'%'" />
+			AND card_iccid LIKE #{card_iccid_bind}
+		</if>
+		<choose>
+
+			<when test="time_expire != null">
+				<choose>
+					<when test='time_expire == 1'>
+						<![CDATA[ AND time_expire > NOW() ]]>
+					</when>
+					<otherwise><![CDATA[ AND time_expire <= NOW() ]]>
+					</otherwise>
+				</choose>
+			</when>
+
+			<otherwise>
+
+			</otherwise>
+
+
+		</choose>
+	</select>
 
 	<select id="getHaltTotal" resultType="java.util.HashMap">
 	<![CDATA[
@@ -110,6 +166,51 @@
 		resultType="cn.yunovo.iov.fc.model.entity.CcGprsCard">
 
 		SELECT * FROM cc_gprs_card WHERE 1 =1
+
+		<choose>
+
+			<when test="org_id != null">
+				AND org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+
+		<if test="card_type != null">
+			AND card_type = #{card_type}
+		</if>
+
+		<if test="card_iccid != null">
+			<bind name="card_iccid_bind" value="'%'+card_iccid+'%'" />
+			AND card_iccid LIKE #{card_iccid_bind}
+		</if>
+
+		<if test="max_unused != null and max_unused &gt; 1">
+			<![CDATA[ AND max_unused <= -#{max_unused}  AND unicom_stop = 0 ]]>
+		</if>
+
+		<if test="unicom_diff != null and unicom_diff &gt; 1">
+			<![CDATA[ AND unicom_diff >= #{unicom_diff} ]]>
+		</if>
+	</select>
+	
+	<select id="getItemsPageExport"
+		resultType="cn.yunovo.iov.fc.model.export.AbnormalExportBean">
+
+		SELECT card_iccid,used_total,unicom_total,max_unused FROM cc_gprs_card WHERE 1 =1
 
 		<choose>
 
@@ -521,6 +622,84 @@
 		<if test="status == 1">
 			 AND time_active IS NOT NULL
 		</if>
+	</select>
+	
+	<select id="queryCardListPageExport"
+		resultType="cn.yunovo.iov.fc.model.export.CcGprsCardExportBean">
+
+		SELECT
+			org_id,batch_id,card_iccid,card_type,used_total,used_month,max_unused,
+			unicom_ctime,time_active,time_added,time_last,time_expire
+		FROM
+		cc_gprs_card
+		WHERE 1=1
+		
+		<choose>
+
+			<when test="org_id != null">
+				AND org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+		
+		<if test="card_iccid != null">
+			<bind name="card_iccid_bind" value="'%'+card_iccid+'%'" />
+			AND card_iccid LIKE #{card_iccid_bind}
+		</if>
+		
+		<if test="card_type != null">
+			AND card_type = #{card_type}
+		</if>
+
+		<if test="date_start != null">
+			<![CDATA[  AND time_active >= #{date_start} ]]>
+		</if>
+
+		<if test="date_end != null">
+			<![CDATA[ AND time_active <= #{date_end} ]]>
+		</if>
+		
+		<choose>
+			<when test="time_expire != null">
+				<choose>
+					<when test='time_expire == 1'>
+						<![CDATA[ AND time_expire > NOW() ]]>
+					</when>
+					<otherwise><![CDATA[ AND time_expire <= NOW() ]]>
+					</otherwise>
+				</choose>
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+		
+		<if test="unicom_stop != null">
+			 AND unicom_stop = #{unicom_stop}
+		</if>
+		
+		<if test="status == 0">
+			 AND time_active IS NULL
+		</if>
+		
+		<if test="status == 1">
+			 AND time_active IS NOT NULL
+		</if>
+		
+		
 	</select>
 	
 	<select id="cardTotalByOrgidGroup" resultType="cn.yunovo.iov.fc.model.result.CardTotalByOrgidInfoBean">

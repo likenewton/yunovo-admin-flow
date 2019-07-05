@@ -219,7 +219,7 @@ public class CcStatsMonthServiceImpl extends ServiceImpl<ICcStatsMonthMapper, Cc
 		ServletOutputStream out = response.getOutputStream();
 		response.setContentType("multipart/form-data");
 		response.setCharacterEncoding("utf-8");
-		String name = "月度用量" + DateFormatUtils.format(DateUtil.now(), "yyyy-MM-dd");
+		String name = "月度用量" + DateFormatUtils.format(DateUtil.now(), "yyyy-MM-dd_HH-mm-ss");
 		String fileName = new String(name.getBytes(), "ISO-8859-1");
 		response.setHeader("Content-disposition", "attachment;filename="+fileName+".xlsx");
 		ExcelWriter writer = new ExcelWriter(out, ExcelTypeEnum.XLSX, true);

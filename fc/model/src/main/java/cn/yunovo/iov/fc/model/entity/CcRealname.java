@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
@@ -26,6 +27,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @ApiModel(value = "Cc_realname对象", description = "流量卡实名制表")
+@TableName("cc_realname")
 public class CcRealname implements Serializable {
 
 	private static final long serialVersionUID = 1L;

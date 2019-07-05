@@ -77,6 +77,24 @@ public class GprsCardController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
+	@ApiOperation(value="业务管理-流量卡列表导出")
+	@ApiImplicitParams(value = { 
+			@ApiImplicitParam(name = "org_id", value = "机构id", required = false, dataType = "int",paramType = "query"),
+			@ApiImplicitParam(name = "card_type", value = "卡商类型id", required = false, dataType = "int",paramType = "query"),
+			@ApiImplicitParam(name = "card_iccid", value = "卡iccid", required = false, dataType = "String",paramType = "query"),
+			@ApiImplicitParam(name = "date_start", value = "激活时间-开始日期（YYYY-MM-DD）", required = false, dataType = "String",paramType = "query"),
+			@ApiImplicitParam(name = "date_end", value = "激活时间-结束日期（YYYY-MM-DD）", required = false, dataType = "String",paramType = "query"),
+			@ApiImplicitParam(name = "time_expire", value = "是否已过期,0(已过期) 1(未过期)", required = false, dataType = "int",paramType = "query"),
+			@ApiImplicitParam(name = "unicom_stop", value = "是否在联通已停卡0（正常）1（停用）", required = false, dataType = "int",paramType = "query"),
+			@ApiImplicitParam(name = "status", value = "激活状态0（未激活）1（已激活）", required = false, dataType = "int",paramType = "query")})
+	@RequestMapping(path="/export",method= {RequestMethod.GET, RequestMethod.POST})
+	public void export(String card_iccid, Integer org_id, String date_start,
+			String date_end, Integer time_expire, Integer unicom_stop, Integer status,
+			Integer card_type) throws Exception {
+		
+		iCcGprsCardService.queryCardListPageExport(card_iccid, org_id, date_start, date_end, time_expire, unicom_stop, status, this.getLoginBaseInfo(), card_type);
+	}
+	
 	@ApiOperation(value = "业务管理-流量卡充值明细")
 	@ApiImplicitParams(value = {
 			@ApiImplicitParam(name = "date_start", value = "充值时间-开始日期 YYYY-MM-DD", required = false, dataType = "String", paramType = "query"),

@@ -1,5 +1,7 @@
 package cn.yunovo.iov.fc.web.controller.gprs;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +41,19 @@ public class AbnormalController extends BaseController{
 	
 		PageData<CcGprsCard, Object> data = iCcGprsCardService.getItemsPage(page, card_iccid, card_type, org_id, max_unused, unicom_diff, this.getLoginBaseInfo());
 		return ResultUtil.success(data);
+	}
+	
+	@ApiOperation(value="统计分析-用量异常导出接口")
+	@ApiImplicitParams(value = { 
+			@ApiImplicitParam(name = "org_id", value = "机构id", required = false, dataType = "int",paramType = "query"),
+			@ApiImplicitParam(name = "card_type", value = "卡商类型id", required = false, dataType = "int",paramType = "query"),
+			@ApiImplicitParam(name = "card_iccid", value = "卡iccid", required = false, dataType = "String",paramType = "query"),
+			@ApiImplicitParam(name = "max_unused", value = "剩余流量", required = false, dataType = "int",paramType = "query"),
+			@ApiImplicitParam(name = "unicom_diff", value = "日差异流量", required = false, dataType = "int",paramType = "query")})
+	@RequestMapping(path="/export",method= {RequestMethod.GET, RequestMethod.POST})
+	public void export(Integer org_id, Integer card_type, String card_iccid, Integer max_unused,Integer unicom_diff) throws IOException {
+	
+		iCcGprsCardService.getItemsPageExport(card_iccid, card_type, org_id, max_unused, unicom_diff, this.getLoginBaseInfo());
 	}
 	
 }

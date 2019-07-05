@@ -3,6 +3,7 @@ package cn.yunovo.iov.fc.service.impl;
 import cn.yunovo.iov.fc.common.utils.BusinessException;
 import cn.yunovo.iov.fc.common.utils.DateUtil;
 import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
+import cn.yunovo.iov.fc.common.utils.web.WebRequestUtil;
 import cn.yunovo.iov.fc.dao.ICcRealnameMapper;
 import cn.yunovo.iov.fc.model.FcProperties;
 import cn.yunovo.iov.fc.model.GprsCalculateBean;
@@ -15,6 +16,8 @@ import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.CcGprsPay;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
 import cn.yunovo.iov.fc.model.entity.CcRealname;
+import cn.yunovo.iov.fc.model.export.CcGprsCardExportBean;
+import cn.yunovo.iov.fc.model.export.CcRealnameExportBean;
 import cn.yunovo.iov.fc.model.form.RealnameForm;
 import cn.yunovo.iov.fc.service.FcConstant;
 import cn.yunovo.iov.fc.service.ICcCardLogService;
@@ -27,6 +30,9 @@ import cn.yunovo.iov.fc.service.ICcRealnameService;
 import cn.yunovo.iov.fc.service.ICcUserService;
 import lombok.extern.slf4j.Slf4j;
 
+import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -42,6 +48,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomUtils;
@@ -156,6 +165,52 @@ public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcReal
 		page.setRecords(records);
 		returnData.setPage(page);
 		return returnData;
+	}
+	
+	@Override
+	public void getItemsPageExport(Integer org_id, String card_iccid,
+			String date_start, String date_end, Integer status, LoginInfo info)
+					throws IOException {
+		
+
+		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
+		if (StringUtils.isEmpty(orgpos)) {
+			
+			log.error("[getItemsPageExport][导出数据失败]params={}", JSONObject.toJSONString(WebRequestUtil.request().getParameterMap()));
+			throw new BusinessException(-1, "导出数据失败");
+		}
+
+		if(org_id != null && !iCcOrgService.hasPermission(org_id, orgpos)) {
+			
+			log.error("[getItemsPageExport][导出对应机构数据失败]params={}", JSONObject.toJSONString(WebRequestUtil.request().getParameterMap()));
+			throw new BusinessException(-1, "导出对应机构数据失败");
+		}
+		
+		if (StringUtils.isNotEmpty(date_start)) {
+			date_start = date_start + " 00:00:00";
+		}
+
+		if (StringUtils.isNotEmpty(date_end)) {
+			date_end = date_end + " 23:59:59";
+		}
+		
+		List<CcRealnameExportBean> records = iCcRealnameMapper.getItemsPageExport( org_id, card_iccid, date_start, date_end, status, orgpos, orgpos.split(","));
+		
+		HttpServletResponse response = WebRequestUtil.response();
+		ServletOutputStream out = response.getOutputStream();
+		response.setContentType("multipart/form-data");
+		response.setCharacterEncoding("utf-8");
+		String name = "流量卡实名信息" + DateFormatUtils.format(DateUtil.now(), "yyyy-MM-dd_HH-mm-ss");
+		String fileName = new String(name.getBytes(), "ISO-8859-1");
+		response.setHeader("Content-disposition", "attachment;filename="+fileName+".xlsx");
+		ExcelWriter writer = new ExcelWriter(out, ExcelTypeEnum.XLSX, true);
+		
+		Sheet sheet1 = new Sheet(1, 0, CcRealnameExportBean.class);
+		sheet1.setSheetName(name);
+		writer.write(records, sheet1);
+		writer.finish();
+
+		out.flush();
 	}
 	
 	/**
