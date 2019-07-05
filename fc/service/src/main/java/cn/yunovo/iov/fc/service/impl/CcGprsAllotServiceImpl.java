@@ -579,7 +579,7 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 		if(realname != null) {
 			realname.setTime_audit(DateUtil.nowStr());
 			iCcCardLogService.log10Rlname(realname, true);
-			iCcRealnameMapper.updateIccidByCardid(card.getCard_id());
+			iCcRealnameMapper.updateIccidByCardid(card.getCard_id(), null);
 		}
 		
 		card.setOwner_real(0);
@@ -611,6 +611,7 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 		card.setTime_paid(null);
 		card.setTime_expire(null);
 		
+		//TODO 编写sql
 		jedisPoolUtil.del(FcConstant.cardInfoKey(card.getCard_iccid()));
 		iCcGprsCardService.updateById(card);
 		

@@ -87,7 +87,12 @@
 	
 	<update id="updateIccidByCardid">
 	
-		UPDATE cc_realname SET card_iccid = CONCAT(card_iccid, '_'), time_modify = NOW() WHERE card_id = #{card_id}
+		UPDATE cc_realname SET card_iccid = CONCAT(card_iccid, '_'), time_modify = NOW()
+		<if test="user_id != null">
+		, user_id = #{user_id}
+		</if>
+		
+		 WHERE card_id = #{card_id}
 	</update>
 	
 </mapper>

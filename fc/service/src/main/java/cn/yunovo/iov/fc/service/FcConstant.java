@@ -1,6 +1,8 @@
 package cn.yunovo.iov.fc.service;
 
 
+import org.apache.commons.lang3.StringUtils;
+
 import cn.yunovo.iov.fc.common.utils.Md5Util;
 
 public class FcConstant {
@@ -55,5 +57,10 @@ public class FcConstant {
 	public static String cardInfoKey(String iccid) {
 		
 		return memResKey(String.format(CARD_INFO_CACHEKEY, iccid));
+	}
+
+	public static String memSqlKey(String sql, String dtype) {
+		dtype =  StringUtils.defaultString(dtype, "fetch_row");
+		return CACHE_SQL_PREFIX + Md5Util.getMD5String(sql+dtype);
 	}
 }

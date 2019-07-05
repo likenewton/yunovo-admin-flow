@@ -3,6 +3,8 @@ package cn.yunovo.iov.fc.model.entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.baomidou.mybatisplus.annotation.TableField;
 
 import java.io.Serializable;
@@ -95,4 +97,29 @@ public class CcRealname implements Serializable {
 	@TableField(exist = false)
 	@ApiModelProperty(value = "卡激活时间")
 	private String time_active;
+	
+	
+	public String cacheJsonString() {
+		
+		JSONObject cache = new JSONObject();
+		cache.put("card_id",        this.card_id           );
+		cache.put("user_id",        this.user_id           );
+		cache.put("device_sn",      this.device_sn         );
+		cache.put("card_iccid",     this.card_iccid        );
+		cache.put("owner_name",     this.owner_name        );
+		cache.put("owner_gender",   this.owner_gender      );
+		cache.put("owner_cdi",      this.owner_cdi         );
+		cache.put("cdi_img1",       this.cdi_img1          );
+		cache.put("cdi_img2",       this.cdi_img2          );
+		cache.put("cdi_img3",       this.cdi_img3          );
+		cache.put("cdi_status",     this.cdi_status        );
+		cache.put("give_value",     this.give_value        );
+		cache.put("give_time",      this.give_time         );
+		cache.put("time_added",     this.time_added        );
+		cache.put("time_modify",    this.time_modify       );
+		cache.put("time_audit",     this.time_audit        );
+
+		return JSONObject.toJSONString(cache, SerializerFeature.WriteMapNullValue);
+		
+	}
 }

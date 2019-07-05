@@ -28,4 +28,6 @@ public interface ICcRealnameService extends IService<CcRealname> {
 	 * @return
 	 */
 	boolean audit(RealnameForm form, LoginInfo loginInfo);
+
+	boolean unbind(RealnameForm form, LoginInfo loginBaseInfo);
 }

@@ -33,6 +33,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -173,6 +174,7 @@ public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcReal
 		//1、获取对应流量卡的实名申请信息,如果如找到则直接返回错误信息
 		CcRealname data = iCcRealnameMapper.getByCardId(card_id);
 		if(data == null) {
+			log.warn("[audit][请选择您要审批的实名申请信息]params={form:{},user:{}}", form.buildJsonString(), loginInfo.buildJsonString());
 			throw new BusinessException(-1, "请选择您要审批的实名申请信息！");
 		}
 		
@@ -186,6 +188,7 @@ public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcReal
 			//2.1、获取流量卡信息,如果未找到流量卡信息则返回错误信息
 			CcGprsCard card = iCcGprsCardService.getByIccid(data.getCard_iccid());
 			if(card == null) {
+				log.warn("[audit][实名审批失败,未找到对应的流量卡信息！]params={form:{},user:{}}", form.buildJsonString(), loginInfo.buildJsonString());
 				throw new BusinessException(-1, "实名审批失败,未找到对应的流量卡信息！");
 			}
 			
@@ -405,5 +408,48 @@ public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcReal
 		
 		return DateFormatUtils.format(new Date(), "yyyyMMdd-HHmmss-")+RandomUtils.nextInt(100000, 999999);
 	}
+
+	@Override
+	public boolean unbind(RealnameForm form, LoginInfo user) {
+		
+		boolean isOk = false;
+		//1、获取对应流量卡的实名申请信息,如果如找到则直接返回错误信息
+		CcRealname data = iCcRealnameMapper.getByCardId(form.getCard_id());
+		if(data == null) {
+			log.warn("[unbind][请选择您要解除的实名信息]params={form:{},user:{}}", form.buildJsonString(), user.buildJsonString());
+			throw new BusinessException(-1, "请选择您要解除的实名信息！");
+		}
+		
+		//2.1、获取流量卡信息,如果未找到流量卡信息则返回错误信息
+		CcGprsCard card = iCcGprsCardService.getByIccid(data.getCard_iccid());
+		if(card == null) {
+			log.warn("[unbind][实名审批失败,未找到对应的流量卡信息！]params={form:{},user:{}}", form.buildJsonString(), user.buildJsonString());
+			throw new BusinessException(-1, "实名解除失败,未找到对应的流量卡信息！");
+		}
+		
+		card.setOwner_real(0);
+		iCcGprsCardService.updateCard(card);
+		
+		data.setTime_audit(DateUtil.nowStr());
+		iCcCardLogService.log10Rlname(data, true);
+		isOk = SqlHelper.retBool(iCcRealnameMapper.updateIccidByCardid(form.getCard_id(), 0));
+		
+		data = iCcRealnameMapper.getByCardId(form.getCard_id());
+		cache(data);
+		return isOk;
+	}
+	
+	private final String CACHE_SQL_KEY = "SELECT * FROM cc_realname WHERE card_iccid = '%s'";
+	public void cache(CcRealname data) {
+		
+		if(data == null) {
+			return ;
+		}
+		String cacheKey = String.format(CACHE_SQL_KEY, data.getCard_iccid());
+		cacheKey = FcConstant.memSqlKey(cacheKey, "fetch_row");
+		jedisPoolUtil.setEx(cacheKey, data.cacheJsonString());
+	}
+	
+	
 
 }

@@ -17,6 +17,7 @@ import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcRealname;
 import cn.yunovo.iov.fc.model.entity.CcResetLog;
 import cn.yunovo.iov.fc.model.form.RealnameForm;
+import cn.yunovo.iov.fc.model.form.group.UpdateGroupValidate;
 import cn.yunovo.iov.fc.service.ICcRealnameService;
 import cn.yunovo.iov.fc.web.controller.BaseController;
 import io.swagger.annotations.Api;
@@ -54,18 +55,27 @@ public class RealnameController extends BaseController{
 	@RequestMapping(path="/audit",method= {RequestMethod.POST})
 	public Result<String> audit(@RequestBody RealnameForm form) {
 
-		try {
-			form.validate();
-			boolean isOk = iCcRealnameService.audit(form, this.getLoginBaseInfo());
-			if(!isOk) {
-				log.warn("[audit][实名审核失败]params={}", JSONObject.toJSONString(form));
-				return ResultUtil.build(-1, "实名审批失败！");
-			}else {
-				return ResultUtil.successCN(null);
-			}
-		} catch (Exception e) {
-			log.error("[audit][exception]params={},exception={}", JSONObject.toJSONString(form),ExceptionUtils.getStackTrace(e));
-			return ResultUtil.build(500, "实名审批异常！");
+		form.validate();
+		boolean isOk = iCcRealnameService.audit(form, this.getLoginBaseInfo());
+		if(!isOk) {
+			log.warn("[audit][实名审核失败]params={}", JSONObject.toJSONString(form));
+			return ResultUtil.build(-1, "实名审批失败！");
+		}else {
+			return ResultUtil.successCN(null);
+		}
+	}
+	
+	@ApiOperation(value="业务管理-流量卡实名解除")
+	@RequestMapping(path="/unbind",method= {RequestMethod.POST})
+	public Result<String> unbind(@RequestBody RealnameForm form) {
+
+		form.validate(UpdateGroupValidate.class);
+		boolean isOk = iCcRealnameService.unbind(form, this.getLoginBaseInfo());
+		if(!isOk) {
+			log.warn("[unbind][实名认证解绑异常，请重试！]params={}", form.buildJsonString());
+			return ResultUtil.build(-1, "实名认证解绑异常，请重试！");
+		}else {
+			return ResultUtil.successCN(null);
 		}
 		
 	}
