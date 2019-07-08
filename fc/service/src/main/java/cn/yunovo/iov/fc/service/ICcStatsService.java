@@ -19,10 +19,17 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ICcStatsService extends IService<CcStats> {
 
+	/**
+	 * 流量卡运营统计
+	 * @return
+	 */
 	public PageData<CcStats,Object> getItemsPage(PageForm pageForm, Integer org_id, String date_start, String date_end, LoginInfo info);
-	
-	public PageData<CcStats,Object> getItemsOrgPage(PageForm pageForm, Integer org_id, String stats_date, LoginInfo info);
-
 	void getItemsPageExport(Integer org_id, String date_start, String date_end, LoginInfo info) throws IOException;
+	
+	/**
+	 * 机构运营统计
+	 */
+	public PageData<CcStats,Object> getItemsOrgPage(PageForm pageForm, Integer org_id, String stats_date, LoginInfo info);
+	void getItemsOrgPageExport(Integer org_id, String stats_date, LoginInfo info) throws IOException;
 	
 }

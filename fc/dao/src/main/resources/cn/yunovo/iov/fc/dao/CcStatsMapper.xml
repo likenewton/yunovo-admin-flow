@@ -86,11 +86,12 @@
 	<select id="getOrgItemsPageExport" resultType="cn.yunovo.iov.fc.model.entity.CcStats">
 	
 		SELECT
-			stats_date,org_id,rlname_cards,card_total,pay_cards,rebate_money,pay_total,
-			pay_count,pay_failed,pay_succeed,pay_failed_money,pay_succeed_money,online_count,
-			online_api,online_other,active_total,active_count,active_unicom,active_device,unactive_total,
-			open_count,stop_total,stop_count,stop_yreport,stop_nreport,used2g_total,used2g_pay,gprs_amount,
-			used_amount,unused_amount,over_amount
+			org_id, card_total, pay_total, 
+			pay_count, pay_failed, pay_succeed, online_count,
+			online_api, online_other, active_total,
+			active_count, active_unicom, active_device,
+			stop_total, stop_count, stop_yreport,stop_nreport,
+			used2g_total, used2g_pay
 		FROM cc_stats
 		WHERE  1 =1 AND stats_date = #{stats_date}
 	
@@ -115,7 +116,7 @@
 			</otherwise>
 
 		</choose>
-	
+		 ORDER BY org_id DESC
 	</select>
 	
 	<!-- 统计分析-运营数据 -->

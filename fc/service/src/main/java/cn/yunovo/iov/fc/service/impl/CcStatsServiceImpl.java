@@ -19,6 +19,7 @@ import cn.yunovo.iov.fc.model.entity.CcNotify;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
 import cn.yunovo.iov.fc.model.entity.CcStats;
 import cn.yunovo.iov.fc.model.export.CcStatsExportBean;
+import cn.yunovo.iov.fc.model.export.CcStatsOrgExportBean;
 import cn.yunovo.iov.fc.model.export.HaltPageExportBean;
 import cn.yunovo.iov.fc.service.ICcOrgService;
 import cn.yunovo.iov.fc.service.ICcStatsService;
@@ -181,16 +182,8 @@ public class CcStatsServiceImpl extends ServiceImpl<ICcStatsMapper, CcStats> imp
 			return p;
 		}
 		
-		QueryWrapper<CcStats> queryWrapper = new QueryWrapper<>();
-		
-		if(org_id != null) {
-			queryWrapper.eq("org_id", org_id);
-		}
-		
-		queryWrapper.eq("stats_date", stats_date);
-		
-		iCcStatsMapper.selectPage(page, queryWrapper);
-		List<CcStats> records = page.getRecords();
+		List<CcStats> records = iCcStatsMapper.getOrgItemsPage(page, org_id, stats_date, orgpos, orgpos.split(","));
+		//List<CcStats> records = page.getRecords();
 		
 		if(!CollectionUtils.isEmpty(records)) {
 			Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
@@ -198,10 +191,52 @@ public class CcStatsServiceImpl extends ServiceImpl<ICcStatsMapper, CcStats> imp
 				ccStats.setOrg_name(orgs.get(String.valueOf(ccStats.getOrg_id())).getName());
 			}
 		}
-		/*page.setTotal(selectPage.getTotal());
-		page.setRecords(selectPage.getRecords());*/
+		page.setRecords(records);
 		p.setPage(page);
 		return p;
+		
+	}
+	
+	@Override
+	public void getItemsOrgPageExport(Integer org_id, String stats_date,
+			LoginInfo info) throws IOException {
+		
+		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
+		if (StringUtils.isEmpty(orgpos)) {
+			log.error("[getItemsOrgPageExport][导出数据失败]params={}", JSONObject.toJSONString(WebRequestUtil.request().getParameterMap()));
+			throw new BusinessException(-1, "导出数据失败");
+		}
+
+		if(org_id != null && !iCcOrgService.hasPermission(org_id, orgpos)) {
+			log.error("[getItemsOrgPageExport][导出数据失败]params={}", JSONObject.toJSONString(WebRequestUtil.request().getParameterMap()));
+			throw new BusinessException(-1, "导出数据失败");
+		}
+		
+		List<CcStatsOrgExportBean> records = iCcStatsMapper.getOrgItemsPageExport(org_id, stats_date, orgpos, orgpos.split(","));
+		//List<CcStats> records = page.getRecords();
+		
+		if(!CollectionUtils.isEmpty(records)) {
+			Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
+			for (CcStatsOrgExportBean ccStats : records) {
+				ccStats.setOrg_name(orgs.get(String.valueOf(ccStats.getOrg_id())).getName());
+			}
+		}
+		
+		HttpServletResponse response = WebRequestUtil.response();
+		ServletOutputStream out = response.getOutputStream();
+		response.setContentType("multipart/form-data");
+		response.setCharacterEncoding("utf-8");
+		String name = "流量卡运营统计(机构明细)-" + DateFormatUtils.format(DateUtil.now(), "yyyy-MM-dd_HH-mm-ss");
+		String fileName = new String(name.getBytes(), "ISO-8859-1");
+		response.setHeader("Content-disposition", "attachment;filename="+fileName+".xlsx");
+		ExcelWriter writer = new ExcelWriter(out, ExcelTypeEnum.XLSX, true);
+		
+		Sheet sheet1 = new Sheet(1, 0, CcStatsOrgExportBean.class);
+		sheet1.setSheetName(name);
+		writer.write(records, sheet1);
+		writer.finish();
+		out.flush();
+		
 		
 	}
 

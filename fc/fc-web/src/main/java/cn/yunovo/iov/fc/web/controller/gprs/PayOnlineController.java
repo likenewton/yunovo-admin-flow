@@ -1,5 +1,7 @@
 package cn.yunovo.iov.fc.web.controller.gprs;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +40,17 @@ public class PayOnlineController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
+	@ApiOperation(value = "统计分析-流量卡运营统计导出")
+	@ApiImplicitParams(value = {
+			@ApiImplicitParam(name = "date_start", value = "导卡时间-开始日期 YYYY-MM-DD", required = false, dataType = "String", paramType = "query"),
+			@ApiImplicitParam(name = "date_end", value = "导卡时间-结束日期 YYYY-MM-DD", required = false, dataType = "String", paramType = "query")
+			})
+	@RequestMapping(path = "/export", method = { RequestMethod.GET, RequestMethod.POST })
+	public void getItemsPageExport(String date_start, String date_end) throws IOException {
+		
+		iCcStatsService.getItemsPageExport(null, date_start, date_end, this.getLoginBaseInfo());
+	}
+	
 	@ApiOperation(value = "统计分析-流量卡运营统计(机构明细)")
 	@ApiImplicitParams(value = {
 			@ApiImplicitParam(name = "stats_date", value = "统计日期 YYYY-MM-DD", required = true, dataType = "String", paramType = "query"),
@@ -48,5 +61,16 @@ public class PayOnlineController extends BaseController{
 		
 		PageData<CcStats, Object> data = iCcStatsService.getItemsOrgPage(pageForm, org_id, stats_date, this.getLoginBaseInfo());
 		return ResultUtil.success(data);
+	}
+	
+	@ApiOperation(value = "统计分析-流量卡运营统计(机构明细)导出")
+	@ApiImplicitParams(value = {
+			@ApiImplicitParam(name = "stats_date", value = "统计日期 YYYY-MM-DD", required = true, dataType = "String", paramType = "query"),
+			@ApiImplicitParam(name = "org_id", value = "机构id", required = false, dataType = "int", paramType = "query")
+			})
+	@RequestMapping(path = "/org/export", method = { RequestMethod.GET, RequestMethod.POST })
+	public void getItemsOrgPageExport(Integer org_id, String stats_date) throws IOException {
+		
+		iCcStatsService.getItemsOrgPageExport(org_id, stats_date, this.getLoginBaseInfo());
 	}
 }

@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import cn.yunovo.iov.fc.model.entity.CcStats;
 import cn.yunovo.iov.fc.model.export.CcStatsExportBean;
+import cn.yunovo.iov.fc.model.export.CcStatsOrgExportBean;
 import cn.yunovo.iov.fc.model.result.HomeChartDataBean;
 import cn.yunovo.iov.fc.model.result.HomeSimTrendInfoBean;
 
@@ -29,6 +30,15 @@ public interface ICcStatsMapper extends BaseMapper<CcStats> {
 	 */
 	public List<CcStats> getItemsPage(IPage<CcStats> page, @Param("org_id")Integer org_id, @Param("date_start")String date_start, @Param("date_end")String date_end,  @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 	public List<CcStatsExportBean> getItemsPageExport(@Param("org_id")Integer org_id, @Param("date_start")String date_start, @Param("date_end")String date_end,  @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	
+	
+	/**
+	 * 机构运营统计
+	 * @return
+	 */
+	public List<CcStats> getOrgItemsPage(IPage<CcStats> page, @Param ("org_id")Integer org_id, @Param("stats_date")String stats_date,  @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	public List<CcStatsOrgExportBean> getOrgItemsPageExport(@Param("org_id")Integer org_id, @Param("stats_date")String stats_date,  @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	
 	
 	/**
 	 * SIM卡使用趋势
