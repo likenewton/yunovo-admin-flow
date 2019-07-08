@@ -25,6 +25,7 @@ import cn.yunovo.iov.cas.client.util.token.TokenBuilder;
 import cn.yunovo.iov.cas.client.validation.AbstractTicketValidationFilter;
 import cn.yunovo.iov.cas.client.validation.H5ClientCas20ProxyReceivingTicketValidationFilter;
 import cn.yunovo.iov.fc.service.ISystemResourceService;
+import cn.yunovo.iov.fc.web.filter.ApiSecurityFilter;
 import cn.yunovo.iov.fc.web.filter.H5LoginUserAdapterFilter;
 import redis.clients.jedis.JedisPool;
 
@@ -153,7 +154,7 @@ public class CasClientConfig {
 	 * 这个类把Assertion信息放在ThreadLocal变量中，这样应用程序不在web层也能够获取到当前登录信息
 	 */
 	@Bean
-	public FilterRegistrationBean<H5LoginUserAdapterFilter> assertionThreadLocalFilter(SpringCasProperties springCasProperties, ISystemResourceService systemResourceService) {
+	public FilterRegistrationBean<H5LoginUserAdapterFilter> assertionThreadLocalFilter(SpringCasProperties springCasProperties) {
 		FilterRegistrationBean<H5LoginUserAdapterFilter> filterRegistration = new FilterRegistrationBean<H5LoginUserAdapterFilter>();
 		
 		H5LoginUserAdapterFilter filter = new H5LoginUserAdapterFilter();
@@ -162,6 +163,29 @@ public class CasClientConfig {
 		filterRegistration.setEnabled(springCasProperties.getCasClient().getCasEnabled());
 		filterRegistration.addUrlPatterns("/api/*");
 		filterRegistration.setOrder(8);
+		return filterRegistration;
+	}
+	
+	
+	/**
+	 * 接口权限过滤
+	 * @param springCasProperties
+	 * @param systemResourceService
+	 * @return
+	 */
+	@Bean
+	public FilterRegistrationBean<ApiSecurityFilter> apiSecurityFilter(SpringCasProperties springCasProperties, ISystemResourceService systemResourceService) {
+		
+		FilterRegistrationBean<ApiSecurityFilter> filterRegistration = new FilterRegistrationBean<ApiSecurityFilter>();
+		
+		ApiSecurityFilter filter = new ApiSecurityFilter();
+		filter.setSpringCasProperties(springCasProperties);
+		filter.setiSystemResourceService(systemResourceService);
+		filterRegistration.setFilter(filter);
+		filterRegistration.setEnabled(springCasProperties.getCasClient().getCasEnabled());
+		filterRegistration.addUrlPatterns("/api/*");
+		filterRegistration.setOrder(9);
+		
 		return filterRegistration;
 	}
 

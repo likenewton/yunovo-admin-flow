@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.alibaba.fastjson.JSONObject;
+
 import lombok.Data;
 
 @Data
@@ -21,5 +23,8 @@ public class UserResourceInfoBean implements Serializable{
 	
 	private Map<String, String> need_filter_resource_map;
 	
-	
+	public String buildJsonString() {
+		
+		return JSONObject.toJSONString(this);
+	}
 }

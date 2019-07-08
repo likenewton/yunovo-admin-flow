@@ -23,5 +23,7 @@ public interface ISystemResourceService{
 
 	UserResourceInfoBean getUserResourceInfo(String token, String user_id);
 
+	boolean isPermission(String requestURI, String token, String user_id);
+
 	
 }

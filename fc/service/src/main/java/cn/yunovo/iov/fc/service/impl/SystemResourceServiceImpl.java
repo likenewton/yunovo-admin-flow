@@ -50,9 +50,19 @@ public class SystemResourceServiceImpl implements ISystemResourceService{
 		UserResourceInfoBean bean = jedisPoolUtil.get(cacheKey, UserResourceInfoBean.class);
 		if(bean == null) {
 			List<ResourcesBean>  all_resource = this.allResourceBySiteCode(FcConstant.SITE_CODE);
+			
+			if(CollectionUtils.isEmpty(all_resource)) {
+				return null;
+			}
+			
 			List<ResourcesBean>  user_resource = this.allResourceBySiteCodeAndUserid(user_id, FcConstant.SITE_CODE);
+			if(CollectionUtils.isEmpty(user_resource)) {
+				return null;
+			}
+			
 			Map<String, String> needFilter = this.getNeedFilterResource(all_resource);
 			Set<String> userRes = this.getUserResUrl(user_resource);
+			
 			
 			bean = new UserResourceInfoBean();
 			bean.setNeed_filter_resource_map(needFilter);
@@ -217,6 +227,42 @@ public class SystemResourceServiceImpl implements ISystemResourceService{
 		});
 		
 		return resultData;
+	}
+
+
+
+	@Override
+	public boolean isPermission(String requestURI, String token, String user_id) {
+		
+		UserResourceInfoBean resource = this.getUserResourceInfo(token, user_id);
+		
+		if(resource == null) {
+			log.warn("[isPermission][未授权]params={requestURI:{},token:{},user_id:{},resource:{}}", requestURI, token, user_id, null);
+			return false;
+		}
+		
+		Map<String, String>  need_filter_resource_map = resource.getNeed_filter_resource_map();
+		Set<String> user_resource_url_set = resource.getUser_resource_url_set();
+		
+		if(CollectionUtils.isEmpty(user_resource_url_set) || CollectionUtils.isEmpty(need_filter_resource_map)) {
+			log.warn("[isPermission][未授权]params={requestURI:{},token:{},user_id:{},resource:{}}", requestURI, token, user_id, resource.buildJsonString());
+			return false;
+		}
+		
+		if(!need_filter_resource_map.containsKey(requestURI)) {
+			log.debug("[isPermission][接口无需权限验证]params={requestURI:{},token:{},user_id:{},resource:{}}", requestURI, token, user_id, resource.buildJsonString());
+			return true;
+		}
+		
+		boolean isPermission = user_resource_url_set.contains(requestURI);
+		
+		if(!isPermission) {
+			
+			log.warn("[isPermission][未授权]params={requestURI:{},token:{},user_id:{},resource:{}}", requestURI, token, user_id, resource.buildJsonString());
+		}
+		
+		return isPermission;
+		
 	}
 
 }

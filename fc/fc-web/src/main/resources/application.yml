@@ -185,7 +185,7 @@ casClient:
   exludeFilterResource: "*remote*"
   serverIndexUrls: /fc/sso/api/ssoLogin
   redirectAfterValidation: false
-  h5IndexUrl: "http://10.0.3.43:8091/#/"
+  h5IndexUrl: "http://t.wx.yunovo.cn/flowCenter"
   h5Client: true
   ucIndexUrl: "http://10.0.3.43:8091/"
   authTokenCrypto: 
@@ -232,7 +232,7 @@ casClient:
   exludeFilterResource: "*remote*"
   serverIndexUrls: /fc/sso/api/ssoLogin
   redirectAfterValidation: false
-  h5IndexUrl: "http://t.wx.yunovo.cn/flowCenter/index.html#/"
+  h5IndexUrl: "http://t.wx.yunovo.cn/flowCenter"
   h5Client: true
   ucIndexUrl: "http://t.wx.yunovo.cn/authCenter/dist/index.html#/sysmenu"
   authTokenCrypto: 

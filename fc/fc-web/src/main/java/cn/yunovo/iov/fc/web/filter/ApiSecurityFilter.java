@@ -2,13 +2,9 @@ package cn.yunovo.iov.fc.web.filter;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -18,30 +14,22 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.validation.Assertion;
-import org.jasig.cas.client.validation.AssertionImpl;
 import org.springframework.http.MediaType;
-import org.springframework.util.CollectionUtils;
 
 import cn.yunovo.iov.cas.client.configuration.SpringCasProperties;
-import cn.yunovo.iov.cas.client.constant.CasConstant;
-import cn.yunovo.iov.cas.client.util.CasClientUtil;
 import cn.yunovo.iov.cas.client.util.IgnoreOperatorUtils;
 import cn.yunovo.iov.cas.client.util.TokenUtil;
-import cn.yunovo.iov.fc.model.ResourcesBean;
-import cn.yunovo.iov.fc.model.entity.CcUser;
-import cn.yunovo.iov.fc.service.FcConstant;
-import cn.yunovo.iov.fc.service.ICcUserService;
 import cn.yunovo.iov.fc.service.ISystemResourceService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class H5LoginUserAdapterFilter implements javax.servlet.Filter {
+public class ApiSecurityFilter implements javax.servlet.Filter {
 
-	private final static String LOGIN_NAME = "loginName";
-	private final static String LOGIN_PASSWORD = "loginPassword";
-	
-	
 	private SpringCasProperties springCasProperties;
+	
+	private ISystemResourceService iSystemResourceService;
+	
+	private final String ERROR_MSG = "{\"status\":403, \"msg\":\"您暂未分配该功能使用权限,如需使用,请联系管理员进行权限分配\"}";
 	
 	public SpringCasProperties getSpringCasProperties() {
 		return springCasProperties;
@@ -50,9 +38,13 @@ public class H5LoginUserAdapterFilter implements javax.servlet.Filter {
 	public void setSpringCasProperties(SpringCasProperties springCasProperties) {
 		this.springCasProperties = springCasProperties;
 	}
+	
+	public ISystemResourceService getiSystemResourceService() {
+		return iSystemResourceService;
+	}
 
-	@Override
-	public void destroy() {
+	public void setiSystemResourceService(ISystemResourceService iSystemResourceService) {
+		this.iSystemResourceService = iSystemResourceService;
 	}
 
 	@Override
@@ -67,8 +59,6 @@ public class H5LoginUserAdapterFilter implements javax.servlet.Filter {
 	        boolean flag = IgnoreOperatorUtils.ignore(requestUri, exludes);
 
 	        if (flag) {
-	            log.debug("--- flag is true ---");
-	            log.debug("--- ClientAuthenticationFilter end ---\r\n");
 	            chain.doFilter(request, response);
 	            return;
 	        }
@@ -80,33 +70,33 @@ public class H5LoginUserAdapterFilter implements javax.servlet.Filter {
 			object = request.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION) != null ? (Assertion)request.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION) : null;
 			if(object == null) {
 				
-				CommonUtils.constructRedirectUrl(springCasProperties.getCasClient().getCasServerLogoutUrl(), getServiceParameterName(),
+				String urlToRedirectTo = CommonUtils.constructRedirectUrl(springCasProperties.getCasClient().getCasServerLogoutUrl(), getServiceParameterName(),
 	        			this.getSpringCasProperties().getCasClient().getService(), false, false);
+				httpResponse.sendRedirect(urlToRedirectTo);
+				return;
+			}
+			
+			Map<String, Object> map = object.getPrincipal().getAttributes();
+			
+			String user_id = String.valueOf(map.get("id"));
+			
+			if(iSystemResourceService.isPermission(httpRequest.getRequestURI(), token, user_id)) {
+				chain.doFilter(request, response);
+				return ;
+			}else {
 				this.sendRedirect(httpRequest, httpResponse);
 				return;
 			}
 			
-			
-			Map<String, Object> map = object.getPrincipal().getAttributes();
-			// 获取cas服务端的登录名称
-			String loginName = (String) map.get(LOGIN_NAME);
-			// 获取cas服务端的登录密码
-			String loginPassword = (String) map.get(LOGIN_PASSWORD);
-			//log.info("当前登陆系统：用户中心。登录系统的用户名为：" + loginName);
-			
-			String user_id = String.valueOf(map.get("id"));
-			
-			chain.doFilter(request, response);
 		} catch (Exception e) {
-			log.error("[H5LoginUserAdapterFilter][exception]exception={}", ExceptionUtils.getStackTrace(e));
+			log.error("[ApiSecurityFilter][exception]exception={}", ExceptionUtils.getStackTrace(e));
 		} 
 	}
-
-
+	
 	private String getServiceParameterName() {
 		return this.getSpringCasProperties().getCasClient().getClientAuth().getServiceParameterName();
 	}
-
+	
 	/**
 	 * 错误跳转
 	 * 
@@ -118,28 +108,16 @@ public class H5LoginUserAdapterFilter implements javax.servlet.Filter {
 	 */
 	private void sendRedirect(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
-		final String requestUri = request.getRequestURI();
-		String exludes = springCasProperties.getCasClient().getExludeFilterResource();
-        boolean flag = IgnoreOperatorUtils.ignore(requestUri, exludes);
-		if(flag) {
-            response.sendRedirect(this.getSpringCasProperties().getCasClient().getCasServerLogoutUrl());
-		}else {
-			String str = "{\"status\":401, \"redirect\":\"http://www.baidu.com\"}";
-            response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);// 解决中文乱码
-            try {
-                PrintWriter writer = response.getWriter();
-                writer.write(str);
-                writer.flush();
-                writer.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);// 解决中文乱码
+        try {
+            PrintWriter writer = response.getWriter();
+            writer.write(ERROR_MSG);
+            writer.flush();
+            writer.close();
+        } catch (Exception e) {
+        	log.error("[sendRedirect][exception]exception={}", ExceptionUtils.getStackTrace(e));
 		}
 		// 跳转到重新登录页面
 	}
 
-	@Override
-	public void init(FilterConfig arg0) {
-		
-	}
 }
