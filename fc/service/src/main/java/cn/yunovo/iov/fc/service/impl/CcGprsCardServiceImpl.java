@@ -13,9 +13,11 @@ import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
 import cn.yunovo.iov.fc.model.entity.SellPayResultBean;
 import cn.yunovo.iov.fc.model.export.AbnormalExportBean;
+import cn.yunovo.iov.fc.model.export.ActiveIccidDetailExportBean;
 import cn.yunovo.iov.fc.model.export.CcGprsCardExportBean;
 import cn.yunovo.iov.fc.model.export.CcStatsMonthExportBean;
 import cn.yunovo.iov.fc.model.export.HaltPageExportBean;
+import cn.yunovo.iov.fc.model.export.UnActiveIccidDetailExportBean;
 import cn.yunovo.iov.fc.model.form.CardOnoffForm;
 import cn.yunovo.iov.fc.model.result.CardDetailInfoBean;
 import cn.yunovo.iov.fc.model.result.CardTotalByOrgidInfoBean;
@@ -986,6 +988,92 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 		
 		return this.updateCard(card);
 		
+	}
+
+	@Override
+	public void cardExport(Integer org_id, String date_start, String date_end, String jstart, String jend, Integer type,
+			LoginInfo info) throws IOException {
+
+		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
+		if (StringUtils.isEmpty(orgpos)) {
+			log.error("[cardExport][导出数据失败]params={}", JSONObject.toJSONString(WebRequestUtil.request().getParameterMap()));
+			throw new BusinessException(-1, "导出数据失败");
+		}
+		
+		if(org_id != null && !iCcOrgService.hasPermission(org_id, orgpos)) {
+			log.error("[cardExport][导出数据失败]params={}", JSONObject.toJSONString(WebRequestUtil.request().getParameterMap()));
+			throw new BusinessException(-1, "导出数据失败");
+		}
+
+		if (StringUtils.isNotEmpty(date_start)) {
+			date_start = date_start + " 00:00:00";
+		}
+
+		if (StringUtils.isNotEmpty(date_end)) {
+			date_end = date_end + " 23:59:59";
+		}
+		
+		if(type == null || type != 2) {
+			
+			this.exportUnActiveIccidDetails(org_id, date_start, date_end, jstart, jend, orgpos, orgpos.split(","));
+		}else {
+			
+			this.exportActiveIccidDetails(org_id, date_start, date_end, jstart, jend, orgpos, orgpos.split(","));
+		}
+		
+		
+	}
+
+	private void exportUnActiveIccidDetails(Integer org_id, String date_start, String date_end, String jstart,
+			String jend, String orgpos, String[] orgs) throws IOException {
+
+		List<UnActiveIccidDetailExportBean> records = iGprsCardMapper.exportUnActiveIccidDetails(org_id, date_start, date_end, jstart, jend, orgpos, orgs);
+		
+		Map<String, CcOrg> orgsMap = iCcOrgService.getTree(0, orgpos);
+		
+		String org_name = org_id == null ? "所有" : orgsMap.get(String.valueOf(org_id)).getName();
+		
+		HttpServletResponse response = WebRequestUtil.response();
+		ServletOutputStream out = response.getOutputStream();
+		response.setContentType("multipart/form-data");
+		response.setCharacterEncoding("utf-8");
+		String name = "未激活流量卡("+org_name+")" + DateFormatUtils.format(DateUtil.now(), "yyyy-MM-dd_HH-mm-ss");
+		String fileName = new String(name.getBytes(), "ISO-8859-1");
+		response.setHeader("Content-disposition", "attachment;filename="+fileName+".xlsx");
+		ExcelWriter writer = new ExcelWriter(out, ExcelTypeEnum.XLSX, true);
+		
+		Sheet sheet1 = new Sheet(1, 0, UnActiveIccidDetailExportBean.class);
+		sheet1.setSheetName(name);
+		writer.write(records, sheet1);
+		writer.finish();
+
+		out.flush();
+		
+	}
+
+	private void exportActiveIccidDetails(Integer org_id, String date_start, String date_end, String jstart,
+			String jend, String orgpos, String[] orgs) throws IOException {
+		
+		List<ActiveIccidDetailExportBean> records = iGprsCardMapper.exportActiveIccidDetails(org_id, date_start, date_end, jstart, jend, orgpos, orgs);
+		Map<String, CcOrg> orgsMap = iCcOrgService.getTree(0, orgpos);
+		
+		String org_name = org_id == null ? "所有" : orgsMap.get(String.valueOf(org_id)).getName();
+		
+		HttpServletResponse response = WebRequestUtil.response();
+		ServletOutputStream out = response.getOutputStream();
+		response.setContentType("multipart/form-data");
+		response.setCharacterEncoding("utf-8");
+		String name = "已激活流量卡("+org_name+")" + DateFormatUtils.format(DateUtil.now(), "yyyy-MM-dd_HH-mm-ss");
+		String fileName = new String(name.getBytes(), "ISO-8859-1");
+		response.setHeader("Content-disposition", "attachment;filename="+fileName+".xlsx");
+		ExcelWriter writer = new ExcelWriter(out, ExcelTypeEnum.XLSX, true);
+		
+		Sheet sheet1 = new Sheet(1, 0, ActiveIccidDetailExportBean.class);
+		sheet1.setSheetName(name);
+		writer.write(records, sheet1);
+		writer.finish();
+
+		out.flush();
 	}
 
 }

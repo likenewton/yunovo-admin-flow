@@ -12,8 +12,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.SellPayResultBean;
 import cn.yunovo.iov.fc.model.export.AbnormalExportBean;
+import cn.yunovo.iov.fc.model.export.ActiveIccidDetailExportBean;
 import cn.yunovo.iov.fc.model.export.CcGprsCardExportBean;
 import cn.yunovo.iov.fc.model.export.HaltPageExportBean;
+import cn.yunovo.iov.fc.model.export.UnActiveIccidDetailExportBean;
 import cn.yunovo.iov.fc.model.result.CardTotalByOrgidInfoBean;
 import cn.yunovo.iov.fc.model.result.CardUsedResultBean;
 import cn.yunovo.iov.fc.model.result.PayDetailResultBean;
@@ -176,4 +178,16 @@ public interface ICcGprsCardMapper extends BaseMapper<CcGprsCard> {
 	public CcGprsCard getByCardSn(@Param("card_sn")String card_sn);
 	
 	public CcGprsCard getGprsCardByIccid(@Param("card_iccid")String card_iccid);
+	
+	/**
+	 * 获取已激活流量卡信息
+	 * @return
+	 */
+	public List<ActiveIccidDetailExportBean> exportActiveIccidDetails(@Param("org_id")Integer org_id, @Param("date_start")String date_start, @Param("date_end")String date_end, @Param("jstart")String jstart, @Param("jend")String jend,  @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	
+	/**
+	 * 获取未激活流量卡信息
+	 * @return
+	 */
+	public List<UnActiveIccidDetailExportBean> exportUnActiveIccidDetails(@Param("org_id")Integer org_id, @Param("date_start")String date_start, @Param("date_end")String date_end, @Param("jstart")String jstart, @Param("jend")String jend,  @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 }

@@ -57,5 +57,19 @@ public class UnicomStatController extends BaseController {
 
 		iCcGprsCardService.getUnicomStatPageExport(org_id, date_start, date_end, jstart, jend, this.getLoginBaseInfo());
 	}
+	
+	@ApiOperation(value = "统计分析-联通流量卡统计导出")
+	@ApiImplicitParams(value = {
+			@ApiImplicitParam(name = "org_id", value = "机构id", required = false, dataType = "int", paramType = "query"),
+			@ApiImplicitParam(name = "date_start", value = "导卡时间-开始日期 YYYY-MM-DD", required = false, dataType = "String", paramType = "query"),
+			@ApiImplicitParam(name = "date_end", value = "导卡时间-结束日期 YYYY-MM-DD", required = false, dataType = "String", paramType = "query"),
+			@ApiImplicitParam(name = "jstart", value = "激活时间-开始日期 YYYY-MM-DD", required = false, dataType = "String", paramType = "query"),
+			@ApiImplicitParam(name = "type", value = "2 已激活,非2 未激活", required = true, dataType = "int", paramType = "query"),
+			@ApiImplicitParam(name = "jend", value = "激活时间-结束日期 YYYY-MM-DD", required = false, dataType = "String", paramType = "query") })
+	@RequestMapping(path = "/cardExport", method = { RequestMethod.GET, RequestMethod.POST })
+	public void cardExport(Integer org_id, String date_start, String date_end, String jstart, String jend, Integer type) throws IOException {
+		
+		iCcGprsCardService.cardExport(org_id, date_start, date_end, jstart, jend, type, this.getLoginBaseInfo());
+	}
 
 }

@@ -201,13 +201,7 @@ public interface ICcGprsCardService extends IService<CcGprsCard> {
 	public void queryCardListPageExport(String card_iccid, Integer org_id, String date_start, String date_end,
 			Integer time_expire, Integer unicom_stop, Integer status, LoginInfo loginBaseInfo, Integer card_type) throws Exception;
 
-	
+	public void cardExport(Integer org_id, String date_start, String date_end, String jstart, String jend, Integer type,
+			LoginInfo loginBaseInfo) throws IOException;
 
-	
-	
-
-	
-	
-	
-	
 }

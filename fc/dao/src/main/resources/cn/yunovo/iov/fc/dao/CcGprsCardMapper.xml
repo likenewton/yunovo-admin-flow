@@ -846,5 +846,106 @@
 	
 		SELECT card_id, org_id,card_iccid, time_active FROM cc_gprs_card WHERE card_iccid = #{card_iccid}
 	</select>
+	
+	<!-- //导出激活明细 -->
+	<select id="exportActiveIccidDetails" resultType="cn.yunovo.iov.fc.model.export.ActiveIccidDetailExportBean">
+	
+		SELECT
+			C.card_sn,C.card_iccid,C.unicom_stop,C.unicom_total,
+			C.unicom_unused,C.time_last,C.unicom_ctime,C.time_active,C.time_added,C.time_expire,
+			(SELECT GB.batch_sn FROM cc_gprs_batch GB WHERE GB.batch_id = C.batch_id) AS batch_sn
+		FROM cc_gprs_card AS C
+		WHERE 1 = 1
+
+		<choose>
+
+			<when test="org_id != null">
+				AND C.org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND C.org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+		</choose>
+		
+		<if test="date_start != null">
+			<![CDATA[  AND C.time_added >= #{date_start} ]]>
+		</if>
+
+		<if test="date_end != null">
+			<![CDATA[ AND C.time_added <= #{date_end} ]]>
+		</if>
+
+		<if test="jstart != null">
+			<![CDATA[  AND C.time_active >= #{jstart} ]]>
+		</if>
+
+		<if test="jend != null">
+			<![CDATA[ AND C.time_active <= #{jend} ]]>
+		</if>
+
+		 AND C.time_active != ''
+		
+	</select>
+	
+	<!-- //导出未激活明细 -->
+	<select id="exportUnActiveIccidDetails" resultType="cn.yunovo.iov.fc.model.export.UnActiveIccidDetailExportBean">
+	
+		SELECT
+			C.card_sn,C.card_iccid,C.time_added,
+			(SELECT GB.batch_sn FROM cc_gprs_batch GB WHERE GB.batch_id = C.batch_id) AS batch_sn
+		FROM cc_gprs_card AS C
+		WHERE 1 = 1
+
+		<choose>
+
+			<when test="org_id != null">
+				AND C.org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND C.org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+		</choose>
+		
+		<if test="date_start != null">
+			<![CDATA[  AND C.time_added >= #{date_start} ]]>
+		</if>
+
+		<if test="date_end != null">
+			<![CDATA[ AND C.time_added <= #{date_end} ]]>
+		</if>
+
+		<if test="jstart != null">
+			<![CDATA[  AND C.time_active >= #{jstart} ]]>
+		</if>
+
+		<if test="jend != null">
+			<![CDATA[ AND C.time_active <= #{jend} ]]>
+		</if>
+
+		AND time_active IS NULL
+		
+	</select>
 
 </mapper>
