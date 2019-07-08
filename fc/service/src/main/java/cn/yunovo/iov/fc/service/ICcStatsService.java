@@ -5,6 +5,8 @@ import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcStats;
 
+import java.io.IOException;
+
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -20,5 +22,7 @@ public interface ICcStatsService extends IService<CcStats> {
 	public PageData<CcStats,Object> getItemsPage(PageForm pageForm, Integer org_id, String date_start, String date_end, LoginInfo info);
 	
 	public PageData<CcStats,Object> getItemsOrgPage(PageForm pageForm, Integer org_id, String stats_date, LoginInfo info);
+
+	void getItemsPageExport(Integer org_id, String date_start, String date_end, LoginInfo info) throws IOException;
 	
 }

@@ -1,5 +1,7 @@
 package cn.yunovo.iov.fc.model;
 
+import java.util.Map;
+
 import lombok.Data;
 
 @Data
@@ -19,4 +21,6 @@ public class FcProperties {
 		private String lsUrl = "";
 	}
 	
+	private Map<Short, String> arr_allot_reset;
+ 	
 }

@@ -45,6 +45,122 @@
 		
 		 GROUP BY stats_date
 	</select>
+	
+	<!-- 统计分析-机构运营数据 -->
+	<select id="getOrgItemsPage" resultType="cn.yunovo.iov.fc.model.entity.CcStats">
+	
+		SELECT
+			stats_date,org_id,rlname_cards,card_total,pay_cards,rebate_money,pay_total,
+			pay_count,pay_failed,pay_succeed,pay_failed_money,pay_succeed_money,online_count,
+			online_api,online_other,active_total,active_count,active_unicom,active_device,unactive_total,
+			open_count,stop_total,stop_count,stop_yreport,stop_nreport,used2g_total,used2g_pay,gprs_amount,
+			used_amount,unused_amount,over_amount
+		FROM cc_stats
+		WHERE  1 =1 AND stats_date = #{stats_date}
+	
+		<choose>
+
+			<when test="org_id != null">
+				AND org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+	
+	</select>
+	
+	<!-- 统计分析-机构运营数据 -->
+	<select id="getOrgItemsPageExport" resultType="cn.yunovo.iov.fc.model.entity.CcStats">
+	
+		SELECT
+			stats_date,org_id,rlname_cards,card_total,pay_cards,rebate_money,pay_total,
+			pay_count,pay_failed,pay_succeed,pay_failed_money,pay_succeed_money,online_count,
+			online_api,online_other,active_total,active_count,active_unicom,active_device,unactive_total,
+			open_count,stop_total,stop_count,stop_yreport,stop_nreport,used2g_total,used2g_pay,gprs_amount,
+			used_amount,unused_amount,over_amount
+		FROM cc_stats
+		WHERE  1 =1 AND stats_date = #{stats_date}
+	
+		<choose>
+
+			<when test="org_id != null">
+				AND org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+	
+	</select>
+	
+	<!-- 统计分析-运营数据 -->
+	<select id="getItemsPageExport" resultType="cn.yunovo.iov.fc.model.export.CcStatsExportBean">
+	
+		SELECT stats_date, SUM(card_total) AS card_total, SUM(pay_total) AS pay_total,
+			SUM(pay_count) AS pay_count, SUM(pay_failed) AS pay_failed, SUM(pay_succeed) AS pay_succeed, SUM(online_count) AS online_count,
+			SUM(online_api) AS online_api,SUM(online_other) AS online_other, SUM(active_total) AS active_total,
+			SUM(active_count) AS active_count,SUM(active_unicom) AS active_unicom, SUM(active_device) AS active_device,
+			SUM(stop_total) AS stop_total,SUM(stop_count) AS stop_count, SUM(stop_yreport) AS stop_yreport,SUM(stop_nreport) AS stop_nreport,
+			SUM(used2g_total) AS used2g_total, SUM(used2g_pay) AS used2g_pay FROM cc_stats WHERE  1 =1 
+	
+		<choose>
+
+			<when test="org_id != null">
+				AND org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+	
+		<if test="date_start != null">
+			<![CDATA[  AND stats_date >= #{date_start} ]]>
+		</if>
+
+		<if test="date_end != null">
+			<![CDATA[ AND stats_date <= #{date_end} ]]>
+		</if>
+		
+		 GROUP BY stats_date
+		  ORDER BY stats_date DESC
+	</select>
 
 	<!-- SIM卡使用趋势 -->
 	<select id="simTrend" resultType="cn.yunovo.iov.fc.model.result.HomeSimTrendInfoBean">

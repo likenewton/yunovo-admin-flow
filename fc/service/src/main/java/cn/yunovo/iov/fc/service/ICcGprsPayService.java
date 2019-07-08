@@ -1,5 +1,6 @@
 package cn.yunovo.iov.fc.service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +36,18 @@ public interface ICcGprsPayService extends IService<CcGprsPay> {
 
 	List<SelectBean> select();
 	
+	/**
+	 * 充值明细
+	 * @return
+	 */
 	PageData<CcGprsPay, PayListTotalResulBean> getPayListPage(PageForm pageForm, Integer org_id, String pay_sn, String card_iccid, Integer card_id, Integer card_type, String transfer_id, Double gprs_amount, String pay_from, Short pay_method, Short is_paid, String date_start, String date_end, String  paid_start, String paid_end, LoginInfo info);
+	/**
+	 * 充值明细 导出
+	 * @return
+	 */
+	void getPayListPageExport(Integer org_id, String pay_sn, String card_iccid, Integer card_id, Integer card_type,
+			String transfer_id, Double gprs_amount, String pay_from, Short pay_method, Short is_paid, String date_start,
+			String date_end, String paid_start, String paid_end, LoginInfo info) throws IOException;
 	
 	PageData<PayPackResultBean, PayPackResultBean> getPayPackPage(PageForm pageForm, Short pay_method, Integer org_id, String date_start, String date_end,  LoginInfo info);
 	
@@ -50,5 +62,7 @@ public interface ICcGprsPayService extends IService<CcGprsPay> {
 	 * @return
 	 */
 	List<SelectBean> monthSelect(LoginInfo info);
+
+	
 	
 }

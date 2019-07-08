@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import cn.yunovo.iov.fc.model.entity.CcStats;
+import cn.yunovo.iov.fc.model.export.CcStatsExportBean;
 import cn.yunovo.iov.fc.model.result.HomeChartDataBean;
 import cn.yunovo.iov.fc.model.result.HomeSimTrendInfoBean;
 
@@ -21,7 +22,13 @@ import cn.yunovo.iov.fc.model.result.HomeSimTrendInfoBean;
  */
 public interface ICcStatsMapper extends BaseMapper<CcStats> {
 
+	
+	/**
+	 * 运营数据列表
+	 * @return
+	 */
 	public List<CcStats> getItemsPage(IPage<CcStats> page, @Param("org_id")Integer org_id, @Param("date_start")String date_start, @Param("date_end")String date_end,  @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	public List<CcStatsExportBean> getItemsPageExport(@Param("org_id")Integer org_id, @Param("date_start")String date_start, @Param("date_end")String date_end,  @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 	
 	/**
 	 * SIM卡使用趋势

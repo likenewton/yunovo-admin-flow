@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.yunovo.iov.fc.dao.ICcGprsSnapMapper">
+
+	<select id="getPaySnapExport" resultType="cn.yunovo.iov.fc.model.export.CcGprsSnapExportBean">
+	
+		SELECT
+			P.gprs_amount,P.gprs_amount1,P.allot_month,P.allot_value,P.allot_reset,
+			P.assigned_month,P.time_snap,P.time_added,P.time_expire,P.time_device,
+			P.total_used,P.total_balance,P.pay_from,P.pay_memo,P.pay_memo1,P.pay_method,
+			P.gprs_price,P.gprs_price1,P.gprs_value,P.balance_dval,C.org_id,C.card_iccid,
+			C.card_type,(SELECT GB.batch_sn FROM cc_gprs_batch GB WHERE GB.batch_id = C.batch_id) AS batch_sn
+		FROM cc_gprs_snap P 
+		LEFT JOIN cc_gprs_card C ON P.card_id = C.card_id
+		WHERE 1 = 1
+		
+		<choose>
+
+			<when test="org_id != null">
+				AND C.org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND C.org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+
+		
+
+		<if test="card_iccid != null">
+			<bind name="card_iccid_bind" value="'%'+card_iccid+'%'" />
+			AND C.card_iccid LIKE #{card_iccid_bind}
+		</if>
+
+
+		<if test="card_type != null">
+			AND C.card_type = #{card_type}
+		</if>
+
+		<if test="pay_from != null">
+			AND P.pay_from = #{pay_from}
+		</if>
+		
+		<if test="pay_method != null">
+			AND P.pay_method = #{pay_method}
+		</if>
+
+		<if test="date_start != null">
+			<![CDATA[  AND P.time_added >= #{date_start} ]]>
+		</if>
+
+		<if test="date_end != null">
+			<![CDATA[ AND P.time_added <= #{date_end} ]]>
+		</if>
+
+		<if test="paid_start != null">
+			<![CDATA[  AND P.time_snap >= #{paid_start} ]]>
+		</if>
+
+		<if test="paid_end != null">
+			<![CDATA[ AND P.time_snap <= #{paid_end} ]]>
+		</if>
+	
+		 ORDER BY P.time_added DESC
+	</select>
+
+</mapper>

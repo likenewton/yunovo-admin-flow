@@ -42,6 +42,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -373,6 +374,13 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 			p.setPage(page);
 			return p;
 		}
+		
+		if(org_id != null && !iCcOrgService.hasPermission(org_id, orgpos)) {
+			page.setTotal(0);
+			page.setRecords(null);
+			p.setPage(page);
+			return p;
+		}
 
 		if (StringUtils.isNotEmpty(date_start)) {
 			date_start = date_start + " 00:00:00";
@@ -385,7 +393,6 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 		List<CardUsedResultBean> records = iGprsCardMapper.getCardUsedPage(page, org_id, date_start, date_end, orgpos,
 				orgpos.split(","));
 
-		System.out.println(JSONObject.toJSONString(page));
 		if (CollectionUtils.isEmpty(records)) {
 			page.setTotal(0);
 			page.setRecords(null);
@@ -409,6 +416,61 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 
 	}
 
+	public void getCardUsedPageExport(PageForm pageForm, Integer org_id,
+			String date_start, String date_end, LoginInfo info) throws IOException {
+
+
+		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
+		if (StringUtils.isEmpty(orgpos)) {
+			log.error("[getCardUsedPageExport][导出数据失败]params={}", JSONObject.toJSONString(WebRequestUtil.request().getParameterMap()));
+			throw new BusinessException(-1, "导出数据失败");
+		}
+		
+		if(org_id != null && !iCcOrgService.hasPermission(org_id, orgpos)) {
+			log.error("[getCardUsedPageExport][导出数据失败]params={}", JSONObject.toJSONString(WebRequestUtil.request().getParameterMap()));
+			throw new BusinessException(-1, "导出数据失败");
+		}
+
+		if (StringUtils.isNotEmpty(date_start)) {
+			date_start = date_start + " 00:00:00";
+		}
+
+		if (StringUtils.isNotEmpty(date_end)) {
+			date_end = date_end + " 23:59:59";
+		}
+
+		List<CardUsedResultBean> records = iGprsCardMapper.getCardUsedPage(null, org_id, date_start, date_end, orgpos,
+				orgpos.split(","));
+
+		if (!CollectionUtils.isEmpty(records)) {
+		
+			CardUsedResultBean total = iGprsCardMapper.getCardUsedTotal(org_id, date_start, date_end, orgpos,orgpos.split(","));
+			total.setOrg_name("总计");
+			Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
+			for (CardUsedResultBean sellPayResultBean : records) {
+				sellPayResultBean.setOrg_name(orgs.get(String.valueOf(sellPayResultBean.getOrg_id())).getName());
+			}
+			records.add(total);
+		}
+
+		
+		HttpServletResponse response = WebRequestUtil.response();
+		ServletOutputStream out = response.getOutputStream();
+		response.setContentType("multipart/form-data");
+		response.setCharacterEncoding("utf-8");
+		String name = "累计用量-" + DateFormatUtils.format(DateUtil.now(), "yyyy-MM-dd_HH-mm-ss");
+		String fileName = new String(name.getBytes(), "ISO-8859-1");
+		response.setHeader("Content-disposition", "attachment;filename="+fileName+".xlsx");
+		ExcelWriter writer = new ExcelWriter(out, ExcelTypeEnum.XLSX, true);
+		
+		Sheet sheet1 = new Sheet(1, 0, CardUsedResultBean.class);
+		sheet1.setSheetName(name);
+		writer.write(records, sheet1);
+		writer.finish();
+		out.flush();
+
+	}
+	
 	@Override
 	public PageData<UnicomStatResultBean, UnicomStatResultBean> getUnicomStatPage(PageForm pageForm, Integer org_id,
 			String date_start, String date_end, String jstart, String jend, LoginInfo info) {

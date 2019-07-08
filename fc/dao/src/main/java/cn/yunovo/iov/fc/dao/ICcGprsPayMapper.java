@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import cn.yunovo.iov.fc.model.entity.CcGprsPay;
+import cn.yunovo.iov.fc.model.export.CcGprsPayExportBean;
 import cn.yunovo.iov.fc.model.result.MonthPayReportResultBean;
 import cn.yunovo.iov.fc.model.result.OrgPayReportResultBean;
 import cn.yunovo.iov.fc.model.result.PayCountResultBean;
@@ -34,7 +35,10 @@ public interface ICcGprsPayMapper extends BaseMapper<CcGprsPay> {
 	
 	public OrgPayReportResultBean getOrgPayReportTotal(@Param("org_id")Integer org_id,@Param("pay_method")Integer pay_method, @Param("date_start")String date_start, @Param("date_end")String date_end, @Param("mdate")String mdate,@Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 	
+	//充值明细查询
 	public List<CcGprsPay> getPayListPage(IPage<CcGprsPay> page, @Param("org_id")Integer org_id, @Param("pay_sn")String pay_sn, @Param("card_iccid")String card_iccid, @Param("card_id")Integer card_id, @Param("card_type")Integer card_type, @Param("transfer_id")String transfer_id, @Param("gprs_amount")Double gprs_amount, @Param("pay_from")String pay_from, @Param("pay_method")Short pay_method, @Param("is_paid")Short is_paid, @Param("date_start")String date_start, @Param("date_end")String date_end, @Param("paid_start")String  paid_start, @Param("paid_end")String paid_end, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	//充值明细导出
+	public List<CcGprsPayExportBean> getPayListPageExport(@Param("org_id")Integer org_id, @Param("pay_sn")String pay_sn, @Param("card_iccid")String card_iccid, @Param("card_id")Integer card_id, @Param("card_type")Integer card_type, @Param("transfer_id")String transfer_id, @Param("gprs_amount")Double gprs_amount, @Param("pay_from")String pay_from, @Param("pay_method")Short pay_method, @Param("is_paid")Short is_paid, @Param("date_start")String date_start, @Param("date_end")String date_end, @Param("paid_start")String  paid_start, @Param("paid_end")String paid_end, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 	
 	public PayListTotalResulBean getPayListTotal(@Param("org_id")Integer org_id, @Param("pay_sn")String pay_sn, @Param("card_iccid")String card_iccid, @Param("card_id")Integer card_id, @Param("card_type")Integer card_type, @Param("transfer_id")String transfer_id, @Param("gprs_amount")Double gprs_amount, @Param("pay_from")String pay_from, @Param("pay_method")Short pay_method, @Param("is_paid")Short is_paid, @Param("date_start")String date_start, @Param("date_end")String date_end, @Param("paid_start")String  paid_start, @Param("paid_end")String paid_end, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 	
@@ -149,5 +153,7 @@ public interface ICcGprsPayMapper extends BaseMapper<CcGprsPay> {
 	 * @return
 	 */
 	public List<String> getAllMonth(@Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+
+	
 
 }
