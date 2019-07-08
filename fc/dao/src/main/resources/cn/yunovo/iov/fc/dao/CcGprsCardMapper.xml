@@ -448,6 +448,57 @@
 
 		GROUP BY org_id
 	</select>
+	<!-- 统计分析-联通情况统计导出 -->
+	<select id="getUnicomStatPageExport"
+		resultType="cn.yunovo.iov.fc.model.result.UnicomStatResultBean">
+
+		SELECT org_id,COUNT(card_id) AS card_count, SUM(IF (time_active IS
+		NULL,0,1)) AS activated,
+		SUM(IF (time_active IS NULL,1,0)) AS
+		nonactivated, SUM(unicom_total) AS unicom_count,
+		SUM(unicom_month) AS
+		month_count FROM cc_gprs_card WHERE 1=1
+
+		<choose>
+
+			<when test="org_id != null">
+				AND org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+
+		<if test="date_start != null">
+			<![CDATA[  AND time_added >= #{date_start} ]]>
+		</if>
+
+		<if test="date_end != null">
+			<![CDATA[ AND time_added <= #{date_end} ]]>
+		</if>
+
+		<if test="jstart != null">
+			<![CDATA[  AND time_active >= #{jstart} ]]>
+		</if>
+
+		<if test="jend != null">
+			<![CDATA[ AND time_active <= #{jend} ]]>
+		</if>
+
+		GROUP BY org_id
+	</select>
 
 	<!-- 流量卡使用统计 -->
 	<select id="getUnicomStatTotal"

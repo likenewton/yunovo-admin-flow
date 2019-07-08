@@ -1,5 +1,7 @@
 package cn.yunovo.iov.fc.web.controller.gprs;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +43,19 @@ public class UnicomStatController extends BaseController {
 		PageData<UnicomStatResultBean, UnicomStatResultBean> data = iCcGprsCardService.getUnicomStatPage(pageForm,
 				org_id, date_start, date_end, jstart, jend, this.getLoginBaseInfo());
 		return ResultUtil.success(data);
+	}
+	
+	@ApiOperation(value = "统计分析-联通流量卡统计导出")
+	@ApiImplicitParams(value = {
+			@ApiImplicitParam(name = "org_id", value = "机构id", required = false, dataType = "int", paramType = "query"),
+			@ApiImplicitParam(name = "date_start", value = "导卡时间-开始日期 YYYY-MM-DD", required = false, dataType = "String", paramType = "query"),
+			@ApiImplicitParam(name = "date_end", value = "导卡时间-结束日期 YYYY-MM-DD", required = false, dataType = "String", paramType = "query"),
+			@ApiImplicitParam(name = "jstart", value = "激活时间-开始日期 YYYY-MM-DD", required = false, dataType = "String", paramType = "query"),
+			@ApiImplicitParam(name = "jend", value = "激活时间-结束日期 YYYY-MM-DD", required = false, dataType = "String", paramType = "query") })
+	@RequestMapping(path = "/export", method = { RequestMethod.GET, RequestMethod.POST })
+	public void export(Integer org_id, String date_start, String date_end, String jstart, String jend) throws IOException {
+
+		iCcGprsCardService.getUnicomStatPageExport(org_id, date_start, date_end, jstart, jend, this.getLoginBaseInfo());
 	}
 
 }

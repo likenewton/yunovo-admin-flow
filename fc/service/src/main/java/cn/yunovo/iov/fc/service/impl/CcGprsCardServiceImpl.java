@@ -528,6 +528,70 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 
 		return p;
 	}
+	
+	@Override
+	public void getUnicomStatPageExport(Integer org_id,
+			String date_start, String date_end, String jstart, String jend, LoginInfo info) throws IOException {
+		
+		// 组装分页参数
+		Page<UnicomStatResultBean> page = new Page<>();
+		page.setCurrent(1);
+		page.setSize(Integer.MAX_VALUE);
+
+		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
+		if (StringUtils.isEmpty(orgpos)) {
+			log.error("[getUnicomStatPageExport][导出数据失败]params={}", JSONObject.toJSONString(WebRequestUtil.request().getParameterMap()));
+			throw new BusinessException(-1, "导出数据失败");
+		}
+		
+		if(org_id != null && !iCcOrgService.hasPermission(org_id, orgpos)) {
+			log.error("[getUnicomStatPageExport][导出数据失败]params={}", JSONObject.toJSONString(WebRequestUtil.request().getParameterMap()));
+			throw new BusinessException(-1, "导出数据失败");
+		}
+
+		if (StringUtils.isNotEmpty(date_start)) {
+			date_start = date_start + " 00:00:00";
+		}
+
+		if (StringUtils.isNotEmpty(date_end)) {
+			date_end = date_end + " 23:59:59";
+		}
+
+		List<UnicomStatResultBean> records = iGprsCardMapper.getUnicomStatPage(page, org_id, date_start, date_end,
+				jstart, jend, orgpos, orgpos.split(","));
+
+		if (!CollectionUtils.isEmpty(records)) {
+			
+
+			UnicomStatResultBean total = iGprsCardMapper.getUnicomStatTotal(org_id, date_start, date_end, jstart, jend,
+					orgpos, orgpos.split(","));
+			Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
+			for (UnicomStatResultBean sellPayResultBean : records) {
+				sellPayResultBean.setOrg_name(orgs.get(String.valueOf(sellPayResultBean.getOrg_id())).getName());
+			}
+			total.setOrg_name("总计");
+			records.add(total);
+		}
+		
+
+		HttpServletResponse response = WebRequestUtil.response();
+		ServletOutputStream out = response.getOutputStream();
+		response.setContentType("multipart/form-data");
+		response.setCharacterEncoding("utf-8");
+		String name = "联通流量卡统计-" + DateFormatUtils.format(DateUtil.now(), "yyyy-MM-dd_HH-mm-ss");
+		String fileName = new String(name.getBytes(), "ISO-8859-1");
+		response.setHeader("Content-disposition", "attachment;filename="+fileName+".xlsx");
+		ExcelWriter writer = new ExcelWriter(out, ExcelTypeEnum.XLSX, true);
+		
+		Sheet sheet1 = new Sheet(1, 0, UnicomStatResultBean.class);
+		sheet1.setSheetName(name);
+		writer.write(records, sheet1);
+		writer.finish();
+		out.flush();
+		
+		
+		
+	}
 
 	@Override
 	public PageData<PayDetailResultBean, PayDetailResultBean> getPayDetailPage(PageForm pageForm, Integer org_id,
