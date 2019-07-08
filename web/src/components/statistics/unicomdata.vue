@@ -2,7 +2,7 @@
   <div>
     <el-card class="clearfix" style="margin-bottom: 20px" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="small" type="warning" :disabled="!pageAuthBtn.FCP_02_007_EXPORT03">导出</el-button>
+        <el-button size="small" type="warning" :disabled="!pageAuthBtn.FCP_02_007_EXPORT03" @click="exportExcel">导出</el-button>
       </el-button-group>
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item>
@@ -54,9 +54,9 @@
           </template>
         </el-table-column>
         <el-table-column fixed="right" label="导出" width="140" v-if="pageAuthBtn.FCP_02_007_EXPORT01 || pageAuthBtn.FCP_02_007_EXPORT02">
-          <template slot-scope="scope">
-            <el-button type="text" class="text_success" v-if="pageAuthBtn.FCP_02_007_EXPORT01">已激活</el-button>
-            <el-button type="text" class="text_danger" v-if="pageAuthBtn.FCP_02_007_EXPORT02">未激活</el-button>
+          <template slot-scope="scope" v-if="!scope.row.sums">
+            <el-button type="text" class="text_success" v-if="pageAuthBtn.FCP_02_007_EXPORT01" @click="exportExcel_2(2, scope.row.org_id)">已激活</el-button>
+            <el-button type="text" class="text_danger" v-if="pageAuthBtn.FCP_02_007_EXPORT02" @click="exportExcel_2(1, scope.row.org_id)">未激活</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -175,6 +175,16 @@ export default {
     this.getData()
   },
   methods: {
+    // 导出excel
+    exportExcel() {
+      Api.UNITS.exportExcel(_axios.ajaxAd.unicomdataExport, this.formInline)
+    },
+    exportExcel_2(type, org_id) {
+      Api.UNITS.exportExcel(_axios.ajaxAd.unicomdataExport_2, Object.assign({}, this.formInline, {
+        type,
+        org_id,
+      }))
+    },
     getData() {
       Api.UNITS.getListData({
         vue: this,

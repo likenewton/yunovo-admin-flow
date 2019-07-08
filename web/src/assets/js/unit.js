@@ -391,7 +391,9 @@ module.exports = {
   exportExcel(url, params = {}) {
     let link = `${url}?iov-token=${localStorage.getItem('iov-token')}`
     for (let key in params) {
-      link += `&${key}=${params[key]}`
+      if (params[key]) {
+        link += `&${key}=${params[key]}`
+      } 
     }
     window.open(link)
   },

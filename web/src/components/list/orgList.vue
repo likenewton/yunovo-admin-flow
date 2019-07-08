@@ -2,7 +2,7 @@
   <div>
     <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="small" type="warning">导出</el-button>
+        <el-button size="small" type="warning" @click="exportExcel">导出</el-button>
       </el-button-group>
       <el-form :inline="true" :model="formInline" class="search-form" size="small" @submit.native.prevent>
         <el-form-item>
@@ -81,6 +81,10 @@ export default {
     this.getData()
   },
   methods: {
+    // 导出excel
+    exportExcel() {
+      Api.UNITS.exportExcel(_axios.ajaxAd.operatedataExport, this.formInline)
+    },
     resetData() {
       this.list.currentPage = 1
       this.formInline = {

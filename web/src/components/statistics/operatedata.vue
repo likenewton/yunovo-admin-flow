@@ -5,7 +5,7 @@
         <el-button size="small" type="primary" @click="showEcharts('0')" :disabled="!pageAuthBtn.FCP_02_008_ECHART01">支付图表</el-button>
         <el-button size="small" type="primary" @click="showEcharts('1')" :disabled="!pageAuthBtn.FCP_02_008_ECHART02">在线图表</el-button>
         <el-button size="small" type="primary" @click="showEcharts('2')" :disabled="!pageAuthBtn.FCP_02_008_ECHART03">激活图表</el-button>
-        <el-button size="small" type="warning" :disabled="!pageAuthBtn.FCP_02_008_EXPORT01">导出</el-button>
+        <el-button size="small" type="warning" :disabled="!pageAuthBtn.FCP_02_008_EXPORT01" @click="exportExcel">导出</el-button>
       </el-button-group>
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item>
@@ -13,7 +13,7 @@
           <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="统计日期结束"></el-date-picker>
         </el-form-item>
         <el-form-item>
-<!--           <el-button type="primary" @click="searchData" :disabled="!pageAuthBtn.FCP_02_008_CHECK01">查询</el-button> -->
+          <!--           <el-button type="primary" @click="searchData" :disabled="!pageAuthBtn.FCP_02_008_CHECK01">查询</el-button> -->
           <el-button type="warning" @click="resetData" :disabled="!pageAuthBtn.FCP_02_008_CHECK01">重置</el-button>
         </el-form-item>
       </el-form>
@@ -99,6 +99,10 @@ export default {
     this.getData()
   },
   methods: {
+    // 导出excel
+    exportExcel() {
+      Api.UNITS.exportExcel(_axios.ajaxAd.operatedataExport, this.formInline)
+    },
     getData() {
       Api.UNITS.getListData({
         vue: this,

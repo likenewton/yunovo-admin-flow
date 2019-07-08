@@ -1,9 +1,6 @@
 <template>
   <div>
     <el-card class="clearfix" shadow="never" v-loading="loadData">
-      <el-button-group style="margin-bottom: 10px">
-        <el-button size="small" type="warning" :disabled="!pageAuthBtn.FCP_02_005_EXPORT01">导出</el-button>
-      </el-button-group>
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item>
           <el-select v-model="formInline.org_id" filterable clearable placeholder="机构名称" @change="searchData">

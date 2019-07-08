@@ -3,8 +3,8 @@
     <el-card class="box-card clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
         <el-button size="small" type="primary" @click="showEcharts()" :disabled="!pageAuthBtn.FCP_03_003_ECAHRT01">图表</el-button>
-        <el-button size="small" type="warning" :disabled="!pageAuthBtn.FCP_03_003_EXPORT01">导出明细</el-button>
-        <el-button size="small" type="warning" :disabled="!pageAuthBtn.FCP_03_003_EXPORT02">导出快照</el-button>
+        <el-button size="small" type="warning" :disabled="!pageAuthBtn.FCP_03_003_EXPORT01" @click="exportExcel">导出明细</el-button>
+        <el-button size="small" type="warning" :disabled="!pageAuthBtn.FCP_03_003_EXPORT02" @click="exportExcel_2">导出快照</el-button>
       </el-button-group>
       <el-form class="search-form" :inline="true" :model="formInline" size="small" @submit.native.prevent>
         <el-form-item>
@@ -270,6 +270,13 @@ export default {
     this.getData()
   },
   methods: {
+    // 导出excel
+    exportExcel() {
+      Api.UNITS.exportExcel(_axios.ajaxAd.rechargeParticularsExport, this.formInline)
+    },
+    exportExcel_2() {
+      Api.UNITS.exportExcel(_axios.ajaxAd.rechargeParticularsExport_2, this.formInline)
+    },
     // 重置列表
     resetData() {
       this.list.currentPage = 1
@@ -284,7 +291,7 @@ export default {
     // 简单查询
     simpleSearchData() {
       let pay_sn = this.formInline.pay_sn
-      this.formInline = { 
+      this.formInline = {
         pay_sn,
         org_id: Api.UNITS.getQuery('org_id')
       }

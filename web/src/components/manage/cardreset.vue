@@ -127,7 +127,8 @@ export default {
     }
   },
   mounted() {
-    this.getData()
+    // this.getData()
+    this.loadData = false
   },
   methods: {
     changeTab(para) {

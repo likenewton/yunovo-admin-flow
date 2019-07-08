@@ -90,7 +90,7 @@
     <el-dialog title="高级查询" :visible.sync="searchVipVisible" :width="searchVipWidth">
       <div slot>
         <div class="searchForm_vip" style="width:100%;overflow: auto">
-          <el-form :inline="false" :model="formInline" size="small" label-width="90px">
+          <el-form :inline="false" :model="formInline" size="small" label-width="90px" v-loading="loadData">
             <el-form-item label="卡ICCID">
               <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20)" placeholder="请输入"></el-input>
             </el-form-item>

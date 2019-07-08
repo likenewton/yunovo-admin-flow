@@ -2,7 +2,7 @@
   <div>
     <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="small" type="warning" :disabled="!pageAuthBtn.FCP_02_004_EXPORT01">导出</el-button>
+        <el-button size="small" type="warning" :disabled="!pageAuthBtn.FCP_02_004_EXPORT01" @click="exportExcel">导出</el-button>
       </el-button-group>
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item>
@@ -97,6 +97,10 @@ export default {
     this.getData()
   },
   methods: {
+    // 导出excel
+    exportExcel() {
+      Api.UNITS.exportExcel(_axios.ajaxAd.useanomalyExport, this.formInline)
+    },
     getData() {
       Api.UNITS.getListData({
         vue: this,

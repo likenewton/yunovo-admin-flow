@@ -3,7 +3,7 @@ class AXIOS {
     this.data = {
       method: 'get',
       params: null,
-      timeout: 50000,
+      timeout: 60000,
       data: null, // 请求体所带的参数
       done: null, // 接口请求成功回调函数
       headers: {
@@ -15,7 +15,7 @@ class AXIOS {
 
     // ajax请求地址
     this.ajaxAd = {
-      // 公共
+      // 登录
       isLogin: '/fc/api/sso/isLogin',
       getLoginInfo: '/fc/api/sso/getLoginInfo',
       getAuthMenu: '/fc/api/sso/menus',
@@ -75,10 +75,18 @@ class AXIOS {
       getComboDetail: '/fc/api/gprs/pack/detail',
       getBatchDetail: '/fc/api/gprs/batch/detail', // 编辑批次
       // 导出
-      statsExport: '/fc/api/gprs/stats/export',
-      cardExport: '/fc/api/gprs/card/export',
-      cardAuthExport: '/fc/api/realname/export',
-      deadstatusExport: '/fc/api/gprs/halt/export',
+      statsExport: '/fc/api/gprs/stats/export', // 
+      cardExport: '/fc/api/gprs/card/export', // 流量卡
+      cardAuthExport: '/fc/api/realname/export', // 卡实名
+      deadstatusExport: '/fc/api/gprs/halt/export', // 已停卡况
+      useanomalyExport: '/fc/api/gprs/abnormal/export', // 用量异常
+      usedataExport: '/fc/api/gprs/cardUsed/export', // 累计用量
+      unicomdataExport: '/fc/api/gprs/unicomStat/export', // 联通流量卡
+      unicomdataExport_2: '/fc/api/gprs/unicomStat/cardExport', // 联通流量卡-激活/未激活
+      operatedataExport: '/fc/api/gprs/payOnline/export', // 运营统计
+      orgListExport: '/fc/api/gprs/payOnline/org/export', // 运营统计-机构统计导出
+      rechargeParticularsExport: '/fc/api/gprs/report/getPayListPageExport', // 充值明细-导出明细
+      rechargeParticularsExport_2: '/fc/api/gprs/report/getPaySnapExport', // 充值明细-导出快照
       // 实名审核
       checkAudit: '/fc/api/realname/audit',
       unbindRealname: '/fc/api/realname/unbind', // 解除实名

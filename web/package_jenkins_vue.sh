@@ -3,7 +3,7 @@
 ###作者：张川
 ###############
 project_path=/root/.jenkins/workspace/$1
-weixin_name=yunovo_template
+weixin_name=flowCenter
 git_branch=$2
 git_branch_commitID=$3
 
@@ -37,8 +37,7 @@ fi
 # fi
 
 
-
-cp -r  ${project_path}/dist  $project_path/www_${git_branch}_${git_branch_commitID}/$weixin_name
+cp -r  ${project_path}/web/dist  $project_path/www_${git_branch}_${git_branch_commitID}/$weixin_name
 
 ##将wechat 打gz包。
 cd ${project_path}

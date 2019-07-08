@@ -2,7 +2,7 @@
   <div>
     <el-card class="clearfix" style="margin-bottom: 20px" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="small" type="warning" :disabled="!pageAuthBtn.FCP_02_006_EXPORT01">导出</el-button>
+        <el-button size="small" type="warning" :disabled="!pageAuthBtn.FCP_02_006_EXPORT01" @click="exportExcel">导出</el-button>
       </el-button-group>
       <el-form class="search-form" :inline="true" :model="formInline" size="small">
         <el-form-item>
@@ -280,6 +280,10 @@ export default {
     this.getData()
   },
   methods: {
+    // 导出excel
+    exportExcel() {
+      Api.UNITS.exportExcel(_axios.ajaxAd.usedataExport, this.formInline)
+    },
     changeTab(para) {
       this.tabIndex = para.index
       setTimeout(() => {

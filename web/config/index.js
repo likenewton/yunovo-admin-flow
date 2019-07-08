@@ -9,7 +9,7 @@ module.exports = {
   dev: {
 
     // Paths
-    assetsSubDirectory: 'flowCenter/static', // 修改过的 static
+    assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: proxyConfig.proxy,
 
@@ -51,7 +51,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: './',
+    assetsPublicPath: '/flowCenter/',
 
     /**
      * Source Maps
