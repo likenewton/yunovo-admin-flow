@@ -68,13 +68,6 @@ public class ApiSecurityFilter implements javax.servlet.Filter {
 			Assertion object = null;
 //			CasClientUtil.getCasJedisPoolUtil().get(AbstractCasFilter.CONST_CAS_ASSERTION + "#" + token, AssertionImpl.class);
 			object = request.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION) != null ? (Assertion)request.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION) : null;
-			if(object == null) {
-				
-				String urlToRedirectTo = CommonUtils.constructRedirectUrl(springCasProperties.getCasClient().getCasServerLogoutUrl(), getServiceParameterName(),
-	        			this.getSpringCasProperties().getCasClient().getService(), false, false);
-				httpResponse.sendRedirect(urlToRedirectTo);
-				return;
-			}
 			
 			Map<String, Object> map = object.getPrincipal().getAttributes();
 			

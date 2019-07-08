@@ -250,7 +250,7 @@ public class SystemResourceServiceImpl implements ISystemResourceService{
 		}
 		
 		if(!need_filter_resource_map.containsKey(requestURI)) {
-			log.debug("[isPermission][接口无需权限验证]params={requestURI:{},token:{},user_id:{},resource:{}}", requestURI, token, user_id, resource.buildJsonString());
+			//log.debug("[isPermission][接口无需权限验证]params={requestURI:{},token:{},user_id:{},resource:{}}", requestURI, token, user_id, resource.buildJsonString());
 			return true;
 		}
 		

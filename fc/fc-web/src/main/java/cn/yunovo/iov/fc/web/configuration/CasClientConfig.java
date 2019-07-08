@@ -131,7 +131,7 @@ public class CasClientConfig {
 	public FilterRegistrationBean<TokenFilter> tokenFilter(SpringCasProperties springCasProperties) {
 		FilterRegistrationBean<TokenFilter> filterRegistration = new FilterRegistrationBean<TokenFilter>();
 		
-		TokenFilter tokenFilter = new TokenFilter(tokenBuilder(springCasProperties), tokenCipherExecutor(springCasProperties));
+		TokenFilter tokenFilter = new TokenFilter(tokenBuilder(springCasProperties), tokenCipherExecutor(springCasProperties), springCasProperties);
 		filterRegistration.setFilter(tokenFilter);
 		filterRegistration.setEnabled(springCasProperties.getCasClient().getCasEnabled());
 		filterRegistration.addUrlPatterns("/api/*");
