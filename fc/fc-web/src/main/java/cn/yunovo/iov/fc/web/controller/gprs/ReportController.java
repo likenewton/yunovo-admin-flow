@@ -112,7 +112,7 @@ public class ReportController extends BaseController{
 			@ApiImplicitParam(name = "org_id", value = "机构id", required = false, dataType = "int", paramType = "query")
 			})
 	@RequestMapping(path = "/getPayListPageExport", method = { RequestMethod.GET, RequestMethod.POST })
-	public void getPayListPageExport(PageForm pageForm, Integer org_id, String pay_sn, String card_iccid, Integer card_type, String transfer_id, Double gprs_amount, String pay_from, Short pay_method, Short is_paid, String date_start, String date_end, String  paid_start, String paid_end) throws IOException {
+	public void getPayListPageExport(Integer org_id, String pay_sn, String card_iccid, Integer card_type, String transfer_id, Double gprs_amount, String pay_from, Short pay_method, Short is_paid, String date_start, String date_end, String  paid_start, String paid_end) throws IOException {
 		iCcGprsPayService.getPayListPageExport(org_id, pay_sn, card_iccid, null, card_type, transfer_id, gprs_amount, pay_from, pay_method, is_paid, date_start, date_end, paid_start, paid_end, this.getLoginBaseInfo());
 	}
 	

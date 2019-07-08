@@ -418,7 +418,8 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 
 	}
 
-	public void getCardUsedPageExport(PageForm pageForm, Integer org_id,
+	@Override
+	public void getCardUsedPageExport(Integer org_id,
 			String date_start, String date_end, LoginInfo info) throws IOException {
 
 

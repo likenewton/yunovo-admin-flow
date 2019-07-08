@@ -5,6 +5,7 @@ import cn.yunovo.iov.fc.common.utils.DateUtil;
 import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
 import cn.yunovo.iov.fc.common.utils.web.WebRequestUtil;
 import cn.yunovo.iov.fc.dao.ICcGprsPayMapper;
+import cn.yunovo.iov.fc.model.FcProperties;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
@@ -71,7 +72,8 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 
 	private Map<String, String> arr_pay_method;
 	
-	private Map<Short, String> arr_pay_status;
+	@Autowired
+	private FcProperties fcProperties;
 	
 	@Autowired
 	private ICcUserService iCcUserService;
@@ -360,6 +362,7 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 			Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
 			Map<String, String>  arr_pay_method = this.getArr_pay_method();
 			Map<String, String> card_types = iCcGprsCardService.getCard_type();
+			Map<Short, String> arr_pay_status = fcProperties.getArr_pay_status();
 			Date time_expire = null;
 			for (CcGprsPayExportBean ccGprsPay : records) {
 				try {
@@ -573,4 +576,6 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 		return data;
 		
 	}
+	
+	
 }

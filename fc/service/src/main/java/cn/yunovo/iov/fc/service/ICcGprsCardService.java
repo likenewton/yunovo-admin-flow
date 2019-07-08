@@ -95,7 +95,8 @@ public interface ICcGprsCardService extends IService<CcGprsCard> {
 	 * @return
 	 */
 	public PageData<CardUsedResultBean, CardUsedResultBean> getCardUsedPage(PageForm pageForm, Integer org_id, String date_start, String date_end, LoginInfo info);
-	
+	void getCardUsedPageExport(Integer org_id, String date_start, String date_end, LoginInfo info)
+			throws IOException;
 	
 	/**
 	 * 统计分析-联通情况
@@ -203,5 +204,7 @@ public interface ICcGprsCardService extends IService<CcGprsCard> {
 
 	public void cardExport(Integer org_id, String date_start, String date_end, String jstart, String jend, Integer type,
 			LoginInfo loginBaseInfo) throws IOException;
+
+	
 
 }

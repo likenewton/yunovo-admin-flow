@@ -22,5 +22,7 @@ public class FcProperties {
 	}
 	
 	private Map<Short, String> arr_allot_reset;
+	
+	private Map<Short, String> arr_pay_status;
  	
 }

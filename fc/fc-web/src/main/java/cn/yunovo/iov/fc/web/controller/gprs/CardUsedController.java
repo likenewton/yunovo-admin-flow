@@ -1,5 +1,7 @@
 package cn.yunovo.iov.fc.web.controller.gprs;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +38,17 @@ public class CardUsedController extends BaseController{
 		
 		PageData<CardUsedResultBean, CardUsedResultBean>  data = iCcGprsCardService.getCardUsedPage(pageForm, org_id, date_start, date_end, this.getLoginBaseInfo());
 		return ResultUtil.success(data);
+	}
+	
+	@ApiOperation(value="统计分析-累计用量导出")
+	@ApiImplicitParams(value = { 
+			@ApiImplicitParam(name = "org_id", value = "机构id", required = false, dataType = "int",paramType = "query"),
+			@ApiImplicitParam(name = "date_start", value = "开始日期 YYYY-MM-DD", required = false, dataType = "String",paramType = "query"),
+			@ApiImplicitParam(name = "date_end", value = "结束日期 YYYY-MM-DD", required = false, dataType = "String",paramType = "query")})
+	@RequestMapping(path="/export",method= {RequestMethod.GET, RequestMethod.POST})
+	public void export(PageForm pageForm, Integer org_id, String date_start, String date_end) throws IOException {
+		
+		iCcGprsCardService.getCardUsedPageExport(org_id, date_start, date_end, this.getLoginBaseInfo());
 	}
 	
 }
