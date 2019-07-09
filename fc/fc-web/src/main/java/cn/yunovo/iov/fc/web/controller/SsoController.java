@@ -37,7 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SsoController extends BaseController{
 	
-	@Value("server.servlet.context-path")
+	@Value("${server.servlet.context-path}")
 	private String contextPath;
 
 	@Autowired
