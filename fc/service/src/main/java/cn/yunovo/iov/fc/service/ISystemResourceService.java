@@ -25,5 +25,7 @@ public interface ISystemResourceService{
 
 	boolean isPermission(String requestURI, String token, String user_id);
 
+	void destory(String token);
+
 	
 }

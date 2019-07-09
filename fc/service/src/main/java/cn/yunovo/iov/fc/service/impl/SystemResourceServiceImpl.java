@@ -26,6 +26,7 @@ import org.sunshine.dcda.view.system.viewcomponent.ISystemResourceViewComponent;
 
 import com.alibaba.fastjson.JSONObject;
 
+import cn.yunovo.iov.cas.client.session.ClientSessionMappingStorage;
 import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
 import cn.yunovo.iov.fc.model.ResourcesBean;
 import cn.yunovo.iov.fc.model.UserResourceInfoBean;
@@ -262,6 +263,16 @@ public class SystemResourceServiceImpl implements ISystemResourceService{
 		}
 		
 		return isPermission;
+		
+	}
+
+
+
+	@Override
+	public void destory(String token) {
+		
+		String cacheKey = FcConstant.SITE_CODE+"#UserResource#"+token;
+		jedisPoolUtil.del(cacheKey);
 		
 	}
 

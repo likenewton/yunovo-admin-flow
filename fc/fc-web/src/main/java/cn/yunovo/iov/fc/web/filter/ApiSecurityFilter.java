@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jasig.cas.client.util.AbstractCasFilter;
-import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.validation.Assertion;
 import org.springframework.http.MediaType;
 
@@ -47,7 +46,7 @@ public class ApiSecurityFilter implements javax.servlet.Filter {
 		this.iSystemResourceService = iSystemResourceService;
 	}
 	
-	private final String NO_FILTER_URL = "*/api/sso/isLogin,*/api/select/*";
+	private final String NO_FILTER_URL = "*/api/sso/isLogin,*/api/select/*,*/api/sso/logout";
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {

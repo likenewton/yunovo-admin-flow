@@ -9,10 +9,10 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jasig.cas.client.validation.Assertion;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,14 +27,18 @@ import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.ResourcesBean;
 import cn.yunovo.iov.fc.model.UserResourceInfoBean;
 import cn.yunovo.iov.fc.service.ISystemResourceService;
-import cn.yunovo.iov.fc.web.filter.H5LoginUserAdapterFilter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping(path="/api/sso")
 @Api(value="/api/sso",tags="单点登录接口列表")
+@Slf4j
 public class SsoController extends BaseController{
+	
+	@Value("server.servlet.context-path")
+	private String contextPath;
 
 	@Autowired
 	private SpringCasProperties springCasProperties;
@@ -108,10 +112,21 @@ public class SsoController extends BaseController{
 	public Result<LoginInfo> getLoginInfo() {
 		
 		LoginInfo loginInfo = this.getLoginBaseInfo();
-		loginInfo.setLogoutUrl(springCasProperties.getCasClient().getCasServerLogoutUrl());
+		loginInfo.setLogoutUrl(springCasProperties.getCasClient().getServerName() + contextPath + "/api/sso/logout");
 		loginInfo.setUcIndexUrl(springCasProperties.getCasClient().getUcIndexUrl());
 		return ResultUtil.build(0, "ok", loginInfo);
 		
+	}
+	
+	@ApiOperation(notes="系统登录接口", value = "系统登录接口")
+	@GetMapping(path="/logout", produces = MediaType.APPLICATION_JSON_VALUE)
+	public void logout() {
+		iSystemResourceService.destory(TokenUtil.getToken(WebRequestUtil.request()));
+		try {
+			WebRequestUtil.response().sendRedirect(springCasProperties.getCasClient().getCasServerLogoutUrl());
+		} catch (IOException e) {
+			log.error("[logout][exception]exception={}", ExceptionUtils.getStackTrace(e));
+		}
 	}
 	
 
