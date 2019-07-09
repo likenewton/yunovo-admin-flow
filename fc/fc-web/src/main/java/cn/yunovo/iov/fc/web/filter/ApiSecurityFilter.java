@@ -46,6 +46,8 @@ public class ApiSecurityFilter implements javax.servlet.Filter {
 	public void setiSystemResourceService(ISystemResourceService iSystemResourceService) {
 		this.iSystemResourceService = iSystemResourceService;
 	}
+	
+	private final String NO_FILTER_URL = "*/api/sso/isLogin,*/api/select/*";
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
@@ -61,6 +63,11 @@ public class ApiSecurityFilter implements javax.servlet.Filter {
 	        if (flag) {
 	            chain.doFilter(request, response);
 	            return;
+	        }
+	        
+	        if(IgnoreOperatorUtils.ignore(requestUri, NO_FILTER_URL)) {
+	        	 chain.doFilter(request, response);
+		         return;
 	        }
 			
 			String token = TokenUtil.getToken(httpRequest);

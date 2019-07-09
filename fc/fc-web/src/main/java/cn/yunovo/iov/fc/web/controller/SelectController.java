@@ -28,7 +28,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@RequestMapping(path="/api/select", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(path="", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 @Api(value="/api/select", tags="下拉框接口列表")
 public class SelectController extends BaseController{
 	
