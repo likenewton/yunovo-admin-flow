@@ -66,7 +66,7 @@ public class ReportController extends BaseController{
 			@ApiImplicitParam(name = "org_id", value = "机构id", required = false, dataType = "int", paramType = "query")
 			})
 	@RequestMapping(path = "/orgPayReport", method = { RequestMethod.GET, RequestMethod.POST })
-	public Result<PageData<OrgPayReportResultBean, OrgPayReportResultBean>> payReport(PageForm pageForm, Integer org_id, String date_start, String date_end, Integer pay_method) {
+	public Result<PageData<OrgPayReportResultBean, OrgPayReportResultBean>> orgPayReport(PageForm pageForm, Integer org_id, String date_start, String date_end, Integer pay_method) {
 		
 		PageData<OrgPayReportResultBean, OrgPayReportResultBean>  data = iCcGprsPayService.getOrgPayReportPage(pageForm, org_id, pay_method, date_start, null, date_end, this.getLoginBaseInfo());
 		return ResultUtil.success(data);

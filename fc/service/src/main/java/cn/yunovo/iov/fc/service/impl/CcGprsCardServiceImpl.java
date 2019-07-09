@@ -645,7 +645,7 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 	@Override
 	public PageData<CcGprsCard, Object> queryCardListPage(PageForm form, String card_iccid, Integer org_id, String date_start, String date_end, Integer time_expire, Integer unicom_stop, Integer status, LoginInfo info, Integer card_type) {
 		
-		Page<CcGprsCard> page = form.build(CcGprsCard.class, "card_id", null);
+		Page<CcGprsCard> page = form.build(CcGprsCard.class, null, "card_id");
 		
 		PageData<CcGprsCard, Object> returnData = new PageData<>();
 		

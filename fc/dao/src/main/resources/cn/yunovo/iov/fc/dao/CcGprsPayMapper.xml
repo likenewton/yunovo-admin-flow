@@ -290,7 +290,7 @@
 		resultType="cn.yunovo.iov.fc.model.export.CcGprsPayExportBean">
 
 		SELECT
-			P.org_id,P.pack_id,P.gprs_amount,P.gprs_price,P.live_month,P.pay_method,P.rebate_money,
+			P.org_id,P.pack_id,P.gprs_amount,P.gprs_price,P.live_month,P.pay_method,P.rebate_money,C.time_active,C.unicom_total,
 			P.transfer_id,P.is_paid,P.time_paid,P.time_added,P.time_expire,C.card_iccid,C.card_type,(SELECT GB.batch_sn FROM cc_gprs_batch GB WHERE GB.batch_id = C.batch_id) AS batch_sn
 		FROM cc_gprs_pay P 
 		LEFT JOIN cc_gprs_card C ON P.card_id = C.card_id

@@ -750,7 +750,7 @@
 			 AND C.time_active IS NOT NULL
 		</if>
 		
-		 ORDER BY C.card_id
+		 ORDER BY C.card_id DESC
 	</select>
 	
 	<select id="cardTotalByOrgidGroup" resultType="cn.yunovo.iov.fc.model.result.CardTotalByOrgidInfoBean">
