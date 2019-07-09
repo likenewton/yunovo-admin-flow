@@ -87,7 +87,7 @@
       </div>
     </el-dialog>
     <v-sync-unicom-data ref="syncUniconData"></v-sync-unicom-data>
-    <el-dialog title="高级查询" :visible.sync="searchVipVisible" :width="searchVipWidth">
+    <el-dialog title="高级查询" :visible.sync="searchVipVisible" width="700px">
       <div slot>
         <div class="searchForm_vip" style="width:100%;overflow: auto">
           <el-form :inline="false" :model="formInline" size="small" label-width="90px" v-loading="loadData">

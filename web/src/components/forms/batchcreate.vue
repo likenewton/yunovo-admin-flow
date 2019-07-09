@@ -131,7 +131,7 @@
         <el-button type="warning" @click="resetForm('ruleForm')">重置</el-button>
       </el-form-item>
     </el-form>
-    <el-dialog title="xlsx文件上传内容规范" :visible.sync="dialogXlsxPreviewVisible" width="400px">
+    <el-dialog title="xlsx文件上传内容规范" :visible.sync="dialogXlsxPreviewVisible" width="700px">
       <div slot>
         <div id="xlsx_preview" style="width:100%;overflow: auto">
           <el-row class="title">

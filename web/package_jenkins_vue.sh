@@ -37,7 +37,7 @@ fi
 # fi
 
 
-cp -r  ${project_path}/web/dist  $project_path/www_${git_branch}_${git_branch_commitID}/$weixin_name
+cp -r  ${project_path}/web/dist/{static,index.html}  $project_path/www_${git_branch}_${git_branch_commitID}/$weixin_name
 
 ##将wechat 打gz包。
 cd ${project_path}

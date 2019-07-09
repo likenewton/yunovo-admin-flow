@@ -21,17 +21,17 @@ class AXIOS {
       getAuthMenu: '/fc/api/sso/menus',
       getAuthButtons: '/fc/api/sso/buttons',
       // 下拉列表
-      getCardTypes: '/fc/api/select/api/select/cardTypes',
-      getOrgs: '/fc/api/select/api/select/orgs',
-      getMonths: '/fc/api/select/api/select/stats/getMonths',
-      getPayMonths: '/fc/api/select/api/select/payMonths',
-      getNotifySelect: '/fc/api/select/api/select/notifyFrom/select',
-      getPayMethodSelect: '/fc/api/select/api/select/payMethod/select',
-      getComboFlow: '/fc/api/select/api/select/pack',
-      getCurrencySelect: '/fc/api/select/api/select/currency',
-      getLangSelect: '/fc/api/select/api/select/language',
-      getNationSelect: '/fc/api/select/api/select/nation',
-      getLiveMonth: '/fc/api/select/api/select/liveMonth',
+      getCardTypes: '/fc/api/select/cardTypes',
+      getOrgs: '/fc/api/select/orgs',
+      getMonths: '/fc/api/select/stats/getMonths',
+      getPayMonths: '/fc/api/select/payMonths',
+      getNotifySelect: '/fc/api/select/notifyFrom/select',
+      getPayMethodSelect: '/fc/api/select/payMethod/select',
+      getComboFlow: '/fc/api/select/pack',
+      getCurrencySelect: '/fc/api/select/currency',
+      getLangSelect: '/fc/api/select/language',
+      getNationSelect: '/fc/api/select/nation',
+      getLiveMonth: '/fc/api/select/liveMonth',
       // table列表
       getStats: '/fc/api/gprs/stats/', // 月度用量
       getHalt: '/fc/api/gprs/halt/', // 已停卡况

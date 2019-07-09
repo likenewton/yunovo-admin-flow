@@ -7,7 +7,6 @@ export default {
     return {
       loadData: true,
       searchVipVisible: false, // 是否显示高级查询dialog
-      searchVipWidth: '400px',
       pageSizes: Api.STATIC.pageSizes,
       maxTableHeight: Api.UNITS.maxTableHeight(),
       list: {

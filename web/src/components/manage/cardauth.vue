@@ -4,29 +4,13 @@
       <el-button-group style="margin-bottom: 10px">
         <el-button size="small" type="warning" :disabled="!pageAuthBtn.FCP_01_007_EXPORT01" @click="exportExcel">导出实名信息</el-button>
       </el-button-group>
-      <el-form :inline="true" :model="formInline" class="search-form" size="small">
+      <el-form :inline="true" :model="formInline" class="search-form" size="small" @submit.native.prevent>
         <el-form-item>
-          <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20)" @keyup.enter.native="searchData" placeholder="卡ICCID"></el-input>
+          <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20)" @keyup.enter.native="simpleSearchData" placeholder="卡ICCID"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-select v-model="formInline.org_id" filterable clearable placeholder="机构名称" @change="searchData">
-            <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-select v-model="formInline.status" clearable placeholder="审核状态" @change="searchData">
-            <el-option label="待审核" value="0"></el-option>
-            <el-option label="无效" value="1"></el-option>
-            <el-option label="有效" value="2"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-date-picker v-model="formInline.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="申请时间开始"></el-date-picker> -
-          <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="申请时间结束"></el-date-picker>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="searchData" :disabled="!pageAuthBtn.FCP_01_007_CHECK01">查询</el-button>
-          <el-button type="warning" @click="resetData" :disabled="!pageAuthBtn.FCP_01_007_CHECK01">重置</el-button>
+          <el-button type="primary" @click="simpleSearchData" :disabled="!pageAuthBtn.FCP_01_007_CHECK01">查询</el-button>
+          <el-button type="primary" @click="searchVipVisible = true" :disabled="!pageAuthBtn.FCP_01_007_CHECK01">高级查询</el-button>
         </el-form-item>
       </el-form>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
@@ -76,9 +60,9 @@
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
-    <el-dialog title="机构卡实名审核" :visible.sync="authDialogVisible">
+    <el-dialog title="机构卡实名审核" :visible.sync="authDialogVisible" top="6%">
       <div slot class="auth_dialog">
-        <div class="content" :style="{'maxHeight': winHeight/2 + 'px'}">
+        <div class="content" :style="{'height': winHeight/2.2 + 'px'}">
           <div class="item">
             <span class="demonstration">身份证正面图</span>
             <el-image :src="choiceItem.cdi_img1" fit="contain">
@@ -111,6 +95,37 @@
         <el-button size="small" v-if="choiceItem.cdi_status == 2" type="danger" @click="relieveAuth">解除实名绑定</el-button>
       </div>
     </el-dialog>
+    <el-dialog title="高级查询" :visible.sync="searchVipVisible" width="630px">
+      <div slot>
+        <div class="searchForm_vip" style="width:100%;overflow: auto">
+          <el-form :inline="false" :model="formInline" size="small" label-width="90px" v-loading="loadData">
+            <el-form-item label="卡ICCID">
+              <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20)" placeholder="卡ICCID"></el-input>
+            </el-form-item>
+            <el-form-item label="机构名称">
+              <el-select v-model="formInline.org_id" filterable clearable placeholder="机构名称">
+                <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="审核状态">
+              <el-select v-model="formInline.status" clearable placeholder="审核状态">
+                <el-option label="待审核" value="0"></el-option>
+                <el-option label="无效" value="1"></el-option>
+                <el-option label="有效" value="2"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="申请时间">
+              <el-date-picker v-model="formInline.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="申请时间开始"></el-date-picker> -
+              <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="申请时间结束"></el-date-picker>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="searchData">查询</el-button>
+              <el-button type="warning" @click="resetData">重置</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -134,6 +149,12 @@ export default {
     // 导出excel
     exportExcel() {
       Api.UNITS.exportExcel(_axios.ajaxAd.cardAuthExport, this.formInline)
+    },
+    // 简单查询
+    simpleSearchData() {
+      let card_iccid = this.formInline.card_iccid
+      this.formInline = { card_iccid }
+      this.searchData()
     },
     resetData() {
       this.list.currentPage = 1

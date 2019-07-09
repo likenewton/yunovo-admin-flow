@@ -201,7 +201,7 @@
         </el-tab-pane>
       </el-tabs>
     </el-card>
-    <el-dialog title="高级查询" :visible.sync="searchVipVisible" :width="searchVipWidth">
+    <el-dialog title="高级查询" :visible.sync="searchVipVisible" width="630px">
       <div slot>
         <div class="searchForm_vip" style="width:100%;overflow: auto">
           <el-form :inline="false" :model="formInline" size="small" label-width="90px">
