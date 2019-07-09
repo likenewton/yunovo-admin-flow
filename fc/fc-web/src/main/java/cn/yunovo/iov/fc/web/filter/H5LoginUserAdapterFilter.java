@@ -2,13 +2,10 @@ package cn.yunovo.iov.fc.web.filter;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -18,20 +15,13 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.validation.Assertion;
-import org.jasig.cas.client.validation.AssertionImpl;
 import org.springframework.http.MediaType;
-import org.springframework.util.CollectionUtils;
+import com.alibaba.fastjson.JSONObject;
 
 import cn.yunovo.iov.cas.client.configuration.SpringCasProperties;
-import cn.yunovo.iov.cas.client.constant.CasConstant;
 import cn.yunovo.iov.cas.client.util.CasClientUtil;
 import cn.yunovo.iov.cas.client.util.IgnoreOperatorUtils;
 import cn.yunovo.iov.cas.client.util.TokenUtil;
-import cn.yunovo.iov.fc.model.ResourcesBean;
-import cn.yunovo.iov.fc.model.entity.CcUser;
-import cn.yunovo.iov.fc.service.FcConstant;
-import cn.yunovo.iov.fc.service.ICcUserService;
-import cn.yunovo.iov.fc.service.ISystemResourceService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -80,8 +70,6 @@ public class H5LoginUserAdapterFilter implements javax.servlet.Filter {
 			object = request.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION) != null ? (Assertion)request.getAttribute(AbstractCasFilter.CONST_CAS_ASSERTION) : null;
 			if(object == null) {
 				
-				CommonUtils.constructRedirectUrl(springCasProperties.getCasClient().getCasServerLogoutUrl(), getServiceParameterName(),
-	        			this.getSpringCasProperties().getCasClient().getService(), false, false);
 				this.sendRedirect(httpRequest, httpResponse);
 				return;
 			}
@@ -124,13 +112,13 @@ public class H5LoginUserAdapterFilter implements javax.servlet.Filter {
 		if(flag) {
             response.sendRedirect(this.getSpringCasProperties().getCasClient().getCasServerLogoutUrl());
 		}else {
-			String str = "{\"status\":401, \"redirect\":\"http://www.baidu.com\"}";
+			JSONObject str = CasClientUtil.build401Result(CommonUtils.constructRedirectUrl(springCasProperties.getCasClient().getCasServerLogoutUrl(), getServiceParameterName(),
+        			this.getSpringCasProperties().getCasClient().getService(), false, false));
             response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);// 解决中文乱码
             try {
                 PrintWriter writer = response.getWriter();
-                writer.write(str);
+                writer.write(str.toJSONString());
                 writer.flush();
-                writer.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }

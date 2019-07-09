@@ -96,6 +96,7 @@ public class SsoController extends BaseController{
 			str.append(" </html>                                                                                                                 ");
 						
 			pw.write(str.toString());
+			pw.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

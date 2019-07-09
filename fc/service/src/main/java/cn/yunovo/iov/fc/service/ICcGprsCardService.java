@@ -205,6 +205,13 @@ public interface ICcGprsCardService extends IService<CcGprsCard> {
 	public void cardExport(Integer org_id, String date_start, String date_end, String jstart, String jend, Integer type,
 			LoginInfo loginBaseInfo) throws IOException;
 
+	/**
+	 * 通过流量卡id更新流量卡所有字段信息
+	 * @param card
+	 * @return
+	 */
+	boolean updateInfoById(CcGprsCard card);
+
 	
 
 }

@@ -7,6 +7,11 @@ import cn.yunovo.iov.fc.common.utils.Md5Util;
 
 public class FcConstant {
 	
+	public final static String DB_GET_ROW = "fetch_row";//获取一条数据
+	public final static String DB_GET_ONE = "fetch_one";//获取一个数据
+	public final static String DB_GET_ALL = "fetch_all"; //获取多条数据
+	public final static String DB_GET_PAIRS = "fetch_pairs";//获取一对数据
+	
 	public final static String SITE_CODE = "FLOW_CLOUD_PLATFORM";
 
 	public final static String CACHE_RESOURCE_PREFIX = "GPRS-MEM-RES-";
@@ -44,14 +49,14 @@ public class FcConstant {
 		return CACHE_RESOURCE_PREFIX + key;
 	}
 	
-	public static String memSqlKey(String sql) {
+	/*public static String memSqlKey(String sql, String dtype) {
 		
 		return CACHE_SQL_PREFIX + Md5Util.getMD5String(sql);
-	}
+	}*/
 	
-	public static String memSqlNewKey(String sql) {
+	public static String memSqlNewKey(String sql, String dtype) {
 		
-		return CACHE_SQL_PREFIX_NEW + Md5Util.getMD5String(sql);
+		return CACHE_SQL_PREFIX_NEW + Md5Util.getMD5String(sql+dtype);
 	}
 	
 	public static String cardInfoKey(String iccid) {

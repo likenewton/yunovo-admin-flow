@@ -397,7 +397,7 @@ public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcReal
 	
 	public CcRealname getByIccid(String iccid, boolean noCache) {
 		
-		String sql = FcConstant.memSqlKey("SELECT * FROM cc_realname WHERE card_iccid = "+iccid);
+		String sql = FcConstant.memSqlKey("SELECT * FROM cc_realname WHERE card_iccid = "+iccid, FcConstant.DB_GET_ROW);
 		String cache = null;
 		if(!noCache) {
 			cache = jedisPoolUtil.get(sql);

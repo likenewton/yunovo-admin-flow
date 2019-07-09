@@ -542,7 +542,8 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 		
 		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
 		
-		String cacheKey = FcConstant.memSqlKey(String.format(GET_ALL_MONTH_SQL, orgpos));
+		//TODO 是否需要讲缓存key 拼装完整
+		String cacheKey = FcConstant.memSqlKey(String.format(GET_ALL_MONTH_SQL, orgpos), FcConstant.DB_GET_ALL);
 		String cache = jedisPoolUtil.get(cacheKey);
 		
 		List<String> returnData = null;

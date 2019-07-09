@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
@@ -196,8 +197,8 @@ public class CcCardLogServiceImpl extends ServiceImpl<ICcCardLogMapper, CcCardLo
 		
 		JSONObject orgMaps = iCcOrgService.orgMaps();
 		
-		String old_org = orgMaps.getString(String.valueOf(res.getOld_orgid()));
-		String new_org = orgMaps.getString(String.valueOf(res.getNew_orgid()));
+		String old_org = StringUtils.defaultIfEmpty(orgMaps.getString(String.valueOf(res.getOld_orgid())), "暂未知晓");
+		String new_org = StringUtils.defaultIfEmpty(orgMaps.getString(String.valueOf(res.getNew_orgid())), "暂未知晓");
 		String log_url = "gprs/move/history?oiccid="+res.getOld_iccid();
 		String log_text = String.format("将名下套餐从机构 %s 迁移到 %s 机构下ICCID为 %s 的卡下",old_org, new_org, res.getNew_iccid());
 		String sql = String.format(INSERT_SQL, res.getOld_cardid(), 8,log_text, log_url, DateUtil.nowStr());
@@ -223,8 +224,10 @@ public class CcCardLogServiceImpl extends ServiceImpl<ICcCardLogMapper, CcCardLo
 	public boolean log7Change(JSONObject log) {
 		
 		JSONObject orgMaps = iCcOrgService.orgMaps();
-		String old_org = orgMaps.getString(log.getString("org_id"));
-		String new_org = orgMaps.getString(log.getString("org2id"));
+		String old_org = StringUtils.defaultIfEmpty(orgMaps.getString(log.getString("org_id")), "暂未知晓");
+		String new_org = StringUtils.defaultIfEmpty(orgMaps.getString(log.getString("org2id")), "暂未知晓");
+		//String old_org = orgMaps.getString(log.getString("org_id"));
+		//String new_org = orgMaps.getString(log.getString("org2id"));
 		String log_url = "gprs/batch/update?batch_id="+log.getString("batch_id");
 		String unicom_month_str = iCcGprsCardService.gprsFormat(log.getDouble("gprs_amount"));
 		String live_month_str = iCcGprsPackService.liveFormat(log.getFloat("live_month"));
@@ -244,7 +247,7 @@ public class CcCardLogServiceImpl extends ServiceImpl<ICcCardLogMapper, CcCardLo
 	public boolean log1Storage(CcGprsCard card_data, Float live_month, Double gprs_amount) {
 
 		JSONObject orgMaps = iCcOrgService.orgMaps();
-		String org_name = orgMaps.getString(String.valueOf(card_data.getOrg_id()));
+		String org_name = StringUtils.defaultIfEmpty(orgMaps.getString(String.valueOf(card_data.getOrg_id())), "暂未知晓");
 		String log_url = "gprs/batch/update?batch_id="+card_data.getBatch_id();
 		String unicom_month_str = iCcGprsCardService.gprsFormat(gprs_amount);
 		String live_month_str = iCcGprsPackService.liveFormat(live_month);

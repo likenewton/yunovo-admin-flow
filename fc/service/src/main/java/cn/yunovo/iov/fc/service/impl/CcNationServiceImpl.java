@@ -126,7 +126,7 @@ public class CcNationServiceImpl extends ServiceImpl<ICcNationMapper, CcNation> 
 	public JSONObject nationMap() {
 		
 		String sql = "SELECT ntid, ntname FROM cc_nation";
-		String cacheKey = FcConstant.memSqlKey(sql);
+		String cacheKey = FcConstant.memSqlKey(sql, FcConstant.DB_GET_PAIRS);
 		JSONObject returnData = null;
 		String cache = jedisPoolUtil.get(cacheKey);
 		List<CcNation> temp = null;

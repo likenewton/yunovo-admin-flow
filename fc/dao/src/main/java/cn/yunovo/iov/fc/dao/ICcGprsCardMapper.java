@@ -190,4 +190,11 @@ public interface ICcGprsCardMapper extends BaseMapper<CcGprsCard> {
 	 * @return
 	 */
 	public List<UnActiveIccidDetailExportBean> exportUnActiveIccidDetails(@Param("org_id")Integer org_id, @Param("date_start")String date_start, @Param("date_end")String date_end, @Param("jstart")String jstart, @Param("jend")String jend,  @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	
+	/**
+	 * 通过流量卡id更新流量卡所有字段信息
+	 * @param card 
+	 * @return
+	 */
+	public int updateInfoById(@Param("card")CcGprsCard card);
 }

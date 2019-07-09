@@ -611,9 +611,8 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 		card.setTime_paid(null);
 		card.setTime_expire(null);
 		
-		//TODO 编写sql
 		jedisPoolUtil.del(FcConstant.cardInfoKey(card.getCard_iccid()));
-		iCcGprsCardService.updateById(card);
+		iCcGprsCardService.updateInfoById(card);
 		
 		result.setRet("ok");
 		result.setMsg("Reset Succeed");

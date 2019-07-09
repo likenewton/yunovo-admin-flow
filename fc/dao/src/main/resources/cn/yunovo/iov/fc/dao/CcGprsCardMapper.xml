@@ -947,5 +947,40 @@
 		AND time_active IS NULL
 		
 	</select>
+	
+	<update id="updateInfoById" parameterType="cn.yunovo.iov.fc.model.entity.CcGprsCard">
+		UPDATE `gprs`.`cc_gprs_card` SET
+			org_id=#{card.org_id},
+			batch_id=#{card.batch_id},
+			card_sn=#{card.card_sn},
+			card_iccid=#{card.card_iccid},
+			card_imsi=#{card.card_imsi},
+			card_imei=#{card.card_imei},
+			card_type=#{card.card_type},
+			card_openid=#{card.card_openid},
+			owner_bind=#{card.owner_bind},
+			owner_real=#{card.owner_real},
+			owner_wszl=#{card.owner_wszl},
+			used_total=#{card.used_total},
+			used_month=#{card.used_month},
+			pay_total=#{card.pay_total},
+			max_unused=#{card.max_unused},
+			reset_diff=#{card.reset_diff},
+			unicom_total=#{card.unicom_total},
+			unicom_month=#{card.unicom_month},
+			unicom_unused=#{card.unicom_unused},
+			unicom_diff=#{card.unicom_diff},
+			unicom_stop=#{card.unicom_stop},
+			unicom_ctime=#{card.unicom_ctime},
+			time_active=#{card.time_active},
+			time_added=#{card.time_added},
+			time_last=#{card.time_last},
+			time_paid=#{card.time_paid},
+			time_stop=#{card.time_stop},
+			time_expire=#{card.time_expire}
+		WHERE `card_id` = #{card.card_id}
+		
+		
+	</update>
 
 </mapper>

@@ -405,7 +405,7 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 	public JSONObject orgMaps() {
 		
 		String sql = "SELECT org_id, `name` FROM cc_org";
-		String cacheKey = FcConstant.memSqlKey(sql);
+		String cacheKey = FcConstant.memSqlKey(sql, FcConstant.DB_GET_PAIRS);
 		
 		String cache = jedisPoolUtil.get(sql);
 		if(StringUtils.isEmpty(cache)) {

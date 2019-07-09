@@ -1076,5 +1076,17 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 
 		out.flush();
 	}
+	
+	
+	@Override
+	public boolean updateInfoById(CcGprsCard card) {
+		
+		
+		if(card == null || card.getCard_id() == null) {
+			return false;
+		}
+		
+		return retBool(iGprsCardMapper.updateInfoById(card));
+	}
 
 }

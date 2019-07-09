@@ -185,7 +185,7 @@ public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGp
 		}
 		String sql = "SELECT give_value, give_live_month FROM cc_gprs_batch WHERE batch_id = "+batch_id;
 		
-		String cacheKey = FcConstant.memSqlNewKey(sql);
+		String cacheKey = FcConstant.memSqlNewKey(sql, FcConstant.DB_GET_ROW);
 		String cache = jedisPoolUtil.get(cacheKey);
 		CcGprsBatch data = null;
 		if(StringUtils.isEmpty(cache)) {
@@ -212,7 +212,7 @@ public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGp
 		}
 		String sql = "SELECT gprs_amount FROM cc_gprs_batch WHERE batch_id = "+batch_id;
 		
-		String cacheKey = FcConstant.memSqlNewKey(sql);
+		String cacheKey = FcConstant.memSqlNewKey(sql, FcConstant.DB_GET_ONE);
 		String cache = jedisPoolUtil.get(cacheKey);
 		CcGprsBatch data = null;
 		if(StringUtils.isEmpty(cache)) {
