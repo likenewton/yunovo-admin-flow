@@ -73,7 +73,7 @@
       </el-pagination>
     </el-card>
     <v-dialog :dialogPara="dialogPara"></v-dialog>
-    <el-dialog title="高级查询" :visible.sync="searchVipVisible" width="730px">
+    <el-dialog title="高级查询" :visible.sync="searchVipVisible" width="730px" :close-on-click-modal="false">
       <div slot>
         <div class="searchForm_vip" style="width:100%;overflow: auto">
           <el-form :inline="false" :model="formInline" size="small" label-width="100px">

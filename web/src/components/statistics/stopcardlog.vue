@@ -58,7 +58,7 @@
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
-    <el-dialog title="停卡详情列表" :visible.sync="dialogTableVisible">
+    <el-dialog title="停卡详情列表" :visible.sync="dialogTableVisible" :close-on-click-modal="false">
       <div slot class="clearfix">
         <el-table v-loading="dialogList.loadData" :data="curTableData" :max-height="winHeight / 2" border size="mini">
           <el-table-column fixed="left" prop="card_iccid" label="卡ICCID" width="180"></el-table-column>

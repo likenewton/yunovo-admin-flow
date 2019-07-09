@@ -84,7 +84,7 @@
         </el-tab-pane>
       </el-tabs>
     </el-card>
-    <el-dialog title="重置信息" :visible.sync="dialogResetVisible">
+    <el-dialog title="重置信息" :visible.sync="dialogResetVisible" :close-on-click-modal="false">
       <div slot>
         <div id="iccid_reset" style="width:100%;overflow: auto">
           <el-table :data="resetResultData" border resizable size="mini" :max-height="winHeight / 2.2">

@@ -1,5 +1,5 @@
 class Echarts {
-  constructor(para) {
+  constructor(para = {}) {
     // 实例化时初始的参数
     this.data = Object.assign({
       colorList: ['#3cb1ff', '#ffc367', '#ff7477', '#27da99', '#3ecec9', '#9a83da'],
@@ -36,17 +36,18 @@ class Echarts {
                 borderColor: '#9a8dda'
               }
             },
+            readOnly: true,
             optionToContent(opt) {
               console.log(opt)
               let axisData = opt.xAxis[0].data
               let series = opt.series
               let table = `<table style="width:100%;text-align:center"><tbody>
                 <tr>
-                  <td></td>
+                  <td style="font-weight:bold;line-height:30px;font-size:14px;color:#666">${para.dataViewTitle || ''}</td>
                   ${function a() {
                     let str = ''
                     series.forEach((v) => {
-                      str += `<td>${v.name}</td>`
+                      str += `<td style="font-weight:bold;line-height:30px;font-size:14px;color:#666">${v.name}</td>`
                     })
                     return str
                   }()}
@@ -54,9 +55,9 @@ class Echarts {
                 ${function b() {
                   let str = ''
                   axisData.forEach((v, i) => {
-                    str += `<tr><td>${v}</td>`
+                    str += `<tr><td style="font-size:14px;color:#666">${v}</td>`
                     series.forEach((v) => {
-                      str += `<td>${v.data[i]}</td>`
+                      str += `<td style="font-size:14px;color:#666">${v.data[i]}</td>`
                     })
                     str += '</tr>'
                   })
@@ -138,6 +139,7 @@ class Echarts {
     if (this.data.formatter) {
       this.option.tooltip.formatter = this.data.formatter
     }
+    // this.option.toolbox.feature
     this.data.series.forEach((v, i) => {
       this.option.series.push({
         name: this.data.legend[i],

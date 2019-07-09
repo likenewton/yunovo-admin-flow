@@ -63,7 +63,7 @@
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
-    <el-dialog title="高级查询" :visible.sync="searchVipVisible" width="700px">
+    <el-dialog title="高级查询" :visible.sync="searchVipVisible" width="700px" :close-on-click-modal="false">
       <div slot>
         <div class="searchForm_vip" style="width:100%;overflow: auto">
           <el-form :inline="false" :model="formInline" size="small" label-width="90px" v-loading="loadData">

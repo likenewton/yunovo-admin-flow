@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="operate_data">
     <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
         <el-button size="small" type="primary" @click="showEcharts('0')" :disabled="!pageAuthBtn.FCP_02_008_ECHART01">支付图表</el-button>
@@ -63,7 +63,9 @@
 <script>
 import Api from 'assets/js/api.js'
 import { mapState, mapMutations } from 'vuex'
-const _echart = new Api.ECHARTS()
+const _echart = new Api.ECHARTS({
+  dataViewTitle: '统计日期'
+})
 
 export default {
   data() {
@@ -191,19 +193,22 @@ export default {
 
 </script>
 <style lang="scss">
-.el-pagination {
-  float: right;
-  margin: 25px 40px 0 0;
-}
+.operate_data {
+  .el-pagination {
+    float: right;
+    margin: 25px 40px 0 0;
+  }
 
-.el-table {
-  .table-head {}
+  .el-table {
+    .table-head {}
 
-  td {
-    * {
-      font-size: 14px;
+    td {
+      * {
+        font-size: 14px;
+      }
     }
   }
+
 }
 
 </style>

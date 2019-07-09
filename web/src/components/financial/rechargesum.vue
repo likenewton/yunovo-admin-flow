@@ -69,7 +69,9 @@
 <script>
 import Api from 'assets/js/api.js'
 import { mapMutations, mapState } from 'vuex'
-const _echart = new Api.ECHARTS()
+const _echart = new Api.ECHARTS({
+  dataViewTitle: '机构列表'
+})
 
 export default {
   data() {

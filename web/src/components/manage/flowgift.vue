@@ -129,7 +129,7 @@
         </el-tab-pane>
       </el-tabs>
     </el-card>
-    <el-dialog title="赠送信息" :visible.sync="dialogGiftVisible">
+    <el-dialog title="赠送信息" :visible.sync="dialogGiftVisible" :close-on-click-modal="false">
       <div slot>
         <div id="iccid_reset" style="width:100%;overflow: auto">
           <el-table :data="giftData" border resizable size="mini" :max-height="winHeight / 2.2">

@@ -379,7 +379,9 @@ module.exports = {
     })
   },
   toUnicomLink(iccid) {
-    window.open(`http://t.gprs.yunovo.cn/app/main/info?iccid=${iccid}`)
+    let width = $(window).width() / 1.5
+    let left = ($(window).width() - width) / 2
+    window.open(`http://t.gprs.yunovo.cn/app/main/info?iccid=${iccid}`, '_blank', `width=${width},height=700,top=100px,left=${left}px`)
   },
   toFixed(value, total, count = 2) {
     return (value / total * 100).toFixed(count) + '%'
@@ -393,7 +395,7 @@ module.exports = {
     for (let key in params) {
       if (params[key]) {
         link += `&${key}=${params[key]}`
-      } 
+      }
     }
     window.open(link)
   },

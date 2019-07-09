@@ -1,6 +1,6 @@
 <template>
   <div class="v-SyncUnicomData-container">
-    <el-dialog :title="'详细信息(' + selectData.card_iccid + ')'" :visible.sync="dialogDetailVisible" @close="closeDialogDetailVisible">
+    <el-dialog :title="'详细信息(' + selectData.card_iccid + ')'" :visible.sync="dialogDetailVisible" @close="closeDialogDetailVisible" :close-on-click-modal="false">
       <div slot class="clearfix" v-loading="dialogDetailLoadData">
         <div id="iccid_detail" style="width:100%">
           <div class="item" v-if="selectData.card_sn">

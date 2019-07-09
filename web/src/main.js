@@ -55,7 +55,7 @@ router.beforeEach((to, from, next) => {
     // 当页面重定向过来的时候带的token 要保存进去
     localStorage.setItem(Api.STATIC.token, Api.UNITS.getQuery(Api.STATIC.token))
   }
-
+  
   _axios.send({
     method: 'get',
     url: _axios.ajaxAd.isLogin,

@@ -16,13 +16,13 @@
         </el-form-item>
       </el-form>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border size="mini">
-        <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" width="178" sortable="custom">
+        <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" width="175" sortable="custom">
           <template slot-scope="scope">
             <span v-if="pageAuthBtn.FCP_01_001_LINK1" class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
             <span v-else>{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="card_type" label="卡商名称" width="130" sortable="custom">
+        <el-table-column prop="card_type" label="卡商名称" width="135" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.card_type_name}}</span>
           </template>
@@ -32,12 +32,12 @@
             <span>{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="unicom_month" label="当月用量" width="98" sortable="custom" align="right">
+        <el-table-column prop="unicom_month" label="当月用量" width="97" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.unicom_month)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="unicom_total" label="累计用量" width="98" sortable="custom" align="right">
+        <el-table-column prop="unicom_total" label="累计用量" width="97" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.unicom_total)"></div>
           </template>
@@ -79,7 +79,7 @@
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
-    <el-dialog title="机构流量ICCID卡统计" :visible.sync="dialogChartVisible" width="70%" center>
+    <el-dialog title="机构流量ICCID卡统计" :visible.sync="dialogChartVisible" width="70%" center :close-on-click-modal="false">
       <div slot class="clearfix" v-loading="dialogChartLoadData">
         <div id="myChart" style="width:100%" :style="{height: winHeight / 2.2 + 'px'}"></div>
         <el-pagination @size-change="handleSizeChangeDetail" @current-change="handleCurrentChangeDetail" :current-page="dialogList.currentPage" :page-sizes="pageSizes" :page-size="dialogList.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="dialogList.total" class="clearfix">
@@ -87,7 +87,7 @@
       </div>
     </el-dialog>
     <v-sync-unicom-data ref="syncUniconData"></v-sync-unicom-data>
-    <el-dialog title="高级查询" :visible.sync="searchVipVisible" width="700px">
+    <el-dialog title="高级查询" :visible.sync="searchVipVisible" width="700px" :close-on-click-modal="false">
       <div slot>
         <div class="searchForm_vip" style="width:100%;overflow: auto">
           <el-form :inline="false" :model="formInline" size="small" label-width="90px" v-loading="loadData">
@@ -136,7 +136,9 @@
 </template>
 <script>
 import Api from 'assets/js/api.js'
-const _echart = new Api.ECHARTS()
+const _echart = new Api.ECHARTS({
+  dataViewTitle: '机构列表'
+})
 
 export default {
   data() {

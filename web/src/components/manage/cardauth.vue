@@ -60,7 +60,7 @@
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
-    <el-dialog title="机构卡实名审核" :visible.sync="authDialogVisible" top="6%">
+    <el-dialog title="机构卡实名审核" :visible.sync="authDialogVisible" top="6%" :close-on-click-modal="false">
       <div slot class="auth_dialog">
         <div class="content" :style="{'height': winHeight/2.2 + 'px'}">
           <div class="item">
@@ -95,7 +95,7 @@
         <el-button size="small" v-if="choiceItem.cdi_status == 2" type="danger" @click="relieveAuth">解除实名绑定</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="高级查询" :visible.sync="searchVipVisible" width="630px">
+    <el-dialog title="高级查询" :visible.sync="searchVipVisible" width="630px" :close-on-click-modal="false">
       <div slot>
         <div class="searchForm_vip" style="width:100%;overflow: auto">
           <el-form :inline="false" :model="formInline" size="small" label-width="90px" v-loading="loadData">

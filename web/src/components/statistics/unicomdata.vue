@@ -58,7 +58,7 @@
     <el-card class="clearfix" shadow="never" v-loading="loadData">
       <div id="myChart_0" style="width:100%; height:380px"></div>
     </el-card>
-    <el-dialog title="高级查询" :visible.sync="searchVipVisible" width="630px">
+    <el-dialog title="高级查询" :visible.sync="searchVipVisible" width="630px" :close-on-click-modal="false">
       <div slot>
         <div class="searchForm_vip" style="width:100%;overflow: auto">
           <el-form :inline="false" :model="formInline" size="small" label-width="90px" v-loading="loadData">
@@ -88,7 +88,9 @@
 <script>
 import Api from 'assets/js/api.js'
 import { mapMutations, mapState } from 'vuex'
-const _echart = new Api.ECHARTS()
+const _echart = new Api.ECHARTS({
+  dataViewTitle: '机构列表'
+})
 
 export default {
   data() {

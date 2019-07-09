@@ -36,7 +36,7 @@
         <el-button type="warning" @click="resetForm('ruleForm')">重置</el-button>
       </el-form-item>
     </el-form>
-    <el-dialog :visible="dialogVisible" @close="cancelChoice">
+    <el-dialog :visible="dialogVisible" @close="cancelChoice" :close-on-click-modal="false">
       <span slot="title">{{list[choiceType].title}}</span>
       <div v-loading="loadDialog" class="dialog_content">
         <div slot>
