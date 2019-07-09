@@ -261,12 +261,14 @@ export default {
     // 省级选择
     provinceSelect(id) {
       this.setRegionData(id, 'cityData')
-      delete this.formInline.city_id
-      delete this.formInline.district_id
+      let formInline = this.formInline
+      delete formInline.city_id
+      delete formInline.district_id
     },
     citySelect(id) {
       this.setRegionData(id, 'districtData')
-      delete this.formInline.district_id
+      let formInline = this.formInline
+      delete formInline.district_id
     },
     getNations(parent = 1, cb) {
       _axios.send({
@@ -313,6 +315,7 @@ export default {
     },
     // 提交表单
     submitForm(formName) {
+      console.log(this.formInline)
       this.$refs[formName].validate((valid) => {
         if (valid) {
           // 提交ajax
