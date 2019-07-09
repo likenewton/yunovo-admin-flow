@@ -112,7 +112,7 @@ public class SsoController extends BaseController{
 	public Result<LoginInfo> getLoginInfo() {
 		
 		LoginInfo loginInfo = this.getLoginBaseInfo();
-		loginInfo.setLogoutUrl(springCasProperties.getCasClient().getServerName() + contextPath + "/api/sso/logout");
+		loginInfo.setLogoutUrl(springCasProperties.getCasClient().getServerName() + contextPath + "/api/sso/logout?iov-token="+TokenUtil.getToken(WebRequestUtil.request()));
 		loginInfo.setUcIndexUrl(springCasProperties.getCasClient().getUcIndexUrl());
 		return ResultUtil.build(0, "ok", loginInfo);
 		
