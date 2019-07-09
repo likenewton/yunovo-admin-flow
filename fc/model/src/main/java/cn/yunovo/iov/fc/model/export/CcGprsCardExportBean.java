@@ -31,6 +31,8 @@ public class CcGprsCardExportBean extends BaseRowModel implements Serializable {
 	private Integer org_id;
 
 	@ExcelProperty(index=2, value="卡批次号")
+	private String batch_sn;
+	
 	private Integer batch_id;
 
 	@ExcelProperty(index=1, value="卡ICCID")

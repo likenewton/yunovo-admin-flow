@@ -679,16 +679,16 @@
 		resultType="cn.yunovo.iov.fc.model.export.CcGprsCardExportBean">
 
 		SELECT
-			org_id,batch_id,card_iccid,card_type,used_total,used_month,max_unused,
-			unicom_ctime,time_active,time_added,time_last,time_expire
+			C.org_id,C.batch_id,C.card_iccid,C.card_type,C.used_total,C.used_month,C.max_unused,
+			C.unicom_ctime,C.time_active,C.time_added,C.time_last,C.time_expire, (SELECT GB.batch_sn FROM cc_gprs_batch GB WHERE GB.batch_id = C.batch_id) AS batch_sn
 		FROM
-		cc_gprs_card
+		cc_gprs_card C
 		WHERE 1=1
 		
 		<choose>
 
 			<when test="org_id != null">
-				AND org_id = #{org_id}
+				AND C.org_id = #{org_id}
 			</when>
 			<otherwise>
 				<choose>
@@ -696,7 +696,7 @@
 
 					</when>
 					<otherwise>
-						AND org_id IN
+						AND C.org_id IN
 						<foreach collection="orgs" item="id" index="index"
 							open="(" close=")" separator=",">
 							#{id}
@@ -709,28 +709,28 @@
 		
 		<if test="card_iccid != null">
 			<bind name="card_iccid_bind" value="'%'+card_iccid+'%'" />
-			AND card_iccid LIKE #{card_iccid_bind}
+			AND C.card_iccid LIKE #{card_iccid_bind}
 		</if>
 		
 		<if test="card_type != null">
-			AND card_type = #{card_type}
+			AND C.card_type = #{card_type}
 		</if>
 
 		<if test="date_start != null">
-			<![CDATA[  AND time_active >= #{date_start} ]]>
+			<![CDATA[  AND C.time_active >= #{date_start} ]]>
 		</if>
 
 		<if test="date_end != null">
-			<![CDATA[ AND time_active <= #{date_end} ]]>
+			<![CDATA[ AND C.time_active <= #{date_end} ]]>
 		</if>
 		
 		<choose>
 			<when test="time_expire != null">
 				<choose>
 					<when test='time_expire == 1'>
-						<![CDATA[ AND time_expire > NOW() ]]>
+						<![CDATA[ AND C.time_expire > NOW() ]]>
 					</when>
-					<otherwise><![CDATA[ AND time_expire <= NOW() ]]>
+					<otherwise><![CDATA[ AND C.time_expire <= NOW() ]]>
 					</otherwise>
 				</choose>
 			</when>
@@ -739,18 +739,18 @@
 		</choose>
 		
 		<if test="unicom_stop != null">
-			 AND unicom_stop = #{unicom_stop}
+			 AND C.unicom_stop = #{unicom_stop}
 		</if>
 		
 		<if test="status == 0">
-			 AND time_active IS NULL
+			 AND C.time_active IS NULL
 		</if>
 		
 		<if test="status == 1">
-			 AND time_active IS NOT NULL
+			 AND C.time_active IS NOT NULL
 		</if>
 		
-		
+		 ORDER BY C.card_id
 	</select>
 	
 	<select id="cardTotalByOrgidGroup" resultType="cn.yunovo.iov.fc.model.result.CardTotalByOrgidInfoBean">
