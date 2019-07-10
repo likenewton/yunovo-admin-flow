@@ -92,7 +92,7 @@
 		</choose>
 		
 		<![CDATA[ 	
-			AND O.time_added >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND O.time_added <= NOW() AND O.onoff_type = 1 AND O.exec_status = 1
+			AND O.time_added >= #{date_start} AND O.time_added <= NOW() AND O.onoff_type = 1 AND O.exec_status = 1
 		]]>
 	</select>
 

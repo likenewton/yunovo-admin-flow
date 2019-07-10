@@ -123,7 +123,7 @@ public interface ICcGprsPayMapper extends BaseMapper<CcGprsPay> {
 	 * @param orgs
 	 * @return
 	 */
-	public HashMap<String, Object> getJRActiveData(@Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	public HashMap<String, Object> getJRActiveData(@Param("date_start")String date_start, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 	
 	/**
 	 * 

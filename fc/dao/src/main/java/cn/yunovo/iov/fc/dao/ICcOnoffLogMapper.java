@@ -23,6 +23,6 @@ public interface ICcOnoffLogMapper extends BaseMapper<CcOnoffLog> {
 	
 	public List<CcOnoffLog> getItemsPage(IPage<CcOnoffLog> page, @Param("card_id")Integer card_id, @Param("card_iccid")String card_iccid, @Param("card_type")Integer card_type, @Param("org_id")Integer org_id, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 	
-	public HashMap<String, Object> getStopData(@Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
+	public HashMap<String, Object> getStopData(@Param("date_start")String date_start, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 	
 }

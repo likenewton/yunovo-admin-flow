@@ -21,6 +21,7 @@ import org.springframework.util.CollectionUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import cn.yunovo.iov.fc.common.utils.DateUtil;
 import cn.yunovo.iov.fc.dao.ICcGprsCardMapper;
 import cn.yunovo.iov.fc.dao.ICcGprsPackMapper;
 import cn.yunovo.iov.fc.dao.ICcGprsPayMapper;
@@ -67,13 +68,14 @@ public class HomeServiceImpl implements IHomeService{
 			return null;
 		}
 		
+		final String date_start = DateFormatUtils.format(DateUtil.now(), "yyyy-MM-01 00:00:01");
 		////获取今日停卡数量
 		ExecutorService exc = Executors.newFixedThreadPool(7);
 		FutureTask<HashMap<String, Object>> data1 = new FutureTask<>(new Callable<HashMap<String, Object>>() {
 			@Override
 			public HashMap<String, Object> call() throws Exception {
 				
-				return iCcOnoffLogMapper.getStopData(orgpos, orgpos.split(","));
+				return iCcOnoffLogMapper.getStopData(date_start, orgpos, orgpos.split(","));
 			}
 
 			
@@ -96,7 +98,7 @@ public class HomeServiceImpl implements IHomeService{
 
 			@Override
 			public HashMap<String, Object> call() throws Exception {
-				return iCcGprsPayMapper.getJRActiveData(orgpos, orgpos.split(","));
+				return iCcGprsPayMapper.getJRActiveData(date_start, orgpos, orgpos.split(","));
 			}
 			
 		});

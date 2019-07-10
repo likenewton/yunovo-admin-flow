@@ -831,10 +831,11 @@
 		
 	</select> -->
 	
+	<!-- 获取今日及今月激活数 -->
 	<select id="getJRActiveData" resultType="java.util.HashMap">
 		<![CDATA[ 
 			SELECT COUNT(pay_id) AS active_month, SUM(IF(DATE(time_added) = DATE(NOW()), 1, 0)) AS active_today FROM cc_gprs_pay
-			WHERE time_added >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND time_added <= NOW() AND is_paid = 1 AND pay_method = 0 AND transfer_id = 'system-init'
+			WHERE time_added >= #{date_start} AND time_added <= NOW() AND is_paid = 1 AND pay_method = 0 AND transfer_id = 'system-init'
 		]]>
 		<choose>
 			<when test='orgpos == "*"'>
