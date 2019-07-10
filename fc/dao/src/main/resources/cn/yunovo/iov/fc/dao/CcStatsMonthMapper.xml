@@ -63,7 +63,7 @@
 			AND C.card_iccid LIKE #{card_iccid_bind}
 		</if>
 
-		<if test="mdate != null">
+		<if test="mdate != null and mdate != ''">
 			AND s.how_month = #{mdate}
 		</if>
 	</select>
@@ -106,7 +106,7 @@
 			AND C.card_iccid LIKE #{card_iccid_bind}
 		</if>
 
-		<if test="mdate != null">
+		<if test="mdate != null and mdate != ''">
 			AND s.how_month = #{mdate}
 		</if>
 		
@@ -191,7 +191,7 @@
 			AND c.card_iccid LIKE #{card_iccid_bind}
 		</if>
 
-		<if test="mdate != null">
+		<if test="mdate != null and mdate != ''">
 			AND s.how_month = #{mdate}
 		</if>
 	</select>

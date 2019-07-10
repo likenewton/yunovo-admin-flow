@@ -1,5 +1,6 @@
 package cn.yunovo.iov.fc.service.impl;
 
+import cn.yunovo.iov.fc.common.utils.BusinessException;
 import cn.yunovo.iov.fc.common.utils.DateUtil;
 import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
 import cn.yunovo.iov.fc.common.utils.web.WebRequestUtil;
@@ -18,6 +19,7 @@ import cn.yunovo.iov.fc.service.ICcGprsCardService;
 import cn.yunovo.iov.fc.service.ICcOrgService;
 import cn.yunovo.iov.fc.service.ICcStatsMonthService;
 import cn.yunovo.iov.fc.service.ICcUserService;
+import lombok.extern.slf4j.Slf4j;
 
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
@@ -55,6 +57,7 @@ import org.springframework.util.CollectionUtils;
  * @since 2019-05-30
  */
 @Service
+@Slf4j
 public class CcStatsMonthServiceImpl extends ServiceImpl<ICcStatsMonthMapper, CcStatsMonth>
 		implements ICcStatsMonthService {
 
@@ -149,6 +152,13 @@ public class CcStatsMonthServiceImpl extends ServiceImpl<ICcStatsMonthMapper, Cc
 			p.setPage(page);
 			return p;
 		}
+		
+		if(org_id != null && !iCcOrgService.hasPermission(org_id, orgpos)) {
+			page.setTotal(0);
+			page.setRecords(null);
+			p.setPage(page);
+			return p;
+		}
 
 		List<CcStatsMonth> records = iCcStatsMonthMapper.queryItemsPage(page, org_id, card_type, card_iccid, mdate,
 				orgpos, orgpos.split(","));
@@ -200,8 +210,16 @@ public class CcStatsMonthServiceImpl extends ServiceImpl<ICcStatsMonthMapper, Cc
 
 		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
 		if (StringUtils.isEmpty(orgpos)) {
-			return;
+			log.error("[export][导出数据失败]params={}", JSONObject.toJSONString(WebRequestUtil.request().getParameterMap()));
+			throw new BusinessException(-1, "导出数据失败");
 		}
+
+		if(org_id != null && !iCcOrgService.hasPermission(org_id, orgpos)) {
+			log.error("[export][导出数据失败]params={}", JSONObject.toJSONString(WebRequestUtil.request().getParameterMap()));
+			throw new BusinessException(-1, "导出数据失败");
+		}
+		
+		
 
 		List<CcStatsMonthExportBean> records = iCcStatsMonthMapper.queryItemsPageExport(org_id, card_type, card_iccid, mdate,
 				orgpos, orgpos.split(","));
