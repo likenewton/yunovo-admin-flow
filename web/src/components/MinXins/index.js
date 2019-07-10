@@ -101,7 +101,6 @@ export default {
     pageAuthBtn() {
       let authArr = this.authButtons[`FCP_${this.routeName}`]
       if (!authArr) return {}
-      console.log(authArr)
       return authArr
     }
   }

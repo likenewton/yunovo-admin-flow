@@ -120,13 +120,13 @@
 
 // 默认滚动条
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-thumb {
   background-color: rgba(144, 147, 153, .3);
-  border-radius: 3px;
+  border-radius: 4px;
 
   &:hover {
     background: rgba(144, 147, 153, .5);

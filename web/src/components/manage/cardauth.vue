@@ -6,7 +6,7 @@
       </el-button-group>
       <el-form :inline="true" :model="formInline" class="search-form" size="small" @submit.native.prevent>
         <el-form-item>
-          <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20)" @keyup.enter.native="simpleSearchData" placeholder="卡ICCID"></el-input>
+          <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20, 0)" @keyup.enter.native="simpleSearchData" placeholder="卡ICCID"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="simpleSearchData" :disabled="!pageAuthBtn.FCP_01_007_CHECK01">查询</el-button>
@@ -100,7 +100,7 @@
         <div class="searchForm_vip" style="width:100%;overflow: auto">
           <el-form :inline="false" :model="formInline" size="small" label-width="90px" v-loading="loadData">
             <el-form-item label="卡ICCID">
-              <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20)" placeholder="卡ICCID"></el-input>
+              <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20, 0)" placeholder="卡ICCID"></el-input>
             </el-form-item>
             <el-form-item label="机构名称">
               <el-select v-model="formInline.org_id" filterable clearable placeholder="机构名称">

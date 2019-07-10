@@ -8,7 +8,7 @@
       </el-button-group>
       <el-form :inline="true" :model="formInline" class="search-form" size="small" @submit.native.prevent>
         <el-form-item>
-          <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20)" @keyup.enter.native="simpleSearchData" placeholder="卡ICCID"></el-input>
+          <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20, 0)" @keyup.enter.native="simpleSearchData" placeholder="卡ICCID"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="simpleSearchData" :disabled="!pageAuthBtn.FCP_01_001_CHECK01">查询</el-button>
@@ -34,17 +34,17 @@
         </el-table-column>
         <el-table-column prop="unicom_month" label="当月用量" width="97" sortable="custom" align="right">
           <template slot-scope="scope">
-            <div v-html="formatFlowUnit(scope.row.unicom_month)"></div>
+            <div v-html="formatFlowUnit(scope.row.used_month)"></div>
           </template>
         </el-table-column>
         <el-table-column prop="unicom_total" label="累计用量" width="97" sortable="custom" align="right">
           <template slot-scope="scope">
-            <div v-html="formatFlowUnit(scope.row.unicom_total)"></div>
+            <div v-html="formatFlowUnit(scope.row.used_total)"></div>
           </template>
         </el-table-column>
         <el-table-column prop="unicom_unused" label="剩余用量" width="100" sortable="custom" align="right">
           <template slot-scope="scope">
-            <div v-html="formatFlowUnit(scope.row.unicom_unused)"></div>
+            <div v-html="formatFlowUnit(scope.row.max_unused)"></div>
           </template>
         </el-table-column>
         <el-table-column prop="time_added" label="导卡时间" width="153" sortable="custom"></el-table-column>
@@ -92,7 +92,7 @@
         <div class="searchForm_vip" style="width:100%;overflow: auto">
           <el-form :inline="false" :model="formInline" size="small" label-width="90px" v-loading="loadData">
             <el-form-item label="卡ICCID">
-              <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20)" placeholder="请输入"></el-input>
+              <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20, 0)" placeholder="请输入"></el-input>
             </el-form-item>
             <el-form-item label="卡商名称">
               <el-select v-model="formInline.card_type" filterable clearable placeholder="请选择">
@@ -236,6 +236,7 @@ export default {
     },
     // 获取列表数据
     getData() {
+      console.log(this.formInline)
       Api.UNITS.getListData({
         vue: this,
         url: _axios.ajaxAd.getCards

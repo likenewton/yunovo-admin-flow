@@ -3,7 +3,7 @@
     <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
         <el-form-item>
-          <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20)" @keyup.enter.native="searchData" placeholder="卡ICCID"></el-input>
+          <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20, 0)" @keyup.enter.native="searchData" placeholder="卡ICCID"></el-input>
         </el-form-item>
         <el-form-item>
           <el-select v-model="formInline.card_type" filterable clearable placeholder="卡商名称" @change="searchData">

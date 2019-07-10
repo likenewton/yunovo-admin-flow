@@ -173,24 +173,24 @@
         <!-- 月使用情况 -->
         <el-tab-pane v-loading="loadData">
           <span slot="label">月使用情况</span>
-          <el-table @sort-change="handleSortChange" :data="list_4.data" :max-height="maxTableHeight" border resizable size="mini">
+          <el-table :data="list_4.data" :max-height="maxTableHeight" border resizable size="mini">
             <el-table-column prop="how_month" label="统计年月" min-width="100" sortable="custom"></el-table-column>
-            <el-table-column prop="month_used" label="月使用流量" min-width="100" sortable="custom" align="right">
+            <el-table-column prop="month_used" label="月使用流量" min-width="100" align="right">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.month_used)"></div>
               </template>
             </el-table-column>
-            <el-table-column prop="month_unused" label="月剩余流量" min-width="100" sortable="custom" align="right">
+            <el-table-column prop="month_unused" label="月剩余流量" min-width="100" align="right">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.month_unused)"></div>
               </template>
             </el-table-column>
-            <el-table-column prop="month_over" label="月超标流量" min-width="100" sortable="custom" align="right">
+            <el-table-column prop="month_over" label="月超标流量" min-width="100" align="right">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.month_over)"></div>
               </template>
             </el-table-column>
-            <el-table-column prop="month_wlist" label="月白名单用量" min-width="100" sortable="custom" align="right">
+            <el-table-column prop="month_wlist" label="月白名单用量" min-width="100" align="right">
               <template slot-scope="scope">
                 <div v-html="formatFlowUnit(scope.row.month_wlist)"></div>
               </template>

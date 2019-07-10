@@ -81,7 +81,7 @@
               <el-input v-model="formInline.pay_sn" placeholder="请输入订单编号"></el-input>
             </el-form-item>
             <el-form-item label="卡ICCID">
-              <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20)" placeholder="请输入卡的iccid"></el-input>
+              <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20, 0)" placeholder="请输入卡的iccid"></el-input>
             </el-form-item>
             <el-form-item label="支付流水号">
               <el-input v-model="formInline.transfer_id" placeholder="请输入支付流水号"></el-input>

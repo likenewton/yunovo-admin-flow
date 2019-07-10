@@ -20,7 +20,7 @@
           <span slot="label"></i>重置历史</span>
           <el-form class="search-form" :inline="true" :model="formInline" size="small">
             <el-form-item>
-              <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20)" @keyup.enter.native="searchData" placeholder="卡ICCID"></el-input>
+              <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20, 0)" @keyup.enter.native="searchData" placeholder="卡ICCID"></el-input>
             </el-form-item>
             <el-form-item>
               <el-select v-model="formInline.org_id" filterable clearable placeholder="机构名称" @change="searchData">

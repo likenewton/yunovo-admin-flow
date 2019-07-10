@@ -152,14 +152,16 @@ class AXIOS {
         let loginCount = localStorage.getItem('loginCount') || '0'
         if (loginCount - 0 <= 5) {
           localStorage.setItem('loginCount', ++loginCount + '')
+          sessionStorage.setItem('target_href', location.href)
           // 未登录状态跳转登录页
-          location.replace(res.data.redirectUrl += '&target=' + encodeURIComponent(location.href))
+          location.replace(res.data.redirectUrl)
         } else {
           Vue.prototype.$notify.error({
             title: '错误',
             message: 'token校验异常'
           })
           localStorage.setItem('loginCount', '0')
+          sessionStorage.removeItem('target_href')
         }
       } else {
         localStorage.setItem('loginCount', '0')

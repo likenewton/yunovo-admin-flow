@@ -397,7 +397,7 @@ module.exports = {
         link += `&${key}=${params[key]}`
       }
     }
-    window.open(link)
+    window.open(link, '_self')
   },
   // 时间范围约束（一般用于有起止时间的选择器）
   startDatePicker(vue, end) {

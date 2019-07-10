@@ -375,6 +375,7 @@ export default {
         series: [{
           type: 'pie',
           radius: ['65%', '88%'],
+          hoverAnimation: false,
           avoidLabelOverlap: false,
           label: {
             normal: {
@@ -400,6 +401,9 @@ export default {
               color(params) {
                 return Api.UNITS.getColorList(['success', 'warning', 'danger'])[params.dataIndex]
               }
+            },
+            emphasis: {
+              
             }
           },
           data: [] // 需设置
@@ -524,7 +528,7 @@ export default {
       this.myChart_1.setOption(this.option_1)
     },
     showLine_0() {
-      const _echart = new Api.ECHARTS()
+      const _echart = new Api.ECHARTS({ dataViewTitle: '时间' })
       _echart.setOption({
         title: '续费趋势',
         legend: ['续费金额', '返利金额', '续费率'],
@@ -548,7 +552,7 @@ export default {
       })
     },
     showLine_1() {
-      const _echart = new Api.ECHARTS()
+      const _echart = new Api.ECHARTS({ dataViewTitle: '时间' })
       _echart.setOption({
         title: '订单趋势',
         legend: ['订单数'],
@@ -562,7 +566,7 @@ export default {
       })
     },
     showLine_2() {
-      const _echart = new Api.ECHARTS()
+      const _echart = new Api.ECHARTS({ dataViewTitle: '时间' })
       _echart.setOption({
         title: '流量消耗趋势',
         legend: ['流量消耗'],
@@ -577,7 +581,7 @@ export default {
       })
     },
     showLine_3() {
-      const _echart = new Api.ECHARTS()
+      const _echart = new Api.ECHARTS({ dataViewTitle: '时间' })
       _echart.setOption({
         title: '客单价趋势',
         legend: ['客单价'],
@@ -592,7 +596,7 @@ export default {
       })
     },
     showLine_4() {
-      const _echart = new Api.ECHARTS()
+      const _echart = new Api.ECHARTS({ dataViewTitle: '时间' })
       _echart.setOption({
         title: 'SIM卡使用趋势',
         legend: ['SIM卡使用总数', '已激活', '未激活', '已停卡'],
@@ -880,7 +884,7 @@ export default {
       width: 100%;
       height: 340px;
       font-size: 14px;
-  
+
       // 数据视图dataView无法遮盖下面的cancas, 将top = 5px 手动修改为 4px
       div[style*="background-color: rgb(255, 255, 255)"] {
         top: 4px !important;
