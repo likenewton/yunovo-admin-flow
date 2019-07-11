@@ -1,6 +1,10 @@
 package cn.yunovo.iov.fc.service;
 
+import cn.yunovo.iov.fc.model.LoginInfo;
+import cn.yunovo.iov.fc.model.PageData;
+import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcUser;
+import cn.yunovo.iov.fc.model.result.UserResultBean;
 
 import java.util.Map;
 
@@ -23,5 +27,8 @@ public interface ICcUserService extends IService<CcUser>  {
 	public Map<String, String> userMap();
 	
 	public Map<Integer, String> userIdMap();
+
+	PageData<UserResultBean, Object> userListPage(PageForm pageForm, String username, String firstname, Integer org_id,
+			LoginInfo info);
 	
 }

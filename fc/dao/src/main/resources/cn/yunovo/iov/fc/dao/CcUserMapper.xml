@@ -5,4 +5,54 @@
 	<select id="getUserInfoByUsernameAndStatus" resultType="cn.yunovo.iov.fc.model.entity.CcUser" parameterType="String">
 		SELECT * FROM CC_USER WHERE USERNAME = #{username} AND status = 1
 	</select>
+	
+	<select id="userListPage" resultType="cn.yunovo.iov.fc.model.result.UserResultBean">
+		
+		SELECT
+			C.user_id,
+			C.org_id,
+			C.username,
+			C.firstname,
+			C.create_by,
+			C.update_by,
+			C.orgpos,
+			C.date_last,
+			C.date_added,
+			C.`status`
+		FROM
+			cc_user AS C
+		WHERE 1 = 1
+		<choose>
+
+			<when test="org_id != null">
+				AND C.org_id = #{org_id}
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orgpos == "*"'>
+
+					</when>
+					<otherwise>
+						AND C.org_id IN
+						<foreach collection="orgs" item="id" index="index"
+							open="(" close=")" separator=",">
+							#{id}
+						</foreach>
+					</otherwise>
+				</choose>
+			</otherwise>
+
+		</choose>
+		
+		<if test="username != null">
+			<bind name="username_bind" value="'%'+username+'%'" />
+			AND C.username LIKE #{username_bind}
+		</if>
+		
+		<if test="firstname != null">
+			<bind name="firstname_bind" value="'%'+firstname+'%'" />
+			AND C.firstname LIKE #{firstname_bind}
+		</if>
+		
+	</select>
 </mapper>

@@ -4,12 +4,6 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
-import java.time.LocalDateTime;
-
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
 import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -78,21 +72,25 @@ public class CcUser implements Serializable {
 	private String ipaddr;
 
 	@ApiModelProperty(value = "用户状态")
-	private Boolean status;
+	private Short status;
 
 	@ApiModelProperty(value = "重置密码代号")
 	private String reset_code;
 
 	@ApiModelProperty(value = "登录出错数")
-	private Boolean error_count;
+	private Short error_count;
 
 	@ApiModelProperty(value = "创建时间")
-	private LocalDateTime date_added;
+	private String date_added;
 
 	@ApiModelProperty(value = "最后登录时间")
-	private LocalDateTime date_last;
+	private String date_last;
 	
 	@ApiModelProperty(value = "机构串: *全部,多个用逗号分隔")
 	private String orgpos;
+	
+	private String create_by;
+	
+	private String update_by;
 
 }
