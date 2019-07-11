@@ -57,6 +57,8 @@ public interface ICcUserService extends IService<CcUser>  {
 	boolean del(UserForm userForm, LoginInfo user);
 
 	public void userRegister(String username, String firstname);
+
+	UserResultBean userDetailInfo(String username, LoginInfo user);
 	
 	
 	

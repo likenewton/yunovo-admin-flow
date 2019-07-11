@@ -75,6 +75,23 @@
 		
 	</update>
 	
+	<select id="userDetailInfo" resultType="cn.yunovo.iov.fc.model.result.UserResultBean">
+	
+		SELECT
+			C.org_id,
+			C.username,
+			C.firstname,
+			C.create_by,
+			C.update_by,
+			C.orgpos,
+			C.date_last,
+			C.date_added,
+			C.`status`
+		FROM
+			cc_user AS C
+		WHERE  C.username = #{u.username} 
+	</select>
+	
 	<!-- 根据机构编号获取此机构下开了多少个用户数 -->
 	<select id="getTotalByOrg" resultType="java.lang.Integer">
 		SELECT COUNT(*) FROM cc_user WHERE org_id = #{org_id}

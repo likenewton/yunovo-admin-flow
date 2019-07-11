@@ -28,4 +28,6 @@ public interface ICcUserMapper extends BaseMapper<CcUser> {
 	
 	public Integer getTotalByOrg(@Param("org_id")Integer org_id);
 	
+	public UserResultBean userDetailInfo(@Param("username")String username);
+	
 }

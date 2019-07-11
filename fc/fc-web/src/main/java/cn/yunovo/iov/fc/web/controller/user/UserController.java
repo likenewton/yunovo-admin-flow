@@ -94,4 +94,13 @@ public class UserController extends BaseController{
 			return ResultUtil.build(-1, "操作失败");
 		}
 	}
+	
+	@ApiOperation(value="用户权限-用户详情")
+	@ApiImplicitParams(value = { 
+			@ApiImplicitParam(name = "username", value = "用户账号", required = false, dataType = "String",paramType = "query")
+			})
+	@RequestMapping(path="/detail",method= {RequestMethod.GET, RequestMethod.POST})
+	public Result<UserResultBean> userDetailInfo(String username) {
+		return ResultUtil.success(iCcUserService.userDetailInfo(username, this.getLoginBaseInfo()));
+	}
 }

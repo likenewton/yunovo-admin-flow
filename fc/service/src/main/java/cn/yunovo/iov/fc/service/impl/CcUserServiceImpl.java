@@ -351,5 +351,34 @@ public class CcUserServiceImpl extends ServiceImpl<ICcUserMapper, CcUser> implem
 		
 		
 	}
+	
+	@Override
+	public UserResultBean userDetailInfo(String username, LoginInfo user) {
+		
+		if(StringUtils.isEmpty(username)) {
+			return null;
+		}
+		
+		String orgpos = this.getOrgpos(user.getLoginName());
+		
+		UserResultBean detail = iCcUserMapper.userDetailInfo(username);
+		
+		if(detail == null) {
+			return null;
+		}
+		
+		if(detail.getOrg_id() == null && !"*".equals(orgpos)) {
+			return null;
+		}
+		
+		if(detail.getOrg_id() != null) {
+			if(!iCcOrgService.hasPermission(detail.getOrg_id(), orgpos)) {
+				
+				return null;
+			}
+		}
+		
+		return detail;
+	}
 
 }
