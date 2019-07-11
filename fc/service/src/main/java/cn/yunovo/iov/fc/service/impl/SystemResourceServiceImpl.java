@@ -142,7 +142,6 @@ public class SystemResourceServiceImpl implements ISystemResourceService{
 		} catch (Exception e) {
 			log.error("[allResourceBySiteCode][exception]params={site_code:{}},exception:{}",site_code, ExceptionUtils.getStackTrace(e));
 		}
-		log.debug("[allResourceBySiteCode][resources]params={site_code:{}},data:{}", site_code, JSONObject.toJSONString(resourceList));
 		if(CollectionUtils.isEmpty(resourceList)) {
 			return Collections.emptyList();
 		}
@@ -160,7 +159,6 @@ public class SystemResourceServiceImpl implements ISystemResourceService{
 		} catch (Exception e) {
 			log.error("[allResourceBySiteCodeAndUserid][exception]params={site_code:{}},exception:{}",site_code, ExceptionUtils.getStackTrace(e));
 		}
-		log.debug("[allResourceBySiteCodeAndUserid][resources]params={site_code:{},user_id:{}},data:{}", site_code,user_id, JSONObject.toJSONString(resourceList));
 		if(CollectionUtils.isEmpty(resourceList)) {
 			return Collections.emptyList();
 		}
@@ -246,7 +244,7 @@ public class SystemResourceServiceImpl implements ISystemResourceService{
 		Set<String> user_resource_url_set = resource.getUser_resource_url_set();
 		
 		if(CollectionUtils.isEmpty(user_resource_url_set) || CollectionUtils.isEmpty(need_filter_resource_map)) {
-			log.warn("[isPermission][未授权]params={requestURI:{},token:{},user_id:{},resource:{}}", requestURI, token, user_id, resource.buildJsonString());
+			log.warn("[isPermission][未授权]params={requestURI:{},token:{},user_id:{}}", requestURI, token, user_id);
 			return false;
 		}
 		
@@ -259,7 +257,7 @@ public class SystemResourceServiceImpl implements ISystemResourceService{
 		
 		if(!isPermission) {
 			
-			log.warn("[isPermission][未授权]params={requestURI:{},token:{},user_id:{},resource:{}}", requestURI, token, user_id, resource.buildJsonString());
+			log.warn("[isPermission][未授权]params={requestURI:{},token:{},user_id:{},resource:{}}", requestURI, token, user_id);
 		}
 		
 		return isPermission;

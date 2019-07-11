@@ -85,7 +85,7 @@ public class UserController extends BaseController{
 	public Result<Object> del(@RequestBody UserForm form) {
 		
 		form.validate(DeleteGroupValidate.class);
-		boolean isOk = iCcUserService.onoff(form, getLoginBaseInfo());
+		boolean isOk = iCcUserService.del(form, getLoginBaseInfo());
 		if(isOk) {
 			log.info("[del][用户信息删除成功]params={},user={}", form.buildJsonString(), this.getLoginBaseInfo().buildJsonString());
 			return ResultUtil.successCN(null);
