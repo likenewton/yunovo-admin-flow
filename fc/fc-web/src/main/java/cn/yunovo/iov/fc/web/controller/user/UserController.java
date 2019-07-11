@@ -65,8 +65,8 @@ public class UserController extends BaseController{
 		}
 	}
 	
-	@ApiOperation(value="用户权限-用户信息修改")
-	@RequestMapping(path="/edit",method= {RequestMethod.POST})
+	@ApiOperation(value="用户权限-用户启用停用修改")
+	@RequestMapping(path="/onoff",method= {RequestMethod.POST})
 	public Result<Object> onoff(@RequestBody UserForm form) {
 		
 		form.validate(UpdateGroupValidate.class);
@@ -80,7 +80,7 @@ public class UserController extends BaseController{
 		}
 	}
 	
-	@ApiOperation(value="用户权限-用户信息修改")
+	@ApiOperation(value="用户权限-用户信息删除")
 	@RequestMapping(path="/del",method= {RequestMethod.POST})
 	public Result<Object> del(@RequestBody UserForm form) {
 		
