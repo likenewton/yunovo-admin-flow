@@ -55,5 +55,5 @@ public interface ICcOrgService extends IService<CcOrg> {
 	 * 机构字典接口
 	 * @return
 	 */
-	JSONObject orgMaps();
+	Map<Integer, String> orgMaps();
 }

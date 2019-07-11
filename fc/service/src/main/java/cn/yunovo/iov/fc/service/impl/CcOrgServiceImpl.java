@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -402,7 +403,7 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 	}
 	
 	@Override
-	public JSONObject orgMaps() {
+	public Map<Integer, String> orgMaps() {
 		
 		String sql = "SELECT org_id, `name` FROM cc_org";
 		String cacheKey = FcConstant.memSqlKey(sql, FcConstant.DB_GET_PAIRS);
@@ -417,12 +418,12 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 				data = orgs.stream().collect(Collectors.toMap(CcOrg::getOrg_id, CcOrg::getName));
 				cache = JSONObject.toJSONString(data);
 				jedisPoolUtil.setEx(cacheKey, cache);
-				return JSONObject.parseObject(cache);
+				return data;
 			}else {
-				return new JSONObject();
+				return new HashMap<>();
 			}
 		}else {
-			return JSONObject.parseObject(cache);
+			return JSONObject.parseObject(cache, Map.class);
 		}
 	}
 	

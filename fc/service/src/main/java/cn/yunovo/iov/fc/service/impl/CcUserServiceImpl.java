@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -119,10 +120,10 @@ public class CcUserServiceImpl extends ServiceImpl<ICcUserMapper, CcUser> implem
 		List<UserResultBean> records = iCcUserMapper.userListPage(page, username, firstname, org_id, orgpos, orgpos.split(","));
 		
 		if(!CollectionUtils.isEmpty(records)) {
-			JSONObject orgMaps = iCcOrgService.orgMaps();
+			Map<Integer, String> orgMaps = iCcOrgService.orgMaps();
 			for (UserResultBean user : records) {
 				
-				user.setOrg_name(user.getOrg_id() == null ? "暂未设置" : orgMaps.getString(String.valueOf(user.getOrg_id())));
+				user.setOrg_name(user.getOrg_id() == null ? "暂未设置" : orgMaps.get(user.getOrg_id()));
 				user.setOrgpos_name(getOrgposName(user.getOrgpos(), orgMaps));
 			}
 			
@@ -135,21 +136,21 @@ public class CcUserServiceImpl extends ServiceImpl<ICcUserMapper, CcUser> implem
 		
 	}
 	
-	private String getOrgposName(String orgpos, JSONObject orgMap) {
+	private String getOrgposName(String orgpos, Map<Integer, String> orgMap) {
 		
 		if(StringUtils.isEmpty(orgpos)) {
-			return "暂无";
+			return "";
 		}
 		
 		if(StringUtils.equals(orgpos, "*")) {
-			return "全部机构";
+			return "所有机构";
 		}
 		
 		String[] orgs = orgpos.split(",");
 		StringBuffer org_names = new StringBuffer();
 		for (String o : orgs) {
-			if(orgMap.containsKey(o)) {
-				org_names.append(',').append(orgMap.getString(o));
+			if(orgMap.containsKey(NumberUtils.createInteger(o))) {
+				org_names.append(',').append(orgMap.get(NumberUtils.createInteger(o)));
 			}
 		}
 		
