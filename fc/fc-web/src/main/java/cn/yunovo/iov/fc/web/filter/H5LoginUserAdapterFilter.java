@@ -96,7 +96,7 @@ public class H5LoginUserAdapterFilter implements javax.servlet.Filter {
 			if(StringUtils.endsWith(httpRequest.getRequestURI(), "/api/sso/ssoLogin")) {
 				
 				try {
-					iCcUserService.userRegister(map.get(loginName) == null ? null : String.valueOf(map.get(loginName)), map.get("userName") == null ? null : String.valueOf(map.get("userName")));
+					iCcUserService.userRegister(map.get(LOGIN_NAME) == null ? null : String.valueOf(map.get(LOGIN_NAME)), map.get("userName") == null ? null : String.valueOf(map.get("userName")));
 				} catch (Exception e) {
 					log.error("[H5LoginUserAdapterFilter][exception]params={},exception={}", JSONObject.toJSONString(map), ExceptionUtils.getStackTrace(e));
 				}
@@ -125,12 +125,6 @@ public class H5LoginUserAdapterFilter implements javax.servlet.Filter {
 	 */
 	private void sendRedirect(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
-		final String requestUri = request.getRequestURI();
-		String exludes = springCasProperties.getCasClient().getExludeFilterResource();
-        boolean flag = IgnoreOperatorUtils.ignore(requestUri, exludes);
-		if(flag) {
-            response.sendRedirect(this.getSpringCasProperties().getCasClient().getCasServerLogoutUrl());
-		}else {
 			JSONObject str = CasClientUtil.build401Result(CommonUtils.constructRedirectUrl(springCasProperties.getCasClient().getCasServerLogoutUrl(), getServiceParameterName(),
         			this.getSpringCasProperties().getCasClient().getService(), false, false));
             response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);// 解决中文乱码
@@ -141,8 +135,7 @@ public class H5LoginUserAdapterFilter implements javax.servlet.Filter {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-		}
-		// 跳转到重新登录页面
+            // 跳转到重新登录页面
 	}
 
 	@Override
