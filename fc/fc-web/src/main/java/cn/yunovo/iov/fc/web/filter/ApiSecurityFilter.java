@@ -46,7 +46,7 @@ public class ApiSecurityFilter implements javax.servlet.Filter {
 		this.iSystemResourceService = iSystemResourceService;
 	}
 	
-	private final String NO_FILTER_URL = "*/api/sso/isLogin,*/api/select/*,*/api/sso/logout";
+	private final String NO_FILTER_URL = "*/api/sso/*,*/api/select/*";
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
