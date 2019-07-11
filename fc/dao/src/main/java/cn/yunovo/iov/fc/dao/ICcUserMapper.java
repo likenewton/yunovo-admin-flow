@@ -24,4 +24,8 @@ public interface ICcUserMapper extends BaseMapper<CcUser> {
 	
 	public List<UserResultBean> userListPage(IPage<UserResultBean> page, @Param("username")String username, @Param("firstname")String firstname, @Param("org_id")Integer org_id, @Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 	
+	public int updateByUsername(@Param("u")CcUser user);
+	
+	public Integer getTotalByOrg(@Param("org_id")Integer org_id);
+	
 }

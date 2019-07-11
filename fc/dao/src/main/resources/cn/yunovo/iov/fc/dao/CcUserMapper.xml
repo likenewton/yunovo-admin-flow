@@ -9,7 +9,6 @@
 	<select id="userListPage" resultType="cn.yunovo.iov.fc.model.result.UserResultBean">
 		
 		SELECT
-			C.user_id,
 			C.org_id,
 			C.username,
 			C.firstname,
@@ -55,4 +54,28 @@
 		</if>
 		
 	</select>
+	
+	<update id="updateByUsername" parameterType="cn.yunovo.iov.fc.model.entity.CcUser">
+	
+		update cc_user set status = #{u.status}, 
+		
+		<if test="u.org_id != null">
+			org_id = #{u.org_id},
+		</if>
+		
+		<if test="u.orgpos != null">
+			orgpos = #{u.orgpos},
+		</if>
+		date_last = #{u.date_last}, 
+		update_by = #{u.update_by}
+		where username = #{u.username}
+		
+	</update>
+	
+	<!-- 根据机构编号获取此机构下开了多少个用户数 -->
+	<select id="getTotalByOrg" resultType="java.lang.Integer">
+	
+		SELECT COUNT(*) FROM cc_user WHERE org_id = #{org_id}
+	</select>
+	
 </mapper>

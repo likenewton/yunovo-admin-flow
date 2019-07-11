@@ -11,6 +11,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
@@ -22,6 +23,7 @@ import cn.yunovo.iov.cas.client.configuration.SpringCasProperties;
 import cn.yunovo.iov.cas.client.util.CasClientUtil;
 import cn.yunovo.iov.cas.client.util.IgnoreOperatorUtils;
 import cn.yunovo.iov.cas.client.util.TokenUtil;
+import cn.yunovo.iov.fc.service.ICcUserService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -33,12 +35,22 @@ public class H5LoginUserAdapterFilter implements javax.servlet.Filter {
 	
 	private SpringCasProperties springCasProperties;
 	
+	private ICcUserService iCcUserService;
+	
 	public SpringCasProperties getSpringCasProperties() {
 		return springCasProperties;
 	}
 
 	public void setSpringCasProperties(SpringCasProperties springCasProperties) {
 		this.springCasProperties = springCasProperties;
+	}
+	
+	public ICcUserService getiCcUserService() {
+		return iCcUserService;
+	}
+
+	public void setiCcUserService(ICcUserService iCcUserService) {
+		this.iCcUserService = iCcUserService;
 	}
 
 	@Override
@@ -75,14 +87,21 @@ public class H5LoginUserAdapterFilter implements javax.servlet.Filter {
 			}
 			
 			
+			
+			
 			Map<String, Object> map = object.getPrincipal().getAttributes();
 			// 获取cas服务端的登录名称
 			String loginName = (String) map.get(LOGIN_NAME);
-			// 获取cas服务端的登录密码
-			String loginPassword = (String) map.get(LOGIN_PASSWORD);
-			//log.info("当前登陆系统：用户中心。登录系统的用户名为：" + loginName);
 			
-			String user_id = String.valueOf(map.get("id"));
+			if(StringUtils.endsWith(httpRequest.getRequestURI(), "/api/sso/ssoLogin")) {
+				
+				try {
+					iCcUserService.userRegister(map.get(loginName) == null ? null : String.valueOf(map.get(loginName)), map.get("userName") == null ? null : String.valueOf(map.get("userName")));
+				} catch (Exception e) {
+					log.error("[H5LoginUserAdapterFilter][exception]params={},exception={}", JSONObject.toJSONString(map), ExceptionUtils.getStackTrace(e));
+				}
+			
+			}
 			
 			chain.doFilter(request, response);
 		} catch (Exception e) {

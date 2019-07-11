@@ -4,6 +4,7 @@ import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcUser;
+import cn.yunovo.iov.fc.model.form.UserForm;
 import cn.yunovo.iov.fc.model.result.UserResultBean;
 
 import java.util.Map;
@@ -30,5 +31,33 @@ public interface ICcUserService extends IService<CcUser>  {
 
 	PageData<UserResultBean, Object> userListPage(PageForm pageForm, String username, String firstname, Integer org_id,
 			LoginInfo info);
+
+	/**
+	 * 用户启用停用接口
+	 * @param userForm
+	 * @param user
+	 * @return
+	 */
+	boolean onoff(UserForm userForm, LoginInfo user);
+
+	/**
+	 * 用户信息修改
+	 * @param userForm
+	 * @param user
+	 * @return
+	 */
+	boolean edit(UserForm userForm, LoginInfo user);
+
+	/**
+	 * 删除用户
+	 * @param userForm
+	 * @param user
+	 * @return
+	 */
+	boolean del(UserForm userForm, LoginInfo user);
+
+	public void userRegister(String username, String firstname);
+	
+	
 	
 }

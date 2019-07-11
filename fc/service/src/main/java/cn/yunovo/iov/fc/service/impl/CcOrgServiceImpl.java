@@ -423,7 +423,7 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 				return new HashMap<>();
 			}
 		}else {
-			return JSONObject.parseObject(cache, Map.class);
+			return JSONObject.parseObject(cache, new TypeReference<Map<Integer, String>>(){});
 		}
 	}
 	
