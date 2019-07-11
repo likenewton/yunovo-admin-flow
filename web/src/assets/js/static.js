@@ -2,8 +2,8 @@ module.exports = {
   // 侧边栏菜单配置数据(最高权限)
   asideData: [{
     title: '业务管理',
-    icon: 'el-icon-fontmima',
-    name: 'menu'
+    icon: 'el-icon-fontyewu-tianchong',
+    name: 'manage'
   }, {
     title: '统计分析',
     icon: 'el-icon-fonttongjibaobiao',
@@ -84,6 +84,9 @@ module.exports = {
   }, {
     title: 'ICCID卡详情列表',
     name: 'rechargeDetail'
+  }, {
+    title: '机构权限分配',
+    name: 'createdispatch'
   }, {
     title: '充值总额统计',
     name: 'iccidList'

@@ -38,16 +38,15 @@ class Echarts {
             },
             readOnly: true,
             optionToContent(opt) {
-              console.log(opt)
               let axisData = opt.xAxis[0].data
               let series = opt.series
-              let table = `<table style="width:100%;text-align:center"><tbody>
-                <tr>
-                  <td style="font-weight:bold;line-height:30px;font-size:14px;color:#666">${para.dataViewTitle || ''}</td>
+              let table = `<div class="dataViewContainer"><table class="dataViewTable"><tbody>
+                <tr class="thead">
+                  <th class="th">${para.dataViewTitle || ''}</th>
                   ${function a() {
                     let str = ''
                     series.forEach((v) => {
-                      str += `<td style="font-weight:bold;line-height:30px;font-size:14px;color:#666">${v.name}</td>`
+                      str += `<th class="th">${v.name}</th>`
                     })
                     return str
                   }()}
@@ -55,15 +54,15 @@ class Echarts {
                 ${function b() {
                   let str = ''
                   axisData.forEach((v, i) => {
-                    str += `<tr><td style="font-size:14px;color:#666">${v}</td>`
+                    str += `<tr class="tbody"><td class="td">${v}</td>`
                     series.forEach((v) => {
-                      str += `<td style="font-size:14px;color:#666">${v.data[i]}</td>`
+                      str += `<td class="td">${v.data[i]}</td>`
                     })
                     str += '</tr>'
                   })
                   return str
                 }()}
-              </tbody></table>`
+              </tbody></table></div>`
               return table
             },
             // 调用optionToContent之后一定要配置此项

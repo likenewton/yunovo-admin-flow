@@ -10,20 +10,20 @@
         <span class="item">剩余流量：<span v-html="formatFlowUnit(cardDetail.max_unused)"></span></span>
         <span class="item text_danger">设备更新时间：{{cardDetail.time_last || '暂无数据'}}</span>
       </el-row>
+      <el-form v-show="tabIndex === '0'" class="search-form" :inline="true" :model="formInline_0" size="small">
+        <el-form-item>
+          <el-select v-model="formInline_0.pay_method" clearable placeholder="付款方式" @change="simpleSearchData">
+            <el-option v-for="(item, index) in payMethodSelect" :key="index" :label="item.label" :value="item.value"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="searchVipVisible = true" :disabled="!pageAuthBtn.FCP_99_001_CHECK01">高级查询</el-button>
+        </el-form-item>
+      </el-form>
       <el-tabs @tab-click="changeTab" v-model="tabIndex">
         <!-- 充值详情列表 -->
         <el-tab-pane v-loading="loadData">
           <span slot="label"></i>充值详情列表</span>
-          <el-form class="search-form" :inline="true" :model="formInline_0" size="small">
-            <el-form-item>
-              <el-select v-model="formInline_0.pay_method" clearable placeholder="付款方式" @change="simpleSearchData">
-                <el-option v-for="(item, index) in payMethodSelect" :key="index" :label="item.label" :value="item.value"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="searchVipVisible = true" :disabled="!pageAuthBtn.FCP_99_001_CHECK01">高级查询</el-button>
-            </el-form-item>
-          </el-form>
           <el-table ref="listTable" @sort-change="handleSortChange" :data="list_0.data" :max-height="maxTableHeight" border resizable size="mini">
             <el-table-column prop="gprs_amount" label="分配总流量" width="110" sortable="custom" align="right">
               <template slot-scope="scope">
@@ -457,6 +457,13 @@ export default {
 </script>
 <style lang="scss">
 .recharge_detail {
+  position: relative;
+  .search-form {
+    position: absolute;
+    right: 12px;
+    transform: translateY(-4px);
+    z-index: 1;
+  }
   .common-display {
     font-size: 14px;
     margin-bottom: 10px;

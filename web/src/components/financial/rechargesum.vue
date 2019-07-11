@@ -130,7 +130,9 @@ export default {
           axisLabel: {
             textStyle: {
               fontSize: 12
-            }
+            },
+            interval: 0,
+            rotate: 20
           },
         },
         series: [{
@@ -219,6 +221,7 @@ export default {
       // 绘图
       Vue.nextTick(() => {
         this.myChart.setOption(option)
+        $("[_echarts_instance_]").find(":last-child").trigger('click')
       })
     },
     // 格式化option

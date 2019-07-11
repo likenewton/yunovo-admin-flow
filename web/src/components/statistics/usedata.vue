@@ -63,15 +63,15 @@
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
-    <el-card class="clearfix" shadow="never" v-loading="echartLoadData">
+    <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-tabs @tab-click="changeTab">
         <el-tab-pane>
           <span slot="label">激活情况</span>
-          <div id="myChart_0" style="width:100%; height:380px"></div>
+          <div id="myChart_0" style="width:100%; height:400px"></div>
         </el-tab-pane>
         <el-tab-pane>
           <span slot="label">使用情况</span>
-          <div id="myChart_1" style="width:100%; height:380px"></div>
+          <div id="myChart_1" style="width:100%; height:400px"></div>
         </el-tab-pane>
       </el-tabs>
     </el-card>
@@ -87,7 +87,6 @@ const _echart = new Api.ECHARTS({
 export default {
   data() {
     return {
-      echartLoadData: true,
       tabIndex: '0',
       list: {
         data: [],
@@ -128,7 +127,9 @@ export default {
           axisLabel: {
             textStyle: {
               fontSize: 12
-            }
+            },
+            interval: 0,
+            rotate: 20
           },
         },
         series: [{
@@ -224,7 +225,9 @@ export default {
           axisLabel: {
             textStyle: {
               fontSize: 12
-            }
+            },
+            interval: 0,
+            rotate: 20
           },
         },
         series: [{
@@ -347,7 +350,7 @@ export default {
       })
       setTimeout(() => {
         this[`myChart_${this.tabIndex}`].setOption(option)
-        this.echartLoadData = false
+        $("[_echarts_instance_]").find(":last-child").trigger('click')
       }, 0)
     }
   },

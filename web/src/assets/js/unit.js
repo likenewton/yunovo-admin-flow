@@ -62,14 +62,16 @@ module.exports = {
   // 设置升降序字段
   setSortSearch(val, _this, sort = 'sort') {
     if (!val.prop) return _this[sort] = {}
-    if (val.order === 'descending') {
+    if (val.order === 'descending') { // 降序
       _this[sort] = {
         descs: val.prop
       }
-    } else if (val.order === 'ascending') {
+    } else if (val.order === 'ascending') { // 升序
       _this[sort] = {
         ascs: val.prop,
       }
+    } else { // 不排序
+      _this[sort] = {}
     }
   },
   // 获取列表数据（通用） this, url, list, formInline, sort
@@ -331,7 +333,7 @@ module.exports = {
     if (attr) return queryObj[attr]
     else return queryObj
   },
-  maxTableHeight(leftHeight = 315) {
+  maxTableHeight(leftHeight = 316) {
     // let height = $(window).height() - (220 + 300000 / ($(window).height() + 1000))
     // if (height < 400) height = 400
     let winWidth = $(window).width()

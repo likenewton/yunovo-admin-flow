@@ -27,9 +27,8 @@ const RechargeParticulars = r => require.ensure([], () => r(require('@/component
 const Jgrecharge = r => require.ensure([], () => r(require('@/components/financial/jgrecharge.vue')), 'chunk2') // 机构充值统计
 const Comborecharge = r => require.ensure([], () => r(require('@/components/financial/comborecharge.vue')), 'chunk2') // 套餐充值
 // 权限管理
-const UserManage = r => require.ensure([], () => r(require('@/components/userauth/userManage.vue')), 'chunk2') // 用户管理
 const JgManage = r => require.ensure([], () => r(require('@/components/userauth/jgManage.vue')), 'chunk2') // 机构管理
-const AuthManage = r => require.ensure([], () => r(require('@/components/userauth/authManage.vue')), 'chunk2') // 权限管理
+const JgDispatch = r => require.ensure([], () => r(require('@/components/userauth/jgDispatch.vue')), 'chunk2') // 机构分配
 // 系统设置
 const PaySet = r => require.ensure([], () => r(require('@/components/systemset/payset.vue')), 'chunk2') // 支付管理
 const Langset = r => require.ensure([], () => r(require('@/components/systemset/langset.vue')), 'chunk2') // 语言设置
@@ -40,16 +39,16 @@ const Datapreserve = r => require.ensure([], () => r(require('@/components/syste
 
 // 这里面试所有的配置，后续根据权限动态删除一些路由
 let menuRoute = {
-  path: '/asidemenu',
-  name: 'asidemenu',
+  path: '/menu',
+  name: 'menu',
   component: Asidemenu,
-  redirect: '/asidemenu/menu',
+  redirect: '/menu/manage',
   // 侧边栏菜单
   children: [{
-    path: 'menu',
-    name: 'menu',
+    path: 'manage',
+    name: 'manage',
     component: Blank,
-    redirect: '/asidemenu/menu/card',
+    redirect: '/menu/manage/card',
     children: [{
       path: 'card',
       name: 'card',
@@ -87,7 +86,7 @@ let menuRoute = {
     path: 'statistics',
     name: 'statistics',
     component: Blank,
-    redirect: '/asidemenu/statistics/monthuse',
+    redirect: '/menu/statistics/monthuse',
     children: [{
       path: 'monthuse',
       name: 'monthuse',
@@ -129,7 +128,7 @@ let menuRoute = {
     path: 'financial',
     name: 'financial',
     component: Blank,
-    redirect: '/asidemenu/financial/rechargesum',
+    redirect: '/menu/financial/rechargesum',
     children: [{
       path: 'rechargesum',
       name: 'rechargesum',
@@ -155,25 +154,21 @@ let menuRoute = {
     path: 'userauth',
     name: 'userauth',
     component: Blank,
-    redirect: '/asidemenu/userauth/userManage',
+    redirect: '/menu/userauth/jgManage',
     children: [{
-      path: 'userManage',
-      name: 'userManage',
-      component: UserManage
-    }, {
       path: 'jgManage',
       name: 'jgManage',
       component: JgManage
     }, {
-      path: 'authManage',
-      name: 'authManage',
-      component: AuthManage
+      path: 'jgDispatch',
+      name: 'jgDispatch',
+      component: JgDispatch
     }]
   }, {
     path: 'setting',
     name: 'setting',
     component: Blank,
-    redirect: '/asidemenu/setting/payset',
+    redirect: '/menu/setting/payset',
     children: [{
       path: 'paySet',
       name: 'paySet',

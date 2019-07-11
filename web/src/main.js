@@ -57,6 +57,7 @@ router.beforeEach((to, from, next) => {
     let targetHref = sessionStorage.getItem('target_href')
     sessionStorage.removeItem('target_href')
     if (targetHref) location.href = targetHref
+    else location.href = location.href.split('?')[0]
   } 
   
   // 验证是否登录

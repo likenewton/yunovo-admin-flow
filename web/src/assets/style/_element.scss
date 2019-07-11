@@ -125,6 +125,7 @@
         margin-left: 0 !important;
       }
     }
+
     .cell {
       padding: 0 9px !important;
     }
@@ -194,4 +195,38 @@
     }
   }
 
+}
+
+.dataViewContainer {
+  position: relative;
+  margin: 0 20px 0;
+  height: 100%;
+  overflow: auto;
+
+  .dataViewTable {
+    width: 100%;
+    text-align: center;
+    border-collapse: collapse;
+
+    .thead {
+
+      .th {
+        font-weight: bold;
+        line-height: 30px;
+        font-size: 14px;
+        color: #666;
+        height: 30px;
+      }
+    }
+
+    .tbody {
+
+      .td {
+        font-size: 14px;
+        color: #666;
+        line-height: 26px;
+      }
+    }
+
+  }
 }

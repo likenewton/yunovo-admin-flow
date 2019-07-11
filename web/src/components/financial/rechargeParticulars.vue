@@ -176,6 +176,7 @@ export default {
                   borderColor: '#9a8dda'
                 }
               },
+              readOnly: true,
               optionToContent(opt) {
                 let series = opt.series
                 let table = `<table style="width:100%;text-align:center"><tbody>
@@ -359,6 +360,7 @@ export default {
             })
           })
           this.myChart.setOption(this.option)
+          $("[_echarts_instance_]").find(":last-child").trigger('click')
         }
       })
     },

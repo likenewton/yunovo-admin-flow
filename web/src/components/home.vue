@@ -549,6 +549,7 @@ export default {
       })
       Vue.nextTick(() => {
         this.myChart_2.setOption(_echart.getOption(), true)
+        $("[_echarts_instance_]").find(":last-child").trigger('click')
       })
     },
     showLine_1() {
@@ -563,6 +564,7 @@ export default {
       })
       Vue.nextTick(() => {
         this.myChart_2.setOption(_echart.getOption(), true)
+        $("[_echarts_instance_]").find(":last-child").trigger('click')
       })
     },
     showLine_2() {
@@ -578,6 +580,7 @@ export default {
       })
       Vue.nextTick(() => {
         this.myChart_2.setOption(_echart.getOption(), true)
+        $("[_echarts_instance_]").find(":last-child").trigger('click')
       })
     },
     showLine_3() {
@@ -593,6 +596,7 @@ export default {
       })
       Vue.nextTick(() => {
         this.myChart_2.setOption(_echart.getOption(), true)
+        $("[_echarts_instance_]").find(":last-child").trigger('click')
       })
     },
     showLine_4() {
@@ -614,6 +618,7 @@ export default {
       })
       Vue.nextTick(() => {
         this.myChart_2.setOption(_echart.getOption(), true)
+        $("[_echarts_instance_]").find(":last-child").trigger('click')
       })
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,

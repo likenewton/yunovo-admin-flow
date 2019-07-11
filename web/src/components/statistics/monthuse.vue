@@ -48,7 +48,7 @@
         </el-table-column>
         <el-table-column prop="time_active" label="卡激活时间" width="155" sortable="custom"></el-table-column>
         <el-table-column prop="how_month" label="月份" width="120" sortable="custom"></el-table-column>
-        <el-table-column prop="month_used" label="月使用流量" width="120" align="right">
+        <el-table-column prop="month_used" label="月使用流量" width="120" align="right" sortable="custom">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.month_used)"></div>
           </template>
@@ -99,7 +99,14 @@ export default {
     },
     // 导出excel
     exportExcel() {
-      Api.UNITS.exportExcel(_axios.ajaxAd.statsExport, this.formInline)
+      if (this.formInline.mdate) {
+        Api.UNITS.exportExcel(_axios.ajaxAd.statsExport, this.formInline)
+      } else {
+        this.showMsgBox({
+          type: 'warning',
+          message: '请在搜索框中选择您要导出的月份！'
+        })
+      }
     }
   },
   computed: {

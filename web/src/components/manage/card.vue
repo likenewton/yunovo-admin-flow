@@ -143,7 +143,6 @@ const _echart = new Api.ECHARTS({
 export default {
   data() {
     return {
-      maxTableHeight: Api.UNITS.maxTableHeight(315),
       dialogChartLoadData: true,
       formInline: {
         card_iccid: Api.UNITS.getQuery('card_iccid'),
@@ -151,7 +150,7 @@ export default {
       },
       dialogList: {
         data: [],
-        pagesize: Api.STATIC.pageSizes[0],
+        pagesize: Api.STATIC.pageSizes[1],
         currentPage: 1,
         total: 0,
       },
@@ -160,6 +159,10 @@ export default {
       myChart: null,
       options: {
         xAxis: {
+          axisLabel: {
+            interval: 0,
+            rotate: 20
+          },
           type: 'category',
           data: [] // 1
         },
@@ -236,7 +239,6 @@ export default {
     },
     // 获取列表数据
     getData() {
-      console.log(this.formInline)
       Api.UNITS.getListData({
         vue: this,
         url: _axios.ajaxAd.getCards
@@ -277,6 +279,7 @@ export default {
             data.push(v.total)
           })
           this.myChart.setOption(this.options)
+          $("[_echarts_instance_]").find(":last-child").trigger('click')
         }
       })
     },

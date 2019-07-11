@@ -8,6 +8,7 @@ const Rechargecomboset = r => require.ensure([], () => r(require('@/components/f
 const Flowwarningset = r => require.ensure([], () => r(require('@/components/forms/flowwarningset.vue')), 'chunk3')
 const Createuser = r => require.ensure([], () => r(require('@/components/forms/createuser.vue')), 'chunk3')
 const Createjg = r => require.ensure([], () => r(require('@/components/forms/createjg.vue')), 'chunk3')
+const Createdispatch = r => require.ensure([], () => r(require('@/components/forms/createdispatch.vue')), 'chunk3') // 机构权限分配
 const Createauth = r => require.ensure([], () => r(require('@/components/forms/createauth.vue')), 'chunk3')
 const Alipay = r => require.ensure([], () => r(require('@/components/forms/alipay.vue')), 'chunk3')
 const Wechart = r => require.ensure([], () => r(require('@/components/forms/wechart.vue')), 'chunk3')
@@ -40,6 +41,10 @@ let formRoute = {
       path: 'createjg',
       name: 'createjg',
       component: Createjg
+    }, {
+      path: 'createdispatch',
+      name: 'createdispatch',
+      component: Createdispatch
     }, {
       path: 'createauth',
       name: 'createauth',

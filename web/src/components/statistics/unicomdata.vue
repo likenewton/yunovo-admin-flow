@@ -56,7 +56,7 @@
       </el-pagination>
     </el-card>
     <el-card class="clearfix" shadow="never" v-loading="loadData">
-      <div id="myChart_0" style="width:100%; height:380px"></div>
+      <div id="myChart_0" style="width:100%; height:420px"></div>
     </el-card>
     <el-dialog title="高级查询" :visible.sync="searchVipVisible" width="630px" :close-on-click-modal="false">
       <div slot>
@@ -135,7 +135,9 @@ export default {
           axisLabel: {
             textStyle: {
               fontSize: 12
-            }
+            },
+            interval: 0,
+            rotate: 20
           },
         },
         series: [{
@@ -256,6 +258,7 @@ export default {
       })
       setTimeout(() => {
         this[`myChart_${this.tabIndex}`].setOption(option)
+        $("[_echarts_instance_]").find(":last-child").trigger('click')
       }, 0)
     }
   },

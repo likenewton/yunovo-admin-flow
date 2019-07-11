@@ -47,6 +47,7 @@ class AXIOS {
       getpayPack: '/fc/api/gprs/report/payPack', // 财务报表-套餐充值
       getMonthReport: '/fc/api/gprs/report/monthReport', // 月度充值列表
       getOrgList: '/fc/api/user/org/', // 机构管理
+      getDispatchList: '/fc/api/user/', // 机构分配
       getNations: '/fc/api/system/nations/', // 国家区域
       getPays: '/fc/api/system/pays/', // 支付列表
       getCurrency: '/fc/api/system/currency/', // 货币列表
@@ -74,6 +75,7 @@ class AXIOS {
       getCardDetail: '/fc/api/gprs/card/detail',
       getComboDetail: '/fc/api/gprs/pack/detail',
       getBatchDetail: '/fc/api/gprs/batch/detail', // 编辑批次
+      getDispatchDetail: '/fc/api/user/detail',
       // 导出
       statsExport: '/fc/api/gprs/stats/export', // 
       cardExport: '/fc/api/gprs/card/export', // 流量卡
@@ -93,12 +95,13 @@ class AXIOS {
       // 停用/启用
       checkComboStop: '/fc/api/gprs/pack/stop', // 套餐
       checkCardStop: '/fc/api/gprs/card/onoff', // 卡
-      getPayOnline: '/fc/api/gprs/payOnline/', // 运营统计折线图
+      checkUserStop: '/fc/api/user/onoff', // 用户权限分配停用启用
       // 数据同步
       checkSyncUnicomData: '/fc/api/gprs/card/syncUnicomData',
       // 图表
       getPayPie: '/fc/api/gprs/report/paylog/chart', // 财务报表-充值明细扇形图
       getCardBar: '/fc/api/gprs/card/cardTotalByOrgidGroup',
+      getPayOnline: '/fc/api/gprs/payOnline/', // 运营统计折线图
       // 表单提交
       addOrg: '/fc/api/user/org/insert', // 机构管理-新增机构
       updateOrg: '/fc/api/user/org/update', // 机构管理-编辑机构
@@ -119,6 +122,7 @@ class AXIOS {
       addGprsGift: '/fc/api/gprs/gift/', // 流量赠送
       addBatch: '/fc/api/gprs/batch/insert', // 新建批次
       updateBatch: '/fc/api/gprs/batch/update', // 编辑批次
+      deleteUser: '/fc/api/user/del', // 用户权限分配删除
       // 首页
       getPayCase: '/fc/api/home/payCase', // 数据看板
       getSiminfo: '/fc/api/home/siminfo', // 获取pie-card数据
