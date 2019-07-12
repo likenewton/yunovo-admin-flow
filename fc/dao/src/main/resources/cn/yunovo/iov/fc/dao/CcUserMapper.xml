@@ -89,7 +89,7 @@
 			C.`status`
 		FROM
 			cc_user AS C
-		WHERE  C.username = #{u.username} 
+		WHERE  C.username = #{username} 
 	</select>
 	
 	<!-- 根据机构编号获取此机构下开了多少个用户数 -->
