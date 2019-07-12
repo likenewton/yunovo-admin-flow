@@ -31,7 +31,7 @@
           <el-radio :label="0" :disabled="!formInline.all_org">所有机构</el-radio>
           <el-radio :label="1">选择机构</el-radio>
         </el-radio-group>
-        <el-button v-show="orgpos_alias === 1" type="primary" @click="openChoice" style="margin-left:8px">选择可控机构</el-button>
+        <el-button v-show="orgpos_alias === 1" type="primary" @click="openChoice" style="margin-left:8px">选择可控机构 <span>({{orgpos_name_arr_tmp.length}}/50)</span></el-button>
       </el-form-item>
       <el-form-item>
         <el-button @click="$router.back()">返回</el-button>
@@ -40,16 +40,17 @@
       </el-form-item>
     </el-form>
     <el-dialog :visible="dialogVisible" @close="cancelChoice" :close-on-click-modal="false" width="1200px">
-      <span slot="title">可选机构</span>
+      <span slot="title">可选机构<span>({{orgpos_name_arr.length}}/50)</span></span>
       <div class="dialog_content">
         <div slot>
-          <el-checkbox class="title-checkbox" :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
-          <el-checkbox-group v-model="orgpos_name_arr" @change="handleChoiceChange" :style="{'maxHeight': winHeight/2 + 'px'}">
+          <!-- <el-checkbox class="title-checkbox" :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox> -->
+          <el-checkbox-group v-model="orgpos_name_arr" @change="handleChoiceChange" :max="50" :style="{'maxHeight': winHeight/2 + 'px'}">
             <el-checkbox v-for="item in orgs" :label="item.value" :key="item.value">{{item.label}}</el-checkbox>
           </el-checkbox-group>
         </div>
       </div>
       <div slot="footer" class="dialog-footer">
+        <el-button size="small" type="warning" @click="clearChoice">清 空</el-button>
         <el-button size="small" type="warning" @click="resetChoice">重 选</el-button>
         <el-button size="small" type="primary" @click="makesureChoice">保 存</el-button>
       </div>
@@ -121,8 +122,11 @@ export default {
       this.resetChoice()
       this.dialogVisible = false
     },
-    resetChoice() {
+    clearChoice() {
       this.orgpos_name_arr = []
+    },
+    resetChoice() {
+      this.orgpos_name_arr = this.formInline.orgpos ? this.formInline.orgpos.split(',') : []
     },
     handleChoiceChange(para) {
       let checkedCount = para.length
@@ -164,6 +168,14 @@ export default {
         })
       })
     },
+    resetForm(formName) {
+      this.$refs[formName].resetFields()
+      this.formInline = {}
+      this.orgpos_alias = -1
+      this.orgpos_name_arr = []
+      this.orgpos_name_arr_tmp = []
+      this.isUpdate && this.getData()
+    },
     // 提交表单
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
@@ -180,13 +192,17 @@ export default {
               url: _axios.ajaxAd.updateUser,
               data: this.formInline,
               done: ((res) => {
-                this.$router.push({ name: 'jgDispatch' })
-                setTimeout(() => {
-                  this.showMsgBox({
-                    type: 'success',
-                    message: res.msg || '操作成功！'
-                  })
-                }, 150)
+                if (res.status === 400) {
+                  // 这里服务器验证出了错误
+                } else {
+                  this.$router.push({ name: 'jgDispatch' })
+                  setTimeout(() => {
+                    this.showMsgBox({
+                      type: 'success',
+                      message: res.msg || '操作成功！'
+                    })
+                  }, 150)
+                }
               })
             })
           }

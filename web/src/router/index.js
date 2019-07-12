@@ -4,7 +4,6 @@ import listRoute from './listRoute.js' // 二级列表页面
 // 按需加载路由
 // [chunk1](公共页面)
 const Home = r => require.ensure([], () => r(require('@/components/home.vue')), 'chunk1')
-const _404 = r => require.ensure([], () => r(require('@/components/404.vue')), 'chunk1')
 const Asidemenu = r => require.ensure([], () => r(require('@/components/aside/index.vue')), 'chunk2')
 
 let router = new VueRouter({
