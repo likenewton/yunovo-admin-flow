@@ -293,7 +293,7 @@ public class CcUserServiceImpl extends ServiceImpl<ICcUserMapper, CcUser> implem
 		Integer total = iCcUserMapper.getTotalByOrg(ccorg.getOrg_id());
 		total = (total == null ? 0 : total);
 		
-		if(ccorg.getUser_total() >= total && userForm.getOrg_id() != data.getOrg_id()) {
+		if(NumberUtils.compare(ccorg.getUser_total(), total) <= 0 && (userForm.getOrg_id() - data.getOrg_id() != 0)) {
 			
 			log.error("[edit][该机构账户已到达上限]params={},user:{}", userForm.buildJsonString(), user.buildJsonString());
 			throw new BusinessException("该机构账户已到达上限");
