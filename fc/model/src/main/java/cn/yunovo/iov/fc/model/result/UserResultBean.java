@@ -54,4 +54,6 @@ public class UserResultBean implements Serializable{
 	
 	private String update_by;
 	
+	private Boolean all_org;
+	
 }

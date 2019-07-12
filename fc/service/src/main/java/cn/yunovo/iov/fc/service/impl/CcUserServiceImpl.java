@@ -160,7 +160,7 @@ public class CcUserServiceImpl extends ServiceImpl<ICcUserMapper, CcUser> implem
 			}
 		}
 		
-		return org_names.toString();
+		return org_names.length() <= 1 ? "" : org_names.substring(1);
 	}
 	
 	public CcUser getUserByUsername(String username) {
@@ -252,13 +252,13 @@ public class CcUserServiceImpl extends ServiceImpl<ICcUserMapper, CcUser> implem
 			_orgpos = _orgpos.trim();
 			if(!"*".equals(_orgpos) && _orgpos.contains("*")) {
 				
-				log.error("[edit][无效的可控机构]params={},user:{}", userForm.buildJsonString(), user.buildJsonString());
+				log.error("[edit][无效的可控机构orgpos]params={},user:{}", userForm.buildJsonString(), user.buildJsonString());
 				throw new BusinessException("无效的参数【其他可控机构】");
 			}
 			
 			if("*".equals(_orgpos) && !"*".equals(orgpos)) {
 				
-				log.error("[edit][无效的可控机构]params={},user:{}", userForm.buildJsonString(), user.buildJsonString());
+				log.error("[edit][无效的可控机构,权限不够]params={},user:{}", userForm.buildJsonString(), user.buildJsonString());
 				throw new BusinessException("无效的参数【其他可控机构】");
 			}
 			
@@ -273,7 +273,7 @@ public class CcUserServiceImpl extends ServiceImpl<ICcUserMapper, CcUser> implem
 					
 					t = NumberUtils.createInteger(o);
 					if(!orgMaps.containsKey(t) || !iCcOrgService.hasPermission(t, orgpos)) {
-						log.error("[edit][无效的可控机构]params={},user:{}", userForm.buildJsonString(), user.buildJsonString());
+						log.error("[edit][无效的可控机构，机构未找到或权限不够]params={},user:{}", userForm.buildJsonString(), user.buildJsonString());
 						throw new BusinessException("无效的参数【其他可控机构】");
 					}
 				}
@@ -377,7 +377,7 @@ public class CcUserServiceImpl extends ServiceImpl<ICcUserMapper, CcUser> implem
 				return null;
 			}
 		}
-		
+		detail.setAll_org(StringUtils.equals("*", orgpos));
 		return detail;
 	}
 

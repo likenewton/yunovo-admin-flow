@@ -6,6 +6,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 
 import cn.yunovo.iov.fc.model.BaseForm;
@@ -42,7 +43,7 @@ public class UserForm extends BaseForm implements Serializable{
 	@ApiModelProperty(value = "用户状态")
 	private Short status;
 
-	@Size(max=200, groups= {InsertGroupValidate.class}, message="您选择的机构列表已超过限制")
+	@Length(min=0, max=200, groups= {InsertGroupValidate.class}, message="您选择的机构列表已超过限制")
 	@ApiModelProperty(value = "其他可控机构")
 	private String orgpos;
 
