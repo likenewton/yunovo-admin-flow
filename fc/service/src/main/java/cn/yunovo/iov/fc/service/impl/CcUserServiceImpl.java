@@ -244,30 +244,30 @@ public class CcUserServiceImpl extends ServiceImpl<ICcUserMapper, CcUser> implem
 			throw new BusinessException("您没有权限变更该用户信息");
 		}
 		
-		String _orgpos = userForm.getOrgpos();
-		if(StringUtils.isEmpty(orgpos)) {
+		String _orgpos_var = userForm.getOrgpos();
+		if(StringUtils.isEmpty(_orgpos_var)) {
 			userForm.setOrgpos("");
 		}else {
 			
-			_orgpos = _orgpos.trim();
-			if(!"*".equals(_orgpos) && _orgpos.contains("*")) {
+			_orgpos_var = _orgpos_var.trim();
+			if(!"*".equals(_orgpos_var) && _orgpos_var.contains("*")) {
 				
 				log.error("[edit][无效的可控机构orgpos]params={},user:{}", userForm.buildJsonString(), user.buildJsonString());
 				throw new BusinessException("无效的参数【其他可控机构】");
 			}
 			
-			if("*".equals(_orgpos) && !"*".equals(orgpos)) {
+			if("*".equals(_orgpos_var) && !"*".equals(orgpos)) {
 				
 				log.error("[edit][无效的可控机构,权限不够]params={},user:{}", userForm.buildJsonString(), user.buildJsonString());
 				throw new BusinessException("无效的参数【其他可控机构】");
 			}
 			
-			if("*".equals(_orgpos) && "*".equals(orgpos)) {
+			if("*".equals(_orgpos_var) && "*".equals(orgpos)) {
 				
 			}else {
 				
 				Map<Integer, String> orgMaps = iCcOrgService.orgMaps();
-				String[] orgs = _orgpos.split(",");
+				String[] orgs = _orgpos_var.split(",");
 				Integer t  = null;
 				for (String o : orgs) {
 					
@@ -279,7 +279,7 @@ public class CcUserServiceImpl extends ServiceImpl<ICcUserMapper, CcUser> implem
 				}
 			}
 			
-			userForm.setOrgpos(_orgpos);
+			userForm.setOrgpos(_orgpos_var);
 			
 		}
 		
@@ -298,8 +298,6 @@ public class CcUserServiceImpl extends ServiceImpl<ICcUserMapper, CcUser> implem
 			log.error("[edit][该机构账户已到达上限]params={},user:{}", userForm.buildJsonString(), user.buildJsonString());
 			throw new BusinessException("该机构账户已到达上限");
 		}
-		
-		
 		
 		CcUser ccUser = new CcUser();
 		
