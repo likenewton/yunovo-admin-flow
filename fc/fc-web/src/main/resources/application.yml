@@ -187,7 +187,7 @@ casClient:
   redirectAfterValidation: false
   h5IndexUrl: "http://t.wx.yunovo.cn/flowCenter"
   h5Client: true
-  ucIndexUrl: "http://10.0.3.43:8091/"
+  ucIndexUrl: "http://t.wx.yunovo.cn/authCenter/sysmenu"
   authTokenCrypto: 
     signingKey: eckhybvk3nqorVo5efMxERNu_CkR8KCYfV6Hv7J1MVASsVG-DHYzMLpz4UbnGfwz4Y4bu3SAzBMICqlROp2gBQ
     signingKeySize: 512
@@ -234,7 +234,7 @@ casClient:
   redirectAfterValidation: false
   h5IndexUrl: "http://t.wx.yunovo.cn/flowCenter"
   h5Client: true
-  ucIndexUrl: "http://t.wx.yunovo.cn/authCenter/dist/index.html#/sysmenu"
+  ucIndexUrl: "http://t.wx.yunovo.cn/authCenter/sysmenu"
   authTokenCrypto: 
     signingKey: eckhybvk3nqorVo5efMxERNu_CkR8KCYfV6Hv7J1MVASsVG-DHYzMLpz4UbnGfwz4Y4bu3SAzBMICqlROp2gBQ
     signingKeySize: 512
