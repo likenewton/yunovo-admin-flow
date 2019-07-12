@@ -123,6 +123,7 @@ class AXIOS {
       addBatch: '/fc/api/gprs/batch/insert', // 新建批次
       updateBatch: '/fc/api/gprs/batch/update', // 编辑批次
       deleteUser: '/fc/api/user/del', // 用户权限分配删除
+      updateUser: '/fc/api/user/edit', // 用户权限分配编辑
       // 首页
       getPayCase: '/fc/api/home/payCase', // 数据看板
       getSiminfo: '/fc/api/home/siminfo', // 获取pie-card数据

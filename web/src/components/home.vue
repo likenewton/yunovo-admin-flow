@@ -193,7 +193,7 @@
                     <el-col :span="12">{{item.org_name}}</el-col>
                     <el-col :span="8">￥{{formatMoney(item.val)}}</el-col>
                   </el-row>
-                  <el-row v-if="!bottomCardData_0.orgrank.length">暂无数据</el-row>
+                  <el-row v-if="!bottomCardData_0.orgrank.length"><span style="color:#999">暂无数据</span></el-row>
                 </el-col>
               </el-row>
             </el-tab-pane>
@@ -209,7 +209,7 @@
                     <el-col :span="12">{{item.org_name}}</el-col>
                     <el-col :span="8">￥{{formatMoney(item.val)}}</el-col>
                   </el-row>
-                  <el-row v-if="!bottomCardData_1.orgrank.length">暂无数据</el-row>
+                  <el-row v-if="!bottomCardData_1.orgrank.length"><span style="color:#999">暂无数据</span></el-row>
                 </el-col>
               </el-row>
             </el-tab-pane>
@@ -225,7 +225,7 @@
                     <el-col :span="12">{{item.org_name}}</el-col>
                     <el-col :span="8">{{formatFlowUnit(item.val, 3, false)}}</el-col>
                   </el-row>
-                  <el-row v-if="!bottomCardData_2.orgrank.length">暂无数据</el-row>
+                  <el-row v-if="!bottomCardData_2.orgrank.length"><span style="color:#999">暂无数据</span></el-row>
                 </el-col>
               </el-row>
             </el-tab-pane>
@@ -241,7 +241,7 @@
                     <el-col :span="12">{{item.org_name}}</el-col>
                     <el-col :span="8">￥{{formatMoney(item.val)}}</el-col>
                   </el-row>
-                  <el-row v-if="!bottomCardData_3.orgrank.length">暂无数据</el-row>
+                  <el-row v-if="!bottomCardData_3.orgrank.length"><span style="color:#999">暂无数据</span></el-row>
                 </el-col>
               </el-row>
             </el-tab-pane>
@@ -322,6 +322,9 @@ export default {
       // 默认选择最近一年
       timePickData: [Api.UNITS.formatdate(new Date().getTime() - 3600000 * 24 * 365, 'yyyy-mm-dd'), Api.UNITS.formatdate(new Date(), 'yyyy-mm-dd')],
       pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now()
+        },
         shortcuts: [{
           text: '最近一周',
           onClick(picker) {
@@ -403,7 +406,7 @@ export default {
               }
             },
             emphasis: {
-              
+
             }
           },
           data: [] // 需设置
@@ -695,11 +698,6 @@ export default {
         else return ''
       }
     }
-  },
-  computed: {
-    ...mapState({
-      asideCollapse: 'asideCollapse'
-    })
   },
   watch: {
     asideCollapse(val, oldVal) {

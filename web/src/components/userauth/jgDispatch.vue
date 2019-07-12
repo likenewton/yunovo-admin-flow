@@ -14,8 +14,8 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="searchData">查询</el-button>
-          <el-button type="warning" @click="resetData">重置</el-button>
+          <el-button type="primary" @click="searchData" :disabled="!pageAuthBtn.FCP_04_002_CHECK01">查询</el-button>
+          <el-button type="warning" @click="resetData" :disabled="!pageAuthBtn.FCP_04_002_CHECK01">重置</el-button>
         </el-form-item>
       </el-form>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
@@ -37,12 +37,12 @@
             <span v-else class="text_success bold">已启用</span>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="管理" width="140">
+        <el-table-column fixed="right" label="管理" width="140" v-if="pageAuthBtn.FCP_04_002_OP01 || pageAuthBtn.FCP_04_002_OP02 || pageAuthBtn.FCP_04_002_OP03">
           <template slot-scope="scope">
-            <el-button type="text" class="text_editor" @click="$router.push({name:'createdispatch', query:{type:'update',username:scope.row.username}})">编辑</el-button>
-            <el-button type="text" class="text_danger" @click="deleteUser(scope)">删除</el-button>
-            <el-button v-if="scope.row.status==0" type="text" class="text_success" @click="checkUserStop(scope, 1)">启用</el-button>
-            <el-button v-else type="text" class="text_danger" @click="checkUserStop(scope, 0)">停用</el-button>
+            <el-button v-if="pageAuthBtn.FCP_04_002_OP01" type="text" class="text_editor" @click="$router.push({name:'createdispatch', query:{type:'update',username:scope.row.username}})">编辑</el-button>
+            <el-button v-if="pageAuthBtn.FCP_04_002_OP02" type="text" class="text_danger" @click="deleteUser(scope)">删除</el-button>
+            <el-button v-if="scope.row.status==0 && pageAuthBtn.FCP_04_002_OP03" type="text" class="text_success" @click="checkUserStop(scope, 1)">启用</el-button>
+            <el-button v-else-if="scope.row.status==1 && pageAuthBtn.FCP_04_002_OP03" type="text" class="text_danger" @click="checkUserStop(scope, 0)">停用</el-button>
           </template>
         </el-table-column>
       </el-table>

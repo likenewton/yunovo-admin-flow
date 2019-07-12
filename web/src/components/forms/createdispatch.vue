@@ -7,16 +7,16 @@
       <el-form-item prop="alipay_partner">
         <span slot="label">所属机构：</span>
         <el-select v-model="formInline.org_id" filterable placeholder="请选择">
-          <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
+          <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value - 0"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item prop="username">
         <span slot="label">用户账号：</span>
-        <el-input v-model="formInline.account" disabled placeholder="请输入用户账号"></el-input>
+        <el-input v-model="formInline.username" disabled placeholder="请输入用户账号"></el-input>
       </el-form-item>
       <el-form-item prop="firstname">
         <span slot="label">真实姓名：</span>
-        <el-input v-model="formInline.real_name" disabled placeholder="请输入真实姓名"></el-input>
+        <el-input v-model="formInline.firstname" disabled placeholder="请输入真实姓名"></el-input>
       </el-form-item>
       <el-form-item prop="status">
         <span slot="label">用户状态：</span>
@@ -25,11 +25,13 @@
           <el-option label="启用" :value="1"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item prop="orgpos_name">
+      <el-form-item>
         <span slot="label">可控机构：</span>
-        <el-radio v-model="formInline.orgpos_name" :label="0">所有机构</el-radio>
-        <el-radio v-model="formInline.orgpos_name" :label="1">选择机构</el-radio>
-        <el-button v-show="formInline.orgpos_name === 1" type="primary" @click="openChoice(0)">选择可控机构</el-button>
+        <el-radio-group v-model="orgpos_alias">
+          <el-radio :label="0" :disabled="!formInline.all_org">所有机构</el-radio>
+          <el-radio :label="1">选择机构</el-radio>
+        </el-radio-group>
+        <el-button v-show="orgpos_alias === 1" type="primary" @click="openChoice" style="margin-left:8px">选择可控机构</el-button>
       </el-form-item>
       <el-form-item>
         <el-button @click="$router.back()">返回</el-button>
@@ -64,6 +66,7 @@ export default {
       isUpdate: false,
       checkAll: false,
       isIndeterminate: false,
+      orgpos_alias: -1,
       orgpos_name_arr: [],
       orgpos_name_arr_tmp: [],
       rules: {
@@ -107,7 +110,7 @@ export default {
     }
   },
   methods: {
-    openChoice(type) {
+    openChoice() {
       this.dialogVisible = true
       // checked弹框关闭的时候都会被清空，打开弹框的时候要从temp获取选择的数据
       this.orgpos_name_arr = this.orgpos_name_arr_tmp
@@ -122,8 +125,8 @@ export default {
       this.orgpos_name_arr = []
     },
     handleChoiceChange(para) {
-      this.orgpos_name_arr = para
       let checkedCount = para.length
+      this.orgpos_name_arr = para
       this.checkAll = checkedCount === this.orgs.length
       this.isIndeterminate = checkedCount > 0 && checkedCount < this.orgs.length
     },
@@ -141,16 +144,23 @@ export default {
     },
     // 获取数据
     getData() {
-      this.loadData = false
-      return
       this.loadData = true
       _axios.send({
         method: 'get',
         url: _axios.ajaxAd.getDispatchDetail,
         params: { username: Api.UNITS.getQuery('username') },
         done: ((res) => {
-          this.formInline = res.data || {}
           this.loadData = false
+          this.formInline = res.data || {}
+          if (this.formInline.orgpos === '*') {
+            this.orgpos_alias = 0
+          } else {
+            this.orgpos_alias = 1
+            this.orgpos_name_arr_tmp = this.formInline.orgpos ? this.formInline.orgpos.split(',') : []
+          }
+          this.$nextTick(() => {
+            this.$refs.ruleForm.clearValidate()
+          })
         })
       })
     },
@@ -158,12 +168,17 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          if (this.orgpos_alias === 0) {
+            this.formInline.orgpos = '*'
+          } else {
+            this.formInline.orgpos = this.orgpos_name_arr_tmp.join(',')
+          }
           // 验证通过
           if (this.isUpdate) {
             _axios.send({
               method: 'post',
-              url: _axios.ajaxAd.updatePay,
-              data: Object.assign({ type: Api.UNITS.getQuery('pay') }, this.formInline),
+              url: _axios.ajaxAd.updateUser,
+              data: this.formInline,
               done: ((res) => {
                 this.$router.push({ name: 'jgDispatch' })
                 setTimeout(() => {

@@ -373,11 +373,11 @@ export default {
                       type: 'success',
                       duration: 0,
                       message: `操作成功！
-                      批次号 ${data.batch_sn} ，
-                      本次导入 ${data.iccid_count} 张手机卡，
-                      导入成功 ${data.success_count} 张，
-                      失败 ${data.failed_count} 张，
-                      更新 ${data.update_count} 张`
+                      批次号 ${data.batch_sn},
+                      本次导入 ${data.iccid_count} 张手机卡,
+                      新增卡 ${data.success_count} 张,
+                      更新卡 ${data.update_count} 张,
+                      失败 ${data.failed_count} 张`
                     })
                   }, 150)
                 }
@@ -438,7 +438,7 @@ export default {
     },
     // 下载xlsx模板文件
     download() {
-      window.open('../../../flowCenter/static/template.xlsx')
+      window.open('/flowCenter/static/template.xlsx', '_self')
     }
   },
   computed: {
