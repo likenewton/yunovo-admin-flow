@@ -523,7 +523,10 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 			return result;
 		}
 		
-		res = iCcGprsPayMapper.listPaysnByCardidAndPaymethodAndIspaid(card.getCard_id());
+		/**
+		 * 判断流量卡是拥有套餐
+		 */
+		res = iCcGprsPayMapper.listPaysnByCardid(card.getCard_id());
 		
 		//事务定义
 		DefaultTransactionDefinition definition = null;
