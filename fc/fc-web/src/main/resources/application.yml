@@ -28,7 +28,7 @@ spring:
     clw: 
       name: clw
       type: com.alibaba.druid.pool.DruidDataSource
-      url: "jdbc:mysql://10.0.3.52:3306/gprs?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT"
+      url: "jdbc:mysql://10.0.3.52:3306/gprstest?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT"
       username: root
       password: 123456
       driver-class-name: com.mysql.jdbc.Driver
