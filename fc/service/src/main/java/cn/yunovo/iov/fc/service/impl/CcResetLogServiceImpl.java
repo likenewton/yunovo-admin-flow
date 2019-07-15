@@ -24,9 +24,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -141,8 +145,10 @@ public class CcResetLogServiceImpl extends ServiceImpl<ICcResetLogMapper, CcRese
 	@Override
 	public List<CardRestBean> cardReset(CardResetForm form, LoginInfo info) {
 		
-		String iccidTemp = form.getIccids().replaceAll("\r\n", "\n");
-		String[] iccids = iccidTemp.split("\n");
+		String iccidTemp = form.getIccids().trim().replaceAll("\r\n", "\n");
+		List<String> iccidList = Arrays.asList(iccidTemp.split("\n"));
+		Set<String> iccids = new LinkedHashSet<>(iccidList);
+		
 		List<CardRestBean> result = new ArrayList<>();
 		CardRestBean temp = null;
 		CcGprsCard card = null;

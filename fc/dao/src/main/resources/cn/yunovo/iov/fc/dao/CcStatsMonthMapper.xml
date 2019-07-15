@@ -155,7 +155,7 @@
 		</if>
 	</select>
 
-	<select id="usedTotal" resultType="Long">
+	<select id="usedTotal" resultType="Double">
 
 		SELECT SUM(S.month_used) FROM cc_stats_month s INNER JOIN cc_gprs_card
 		c ON s.card_id = c.card_id

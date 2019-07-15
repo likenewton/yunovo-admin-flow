@@ -164,10 +164,10 @@ public class CcStatsMonthServiceImpl extends ServiceImpl<ICcStatsMonthMapper, Cc
 				orgpos, orgpos.split(","));
 
 		// 获取总使用流量
-		Long usedTotal = iCcStatsMonthMapper.usedTotal(org_id, card_type, card_iccid, mdate, orgpos, orgpos.split(","));
+		Double usedTotal = iCcStatsMonthMapper.usedTotal(org_id, card_type, card_iccid, mdate, orgpos, orgpos.split(","));
 
 		if (usedTotal == null) {
-			usedTotal = 0L;
+			usedTotal = 0D;
 		}
 
 		Map<String, Object> other = new HashMap<>(1);

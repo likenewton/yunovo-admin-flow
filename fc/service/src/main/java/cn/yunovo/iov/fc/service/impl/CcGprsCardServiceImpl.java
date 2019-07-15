@@ -194,7 +194,7 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 			for (HaltPageExportBean ccGprsCard : records) {
 				ccGprsCard.setOrg_name(orgs.get(String.valueOf(ccGprsCard.getOrg_id())).getName());
 			}
-			
+			totalBean.setCard_iccid("总计");
 			records.add(totalBean);
 		}
 		
