@@ -247,7 +247,7 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 		page.setSize(pageForm.getSize());
 
 		if (ArrayUtils.isEmpty(pageForm.getAscs()) && ArrayUtils.isEmpty(pageForm.getDescs())) {
-			// page.setAsc(");
+			page.setDesc("P.time_added");
 		} else {
 			page.setAsc(pageForm.getAscs());
 			page.setDesc(pageForm.getDescs());
