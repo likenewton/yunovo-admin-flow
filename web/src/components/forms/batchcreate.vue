@@ -315,7 +315,6 @@ export default {
     },
     // 提交表单
     submitForm(formName) {
-      console.log(this.formInline)
       this.$refs[formName].validate((valid) => {
         if (valid) {
           // 提交ajax

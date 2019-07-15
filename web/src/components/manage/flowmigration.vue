@@ -115,8 +115,10 @@ export default {
     }
   },
   mounted() {
-    // this.getData()
     this.loadData = false
+    if (this.tabIndex === '1') {
+      this.getData()
+    }
   },
   methods: {
     changeTab(para) {

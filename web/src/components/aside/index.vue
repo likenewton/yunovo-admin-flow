@@ -14,6 +14,7 @@
               <v-footer></v-footer>
             </el-footer>
           </div>
+          <el-backtop target=".el-main" :bottom="70" :right="50"></el-backtop>
         </el-main>
       </el-container>
     </el-container>
@@ -28,7 +29,6 @@ export default {
 
 </script>
 <style lang="scss">
-
 .el-container {
   overflow: hidden;
 }

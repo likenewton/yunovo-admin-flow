@@ -38,7 +38,6 @@ export default {
     },
     // 处理排序
     handleSortChange(val) {
-      console.log(val)
       Api.UNITS.setSortSearch(val, this)
       this.getData()
     },
