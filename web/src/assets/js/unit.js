@@ -381,7 +381,8 @@ module.exports = {
     })
   },
   toUnicomLink(iccid) {
-    let width = $(window).width() / 1.5
+    // let width = $(window).width() / 1.5
+    let width = 500
     let left = ($(window).width() - width) / 2
     window.open(`http://t.gprs.yunovo.cn/app/main/info?iccid=${iccid}`, '_blank', `width=${width},height=700,top=100px,left=${left}px`)
   },
