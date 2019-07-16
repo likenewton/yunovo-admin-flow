@@ -16,19 +16,19 @@
         </el-form-item>
       </el-form>
       <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border resizable size="mini">
-        <el-table-column prop="pay_sn" label="订单编号" width="145" sortable="custom"></el-table-column>
-        <el-table-column prop="card_iccid" label="ICCID卡" width="178" sortable="custom">
+        <el-table-column prop="pay_sn" label="订单编号" :width="widthMap.pay_sn[size]" sortable="custom"></el-table-column>
+        <el-table-column prop="card_iccid" label="ICCID卡" :width="widthMap.card_iccid[size]" sortable="custom">
           <template slot-scope="scope">
             <span v-if="scope.row.sums|| !pageAuthBtn.FCP_03_003_LINK01">{{scope.row.card_iccid}}</span>
             <span v-else class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="card_id" label="卡商名称" width="135" sortable="custom">
+        <el-table-column prop="card_id" label="卡商名称" :width="widthMap.card_id[size]" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.card_type_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="org_id" label="机构名称" min-width="135" sortable="custom">
+        <el-table-column prop="org_id" label="机构名称" :min-width="widthMap.org_id[size]" sortable="custom">
           <template slot-scope="scope">
             <span v-if="scope.row.sums || !pageAuthBtn.FCP_03_003_LINK02">{{scope.row.org_name}}</span>
             <span v-else class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
@@ -39,30 +39,30 @@
             <span>{{scope.row.pay_method_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="transfer_id" label="支付流水号" width="135" sortable="custom"></el-table-column>
-        <el-table-column prop="gprs_amount" label="套餐流量" width="95" sortable="custom" align="right">
+        <el-table-column prop="transfer_id" label="支付流水号" :width="widthMap.transfer_id[size]" sortable="custom"></el-table-column>
+        <el-table-column prop="gprs_amount" label="套餐流量" width="97" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.gprs_amount)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="gprs_price" label="套餐价格" width="125" sortable="custom" align="right">
+        <el-table-column prop="gprs_price" label="套餐价格" :width="widthMap.gprs_price[size]" sortable="custom" align="right">
           <template slot-scope="scope">
             <div>￥{{scope.row.gprs_price|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column porp="rebate_money" label="返利金额" width="106" sortable="custom" align="right">
+        <el-table-column porp="rebate_money" label="返利金额" :width="widthMap.rebate_money[size]" sortable="custom" align="right">
           <template slot-scope="scope">
             <div>￥{{scope.row.rebate_money|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="time_added" label="充值时间" width="153" sortable="custom"></el-table-column>
+        <el-table-column prop="time_added" label="充值时间" :width="widthMap.time_added[size]" sortable="custom"></el-table-column>
         <el-table-column prop="is_paid" label="支付状态" width="88" sortable="custom">
           <template slot-scope="scope" v-if="!scope.row.sums">
             <span v-if="scope.row.is_paid == 0">未付款</span>
             <span v-else>已付款</span>
           </template>
         </el-table-column>
-        <el-table-column prop="time_paid" label="付款时间" width="153" sortable="custom"></el-table-column>
+        <el-table-column prop="time_paid" label="付款时间" :width="widthMap.time_paid[size]" sortable="custom"></el-table-column>
         <el-table-column prop="pay_from" label="订单来源" width="88" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.pay_from_name}}</span>
@@ -147,6 +147,18 @@ export default {
       formInline: {
         pay_sn: Api.UNITS.getQuery('pay_sn'),
         org_id: Api.UNITS.getQuery('org_id')
+      },
+      size: Api.UNITS.getSize(),
+      widthMap: {
+        pay_sn: [145, 110],
+        org_id: [135, 130],
+        card_id: [134, 110],
+        card_iccid: [182, 100],
+        gprs_price: [100, 88],
+        transfer_id: [135, 100],
+        rebate_money: [106, 88],
+        time_added: [153, 94],
+        time_paid: [153, 94],
       },
       // 要展开的对话框的参数
       dialogPara: {

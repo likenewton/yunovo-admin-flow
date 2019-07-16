@@ -7,8 +7,8 @@ const Home = r => require.ensure([], () => r(require('@/components/home.vue')), 
 const Asidemenu = r => require.ensure([], () => r(require('@/components/aside/index.vue')), 'chunk2')
 
 let router = new VueRouter({
-  mode: 'history', // history模式，上线使用，测试环境使用hash模式
-  base: '/flowCenter/', // 因为项目是在根目录下的flowCenter目录中所有要加一个base路由
+  //mode: 'history', // history模式，上线使用，测试环境使用hash模式
+  //base: '/flowCenter/', // 因为项目是在根目录下的flowCenter目录中所有要加一个base路由
   routes: [{
     path: '',
     component: Asidemenu,
@@ -24,5 +24,3 @@ router.addRoutes([formRoute])
 router.addRoutes([listRoute])
 
 export default router
-
-

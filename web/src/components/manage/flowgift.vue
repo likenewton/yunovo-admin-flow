@@ -75,13 +75,13 @@
                 <span v-else>{{scope.row.card_iccid}}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="org_id" label="机构名称" min-width="140" sortable="custom">
+            <el-table-column prop="org_id" label="机构名称" :min-width="widthMap.org_id[size]" sortable="custom">
               <template slot-scope="scope">
                 <span v-if="pageAuthBtn.FCP_01_005_LINK2" class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
                 <span v-else>{{scope.row.org_name}}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="gprs_amount" label="套餐流量" width="100" sortable="custom" align="right">
+            <el-table-column prop="gprs_amount" label="套餐流量" :width="widthMap.gprs_amount[size]" sortable="custom" align="right">
               <template slot-scope="scope">
                 <div v-html="formatComboFlow(scope.row.gprs_amount)"></div>
               </template>
@@ -91,7 +91,7 @@
                 <div>{{scope.row.allot_month}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="allot_value" label="月均流量" width="100" sortable="custom" align="right">
+            <el-table-column prop="allot_value" label="月均流量" :width="widthMap.allot_value[size]" sortable="custom" align="right">
               <template slot-scope="scope">
                 <div v-html="formatComboFlow(scope.row.allot_value)"></div>
               </template>
@@ -107,18 +107,18 @@
                 <div>{{getLiveMonthAlias(scope.row.live_month)}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="gift_name" label="赠者&备注" min-width="160" sortable="custom">
+            <el-table-column prop="gift_name" label="赠者&备注" :min-width="widthMap.gift_name[size]" sortable="custom" show-overflow-tooltip>
               <template slot-scope="scope">
                 <span v-html="scope.row.gift_name"></span>
               </template>
             </el-table-column>
-            <el-table-column prop="user_id" label="操作者" width="100" sortable="custom">
+            <el-table-column prop="user_id" label="操作者" width="widthMap.user_id[size]" sortable="custom">
               <template slot-scope="scope">
                 <span>{{scope.row.first_name}}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="time_added" label="添加时间" width="155" sortable="custom"></el-table-column>
-            <el-table-column prop="time_expire" label="过期时间" width="210" sortable="custom">
+            <el-table-column prop="time_added" label="添加时间" :width="widthMap.time_added[size]" sortable="custom"></el-table-column>
+            <el-table-column prop="time_expire" label="过期时间" :width="widthMap.time_expire[size]" sortable="custom">
               <template slot-scope="scope">
                 <span v-html="calcLeftTime(scope.row.time_expire)"></span>
               </template>
@@ -160,6 +160,16 @@ export default {
         allot_month: 1,
         allot_reset: 1,
         pack_mode: 0
+      },
+      size: Api.UNITS.getSize(),
+      widthMap: {
+        org_id: [140, 130],
+        gprs_amount: [100, 88],
+        allot_value: [100, 98],
+        gift_name: [160, 145],
+        user_id: [100, 88],
+        time_added: [155, 94],
+        time_expire: [210, 153],
       },
       searchForm: {},
       giftData: [],

@@ -12,7 +12,7 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <!-- <el-button type="primary" @click="searchData" :disabled="!pageAuthBtn.FPC_04_001_CHECK01">查询</el-button> -->
+          <el-button type="primary" @click="searchData" :disabled="!pageAuthBtn.FPC_04_001_CHECK01">查询</el-button>
           <el-button type="warning" @click="resetData" :disabled="!pageAuthBtn.FPC_04_001_CHECK01">重置</el-button>
         </el-form-item>
       </el-form>
@@ -42,7 +42,7 @@
             <span>{{scope.row.update_by_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="管理" width="100" v-if="pageAuthBtn.FCP_04_001_UPDATE01 || pageAuthBtn.FCP_04_001_DELETE01">
+        <el-table-column fixed="right" label="管理" width="88" v-if="pageAuthBtn.FCP_04_001_UPDATE01 || pageAuthBtn.FCP_04_001_DELETE01">
           <template slot-scope="scope">
             <el-button v-if="pageAuthBtn.FCP_04_001_UPDATE01" type="text" class="text_editor" @click="$router.push({ name: 'createjg', query: { type: 'update', org_id: scope.row.org_id } })">编辑</el-button>
             <el-button v-if="pageAuthBtn.FCP_04_001_DELETE01" type="text" class="text_danger" @click="deleteOrg(scope)">删除</el-button>

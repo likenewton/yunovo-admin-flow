@@ -29,48 +29,48 @@
         </el-form-item>
       </el-form>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
-        <el-table-column fixed="left" prop="card_iccid" label="卡ICCID" width="178" sortable="custom">
+        <el-table-column fixed="left" prop="card_iccid" label="卡ICCID" width="182" sortable="custom">
           <template slot-scope="scope">
             <span v-if="scope.row.sums || !pageAuthBtn.FCP_02_002_LINK1">{{scope.row.card_iccid}}</span>
             <span v-else class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="card_id" label="卡商名称" width="130" sortable="custom">
+        <el-table-column prop="card_id" label="卡商名称" width="widthMap.card_id[size]" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.card_type_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="org_id" label="所属机构" min-width="135" sortable="custom">
+        <el-table-column prop="org_id" label="所属机构" :min-width="widthMap.org_id[size]" sortable="custom">
           <template slot-scope="scope" prop="org_name">
             <span v-if="pageAuthBtn.FCP_02_002_LINK02" class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
             <span v-else>{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="used_month" label="当月用量" width="100" sortable="custom" align="right">
+        <el-table-column prop="used_month" label="当月用量" :width="widthMap.used_month[size]" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.used_month)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="used_total" label="累计用量" width="100" sortable="custom" align="right">
+        <el-table-column prop="used_total" label="累计用量" :width="widthMap.used_total[size]" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.used_total)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="max_unused" label="剩余用量" width="100" sortable="custom" align="right">
+        <el-table-column prop="max_unused" label="剩余用量" :width="widthMap.max_unused[size]" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.max_unused)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="time_added" label="导卡时间" width="153" sortable="custom"></el-table-column>
-        <el-table-column prop="time_active" label="激活时间" width="153" sortable="custom"></el-table-column>
-        <el-table-column prop="time_last" label="设备更新时间" width="153" sortable="custom"></el-table-column>
-        <el-table-column prop="time_stop" label="上次停用时间" width="153" sortable="custom"></el-table-column>
-        <el-table-column prop="time_expire" label="过期时间" min-width="153">
+        <el-table-column prop="time_added" label="导卡时间" :width="widthMap.time_added[size]" sortable="custom"></el-table-column>
+        <el-table-column prop="time_active" label="激活时间" :width="widthMap.time_active[size]" sortable="custom"></el-table-column>
+        <el-table-column prop="time_last" label="设备更新" :width="widthMap.time_last[size]" sortable="custom"></el-table-column>
+        <el-table-column prop="time_stop" label="上次停用" :width="widthMap.time_stop[size]" sortable="custom"></el-table-column>
+        <el-table-column prop="time_expire" label="过期时间" :min-width="widthMap.time_expire[size]">
           <template slot-scope="scope">
             <div v-if="!scope.row.sums" v-html="calcLeftTime(scope.row.time_expire)"></div>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" width="90" v-if="pageAuthBtn.FCP_02_002_OP01 || pageAuthBtn.FCP_02_002_OP2">
+        <el-table-column fixed="right" label="操作" :width="widthMap.op[size]" v-if="pageAuthBtn.FCP_02_002_OP01 || pageAuthBtn.FCP_02_002_OP2">
           <template slot-scope="scope" v-if="!scope.row.sums">
             <el-button type="text" @click="$refs.syncUniconData.getSyncUnicomData(scope)" v-if="pageAuthBtn.FCP_02_002_OP01">同步</el-button>
             <el-button type="text" class="text_success" v-if="scope.row.unicom_stop && pageAuthBtn.FCP_02_002_OP2" @click="checkCardStop(scope, 0)">启用</el-button>
@@ -90,7 +90,22 @@ import { mapState } from 'vuex'
 
 export default {
   data() {
-    return {}
+    return {
+      size: Api.UNITS.getSize(),
+      widthMap: {
+        card_id: [130, 110],
+        org_id: [135, 130],
+        used_month: [100, 97],
+        used_total: [100, 97],
+        max_unused: [103, 103],
+        time_added: [153, 94],
+        time_active: [153, 94],
+        time_last: [153, 94],
+        time_stop: [153, 94],
+        time_expire: [153, 94],
+        op: [90, 88],
+      },
+    }
   },
   mounted() {
     this.getData()

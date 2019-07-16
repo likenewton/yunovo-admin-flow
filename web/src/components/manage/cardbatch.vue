@@ -23,43 +23,43 @@
         </el-form-item>
       </el-form>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
-        <el-table-column prop="batch_sn" label="批次编号" width="105" sortable="custom"></el-table-column>
-        <el-table-column prop="batch_name" label="批次名称" min-width="140" sortable="custom"></el-table-column>
-        <el-table-column prop="org_id" label="机构名称" min-width="180" sortable="custom">
+        <el-table-column prop="batch_sn" label="批次编号" :width="widthMap.batch_sn[size]" sortable="custom"></el-table-column>
+        <el-table-column prop="batch_name" label="批次名称" :min-width="widthMap.batch_name[size]" sortable="custom"></el-table-column>
+        <el-table-column prop="org_id" label="机构名称" :min-width="widthMap.org_id[size]" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="gprs_amount" label="套餐流量" width="105" sortable="custom" align="right">
+        <el-table-column prop="gprs_amount" label="套餐流量" :width="widthMap.gprs_amount[size]" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatComboFlow(scope.row.gprs_amount)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="live_month" label="有效周期" width="120" sortable="custom">
+        <el-table-column prop="live_month" label="有效周期" :width="widthMap.live_month[size]" sortable="custom">
           <template slot-scope="scope">
             <div>{{getLiveMonthAlias(scope.row.live_month)}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="card_amount" label="入卡数量" width="105" sortable="custom" align="right"></el-table-column>
-        <el-table-column prop="batch_shipper" label="出货人名" width="105" sortable="custom"></el-table-column>
-        <el-table-column label="销往城市" width="140">
+        <el-table-column prop="card_amount" label="入卡数量" :width="widthMap.card_amount[size]" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="batch_shipper" label="出货人名" :width="widthMap.batch_shipper[size]" sortable="custom"></el-table-column>
+        <el-table-column label="销往城市" :width="widthMap.city[size]" show-overflow-tooltip>
           <template slot-scope="scope">
             <span>{{scope.row.province_name}}{{scope.row.city_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="batch_memo" label="批次备注" width="150" sortable="custom" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="time_added" label="添加时间" width="155" sortable="custom"></el-table-column>
-        <el-table-column prop="user_id" label="操作者" width="90" sortable="custom">
+        <el-table-column prop="batch_memo" label="批次备注" :width="widthMap.batch_memo[size]" sortable="custom" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="time_added" label="添加时间" :width="widthMap.time_added[size]" sortable="custom"></el-table-column>
+        <el-table-column prop="user_id" label="操作者" :width="widthMap.user_id[size]" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.first_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="alter_id" label="更改者" width="90" sortable="custom">
+        <el-table-column prop="alter_id" label="更改者":width="widthMap.alter_id[size]" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.alter_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" width="80" v-if="pageAuthBtn.FCP_01_003_UPDATE01">
+        <el-table-column fixed="right" label="操作" :width="widthMap.op[size]" v-if="pageAuthBtn.FCP_01_003_UPDATE01">
           <template slot-scope="scope">
             <el-button type="text" class="text_editor" @click="$router.push({name: 'batchcreate', query:{type:'update', batch_id: scope.row.batch_id}})">编辑</el-button>
           </template>
@@ -76,7 +76,24 @@ import { mapState } from 'vuex'
 
 export default {
   data() {
-    return {}
+    return {
+      size: Api.UNITS.getSize(),
+      widthMap: {
+        batch_sn: [105, 90],
+        batch_name: [140, 110],
+        org_id: [180, 140],
+        gprs_amount: [105, 88],
+        live_month: [120, 95],
+        card_amount: [105, 88],
+        batch_shipper: [105, 88],
+        batch_memo: [150, 120],
+        city: [140, 100],
+        time_added: [153, 153],
+        user_id: [90, 75],
+        alter_id: [90, 75],
+        op: [80, 55],
+      }
+    }
   },
   mounted() {
     this.getData()

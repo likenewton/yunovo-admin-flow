@@ -15,7 +15,7 @@
           <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="激活日期结束"></el-date-picker>
         </el-form-item>
         <el-form-item>
-          <!-- <el-button type="primary" @click="searchData" :disabled="!pageAuthBtn.FCP_02_006_CHECK01">查询</el-button> -->
+          <el-button type="primary" @click="searchData" :disabled="!pageAuthBtn.FCP_02_006_CHECK01">查询</el-button>
           <el-button type="warning" @click="resetData" :disabled="!pageAuthBtn.FCP_02_006_CHECK01">重置</el-button>
         </el-form-item>
       </el-form>
@@ -60,7 +60,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
     <el-card class="clearfix" shadow="never" v-loading="loadData">
@@ -139,7 +139,8 @@ export default {
             label: {
               normal: {
                 show: true,
-                formatter: ''
+                position: 'inside',
+                // formatter: ''
               }
             },
             data: [], //要设置的
@@ -157,8 +158,8 @@ export default {
             label: {
               normal: {
                 show: true,
-                position: 'top',
-                formatter: '',
+                position: 'inside',
+                // formatter: '',
                 rich: {
                   a: {
                     align: 'center'
@@ -237,6 +238,7 @@ export default {
             label: {
               normal: {
                 show: true,
+                position: 'inside',
                 formatter: ''
               }
             },
@@ -251,10 +253,11 @@ export default {
             name: '使用流量',
             type: 'bar',
             stack: '总量',
+            barMaxWidth: 100,
             label: {
               normal: {
                 show: true,
-                position: 'top',
+                position: 'inside',
                 formatter: '',
                 rich: {
                   a: {
@@ -336,15 +339,19 @@ export default {
           label.push(v.org_name)
           data1.push(v.activated)
           data2.push(v.nonactivated)
-          option.series[1].label.normal.formatter = function(series) {
-            return `{b|${option.series[0].data[series.dataIndex]}}\n{a|${series.data}}`
-          }
+          // option.series[1].label.normal.formatter = function(series) {
+          //   return `{b|${option.series[0].data[series.dataIndex]}}\n{a|${series.data}}`
+          // }
         } else if (this.tabIndex === '1' && !v.sums) {
           label.push(v.org_name)
           data1.push(v.unused_count)
           data2.push(v.used_count)
+          option.series[0].label.normal.formatter = function(series) {
+            return Api.UNITS.formatFlowUnit(option.series[0].data[series.dataIndex], 2, false)
+            //return `{b|${Api.UNITS.formatFlowUnit(option.series[0].data[series.dataIndex], 2, false)}}\n{a|${Api.UNITS.formatFlowUnit(series.data, 2, false)}}`
+          }
           option.series[1].label.normal.formatter = function(series) {
-            return `{b|${Api.UNITS.formatFlowUnit(option.series[0].data[series.dataIndex], 2, false)}}\n{a|${Api.UNITS.formatFlowUnit(series.data, 2, false)}}`
+            return Api.UNITS.formatFlowUnit(option.series[1].data[series.dataIndex], 2, false)
           }
         }
       })

@@ -12,43 +12,44 @@
           </el-select>
         </el-form-item>
         <el-form-item>
+          <el-button type="primary" @click="searchData" :disabled="!pageAuthBtn.FCP_01_004_CHECK01">查询</el-button>
           <el-button type="warning" @click="resetData" :disabled="!pageAuthBtn.FCP_01_004_CHECK01">重置</el-button>
         </el-form-item>
       </el-form>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
-        <el-table-column prop="org_id" label="机构名称" min-width="130" sortable="custom">
+        <el-table-column prop="org_id" label="机构名称" :min-width="widthMap.org_id[size]" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="gprs_amount" label="套餐流量" width="95" sortable="custom" align="right">
+        <el-table-column prop="gprs_amount" label="套餐流量" :width="widthMap.gprs_amount[size]" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatComboFlow(scope.row.gprs_amount)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="gprs_price" label="套餐价格" width="100" sortable="custom" align="right">
+        <el-table-column prop="gprs_price" label="套餐价格" :width="widthMap.gprs_price[size]" sortable="custom" align="right">
           <template slot-scope="scope">
             <span>￥{{formatMoney(scope.row.gprs_price)}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="allot_month" label="分配月数" width="85" sortable="custom" align="right"></el-table-column>
-        <el-table-column prop="allot_value" label="月均流量" width="95" sortable="custom" align="right">
+        <el-table-column prop="allot_month" label="分配月数" :width="widthMap.allot_month[size]" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="allot_value" label="月均流量" :width="widthMap.allot_value[size]" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatComboFlow(scope.row.allot_value)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="allot_reset" label="是否清零" width="85" sortable="custom">
+        <el-table-column prop="allot_reset" label="是否清零" :width="widthMap.allot_reset[size]" sortable="custom">
           <template slot-scope="scope">
             <span v-if="scope.row.allot_reset==1">会清零</span>
             <span v-else>不清零</span>
           </template>
         </el-table-column>
-        <el-table-column prop="live_month" label="有效周期" width="120" sortable="custom">
+        <el-table-column prop="live_month" label="有效周期" :width="widthMap.live_month[size]" sortable="custom">
           <template slot-scope="scope">
             <div>{{getLiveMonthAlias(scope.row.live_month)}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="套餐描述" min-width="190">
+        <el-table-column label="套餐描述" :min-width="widthMap.descripe[size]">
           <template slot-scope="scope">
             <div>
               <span>{{scope.row.pack_name}}</span>
@@ -56,25 +57,25 @@
             <div style="font-size: 12px; line-height: 16px">{{scope.row.pack_memo}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="pack_rebate" label="返利金额" width="90" sortable="custom" align="right">
+        <el-table-column prop="pack_rebate" label="返利金额" :width="widthMap.pack_rebate[size]" sortable="custom" align="right">
           <template slot-scope="scope">
             <span>￥{{formatMoney(scope.row.pack_rebate)}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="pack_recom" label="是否推荐" width="85" sortable="custom">
+        <el-table-column prop="pack_recom" label="是否推荐" :width="widthMap.pack_recom[size]" sortable="custom">
           <template slot-scope="scope">
             <span v-if="scope.row.pack_recom==1">是</span>
             <span v-else>否</span>
           </template>
         </el-table-column>
-        <el-table-column prop="time_added" label="添加时间" width="153" sortable="custom"></el-table-column>
-        <el-table-column prop="time_modify" label="更改时间" width="153" sortable="custom"></el-table-column>
-        <el-table-column prop="user_id" label="创建者" width="75" sortable="custom">
+        <el-table-column prop="time_added" label="添加时间" :width="widthMap.time_added[size]" sortable="custom"></el-table-column>
+        <el-table-column prop="time_modify" label="更改时间" :width="widthMap.time_modify[size]" sortable="custom"></el-table-column>
+        <el-table-column prop="user_id" label="创建者" :width="widthMap.user_id[size]" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.first_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="alter_id" label="更改者" width="75" sortable="custom">
+        <el-table-column prop="alter_id" label="更改者" :width="widthMap.alter_id[size]" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.alter_name}}</span>
           </template>
@@ -98,7 +99,25 @@ import { mapState } from 'vuex'
 
 export default {
   data() {
-    return {}
+    return {
+      size: Api.UNITS.getSize(),
+      widthMap: {
+        org_id: [130, 130],
+        gprs_amount: [95, 88],
+        gprs_price: [100, 100],
+        allot_month: [85, 45],
+        allot_value: [95, 95],
+        allot_reset: [85, 70],
+        live_month: [120, 75],
+        descripe: [190, 130],
+        pack_rebate: [90, 90],
+        pack_recom: [85, 45],
+        time_added: [153, 95],
+        time_modify: [153, 95],
+        user_id: [75, 65],
+        alter_id: [75, 65],
+      },
+    }
   },
   mounted() {
     this.getData()
@@ -173,6 +192,14 @@ export default {
 
   .el-date-editor .el-range-separator {
     width: auto;
+  }
+
+  @media screen and (max-width: 1900px) {
+    .is-sortable {
+      .caret-wrapper {
+        display: none;
+      }
+    }
   }
 }
 

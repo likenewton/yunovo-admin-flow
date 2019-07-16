@@ -12,6 +12,7 @@
           </el-select>
         </el-form-item>
         <el-form-item>
+          <el-button type="primary" @click="simpleSearchData" :disabled="!pageAuthBtn.FCP_02_007_CHECK01">查询</el-button>
           <el-button type="primary" @click="searchVipVisible = true" :disabled="!pageAuthBtn.FCP_02_007_CHECK01">高级查询</el-button>
         </el-form-item>
       </el-form>
@@ -52,7 +53,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
     <el-card class="clearfix" shadow="never" v-loading="loadData">
@@ -147,7 +148,8 @@ export default {
             label: {
               normal: {
                 show: true,
-                formatter: ''
+                position: 'inside',
+                // formatter: ''
               }
             },
             data: [], //要设置的
@@ -165,8 +167,8 @@ export default {
             label: {
               normal: {
                 show: true,
-                position: 'top',
-                formatter: '',
+                position: 'inside',
+                // formatter: '',
                 rich: {
                   a: {
                     align: 'center'
@@ -251,9 +253,9 @@ export default {
           label.push(v.org_name)
           data1.push(v.activated)
           data2.push(v.nonactivated)
-          option.series[1].label.normal.formatter = function(series) {
-            return `{b|${option.series[0].data[series.dataIndex]}}\n{a|${series.data}}`
-          }
+          // option.series[1].label.normal.formatter = function(series) {
+          //   return `{b|${option.series[0].data[series.dataIndex]}}\n{a|${series.data}}`
+          // }
         }
       })
       setTimeout(() => {

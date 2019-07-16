@@ -125,11 +125,10 @@ module.exports = {
 
   // 获取页面的尺寸
   getSize() {
-    let size = 'medium'
+    let size = 0
     let width = $(window).width()
-    if (width > 1600) size = 'medium'
-    else if (width <= 1600 && width > 1300) size = 'small'
-    else size = 'mini'
+    if (width < 1920) size = 1
+    else if (width < 1440) size = 2
     return size
   },
 

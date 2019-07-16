@@ -25,8 +25,8 @@
             <span>{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="owner_name" label="姓名" width="90" sortable="custom"></el-table-column>
-        <el-table-column prop="owner_gender" label="姓别" width="80" sortable="custom">
+        <el-table-column prop="owner_name" label="姓名" :width="widthMap.owner_name[size]" sortable="custom"></el-table-column>
+        <el-table-column prop="owner_gender" label="姓别" :width="widthMap.owner_gender[size]" sortable="custom">
           <template slot-scope="scope">
             <span v-if="scope.row.owner_gender==1">男性</span>
             <span v-else-if="scope.row.owner_gender==2">女性</span>
@@ -34,10 +34,10 @@
           </template>
         </el-table-column>
         <el-table-column prop="owner_cdi" label="身份证编号" width="175"></el-table-column>
-        <el-table-column prop="time_last" label="最后上报时间" min-width="155" sortable="custom"></el-table-column>
-        <el-table-column prop="time_active" label="卡激活时间" min-width="155" sortable="custom"></el-table-column>
-        <el-table-column prop="time_audit" label="审核时间" min-width="155" sortable="custom"></el-table-column>
-        <el-table-column prop="time_added" label="申请时间" min-width="155" sortable="custom"></el-table-column>
+        <el-table-column prop="time_last" label="最后上报" :min-width="widthMap.time_last[size]" sortable="custom"></el-table-column>
+        <el-table-column prop="time_active" label="卡激活时间" :min-width="widthMap.time_active[size]" sortable="custom"></el-table-column>
+        <el-table-column prop="time_audit" label="审核时间" :min-width="widthMap.time_audit[size]" sortable="custom"></el-table-column>
+        <el-table-column prop="time_added" label="申请时间" :min-width="widthMap.time_added[size]" sortable="custom"></el-table-column>
         <el-table-column prop="cdi_status" label="审核状态" min-width="90" sortable="custom">
           <template slot-scope="scope">
             <span v-if="scope.row.cdi_status==1">无效</span>
@@ -45,12 +45,12 @@
             <span v-else>待审核</span>
           </template>
         </el-table-column>
-        <el-table-column prop="user_id" label="审核者" min-width="100">
+        <el-table-column prop="user_id" label="审核者" :min-width="widthMap.user_id[size]">
           <template slot-scope="scope">
             <span>{{scope.row.first_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" width="115" v-if="pageAuthBtn.FCP_01_007_OP01">
+        <el-table-column fixed="right" label="操作" :width="widthMap.op[size]" v-if="pageAuthBtn.FCP_01_007_OP01">
           <template slot-scope="scope">
             <el-button type="text" v-if="scope.row.cdi_status == 2" @click="showDialog(scope)">查看实名证件</el-button>
             <el-button type="text" v-else @click="showDialog(scope)">审核实名证件</el-button>
@@ -138,6 +138,17 @@ export default {
       choiceItem: {}, // 当前选中项
       formInline: {
         card_iccid: Api.UNITS.getQuery('card_iccid')
+      },
+      size: Api.UNITS.getSize(),
+      widthMap: {
+        owner_name: [90, 65],
+        owner_gender: [80, 65],
+        time_last: [155, 95],
+        time_active: [155, 100],
+        time_audit: [155, 95],
+        time_added: [155, 95],
+        user_id: [100, 65],
+        op: [115, 108],
       },
       authDialogVisible: false
     }

@@ -16,58 +16,58 @@
         </el-form-item>
       </el-form>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border size="mini">
-        <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" width="175" sortable="custom">
+        <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" :width="widthMap.card_iccid[size]" sortable="custom">
           <template slot-scope="scope">
             <span v-if="pageAuthBtn.FCP_01_001_LINK1" class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
             <span v-else>{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="card_type" label="卡商名称" width="135" sortable="custom">
+        <el-table-column prop="card_type" label="卡商名称" :width="widthMap.card_type[size]" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.card_type_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="org_id" label="机构名称" min-width="130" sortable="custom">
+        <el-table-column prop="org_id" label="机构名称" :min-width="widthMap.org_id[size]" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="unicom_month" label="当月用量" width="97" sortable="custom" align="right">
+        <el-table-column prop="unicom_month" label="当月用量" :width="widthMap.unicom_month[size]" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.used_month)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="unicom_total" label="累计用量" width="97" sortable="custom" align="right">
+        <el-table-column prop="unicom_total" label="累计用量" :width="widthMap.unicom_total[size]" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.used_total)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="unicom_unused" label="剩余用量" width="100" sortable="custom" align="right">
+        <el-table-column prop="unicom_unused" label="剩余用量" :width="widthMap.unicom_unused[size]" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.max_unused)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="time_added" label="导卡时间" width="153" sortable="custom"></el-table-column>
-        <el-table-column prop="time_active" label="激活时间" width="153" sortable="custom"></el-table-column>
-        <el-table-column prop="time_last" label="设备更新时间" width="153" sortable="custom"></el-table-column>
-        <el-table-column prop="time_expire" label="过期时间" min-width="153" sortable="custom">
+        <el-table-column prop="time_added" label="导卡时间" :width="widthMap.time_added[size]" sortable="custom"></el-table-column>
+        <el-table-column prop="time_active" label="激活时间" :width="widthMap.time_active[size]" sortable="custom"></el-table-column>
+        <el-table-column prop="time_last" label="设备更新" :width="widthMap.time_last[size]" sortable="custom"></el-table-column>
+        <el-table-column prop="time_expire" label="过期时间" :min-width="widthMap.time_expire[size]" sortable="custom">
           <template slot-scope="scope">
             <div v-html="calcLeftTime(scope.row.time_expire)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="unicom_stop" label="运行状态" width="78">
+        <el-table-column prop="unicom_stop" label="运行状态" :width="widthMap.unicom_stop[size]">
           <template slot-scope="scope">
             <span class="text_success bold" v-if="scope.row.unicom_stop==0">正常运行</span>
             <span class="text_danger bold" v-else>已停卡</span>
           </template>
         </el-table-column>
-        <el-table-column label="激活状态" width="70">
+        <el-table-column label="激活状态" :width="widthMap.other[size]">
           <template slot-scope="scope">
             <span v-if="scope.row.time_active">已激活</span>
             <span v-else>未激活</span>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" width="125">
+        <el-table-column fixed="right" label="操作" :width="widthMap.op[size]">
           <template slot-scope="scope">
             <el-button type="text" @click="$refs.syncUniconData.getSyncUnicomData(scope)" v-if="pageAuthBtn.FCP_01_001_OP01">同步</el-button>
             <el-button type="text" @click="toUnicomLink(scope.row.card_iccid)">套餐</el-button>
@@ -153,6 +153,22 @@ export default {
         pagesize: Api.STATIC.pageSizes[1],
         currentPage: 1,
         total: 0,
+      },
+      size: Api.UNITS.getSize(),
+      widthMap: {
+        card_iccid: [182, 100],
+        card_type: [130, 100],
+        org_id: [130, 130],
+        unicom_month: [97, 97],
+        unicom_total: [97, 97],
+        unicom_unused: [103, 103],
+        time_added: [153, 94],
+        time_active: [153, 94],
+        time_last: [153, 94],
+        time_expire: [153, 94],
+        unicom_stop: [78, 78],
+        other: [70, 68],
+        op: [124, 124]
       },
       dialogChartVisible: false,
       // 图表实例

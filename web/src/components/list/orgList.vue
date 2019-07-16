@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="org_list">
     <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
         <el-button size="small" type="warning" @click="exportExcel">导出</el-button>
@@ -11,7 +11,7 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <!-- <el-button type="primary" @click="searchData">查询</el-button> -->
+          <el-button type="primary" @click="searchData">查询</el-button>
           <el-button type="warning" @click="resetData">重置</el-button>
         </el-form-item>
       </el-form>
@@ -21,34 +21,34 @@
             <span class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="card_total" label="售卡总数" min-width="87" sortable="custom" align="right"></el-table-column>
-        <el-table-column prop="pay_total" label="累充成数" min-width="87" sortable="custom" align="right"></el-table-column>
-        <el-table-column prop="pay_count" label="日充次数" min-width="87" sortable="custom" align="right"></el-table-column>
-        <el-table-column prop="pay_failed" label="日充败数" min-width="87" sortable="custom" align="right"></el-table-column>
-        <el-table-column prop="pay_succeed" label="日充成数" min-width="87" sortable="custom" align="right"></el-table-column>
-        <el-table-column label="使用总数" min-width="73" align="right">
+        <el-table-column prop="card_total" label="售卡总数" :min-width="widthMap.card_total[size]" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="pay_total" label="累充成数" :min-width="widthMap.pay_total[size]" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="pay_count" label="日充次数" :min-width="widthMap.pay_count[size]" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="pay_failed" label="日充败数" :min-width="widthMap.pay_failed[size]" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="pay_succeed" label="日充成数" :min-width="widthMap.pay_succeed[size]" sortable="custom" align="right"></el-table-column>
+        <el-table-column label="使用总数" :min-width="widthMap.calc[size]" align="right">
           <template slot-scope="scope">
             <span>{{scope.row.online_api + scope.row.online_other}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="online_api" label="正常使用" min-width="87" sortable="custom" align="right"></el-table-column>
-        <el-table-column prop="online_other" label="异常使用" min-width="87" sortable="custom" align="right"></el-table-column>
-        <el-table-column prop="active_total" label="累计激活" min-width="87" sortable="custom" align="right"></el-table-column>
-        <el-table-column prop="active_count" label="激活总数" min-width="87" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="online_api" label="正常使用" :min-width="widthMap.online_api[size]" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="online_other" label="异常使用" :min-width="widthMap.online_other[size]" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="active_total" label="累计激活" :min-width="widthMap.active_total[size]" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="active_count" label="激活总数" :min-width="widthMap.active_count[size]" sortable="custom" align="right"></el-table-column>
         <el-table-column label="非设备激活" min-width="82" align="right">
           <template slot-scope="scope">
             <span>{{scope.row.active_count - scope.row.active_device}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="active_device" label="设备端激活" min-width="100" sortable="custom" align="right"></el-table-column>
-        <el-table-column prop="stop_total" label="累计停卡" min-width="87" sortable="custom" align="right"></el-table-column>
-        <el-table-column prop="stop_count" label="停卡数量" min-width="87" sortable="custom" align="right"></el-table-column>
-        <el-table-column prop="used_amount" label="消耗流量" min-width="95" sortable="custom" align="right">
+        <el-table-column prop="active_device" label="设备端激活" :min-width="widthMap.active_device[size]" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="stop_total" label="累计停卡" :min-width="widthMap.stop_total[size]" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="stop_count" label="停卡数量" :min-width="widthMap.stop_count[size]" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="used_amount" label="消耗流量" min-width="97" sortable="custom" align="right">
           <template slot-scope="scope">
             <span v-html="formatFlowUnit(scope.row.used_amount)"></span>
           </template>
         </el-table-column>
-        <el-table-column prop="pay_succeed_money" label="已付金额" min-width="100" sortable="custom" align="right">
+        <el-table-column prop="pay_succeed_money" label="已付金额" min-width="98" sortable="custom" align="right">
           <template slot-scope="scope">
             <span>￥{{scope.row.pay_succeed_money|formatMoney}}</span>
           </template>
@@ -74,7 +74,23 @@ export default {
       tabIndex: '0',
       formInline: {
         stats_date: Api.UNITS.getQuery('stats_date')
-      }
+      },
+      size: Api.UNITS.getSize(),
+      widthMap: {
+        pay_count: [87, 45],
+        card_total: [87, 68],
+        calc: [73, 45],
+        online_api: [87, 68],
+        stop_total: [87, 68],
+        active_device: [100, 82],
+        active_total: [87, 68],
+        online_other: [87, 68],
+        pay_total: [87, 68],
+        pay_failed: [87, 45],
+        pay_succeed: [87, 45],
+        active_count: [87, 68],
+        stop_count: [87, 45],
+      },
     }
   },
   mounted() {
@@ -106,23 +122,33 @@ export default {
 
 </script>
 <style lang="scss">
-.el-pagination {
-  float: right;
-  margin: 25px 40px 0 0;
-}
+.org_list {
+  .el-pagination {
+    float: right;
+    margin: 25px 40px 0 0;
+  }
 
-.el-table {
-  .table-head {}
+  .el-table {
+    .table-head {}
 
-  td {
-    * {
-      font-size: 14px;
+    td {
+      * {
+        font-size: 14px;
+      }
     }
   }
-}
 
-.el-date-editor .el-range-separator {
-  width: auto;
+  .el-date-editor .el-range-separator {
+    width: auto;
+  }
+
+  @media screen and (max-width: 1900px) {
+    .is-sortable {
+      .caret-wrapper {
+        display: none;
+      }
+    }
+  }
 }
 
 </style>
