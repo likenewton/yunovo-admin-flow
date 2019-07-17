@@ -18,7 +18,7 @@ spring:
     port: 6379
     ssl: false
     password: yunovo2Redis
-    database: 0
+    database: 1
     jedis: 
       poll: 
         maxIdle: 8
