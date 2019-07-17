@@ -195,7 +195,7 @@
 			<![CDATA[ AND time_added <= #{date_end} ]]>
 		</if>
 
-		<if test="mdate != null">
+		<if test="mdate != null and mdate != ''">
 			<![CDATA[  AND DATE_FORMAT(time_added, '%Y-%m') = #{mdate} ]]>
 		</if>
 
@@ -768,7 +768,7 @@
 		
 		GROUP BY org_id, mdate
 		
-		<if test="mdate != null">
+		<if test="mdate != null and mdate != ''">
 			 HAVING mdate = #{mdate}
 		</if>
 		
