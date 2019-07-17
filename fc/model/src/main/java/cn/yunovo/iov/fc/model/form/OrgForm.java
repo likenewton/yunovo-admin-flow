@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -49,6 +50,7 @@ public class OrgForm  extends BaseForm implements Serializable{
 	@ApiModelProperty("可开账户数量")
 	@NotNull(message="请填写可开账户数量", groups= {UpdateGroupValidate.class,InsertGroupValidate.class})
 	@Min(message="请输入正确的账户数量", value=0, groups= {UpdateGroupValidate.class,InsertGroupValidate.class})
+	@Max(message="请输入正确的账户数量", value=100, groups= {UpdateGroupValidate.class,InsertGroupValidate.class})
 	private Integer user_total;
 	
 	@ApiModelProperty("异步通知地址")
