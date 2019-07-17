@@ -11,6 +11,7 @@ import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
 import cn.yunovo.iov.fc.model.entity.CcUser;
+import cn.yunovo.iov.fc.model.exception.FormValidateException;
 import cn.yunovo.iov.fc.model.form.OrgForm;
 import cn.yunovo.iov.fc.service.FcConstant;
 import cn.yunovo.iov.fc.service.ICcOrgService;
@@ -322,7 +323,7 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 		}
 		
 		if(this.getByName(form.getName()) != null) {
-			throw new BusinessException(String.format("系统提示： 该【%s】机构已存在！", form.getName()));
+			throw new FormValidateException(String.format("系统提示： 该【%s】机构已存在！", form.getName()), "name", form.buildJsonString());
 		}
 		
 		CcOrg ccOrg = new CcOrg();

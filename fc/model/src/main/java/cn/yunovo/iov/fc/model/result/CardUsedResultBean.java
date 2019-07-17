@@ -2,6 +2,7 @@ package cn.yunovo.iov.fc.model.result;
 
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.metadata.BaseRowModel;
@@ -90,7 +91,7 @@ public class CardUsedResultBean extends BaseRowModel implements Serializable{
 			return 0F;
 		}
 		
-		return MathUtils.round((float)nonactivated / card_count * 100, 2).floatValue();
+		return MathUtils.round((float)nonactivated / card_count * 100, 2, BigDecimal.ROUND_DOWN).floatValue();
 	}
 
 	public Float getUsed_rate() {
@@ -101,7 +102,7 @@ public class CardUsedResultBean extends BaseRowModel implements Serializable{
 		if((unused_count + used_count) == 0) {
 			return 0F;
 		}
-		return MathUtils.round(used_count / (unused_count + used_count) * 100, 2).floatValue();
+		return MathUtils.round(used_count / (unused_count + used_count) * 100, 2, BigDecimal.ROUND_DOWN).floatValue();
 	}
 
 	public Double getGprs_amount() {
@@ -118,7 +119,7 @@ public class CardUsedResultBean extends BaseRowModel implements Serializable{
 		if(card_count == 0) {
 			return 0F;
 		}
-		return MathUtils.round((float)activated / (card_count) * 100, 2).floatValue();
+		return MathUtils.round((float)activated / (card_count) * 100, 2, BigDecimal.ROUND_DOWN).floatValue();
 	}
 	
 	
