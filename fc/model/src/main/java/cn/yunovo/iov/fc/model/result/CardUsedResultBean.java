@@ -85,12 +85,12 @@ public class CardUsedResultBean extends BaseRowModel implements Serializable{
 
 	public Float getNonactivated_rate() {
 		
-		nonactivated =  nonactivated == null ? 0 : nonactivated;
+		nonactivated =  (nonactivated == null ? 0 : nonactivated);
 		if(card_count == null || card_count == 0) {
 			return 0F;
 		}
 		
-		return MathUtils.round(nonactivated / card_count * 100, 2).floatValue();
+		return MathUtils.round((nonactivated / (card_count * 0.1F)) * 100, 2).floatValue();
 	}
 
 	public Float getUsed_rate() {
@@ -118,7 +118,7 @@ public class CardUsedResultBean extends BaseRowModel implements Serializable{
 		if(card_count == 0) {
 			return 0F;
 		}
-		return MathUtils.round(activated / card_count * 100, 2).floatValue();
+		return MathUtils.round(activated / (card_count * 0.1F) * 100, 2).floatValue();
 	}
 	
 	

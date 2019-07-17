@@ -60,7 +60,7 @@
 		update cc_user set status = #{u.status}, 
 		
 		<if test="u.firstname != null">
-			firstname = #{u.firstname}
+			firstname = #{u.firstname},
 		</if>
 		<if test="u.org_id != null">
 			org_id = #{u.org_id},
