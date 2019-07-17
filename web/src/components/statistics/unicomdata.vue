@@ -27,13 +27,13 @@
         <el-table-column prop="nonactivated" label="未激活数" min-width="110" sortable="custom" align="right"></el-table-column>
         <el-table-column prop="noactive_rate" label="未激活率" min-width="110" align="right">
           <template slot-scope="scope">
-            <span>{{(scope.row.nonactivated/scope.row.card_count*100).toFixed(3)}}%</span>
+            <span>{{(scope.row.nonactivated/scope.row.card_count*100) | sliceFloat(3)}}%</span>
           </template>
         </el-table-column>
         <el-table-column prop="activated" label="已激活数" min-width="110" sortable="custom" align="right"></el-table-column>
         <el-table-column prop="active_rate" label="已激活率" min-width="110" align="right">
           <template slot-scope="scope">
-            <span>{{(scope.row.activated/scope.row.card_count*100).toFixed(3)}}%</span>
+            <span>{{(scope.row.activated/scope.row.card_count*100) | sliceFloat(3)}}%</span>
           </template>
         </el-table-column>
         <el-table-column prop="unicom_count" label="使用总流量" min-width="110" sortable="custom" align="right">
@@ -141,10 +141,12 @@ export default {
             rotate: 20
           },
         },
+        // barGap: '-100%',
         series: [{
             name: '已激活',
             type: 'bar',
             stack: '总量',
+            barMaxWidth: 100,
             label: {
               normal: {
                 show: true,
@@ -203,10 +205,9 @@ export default {
       Api.UNITS.exportExcel(_axios.ajaxAd.unicomdataExport, this.formInline)
     },
     exportExcel_2(type, org_id) {
-      Api.UNITS.exportExcel(_axios.ajaxAd.unicomdataExport_2, Object.assign({}, this.formInline, {
-        type,
-        org_id,
-      }))
+      let params = Object.assign({}, this.formInline, { type })
+      if (org_id) params.org_id = org_id
+      Api.UNITS.exportExcel(_axios.ajaxAd.unicomdataExport_2, params)
     },
     // 简单查询
     simpleSearchData() {

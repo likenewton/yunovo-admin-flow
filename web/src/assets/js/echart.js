@@ -1,3 +1,5 @@
+import { formatFlowUnit } from './unit.js'
+
 class Echarts {
   constructor(para = {}) {
     // 实例化时初始的参数
@@ -56,7 +58,11 @@ class Echarts {
                   axisData.forEach((v, i) => {
                     str += `<tr class="tbody"><td class="td">${v}</td>`
                     series.forEach((v) => {
-                      str += `<td class="td">${v.data[i]}</td>`
+                      if (v.name.indexOf('流量') > -1) {
+                        str += `<td class="td">${formatFlowUnit(v.data[i], 3, false)}</td>`
+                      } else {
+                        str += `<td class="td">${v.data[i]}</td>`
+                      }
                     })
                     str += '</tr>'
                   })
@@ -141,7 +147,7 @@ class Echarts {
     // this.option.toolbox.feature
     this.data.series.forEach((v, i) => {
       this.option.series.push({
-        name: this.data.legend[i],
+        name: v.name || this.data.legend[i],
         type: v.type || this.data.type,
         data: v.data,
         stack: v.stack,

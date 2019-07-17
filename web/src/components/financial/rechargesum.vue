@@ -45,7 +45,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
     <el-card class="clearfix" shadow="never" v-loading="loadData">
@@ -91,12 +91,12 @@ export default {
           name: '充值总次数'
         },
         '1': {
-          title: '机构充值总流量(MB)',
+          title: '机构充值总流量（MB）',
           name: '充值总流量'
         },
         '2': {
-          title: '机构充值总金额(元)',
-          name: '充值总金额'
+          title: '机构充值总金额（元）',
+          name: '充值总金额（元）'
         }
       },
       myChart: null,

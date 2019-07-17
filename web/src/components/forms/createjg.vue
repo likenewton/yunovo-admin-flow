@@ -16,7 +16,8 @@
       </el-form-item>
       <el-form-item prop="user_total">
         <span slot="label">可开账户数量：</span>
-        <el-input v-model="formInline.user_total" @input="formInline.user_total = limitNumber(formInline.user_total, 6, 0)" placeholder="请输入可开账户数量"></el-input>
+        <el-input v-model="formInline.user_total" @input="formInline.user_total = limitNumber(formInline.user_total, 2, 0)" placeholder="请输入可开账户数量"></el-input>
+        <div class="annotation">最多可开账户数为99</div>
       </el-form-item>
       <el-form-item prop="notify_url">
         <span slot="label">异步通知地址：</span>
@@ -147,14 +148,19 @@ export default {
               url: _axios.ajaxAd.updateOrg,
               data: this.formInline,
               done: ((res) => {
-                this.$router.push({ name: 'jgManage' })
-                setTimeout(() => {
-                  // 加个延迟，动画更流畅
-                  this.showMsgBox({
-                    type: 'success',
-                    message: res.msg || '修改成功！'
-                  })
-                }, 150)
+                if (res.status === 400) {
+                  this.formInline[res.data] = ''
+                  this.$refs.ruleForm.validateField([res.data])
+                } else {
+                  this.$router.push({ name: 'jgManage' })
+                  setTimeout(() => {
+                    // 加个延迟，动画更流畅
+                    this.showMsgBox({
+                      type: 'success',
+                      message: res.msg || '修改成功！'
+                    })
+                  }, 150)
+                }
               })
             })
           } else { // 新增
@@ -163,14 +169,19 @@ export default {
               url: _axios.ajaxAd.addOrg,
               data: this.formInline,
               done: ((res) => {
-                this.$router.push({ name: 'jgManage' })
-                setTimeout(() => {
-                  // 加个延迟，动画更流畅
-                  this.showMsgBox({
-                    type: 'success',
-                    message: res.msg || '新增成功！'
-                  })
-                }, 150)
+                if (res.status === 400) {
+                  this.formInline[res.data] = ''
+                  this.$refs.ruleForm.validateField([res.data])
+                } else {
+                  this.$router.push({ name: 'jgManage' })
+                  setTimeout(() => {
+                    // 加个延迟，动画更流畅
+                    this.showMsgBox({
+                      type: 'success',
+                      message: res.msg || '新增成功！'
+                    })
+                  }, 150)
+                }
               })
             })
           }

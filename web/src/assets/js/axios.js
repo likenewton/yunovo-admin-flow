@@ -1,3 +1,5 @@
+import { token } from './static.js'
+
 class AXIOS {
   constructor(para) {
     this.data = {
@@ -6,9 +8,6 @@ class AXIOS {
       timeout: 60000,
       data: null, // 请求体所带的参数
       done: null, // 接口请求成功回调函数
-      headers: {
-        'Content-Type': 'application/json'
-      }
     }
     // 实例化时初始的参数
     this.constData = Object.assign(this.data, para)
@@ -138,10 +137,8 @@ class AXIOS {
 
   send(para) {
     let data = Object.assign({}, this.constData, para)
-    data.headers = Object.assign(this.constData.headers, para.headers || {
-      'Content-Type': 'application/json',
-      'iov-token': localStorage.getItem('iov-token') || '' // 每次的请求都要在headers中携带token过去
-    })
+    data.headers = para.headers || {}
+    data.headers[token] = localStorage.getItem(token) || ''
 
     axios({
       method: data.method,

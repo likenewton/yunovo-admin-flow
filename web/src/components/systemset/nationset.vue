@@ -83,6 +83,7 @@ export default {
             ntids: [scope.row.ntid]
           },
           done: ((res) => {
+            this.$refs.listTable.toggleRowSelection(scope.row, false)
             this.getData()
             setTimeout(() => {
               this.showMsgBox({
@@ -119,6 +120,7 @@ export default {
               ntids: this.selectData.map((v) => v.ntid)
             },
             done: ((res) => {
+              this.$refs.listTable.clearSelection()
               this.getData()
               setTimeout(() => {
                 this.showMsgBox({

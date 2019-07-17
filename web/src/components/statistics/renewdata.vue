@@ -28,7 +28,7 @@
         <el-table-column prop="pay_cards" label="续费卡数" min-width="100" sortable="custom" align="right"></el-table-column>
         <el-table-column prop="pay_rate" label="续费比率" min-width="100" sortable="custom" align="right">
           <template slot-scope="scope">
-            <span>{{scope.row.pay_rate ? scope.row.pay_rate.toFixed(3) : 0}}%</span>
+            <span>{{scope.row.pay_rate | sliceFloat(3)}}%</span>
           </template>
         </el-table-column>
       </el-table>

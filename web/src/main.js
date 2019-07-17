@@ -58,18 +58,24 @@ router.beforeEach((to, from, next) => {
     sessionStorage.removeItem('target_href')
     if (targetHref) location.href = targetHref
     else location.href = location.href.split('?')[0]
-  } 
+  }
   
   // 验证是否登录
-  _axios.send({
-    method: 'get',
-    url: _axios.ajaxAd.isLogin,
-    done: (res) => {
-      // 这里一定登录了
-      if (store.state.authMenu.length === 0) store.dispatch('getAuthMenu')
-      next()
-    }
-  })
+  if (!store.state.isLogin) {
+    _axios.send({
+      method: 'get',
+      url: _axios.ajaxAd.isLogin,
+      done: (res) => {
+        // 这里一定登录了
+        if (store.state.authMenu.length === 0) store.dispatch('getAuthMenu')
+        store.commit('SET_ISLOGIN', { isLogin: true })
+        next()
+      }
+    })
+  } else {
+    next()
+  }
+
 })
 
 new Vue({

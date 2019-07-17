@@ -157,7 +157,7 @@ export default {
       size: Api.UNITS.getSize(),
       widthMap: {
         card_iccid: [182, 100],
-        card_type: [130, 100],
+        card_type: [126, 100],
         org_id: [130, 130],
         unicom_month: [97, 97],
         unicom_total: [97, 97],

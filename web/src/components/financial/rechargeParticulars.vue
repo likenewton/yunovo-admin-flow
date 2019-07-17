@@ -16,14 +16,14 @@
         </el-form-item>
       </el-form>
       <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border resizable size="mini">
-        <el-table-column prop="pay_sn" label="订单编号" :width="widthMap.pay_sn[size]" sortable="custom"></el-table-column>
+        <el-table-column prop="pay_sn" label="订单编号" :min-width="widthMap.pay_sn[size]" sortable="custom"></el-table-column>
         <el-table-column prop="card_iccid" label="ICCID卡" :width="widthMap.card_iccid[size]" sortable="custom">
           <template slot-scope="scope">
             <span v-if="scope.row.sums|| !pageAuthBtn.FCP_03_003_LINK01">{{scope.row.card_iccid}}</span>
             <span v-else class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="card_id" label="卡商名称" :width="widthMap.card_id[size]" sortable="custom">
+        <el-table-column prop="card_id" label="卡商名称" :min-width="widthMap.card_id[size]" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.card_type_name}}</span>
           </template>

@@ -26,9 +26,9 @@
         </el-table-column>
         <el-table-column prop="card_total" label="售卡总数" :min-width="widthMap.card_total[size]" align="right" sortable="custom"></el-table-column>
         <el-table-column prop="pay_total" label="累充成数" :min-width="widthMap.pay_total[size]" align="right" sortable="custom"></el-table-column>
-        <el-table-column prop="pay_count" label="日充次数" :min-width="widthMap.pay_count[size]" sortable="custom" align="right"></el-table-column>
-        <el-table-column prop="pay_failed" label="日充败数" :min-width="widthMap.pay_failed[size]" sortable="custom" align="right"></el-table-column>
-        <el-table-column prop="pay_succeed" label="日充成数" :min-width="widthMap.pay_succeed[size]" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="pay_count" label="日充次数" :width="widthMap.pay_count[size]" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="pay_failed" label="日充败数" :width="widthMap.pay_failed[size]" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="pay_succeed" label="日充成数" :width="widthMap.pay_succeed[size]" sortable="custom" align="right"></el-table-column>
         <el-table-column prop="online_count" label="使用总量" :min-width="widthMap.online_count[size]" sortable="custom" align="right"></el-table-column>
         <el-table-column prop="online_api" label="正常使用" :min-width="widthMap.online_api[size]" sortable="custom" align="right"></el-table-column>
         <el-table-column prop="online_other" label="异常使用" :min-width="widthMap.online_other[size]" sortable="custom" align="right"></el-table-column>
@@ -37,7 +37,7 @@
         <el-table-column prop="active_unicom" label="非设备激活" :min-width="widthMap.active_unicom[size]" sortable="custom" align="right"></el-table-column>
         <el-table-column prop="active_device" label="设备端激活" :min-width="widthMap.active_device[size]" sortable="custom" align="right"></el-table-column>
         <el-table-column prop="stop_total" label="累计停卡" :min-width="widthMap.stop_total[size]" sortable="custom" align="right"></el-table-column>
-        <el-table-column prop="stop_count" label="停卡数量" :min-width="widthMap.stop_count[size]" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="stop_count" label="停卡数量" :width="widthMap.stop_count[size]" sortable="custom" align="right"></el-table-column>
         <el-table-column prop="used_amount" label="消耗流量" :min-width="widthMap.used_amount[size]" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.used_amount)"></div>

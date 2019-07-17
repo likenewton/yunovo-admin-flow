@@ -30,13 +30,13 @@
         <el-table-column prop="nonactivated" label="未激活数" min-width="100" sortable="custom" align="right"></el-table-column>
         <el-table-column label="未激活率" min-width="100" align="right">
           <template slot-scope="scope">
-            <span>{{(scope.row.nonactivated/scope.row.card_count*100).toFixed(3)}}%</span>
+            <span>{{(scope.row.nonactivated/scope.row.card_count*100) | sliceFloat(3)}}%</span>
           </template>
         </el-table-column>
         <el-table-column prop="activated" label="已激活数" min-width="100" sortable="custom" align="right"></el-table-column>
         <el-table-column label="已激活率" min-width="100" align="right">
           <template slot-scope="scope">
-            <span>{{(scope.row.activated/scope.row.card_count*100).toFixed(3)}}%</span>
+            <span>{{(scope.row.activated/scope.row.card_count*100) | sliceFloat(3)}}%</span>
           </template>
         </el-table-column>
         <el-table-column prop="pay_total" label="分配总流量" min-width="100" align="right">
@@ -56,7 +56,7 @@
         </el-table-column>
         <el-table-column label="使用流量率" min-width="100" align="right">
           <template slot-scope="scope">
-            <span>{{(scope.row.used_count/(scope.row.used_count + scope.row.unused_count)*100).toFixed(3)}}%</span>
+            <span>{{(scope.row.used_count/(scope.row.used_count + scope.row.unused_count)*100) | sliceFloat(3)}}%</span>
           </template>
         </el-table-column>
       </el-table>
@@ -136,6 +136,7 @@ export default {
             name: '已激活',
             type: 'bar',
             stack: '总量',
+            barMaxWidth: 100,
             label: {
               normal: {
                 show: true,
@@ -235,6 +236,7 @@ export default {
             name: '剩余流量',
             type: 'bar',
             stack: '总量',
+            barMaxWidth: 100,
             label: {
               normal: {
                 show: true,

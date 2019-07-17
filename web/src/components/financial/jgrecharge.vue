@@ -41,7 +41,7 @@
         </el-table-column>
         <el-table-column label="已付款率" min-width="100" align="right">
           <template slot-scope="scope">
-            <span>{{(scope.row.paid_amount/scope.row.paid_count*100).toFixed(3)}}%</span>
+            <span>{{(scope.row.paid_amount/scope.row.paid_count*100) | sliceFloat(3)}}%</span>
           </template>
         </el-table-column>
         <el-table-column prop="nopaid_amount" label="未付次数" min-width="100" sortable="custom" align="right"></el-table-column>
@@ -52,7 +52,7 @@
         </el-table-column>
         <el-table-column label="未付款率" min-width="100" align="right">
           <template slot-scope="scope">
-            <span>{{(scope.row.nopaid_amount/scope.row.paid_count*100).toFixed(3)}}%</span>
+            <span>{{(scope.row.nopaid_amount/scope.row.paid_count*100) | sliceFloat(3)}}%</span>
           </template>
         </el-table-column>
       </el-table>

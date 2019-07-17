@@ -18,26 +18,26 @@
       </el-form>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" @selection-change="handleSelectionChange" :row-key="getRowKeys" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column fixed="left" type="selection" :reserve-selection="true" min-width="60"></el-table-column>
-        <el-table-column prop="org_id" fixed="left" label="机构名称" min-width="160" sortable="custom">
+        <el-table-column prop="org_id" fixed="left" label="机构名称" :min-width="widthMap.org_id[size]" sortable="custom">
           <template slot-scope="scope">
             <span v-if="pageAuthBtn.FCP_04_001_LINK01" class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.name}}</span>
             <span v-else>{{scope.row.name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="partner_id" label="合作编号" min-width="140" sortable="custom"></el-table-column>
-        <el-table-column prop="partner_key" label="合作秘钥" width="150" sortable="custom"></el-table-column>
-        <el-table-column prop="notify_url" label="异步通知地址" min-width="215" sortable="custom"></el-table-column>
+        <el-table-column prop="partner_id" label="合作编号" :min-width="widthMap.partner_id[size]" sortable="custom"></el-table-column>
+        <el-table-column prop="partner_key" label="合作秘钥" :width="widthMap.partner_key[size]" sortable="custom"></el-table-column>
+        <el-table-column prop="notify_url" label="异步通知地址" :min-width="widthMap.notify_url[size]" sortable="custom"></el-table-column>
         <el-table-column prop="user_total" label="可开账户数量" width="110" sortable="custom" align="right"></el-table-column>
-        <el-table-column prop="email" label="负责人邮箱" min-width="105" sortable="custom"></el-table-column>
+        <el-table-column prop="email" label="负责人邮箱" :min-width="widthMap.email[size]" sortable="custom"></el-table-column>
         <el-table-column prop="tel" label="负责人手机" min-width="108" sortable="custom"></el-table-column>
-        <el-table-column prop="rebate_value" label="返利比率" width="90" sortable="custom" align="right"></el-table-column>
-        <el-table-column prop="memo" label="机构描述" show-overflow-tooltip min-width="160" sortable="custom"></el-table-column>
-        <el-table-column prop="user_id" label="创建者" min-width="80" sortable="custom">
+        <el-table-column prop="rebate_value" label="返利比率" width="87" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="memo" label="机构描述" show-overflow-tooltip :min-width="widthMap.memo[size]" sortable="custom"></el-table-column>
+        <el-table-column prop="user_id" label="创建者" :min-width="widthMap.user_id[size]" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.create_by_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="alter_id" label="更改者" min-width="80" sortable="custom">
+        <el-table-column prop="alter_id" label="更改者" :min-width="widthMap.alter_id[size]" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.update_by_name}}</span>
           </template>
@@ -62,7 +62,18 @@ export default {
   data() {
     return {
       // 在列表中选择的数据
-      selectData: []
+      selectData: [],
+      size: Api.UNITS.getSize(),
+      widthMap: {
+        org_id: [160, 126],
+        partner_key: [150, 115],
+        notify_url: [215, 130],
+        memo: [160, 120],
+        user_id: [80, 74],
+        alter_id: [80, 74],
+        email: [105, 98],
+        partner_id: [140, 100],
+      },
     }
   },
   mounted() {
@@ -98,6 +109,8 @@ export default {
             orgs: [scope.row.org_id]
           },
           done: ((res) => {
+            // 不管怎么样，如果该项被删除了，一定要清空该项选择
+            this.$refs.listTable.toggleRowSelection(scope.row, false)
             this.getData()
             setTimeout(() => {
               this.showMsgBox({
@@ -134,6 +147,8 @@ export default {
               orgs: this.selectData.map((v) => v.org_id)
             },
             done: ((res) => {
+              // 如果是批量删除就要清空所有的选择
+              this.$refs.listTable.clearSelection()
               this.getData()
               setTimeout(() => {
                 this.showMsgBox({

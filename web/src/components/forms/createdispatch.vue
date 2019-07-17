@@ -4,9 +4,10 @@
       <span>机构权限分配</span>
     </div>
     <el-form class="editor-form" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="140px" size="small">
-      <el-form-item prop="alipay_partner">
+      <el-form-item prop="org_id">
         <span slot="label">所属机构：</span>
         <el-select v-model="formInline.org_id" filterable placeholder="请选择">
+          <el-option :key="-1" label="未分配" :value="0"></el-option>
           <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value - 0"></el-option>
         </el-select>
       </el-form-item>
@@ -74,6 +75,9 @@ export default {
         org_id: [{
           required: true,
           message: '请选择所属机构',
+          trigger: 'change'
+        }, {
+          validator: this.validatorOrgId,
           trigger: 'change'
         }],
         username: [{
@@ -211,6 +215,13 @@ export default {
           return false;
         }
       })
+    },
+    validatorOrgId(rule, value, callback) {
+      if (value === 0) {
+        callback(new Error('请先分配机构'))
+      } else {
+        callback()
+      }
     }
   }
 }
