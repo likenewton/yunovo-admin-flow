@@ -1,8 +1,6 @@
 package cn.yunovo.iov.fc.model.form;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.regex.Matcher;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.Email;
