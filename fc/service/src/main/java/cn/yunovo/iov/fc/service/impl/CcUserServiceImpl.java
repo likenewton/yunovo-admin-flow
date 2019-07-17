@@ -64,7 +64,7 @@ public class CcUserServiceImpl extends ServiceImpl<ICcUserMapper, CcUser> implem
 	public String getOrgpos(String loginname) {
 		
 		CcUser user = this.findUserOrgAndOrgpos(loginname);
-		if(user == null) {
+		if(user == null || user.getOrg_id() == 0) {
 			return null;
 		}
 		

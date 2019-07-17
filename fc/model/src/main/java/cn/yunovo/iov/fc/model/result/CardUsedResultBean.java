@@ -58,17 +58,17 @@ public class CardUsedResultBean extends BaseRowModel implements Serializable{
 	private Float nonactivated_rate;
 	
 	@Setter
-	@ExcelProperty(index = 6, value = "已激活卡率")
+	@ExcelProperty(index = 6, value = "已激活卡率(%)")
 	private Float activated_rate;
 	
 	@Setter
 	@Getter
-	@ExcelProperty(index = 9, value = "剩余流量")
+	@ExcelProperty(index = 9, value = "剩余流量(M)")
 	private Double unused_count;
 	
 	@Setter
 	@Getter
-	@ExcelProperty(index = 8, value = "使用流量")
+	@ExcelProperty(index = 8, value = "使用流量(M)")
 	private Double used_count;
 	
 	@Setter
@@ -77,11 +77,11 @@ public class CardUsedResultBean extends BaseRowModel implements Serializable{
 	private Double pay_total;
 	
 	@Setter
-	@ExcelProperty(index = 10, value = "使用流量率")
+	@ExcelProperty(index = 10, value = "使用流量率(%)")
 	private Float used_rate;
 	
 	@Setter
-	@ExcelProperty(index = 7, value = "流量总计")
+	@ExcelProperty(index = 7, value = "流量总计(M)")
 	private Double gprs_amount;
 
 	public Float getNonactivated_rate() {
