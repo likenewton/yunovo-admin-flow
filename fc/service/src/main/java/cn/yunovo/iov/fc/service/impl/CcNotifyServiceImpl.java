@@ -98,7 +98,7 @@ public class CcNotifyServiceImpl extends ServiceImpl<ICcNotifyMapper, CcNotify> 
 			return p;
 		}
 		
-		Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
+		//Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
 		
 		for (CcNotify ccNotify : records) {
 			//ccNotify.setOrg_name(orgs.get(String.valueOf(ccNotify.getOrg_id())).getName());

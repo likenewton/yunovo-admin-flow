@@ -18,7 +18,7 @@
 			<![CDATA[ AND ntf_date <= #{date_end} ]]>
 		</if>
 
-		<if test="ntf_type != null">
+		<if test="ntf_type != null and ntf_type != ''">
 			<![CDATA[ AND ntf_type = #{ntf_type} ]]>
 		</if>
 	
