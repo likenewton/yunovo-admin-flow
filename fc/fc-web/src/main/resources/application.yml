@@ -18,7 +18,7 @@ spring:
     port: 6379
     ssl: false
     password: yunovo2Redis
-    database: 1
+    database: 0
     jedis: 
       poll: 
         maxIdle: 8
@@ -28,7 +28,7 @@ spring:
     clw: 
       name: clw
       type: com.alibaba.druid.pool.DruidDataSource
-      url: "jdbc:mysql://10.0.3.52:3306/gprstest?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT"
+      url: "jdbc:mysql://10.0.3.52:3306/gprs?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT"
       username: root
       password: 123456
       driver-class-name: com.mysql.jdbc.Driver
@@ -176,9 +176,9 @@ fc:
 casClient: 
   casEnabled: true
   casServerHost: tcas.yunovo.cn
-  casServerUrlPrefix: http://tcas.yunovo.cn:8081/cas-server
-  casServerLoginUrl: http://tcas.yunovo.cn:8081/cas-server/login
-  casServerLogoutUrl: http://tcas.yunovo.cn:8081/cas-server/logout
+  casServerUrlPrefix: http://192.168.3.240:8081/cas-server
+  casServerLoginUrl: http://192.168.3.240:8081/cas-server/login
+  casServerLogoutUrl: http://192.168.3.240:8081/cas-server/logout
   serverHost: 10.0.0.160
   serverName: http://10.0.0.160:9098
   service: http://10.0.0.160:9098/fc/api/sso/ssoLogin
