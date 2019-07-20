@@ -69,9 +69,6 @@ public class CcGprsMove implements Serializable {
 	@ApiModelProperty(value = "旧卡机构名称")
 	private String old_org_name;
 	
-	@TableField(exist=false)
-	@ApiModelProperty(value = "操作者姓名(CN)")
-	private String first_name;
 	
 	
 

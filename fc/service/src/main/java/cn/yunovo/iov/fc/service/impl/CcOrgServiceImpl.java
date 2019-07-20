@@ -277,12 +277,12 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 			return p;
 		}
 
-		Map<Integer, String> userMap = iCcUserService.userIdMap();
+		Map<String, String> userMap = iCcUserService.userMap();
 		if(!CollectionUtils.isEmpty(userMap)) {
 			for (CcOrg ccOrg : records) {
 				
-				ccOrg.setCreate_by_name(userMap.get(ccOrg.getUser_id()));
-				ccOrg.setUpdate_by_name(userMap.get(ccOrg.getAlter_id()));
+				ccOrg.setCreate_by(StringUtils.defaultIfEmpty(userMap.get(ccOrg.getCreate_by()), ccOrg.getCreate_by()));
+				ccOrg.setUpdate_by(StringUtils.defaultIfEmpty(userMap.get(ccOrg.getUpdate_by()), ccOrg.getUpdate_by()));
 			}
 		}
 

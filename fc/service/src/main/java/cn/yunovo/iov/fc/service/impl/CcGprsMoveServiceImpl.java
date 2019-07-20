@@ -101,12 +101,12 @@ public class CcGprsMoveServiceImpl extends ServiceImpl<ICcGprsMoveMapper, CcGprs
 		if(!CollectionUtils.isEmpty(records)) {
 			
 			Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
-			Map<Integer, String> userMap = iCcUserService.userIdMap();
+			Map<String, String> userMap = iCcUserService.userMap();
 			for (CcGprsMove ccGprsMove : records) {
 
 				ccGprsMove.setOrg_name(orgs.get(String.valueOf(ccGprsMove.getNew_orgid())).getName());
 				ccGprsMove.setOld_org_name(orgs.get(String.valueOf(ccGprsMove.getOld_orgid())).getName());
-				ccGprsMove.setFirst_name(userMap.get(ccGprsMove.getUser_id()));
+				ccGprsMove.setCreate_by(StringUtils.defaultIfEmpty(userMap.get(ccGprsMove.getCreate_by()), ccGprsMove.getCreate_by()));
 			}
 		}
 		

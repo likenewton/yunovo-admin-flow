@@ -125,10 +125,13 @@ public class CcUserServiceImpl extends ServiceImpl<ICcUserMapper, CcUser> implem
 		
 		if(!CollectionUtils.isEmpty(records)) {
 			Map<Integer, String> orgMaps = iCcOrgService.orgMaps();
+			Map<String, String> userMap = this.userMap();
 			for (UserResultBean user : records) {
 				
 				user.setOrg_name(user.getOrg_id() == null ? "暂未设置" : orgMaps.get(user.getOrg_id()));
 				user.setOrgpos_name(getOrgposName(user.getOrgpos(), orgMaps));
+				user.setCreate_by(StringUtils.defaultIfEmpty(userMap.get(user.getCreate_by()), user.getCreate_by()));
+				user.setUpdate_by(StringUtils.defaultIfEmpty(userMap.get(user.getUpdate_by()), user.getUpdate_by()));
 			}
 			
 		}

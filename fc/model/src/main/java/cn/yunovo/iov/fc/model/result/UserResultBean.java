@@ -56,4 +56,5 @@ public class UserResultBean implements Serializable{
 	
 	private Boolean all_org;
 	
+	
 }

@@ -141,11 +141,11 @@ public class CcGprsGiftServiceImpl extends ServiceImpl<ICcGprsGiftMapper, CcGprs
 		if(!CollectionUtils.isEmpty(records)) {
 			
 			Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
-			Map<Integer, String> userMap = iCcUserService.userIdMap();
+			Map<String, String> userMap = iCcUserService.userMap();
 			for (CcGprsGift ccGprsGift : records) {
 
 				ccGprsGift.setOrg_name(orgs.get(String.valueOf(ccGprsGift.getOrg_id())).getName());
-				ccGprsGift.setFirst_name(userMap.get(ccGprsGift.getUser_id()));
+				ccGprsGift.setCreate_by(StringUtils.defaultIfEmpty(userMap.get(ccGprsGift.getCreate_by()), ccGprsGift.getCreate_by()));
 			}
 		}
 		

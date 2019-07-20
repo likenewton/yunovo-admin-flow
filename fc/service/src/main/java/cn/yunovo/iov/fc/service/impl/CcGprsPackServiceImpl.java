@@ -103,12 +103,12 @@ public class CcGprsPackServiceImpl extends ServiceImpl<ICcGprsPackMapper, CcGprs
 		if(!CollectionUtils.isEmpty(records)) {
 			
 			Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
-			Map<Integer, String> userMap = iCcUserService.userIdMap();
+			Map<String, String> userMap = iCcUserService.userMap();
 			for (CcGprsPack ccGprsPack : records) {
 
 				ccGprsPack.setOrg_name(getGprsPackOrg(ccGprsPack.getOrg_id(), orgs));
-				ccGprsPack.setFirst_name(userMap.get(ccGprsPack.getUser_id()));
-				ccGprsPack.setAlter_name(userMap.get(ccGprsPack.getAlter_id()));
+				ccGprsPack.setCreate_by(StringUtils.defaultIfEmpty(userMap.get(ccGprsPack.getCreate_by()), ccGprsPack.getCreate_by()));
+				ccGprsPack.setUpdate_by(StringUtils.defaultIfEmpty(userMap.get(ccGprsPack.getUpdate_by()), ccGprsPack.getUpdate_by()));
 			}
 		}
 		

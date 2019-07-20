@@ -84,13 +84,6 @@ public class CcOrg implements Serializable {
 	@TableField(exist=false)
 	private Integer user_count;
 	
-	@TableField(exist=false)
-	@ApiModelProperty(value = "创建者中文名称")
-	private String create_by_name;
-
-	@TableField(exist=false)
-	@ApiModelProperty(value = "更改者中文名称")
-	private String update_by_name;
 	
 	public String getOrgIdStr() {
 		return String.valueOf(this.org_id);

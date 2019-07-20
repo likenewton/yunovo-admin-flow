@@ -86,10 +86,6 @@ public class CcRealname implements Serializable {
 	@TableField(exist = false)
 	@ApiModelProperty(value = "机构名称")
 	private String org_name;
-
-	@TableField(exist = false)
-	@ApiModelProperty(value = "操作者姓名(CN)")
-	private String first_name;
 	
 	@TableField(exist = false)
 	@ApiModelProperty(value = "机构id")

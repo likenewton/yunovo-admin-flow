@@ -73,9 +73,6 @@ public class CcGprsGift implements Serializable {
 	@TableField(exist=false)
 	@ApiModelProperty(value = "机构编号(CN)")
 	private String org_name;
-	
-	@TableField(exist=false)
-	@ApiModelProperty(value = "操作者姓名(CN)")
-	private String first_name;
+
 
 }
