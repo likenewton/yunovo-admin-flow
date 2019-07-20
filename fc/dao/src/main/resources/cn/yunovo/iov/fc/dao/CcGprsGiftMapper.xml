@@ -6,7 +6,7 @@
 	
 		SELECT GG.gift_id,GG.user_id,GG.card_id,GG.card_iccid,GG.gprs_amount,GG.allot_month,
 			GG.allot_value,GG.allot_reset,GG.live_month,GG.gift_name,GG.time_added,GG.time_expire,
-			GC.org_id,GC.create_by
+			GC.org_id,GG.create_by
 		FROM
 			cc_gprs_gift AS GG
 		INNER JOIN `cc_gprs_card` GC ON GC.`card_id` = GG.`card_id` 

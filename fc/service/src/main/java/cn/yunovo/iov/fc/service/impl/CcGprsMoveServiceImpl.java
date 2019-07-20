@@ -178,8 +178,6 @@ public class CcGprsMoveServiceImpl extends ServiceImpl<ICcGprsMoveMapper, CcGprs
 		move.setMove_memo(form.getMove_memo());
 		move.setTime_added(DateUtil.nowStr());
 		if(!this.insert(move, old_card.getCard_id(), new_card.getCard_id())) {
-			
-			log.warn("[move][流量卡流量迁移失败]params={}",JSONObject.toJSONString(move));
 			throw new BusinessException(-1, "抱歉，流量卡流量迁移失败！");
 		}
 		
@@ -274,8 +272,8 @@ public class CcGprsMoveServiceImpl extends ServiceImpl<ICcGprsMoveMapper, CcGprs
 			
 			//将购买的套餐迁移至新卡
 			UpdateWrapper<CcGprsPay> updateWrapper1 = new UpdateWrapper<>();
-			updateWrapper1.notIn("pay_id", pay_ids);
 			updateWrapper1.eq("card_id", old_card_id);
+			updateWrapper1.notIn("pay_id", pay_ids);
 			
 			CcGprsPay pay = new CcGprsPay();
 			pay.setCard_id(new_card_id);
@@ -287,8 +285,8 @@ public class CcGprsMoveServiceImpl extends ServiceImpl<ICcGprsMoveMapper, CcGprs
 			
 			//将已分配的套餐迁移至新卡
 			UpdateWrapper<CcGprsAllot> updateWrapper2 = new UpdateWrapper<>();
-			updateWrapper2.notIn("allot_id", allot_ids);
 			updateWrapper2.eq("card_id", old_card_id);
+			updateWrapper2.notIn("allot_id", allot_ids);
 			CcGprsAllot ccGprsAllot = new CcGprsAllot();
 			ccGprsAllot.setCard_id(new_card_id);
 			if(!iCcGprsAllotService.update(ccGprsAllot, updateWrapper2)){
@@ -299,8 +297,8 @@ public class CcGprsMoveServiceImpl extends ServiceImpl<ICcGprsMoveMapper, CcGprs
 			
 			//将已分配的套餐迁移至新卡
 			UpdateWrapper<CcGprsValue> updateWrapper3 = new UpdateWrapper<>();
-			updateWrapper3.notIn("allot_id", allot_ids);
 			updateWrapper3.eq("card_id", old_card_id);
+			updateWrapper3.notIn("allot_id", allot_ids);
 			CcGprsValue ccGprsValue = new CcGprsValue();
 			ccGprsValue.setCard_id(new_card_id);
 			if(!iCcGprsValueService.update(ccGprsValue, updateWrapper3)){
