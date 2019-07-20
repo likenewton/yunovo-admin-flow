@@ -34,8 +34,8 @@ public class NationForm extends BaseForm implements Serializable{
 	@ApiModelProperty(value = "父结点")
 	private Integer parent = 0;
 
-	@NotEmpty(message="系统提示： 区域名称不能为空且必须在2至128个字符之间！", groups= {InsertGroupValidate.class, UpdateGroupValidate.class})
-	@Size(max=40, message="系统提示： 区域名称不能为空且必须在2至128个字符之间！", groups= {InsertGroupValidate.class, UpdateGroupValidate.class})
+	@NotEmpty(message="系统提示： 区域名称不能为空且必须在2至40个字符之间！", groups= {InsertGroupValidate.class, UpdateGroupValidate.class})
+	@Size(min=2, max=40, message="系统提示： 区域名称不能为空且必须在2至40个字符之间！", groups= {InsertGroupValidate.class, UpdateGroupValidate.class})
 	@ApiModelProperty(value = "省份")
 	private String ntname;
 
