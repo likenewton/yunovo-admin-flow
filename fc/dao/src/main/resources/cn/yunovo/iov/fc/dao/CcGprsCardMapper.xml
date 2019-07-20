@@ -840,6 +840,10 @@
 		FROM
 			cc_gprs_card
 		where card_sn = #{card_sn}
+		
+		<if test="card_iccid != null">
+			AND card_iccid = #{card_iccid}
+		</if>
 	</select>
 	
 	<select id="getGprsCardByIccid" resultType="cn.yunovo.iov.fc.model.entity.CcGprsCard">

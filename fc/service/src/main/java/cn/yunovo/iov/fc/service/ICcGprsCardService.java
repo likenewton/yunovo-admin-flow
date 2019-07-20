@@ -180,7 +180,7 @@ public interface ICcGprsCardService extends IService<CcGprsCard> {
 	 * 同步联通数据
 	 * @param card_sn gprs.cc_gprs_card.card_sn
 	 */
-	public UnicomDataBean syncUnicomData(String card_sn, LoginInfo loginBaseInfo);
+	public UnicomDataBean syncUnicomData(String card_sn, String card_iccid, LoginInfo loginBaseInfo);
 
 	public boolean onoff(CardOnoffForm form, LoginInfo loginBaseInfo);
 

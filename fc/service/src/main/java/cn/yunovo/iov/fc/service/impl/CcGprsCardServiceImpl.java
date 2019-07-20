@@ -934,12 +934,12 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 	}
 
 	@Override
-	public UnicomDataBean syncUnicomData(String card_sn, LoginInfo loginBaseInfo) {
+	public UnicomDataBean syncUnicomData(String card_sn, String card_iccid, LoginInfo loginBaseInfo) {
 
 		if(StringUtils.isEmpty(card_sn)) {
 			throw new BusinessException("系统提示：请选择您要同步的流量卡");
 		}
-		CcGprsCard card = iGprsCardMapper.getByCardSn(card_sn);
+		CcGprsCard card = iGprsCardMapper.getByCardSn(card_sn, card_iccid);
 		if(card == null) {
 			throw new BusinessException("系统提示：未找到对应的流量卡信息");
 		}

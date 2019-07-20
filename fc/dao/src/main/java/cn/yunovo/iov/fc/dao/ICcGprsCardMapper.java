@@ -175,7 +175,7 @@ public interface ICcGprsCardMapper extends BaseMapper<CcGprsCard> {
 	 */
 	public CcGprsCard getByLikeIccid(@Param("card_iccid")String card_iccid);
 	
-	public CcGprsCard getByCardSn(@Param("card_sn")String card_sn);
+	public CcGprsCard getByCardSn(@Param("card_sn")String card_sn, @Param("card_iccid")String card_iccid);
 	
 	public CcGprsCard getGprsCardByIccid(@Param("card_iccid")String card_iccid);
 	

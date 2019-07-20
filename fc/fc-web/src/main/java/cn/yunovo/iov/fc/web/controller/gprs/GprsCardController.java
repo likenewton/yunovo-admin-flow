@@ -202,9 +202,9 @@ public class GprsCardController extends BaseController{
 	
 	@ApiOperation(value = "业务管理-数据同步")
 	@RequestMapping(path="/syncUnicomData",method= {RequestMethod.GET, RequestMethod.POST})
-	public Result<UnicomDataBean> syncUnicomData(String card_sn) {
+	public Result<UnicomDataBean> syncUnicomData(String card_sn, String card_iccid) {
 		
-		UnicomDataBean bean = iCcGprsCardService.syncUnicomData(card_sn, this.getLoginBaseInfo());
+		UnicomDataBean bean = iCcGprsCardService.syncUnicomData(card_sn, card_iccid, this.getLoginBaseInfo());
 		return ResultUtil.success(bean);
 	}
 	
