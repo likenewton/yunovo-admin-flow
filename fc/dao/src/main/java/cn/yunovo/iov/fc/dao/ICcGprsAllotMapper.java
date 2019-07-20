@@ -48,4 +48,6 @@ public interface ICcGprsAllotMapper extends BaseMapper<CcGprsAllot> {
 	public int updateTimeExpireById(@Param("live_month")Float live_month, @Param("allot_id")Integer allot_id);
 	
 	public int UpdateGprsAmountAndAllotMonthAndTimeExById(@Param("gprs_amount")Double gprs_amount, @Param("allot_month")Integer allot_month, @Param("live_month")Float live_month, @Param("allot_id")Integer allot_id);
+	
+	public Integer getAllotByCardIdAndGprsAmountAndTimeExpire(@Param("card_id")Integer card_id, @Param("gprs_amount")Double gprs_amount, @Param("time_expire")String time_expire);
 }

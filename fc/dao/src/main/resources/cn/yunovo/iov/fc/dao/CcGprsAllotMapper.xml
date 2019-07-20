@@ -48,5 +48,10 @@
 		UPDATE cc_gprs_allot SET gprs_amount = gprs_amount + #{gprs_amount}, allot_month = allot_month + #{allot_month},
 					time_expire = DATE_ADD(IF(time_expire > NOW(), time_expire, NOW()), #{live_month} MONTH) WHERE allot_id = #{allot_id}
 	</update>
+	
+	<select id="getAllotByCardIdAndGprsAmountAndTimeExpire" resultType="java.lang.Integer">
+	
+		SELECT allot_id FROM cc_gprs_allot WHERE card_id = #{card_id} AND gprs_amount = #{gprs_amount} AND LEFT(time_expire, 10) = #{time_expire} ORDER BY allot_id DESC LIMIT 1
+	</select>
 
 </mapper>

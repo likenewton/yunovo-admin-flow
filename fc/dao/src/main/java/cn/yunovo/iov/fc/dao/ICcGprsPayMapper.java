@@ -155,5 +155,12 @@ public interface ICcGprsPayMapper extends BaseMapper<CcGprsPay> {
 	public List<String> getAllMonth(@Param("orgpos")String orgpos, @Param("orgs")String[] orgs);
 
 	
+	/**
+	 * 获取激活套餐或者重置套餐
+	 * @param card_id
+	 * @return
+	 */
+	public List<CcGprsPay> getActivePackByCardId(@Param("card_id")Integer card_id);
+	
 
 }

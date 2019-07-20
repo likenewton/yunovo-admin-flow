@@ -978,4 +978,13 @@
 		
 		 GROUP BY mdate ORDER BY mdate DESC
 	</select>
+	
+	<!-- 流量卡迁移时调用 -->
+	<select id="getActivePackByCardId" resultType="cn.yunovo.iov.fc.model.entity.CcGprsPay">
+	
+		SELECT pay_id, gprs_amount, LEFT(time_expire, 10) AS time_expire FROM cc_gprs_pay WHERE 
+		<![CDATA[ 
+			card_id = #{card_id} AND (pay_method < 0 OR transfer_id = 'system-init') AND is_paid = 1 
+		]]>
+	</select>
 </mapper>

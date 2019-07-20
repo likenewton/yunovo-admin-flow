@@ -2,14 +2,18 @@ package cn.yunovo.iov.fc.service.impl;
 
 import cn.yunovo.iov.fc.common.utils.BusinessException;
 import cn.yunovo.iov.fc.common.utils.DateUtil;
+import cn.yunovo.iov.fc.dao.ICcGprsAllotMapper;
 import cn.yunovo.iov.fc.dao.ICcGprsMoveMapper;
 import cn.yunovo.iov.fc.dao.ICcGprsPayMapper;
 import cn.yunovo.iov.fc.model.GprsCalculateBean;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
+import cn.yunovo.iov.fc.model.entity.CcGprsAllot;
 import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.CcGprsMove;
+import cn.yunovo.iov.fc.model.entity.CcGprsPay;
+import cn.yunovo.iov.fc.model.entity.CcGprsValue;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
 import cn.yunovo.iov.fc.model.exception.FormValidateException;
 import cn.yunovo.iov.fc.model.form.GprsMoveForm;
@@ -17,21 +21,29 @@ import cn.yunovo.iov.fc.service.ICcCardLogService;
 import cn.yunovo.iov.fc.service.ICcGprsAllotService;
 import cn.yunovo.iov.fc.service.ICcGprsCardService;
 import cn.yunovo.iov.fc.service.ICcGprsMoveService;
+import cn.yunovo.iov.fc.service.ICcGprsValueService;
 import cn.yunovo.iov.fc.service.ICcOrgService;
 import cn.yunovo.iov.fc.service.ICcUserService;
 import lombok.extern.slf4j.Slf4j;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.util.CollectionUtils;
 
 /**
@@ -66,6 +78,16 @@ public class CcGprsMoveServiceImpl extends ServiceImpl<ICcGprsMoveMapper, CcGprs
 	
 	@Autowired
 	private ICcCardLogService iCcCardLogService;
+	
+	@Autowired
+	private ICcGprsAllotMapper iCcGprsAllotMapper;
+	
+	@Autowired
+	private ICcGprsValueService iCcGprsValueService;
+	
+	@Autowired
+	@Qualifier("clwTransactionManager")
+	private DataSourceTransactionManager clwTransactionManager;
 	
 	@Override
 	public PageData<CcGprsMove, Object> getItemsPage(PageForm form, Integer org_id, String card_iccid,
@@ -121,6 +143,11 @@ public class CcGprsMoveServiceImpl extends ServiceImpl<ICcGprsMoveMapper, CcGprs
 		
 		CcGprsCard old_card = iCcGprsCardService.getByIccid(form.getOld_card_iccid());
 		
+		
+		if(StringUtils.equals(form.getNew_card_iccid(), form.getOld_card_iccid())) {
+			throw new FormValidateException("新卡ICCID不能等于旧卡ICCID", "new_card_iccid", form.buildJsonString());
+		}
+		
 		if(old_card == null) {
 			throw new FormValidateException("请输入正确的旧卡ICCID", "old_card_iccid", form.buildJsonString());
 		}
@@ -150,7 +177,7 @@ public class CcGprsMoveServiceImpl extends ServiceImpl<ICcGprsMoveMapper, CcGprs
 		move.setNew_orgid(new_card.getOrg_id());
 		move.setMove_memo(form.getMove_memo());
 		move.setTime_added(DateUtil.nowStr());
-		if(!this.save(move)) {
+		if(!this.insert(move, old_card.getCard_id(), new_card.getCard_id())) {
 			
 			log.warn("[move][流量卡流量迁移失败]params={}",JSONObject.toJSONString(move));
 			throw new BusinessException(-1, "抱歉，流量卡流量迁移失败！");
@@ -210,6 +237,94 @@ public class CcGprsMoveServiceImpl extends ServiceImpl<ICcGprsMoveMapper, CcGprs
 			log.warn("[move][exception]params={},exception={}", JSONObject.toJSONString(move), ExceptionUtils.getStackTrace(e));
 		}
 		
+	}
+
+	/**
+	 * 插入迁移数据
+	 * @param move
+	 * @param old_card_id
+	 * @param new_card_id
+	 * @return
+	 */
+	private boolean insert(CcGprsMove move, Integer old_card_id, Integer new_card_id) {
+		
+		List<CcGprsPay> pay_rs = iCcGprsPayMapper.getActivePackByCardId(old_card_id);
+		List<Integer> pay_ids = new ArrayList<>();
+		pay_ids.add(0);
+		List<Integer> allot_ids = new ArrayList<>();
+		allot_ids.add(0);
+		Integer allot_id = null;
+		if(!CollectionUtils.isEmpty(pay_rs)) {
+			
+			for (CcGprsPay ccGprsPay : pay_rs) {
+				pay_ids.add(ccGprsPay.getPay_id());
+				allot_id = iCcGprsAllotMapper.getAllotByCardIdAndGprsAmountAndTimeExpire(old_card_id, ccGprsPay.getGprs_amount(), ccGprsPay.getTime_expire());
+				
+				if(allot_id != null) {
+					allot_ids.add(allot_id);
+				}
+			}
+		}
+		
+		DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
+		definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+		TransactionStatus transactionStatus = clwTransactionManager.getTransaction(definition);
+		
+		try {
+			
+			//将购买的套餐迁移至新卡
+			UpdateWrapper<CcGprsPay> updateWrapper1 = new UpdateWrapper<>();
+			updateWrapper1.notIn("pay_id", pay_ids);
+			updateWrapper1.eq("card_id", old_card_id);
+			
+			CcGprsPay pay = new CcGprsPay();
+			pay.setCard_id(new_card_id);
+			if(!retBool(iCcGprsPayMapper.update(pay, updateWrapper1))){
+				log.warn("[insert][update gprs pay 失败]params={move:{},pay_ids:{},allot_ids:{}}", JSONObject.toJSONString(move),JSONObject.toJSONString(pay_ids),JSONObject.toJSONString(allot_ids));
+				clwTransactionManager.rollback(transactionStatus);
+				return false;
+			}
+			
+			//将已分配的套餐迁移至新卡
+			UpdateWrapper<CcGprsAllot> updateWrapper2 = new UpdateWrapper<>();
+			updateWrapper2.notIn("allot_id", allot_ids);
+			updateWrapper2.eq("card_id", old_card_id);
+			CcGprsAllot ccGprsAllot = new CcGprsAllot();
+			ccGprsAllot.setCard_id(new_card_id);
+			if(!iCcGprsAllotService.update(ccGprsAllot, updateWrapper2)){
+				log.warn("[insert][update gprs allot 失败]params={move:{},pay_ids:{},allot_ids:{}}", JSONObject.toJSONString(move),JSONObject.toJSONString(pay_ids),JSONObject.toJSONString(allot_ids));
+				clwTransactionManager.rollback(transactionStatus);
+				return false;
+			}
+			
+			//将已分配的套餐迁移至新卡
+			UpdateWrapper<CcGprsValue> updateWrapper3 = new UpdateWrapper<>();
+			updateWrapper3.notIn("allot_id", allot_ids);
+			updateWrapper3.eq("card_id", old_card_id);
+			CcGprsValue ccGprsValue = new CcGprsValue();
+			ccGprsValue.setCard_id(new_card_id);
+			if(!iCcGprsValueService.update(ccGprsValue, updateWrapper3)){
+				log.warn("[insert][update gprs value 失败]params={move:{},pay_ids:{},allot_ids:{}}", JSONObject.toJSONString(move),JSONObject.toJSONString(pay_ids),JSONObject.toJSONString(allot_ids));
+				clwTransactionManager.rollback(transactionStatus);
+				return false;
+			}
+			
+			if(!this.save(move)) {
+				
+				log.warn("[insert][保存迁移记录失败]params={}", JSONObject.toJSONString(move));
+				clwTransactionManager.rollback(transactionStatus);
+				return false;
+			}
+			
+			clwTransactionManager.commit(transactionStatus);
+		}catch(Exception e) {
+			
+			clwTransactionManager.rollback(transactionStatus);
+			log.error("[insert][exception]params={move:{},pay_ids:{},allot_ids:{}},exception={}", JSONObject.toJSONString(move),JSONObject.toJSONString(pay_ids),JSONObject.toJSONString(allot_ids), ExceptionUtils.getStackTrace(e));
+			return false;
+		}
+		
+		return true;
 	}
 	
 	
