@@ -63,6 +63,9 @@ public class CcGprsGift implements Serializable {
 	@ApiModelProperty(value = "过期时间")
 	private String time_expire;
 	
+	@ApiModelProperty(value = "创建者用户名")
+	private String create_by;
+	
 	@TableField(exist=false)
 	@ApiModelProperty(value = "机构编号")
 	private Integer org_id;

@@ -333,7 +333,8 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 		ccOrg.setPartner_id(RandomStringUtils.randomAlphanumeric(15));
 		ccOrg.setPartner_key(Md5Util.getMD5String(RandomStringUtils.randomAlphanumeric(20)));
 		ccOrg.setTime_added(DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
-		ccOrg.setUser_id(user.getUser_id());
+		ccOrg.setCreate_by(info.getLoginName());
+		//ccOrg.setUser_id(user.getUser_id());
 		return iCcOrgMapper.insert(ccOrg);
 		
 	}
@@ -367,9 +368,9 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 		CcOrg ccOrg = new CcOrg();
 		BeanUtils.copyProperties(org, ccOrg);
 		ccOrg.setSpell(PinYinUtil.getFirstSpell(ccOrg.getName(), HanyuPinyinCaseType.UPPERCASE));
-		ccOrg.setAlter_id(user.getUser_id());
+		//ccOrg.setAlter_id(user.getUser_id());
 		ccOrg.setTime_modify(DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
-		
+		ccOrg.setUpdate_by(info.getLoginName());
 		return iCcOrgMapper.updateById(ccOrg);
 	}
 
@@ -428,5 +429,8 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 		}
 	}
 	
+	public static void main(String[] args) {
+		System.out.println(Long.MAX_VALUE);
+	}
 	
 }

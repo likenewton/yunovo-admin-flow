@@ -140,7 +140,8 @@ public class CcGprsMoveServiceImpl extends ServiceImpl<ICcGprsMoveMapper, CcGprs
 		
 		CcGprsMove move = new CcGprsMove();
 //		move.setUser_id(info.getId());
-		move.setUser_id(0);
+//		move.setUser_id(0);
+		move.setCreate_by(info.getLoginName());
 		move.setOld_cardid(old_card.getCard_id());
 		move.setNew_cardid(new_card.getCard_id());
 		move.setOld_iccid(old_card.getCard_iccid());

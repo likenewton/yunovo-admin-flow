@@ -306,8 +306,9 @@ public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGp
 		CcGprsBatch batch = new CcGprsBatch();
 		BeanUtils.copyProperties(form, batch);
 		batch.setTime_added(DateUtil.nowStr());
+		batch.setCreate_by(info.getLoginName());
 //		batch.setUser_id(info.getId());
-		batch.setUser_id(0);
+		//batch.setUser_id(0);
 		if(!this.save(batch)) {
 			log.error("[save][保存批次信息出错]params={form:{},info:{}}", form.buildJsonString(), JSONObject.toJSONString(info));
 			throw new BusinessException(-1, "系统提示：保存批次信息出错");
@@ -458,7 +459,7 @@ public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGp
 		}
 		
 //		batch.setAlter_id(info.getId());
-		batch.setAlter_id(0);
+		//batch.setAlter_id(0);
 		batch.setBatch_sn(form.getBatch_sn());
 		batch.setBatch_name(form.getBatch_name());
 		batch.setBatch_memo(form.getBatch_memo());
@@ -467,6 +468,7 @@ public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGp
 		batch.setCity_id(form.getCity_id());
 		batch.setDistrict_id(form.getDistrict_id());
 		batch.setTime_modify(DateUtil.nowStr());
+		batch.setUpdate_by(info.getLoginName());
 		return this.updateById(batch);
 	}
 	

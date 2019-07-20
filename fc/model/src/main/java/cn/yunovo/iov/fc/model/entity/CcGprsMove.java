@@ -58,6 +58,9 @@ public class CcGprsMove implements Serializable {
 	@ApiModelProperty(value = "添加时间")
 	private String time_added;
 	
+	@ApiModelProperty(value = "创建者用户名")
+	private String create_by;
+	
 	@TableField(exist=false)
 	@ApiModelProperty(value = "机构名称")
 	private String org_name;

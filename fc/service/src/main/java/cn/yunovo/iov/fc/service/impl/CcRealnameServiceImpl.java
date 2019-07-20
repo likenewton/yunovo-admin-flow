@@ -237,7 +237,7 @@ public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcReal
 		//BeanUtils.copyProperties(data, opData);
 		opData.setCdi_status(status);
 		opData.setTime_audit(DateUtil.nowStr());
-		
+		opData.setUpdate_by(loginInfo.getLoginName());
 		if(status == 2) {//如果审批通过则执行如下流程
 			
 			//2.1、获取流量卡信息,如果未找到流量卡信息则返回错误信息
@@ -397,7 +397,7 @@ public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcReal
 	
 	public CcRealname getByIccid(String iccid, boolean noCache) {
 		
-		String sql = FcConstant.memSqlKey("SELECT * FROM cc_realname WHERE card_iccid = "+iccid, FcConstant.DB_GET_ROW);
+		String sql = FcConstant.memSqlKey(String.format(CACHE_SQL_KEY, iccid), FcConstant.DB_GET_ROW);
 		String cache = null;
 		if(!noCache) {
 			cache = jedisPoolUtil.get(sql);
@@ -485,6 +485,7 @@ public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcReal
 		card.setOwner_real(0);
 		iCcGprsCardService.updateCard(card);
 		
+		//TODO 解除绑定用户名设置
 		data.setTime_audit(DateUtil.nowStr());
 		iCcCardLogService.log10Rlname(data, true);
 		isOk = SqlHelper.retBool(iCcRealnameMapper.updateIccidByCardid(form.getCard_id(), 0));
@@ -501,7 +502,7 @@ public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcReal
 			return ;
 		}
 		String cacheKey = String.format(CACHE_SQL_KEY, data.getCard_iccid());
-		cacheKey = FcConstant.memSqlKey(cacheKey, "fetch_row");
+		cacheKey = FcConstant.memSqlKey(cacheKey, FcConstant.DB_GET_ROW);
 		jedisPoolUtil.setEx(cacheKey, data.cacheJsonString());
 	}
 	
