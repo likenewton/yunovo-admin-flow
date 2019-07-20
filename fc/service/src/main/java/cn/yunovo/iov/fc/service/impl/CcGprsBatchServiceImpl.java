@@ -259,7 +259,7 @@ public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGp
 			    @Override
 			    public void doAfterAllAnalysed(AnalysisContext context) {
 			    }
-			}, true).read(new Sheet(1, 1, GprsBatchBean.class));
+			}, true).read(new Sheet(1, 0, GprsBatchBean.class));
 		}catch(Exception e){
 			log.error("[saveBatch][exception]exception={}",ExceptionUtils.getStackTrace(e));
 			throw new BusinessException("文件解析异常");
@@ -271,10 +271,18 @@ public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGp
 			}
 		}
 		
-		if(CollectionUtils.isEmpty(cards)) {
+		if(CollectionUtils.isEmpty(cards) || cards.size() < 2) {
 			log.error("[save][导入的流量卡列表为空]params={form:{},info:{}}", form.buildJsonString(), JSONObject.toJSONString(info));
 			throw new BusinessException("导入的流量卡列表为空");
 		}
+		
+		GprsBatchBean b = cards.get(0);
+		if(!StringUtils.equalsIgnoreCase("MSISDN", b.getMSISDN()) || !StringUtils.equalsIgnoreCase("ICCID", b.getICCID()) || !StringUtils.equalsIgnoreCase("IMSI", b.getIMSI())) {
+			log.error("[save][无效的excel表头]params={form:{},info:{}}", form.buildJsonString(), JSONObject.toJSONString(info), JSONObject.toJSONString(b));
+			throw new BusinessException("无效的excel表头,请参考文件模板");
+		}
+		
+		cards.remove(0);
 		
 		//数据校验
 		for (GprsBatchBean bean : cards) {
