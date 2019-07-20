@@ -27,7 +27,7 @@
 		SELECT pack_id,org_id,user_id,alter_id,pack_name,pack_memo,pack_mode,
 			pack_recom,pack_rebate,pack_status,gprs_amount,gprs_price,gprs_discount,
 			allot_month,allot_value,allot_reset,live_month,sell_amount,sort_order,
-			time_added,time_modify
+			time_added,time_modify,create_by,update_by
 		FROM
 			cc_gprs_pack
 		WHERE 

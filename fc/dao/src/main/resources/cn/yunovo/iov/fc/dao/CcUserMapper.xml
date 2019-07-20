@@ -17,7 +17,9 @@
 			C.orgpos,
 			C.date_last,
 			C.date_added,
-			C.`status`
+			C.`status`,
+			C.create_by,
+			C.update_by
 		FROM
 			cc_user AS C
 		WHERE 1 = 1

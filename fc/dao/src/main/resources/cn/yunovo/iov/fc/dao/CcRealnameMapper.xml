@@ -6,7 +6,7 @@
 	
 		SELECT R.card_id,R.user_id,R.device_sn,R.card_iccid,R.owner_name,R.owner_gender,R.owner_cdi,
 			R.cdi_img1,R.cdi_img2,R.cdi_img3,R.cdi_status,R.give_value,R.give_time,R.time_added,R.time_modify,
-			R.time_audit,C.org_id, C.time_last, C.time_active
+			R.time_audit,C.org_id, C.time_last, C.time_active, C.update_by
 		FROM
 			cc_realname AS R
 		INNER JOIN cc_gprs_card C ON C.card_id = R.card_id

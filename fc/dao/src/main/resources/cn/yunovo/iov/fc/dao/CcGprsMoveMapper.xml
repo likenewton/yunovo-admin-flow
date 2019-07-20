@@ -5,7 +5,7 @@
 	<select id="getItemsPage" resultType="cn.yunovo.iov.fc.model.entity.CcGprsMove">
 	
 		SELECT move_id,user_id,old_cardid,new_cardid,old_iccid,
-			new_iccid,old_orgid,new_orgid,move_memo,time_added
+			new_iccid,old_orgid,new_orgid,move_memo,time_added,create_by
 		FROM
 			cc_gprs_move
 		WHERE
