@@ -133,7 +133,7 @@ public class CcResetLogServiceImpl extends ServiceImpl<ICcResetLogMapper, CcRese
 			for (CcResetLog ccResetLog : records) {
 
 				ccResetLog.setOrg_name(orgs.get(String.valueOf(ccResetLog.getOrg_id())).getName());
-				ccResetLog.setFirst_name(StringUtils.defaultIfEmpty(userMap.get(ccResetLog.getUser_name()),ccResetLog.getUser_name()));
+				ccResetLog.setCreate_by(StringUtils.defaultIfEmpty(userMap.get(ccResetLog.getUser_name()),ccResetLog.getUser_name()));
 			}
 		}
 		
