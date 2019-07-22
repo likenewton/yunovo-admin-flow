@@ -99,7 +99,7 @@ public class SelectController extends BaseController{
 		LoginInfo info = this.getLoginBaseInfo();
 		
 		CcUser ccUser = iCcUserService.findUserOrgAndOrgpos(info.getLoginName());
-		if(ccUser == null) {
+		if(ccUser == null || ccUser.getOrg_id() == null || ccUser.getOrg_id() == 0) {
 			return ResultUtil.success("ok", null);
 		}
 		

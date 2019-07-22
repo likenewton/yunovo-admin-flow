@@ -6,7 +6,6 @@ server:
     uri-encoding: UTF-8
 #BasePath: /fc
 
-
 loging: 
   config: classpath:logback.xml
   level: 
