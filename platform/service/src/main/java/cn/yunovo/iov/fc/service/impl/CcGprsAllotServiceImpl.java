@@ -219,7 +219,7 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 				/**
 				 * 判断是否还有未分配的流量
 				 */
-				if(ccGprsAllot.getAssigned_month() < ccGprsAllot.getAllot_month()) {
+				if(ccGprsAllot.getAssigned_month() - ccGprsAllot.getAllot_month() < 0) {
 					value.setGprs_value((ccGprsAllot.getAllot_reset() == null || ccGprsAllot.getAllot_reset() == 0) ? (value.getBalance_value() + ccGprsAllot.getAllot_value()) : ccGprsAllot.getAllot_value());
 					value.setBalance_value(value.getGprs_value());
 					value.setBalance_dval(value.getGprs_value());
@@ -294,7 +294,7 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 		String cardLockCacheKey = FcConstant.memResKey(String.format(FcConstant.CARD_LOCK_CACHEKEY, card.getCard_iccid()));
 		jedisPoolUtil.setEx(cardLockCacheKey, "1");
 		
-		if(card.getReset_diff() > 0 && gprs.getMonth() > card.getReset_diff()) {
+		if(card.getReset_diff() > 0 && gprs.getMonth() - card.getReset_diff() > 0) {
 			
 			gprs.setMonth(gprs.getMonth() - card.getReset_diff());
 		}
@@ -677,7 +677,7 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 			
 			String sql1 = "balance_dval = 0";
 			String sql = null;
-			if(card.getUnicom_unused() == card.getMax_unused()) {
+			if(card.getUnicom_unused() - card.getMax_unused() == 0) {
 				
 				sql1 += ", balance_value = 0";
 				sql = "how_month = "+month+", month_wlist = month_wlist + "+Math.abs(card.getUnicom_unused());
@@ -885,4 +885,5 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 		Date month = (card_type >= 2 && DateUtil.getDayOfMonth(now) >= 27) ? DateUtils.addMonths(now, 1) : now;
 		return NumberUtils.createInteger(DateFormatUtils.format(month, "yyyyMM"));
 	}
+
 }

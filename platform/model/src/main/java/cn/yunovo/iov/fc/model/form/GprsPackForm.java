@@ -127,7 +127,7 @@ public class GprsPackForm extends BaseForm implements Serializable{
 		
 	}
 	
-	public static Double computeAllotValue(Double gprs_amount, Integer allot_month) {
+	public static Double computeAllotValue(double gprs_amount, int allot_month) {
 		return gprs_amount / allot_month;
 	}
 

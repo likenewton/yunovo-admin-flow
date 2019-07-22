@@ -133,7 +133,6 @@ public class CcCurrencyServiceImpl extends ServiceImpl<ICcCurrencyMapper, CcCurr
 	}
 
 	@Override
-	@Deprecated
 	public int delete(CurrencyForm form, LoginInfo info) {
 		
 		CcCurrency currency = this.detail(form.getCurrency_id(), info);

@@ -915,10 +915,10 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 			return "定向无限";
 		}
 		
-		Integer gb = 1024;
-		Integer tb = 1024 * 1024;
+		int gb = 1024;
+		int tb = 1024 * 1024;
 		
-		Double _gprs = Math.abs(gprs);
+		double _gprs = Math.abs(gprs);
 		if(_gprs < gb) {
 			return MathUtils.round(gprs, 3) + "M";
 		}
