@@ -141,10 +141,11 @@ export default {
       }
     },
     addData() {
+      console.log(this.list.data)
       this.$router.push({
         name: 'createnation',
         query: {
-          parent: this.list.data[0].parent // 添加必须要携带parent
+          parent: Api.UNITS.getQuery('ntid') || 0 // 添加必须要携带parent
         }
       })
     },

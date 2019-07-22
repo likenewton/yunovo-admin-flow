@@ -32,6 +32,7 @@ module.exports = {
       resources.forEach((r1, j1) => {
         if (v1.name === r1.resUrl) {
           level_1 = true
+          v1.redirect = `/menu/${r1.resUrl}/${r1.childResources[0].resUrl}`
           v1.children.forEach((v2, i2) => {
             let level_2 = false
             r1.childResources.forEach((r2, j2) => {

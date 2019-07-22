@@ -34,12 +34,12 @@
         <el-table-column prop="memo" label="机构描述" show-overflow-tooltip :min-width="widthMap.memo[size]" sortable="custom"></el-table-column>
         <el-table-column prop="user_id" label="创建者" :min-width="widthMap.user_id[size]" sortable="custom">
           <template slot-scope="scope">
-            <span>{{scope.row.create_by_name}}</span>
+            <span>{{scope.row.create_by}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="alter_id" label="更改者" :min-width="widthMap.alter_id[size]" sortable="custom">
           <template slot-scope="scope">
-            <span>{{scope.row.update_by_name}}</span>
+            <span>{{scope.row.update_by}}</span>
           </template>
         </el-table-column>
         <el-table-column fixed="right" label="管理" width="88" v-if="pageAuthBtn.FCP_04_001_UPDATE01 || pageAuthBtn.FCP_04_001_DELETE01">

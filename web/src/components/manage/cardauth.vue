@@ -47,7 +47,7 @@
         </el-table-column>
         <el-table-column prop="user_id" label="审核者" :min-width="widthMap.user_id[size]">
           <template slot-scope="scope">
-            <span>{{scope.row.first_name}}</span>
+            <span>{{scope.row.update_by}}</span>
           </template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" :width="widthMap.op[size]" v-if="pageAuthBtn.FCP_01_007_OP01">

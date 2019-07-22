@@ -48,7 +48,6 @@ let menuRoute = {
     path: 'manage',
     name: 'manage',
     component: Blank,
-    redirect: '/menu/manage/card',
     children: [{
       path: 'card',
       name: 'card',
@@ -86,7 +85,6 @@ let menuRoute = {
     path: 'statistics',
     name: 'statistics',
     component: Blank,
-    redirect: '/menu/statistics/monthuse',
     children: [{
       path: 'monthuse',
       name: 'monthuse',
@@ -128,7 +126,6 @@ let menuRoute = {
     path: 'financial',
     name: 'financial',
     component: Blank,
-    redirect: '/menu/financial/rechargesum',
     children: [{
       path: 'rechargesum',
       name: 'rechargesum',
@@ -154,7 +151,6 @@ let menuRoute = {
     path: 'userauth',
     name: 'userauth',
     component: Blank,
-    redirect: '/menu/userauth/jgManage',
     children: [{
       path: 'jgManage',
       name: 'jgManage',
@@ -168,7 +164,6 @@ let menuRoute = {
     path: 'setting',
     name: 'setting',
     component: Blank,
-    redirect: '/menu/setting/payset',
     children: [{
       path: 'paySet',
       name: 'paySet',

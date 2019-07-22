@@ -52,7 +52,7 @@
           <span slot="label"></i>历史赠送</span>
           <el-form class="search-form" :inline="true" :model="searchForm" size="small">
             <el-form-item>
-              <el-input v-model="searchForm.card_iccid" @input="searchForm.card_iccid = limitNumber(searchForm.card_iccid, 20)" placeholder="卡ICCID" @keyup.enter.native="searchData"></el-input>
+              <el-input v-model="searchForm.card_iccid" @input="searchForm.card_iccid = limitNumber(searchForm.card_iccid, 20, 0)" placeholder="卡ICCID" @keyup.enter.native="searchData"></el-input>
             </el-form-item>
             <el-form-item>
               <el-select v-model="searchForm.org_id" filterable clearable placeholder="机构名称" @change="searchData">
@@ -114,7 +114,7 @@
             </el-table-column>
             <el-table-column prop="user_id" label="操作者" width="widthMap.user_id[size]" sortable="custom">
               <template slot-scope="scope">
-                <span>{{scope.row.first_name}}</span>
+                <span>{{scope.row.create_by}}</span>
               </template>
             </el-table-column>
             <el-table-column prop="time_added" label="添加时间" :width="widthMap.time_added[size]" sortable="custom"></el-table-column>
@@ -226,7 +226,9 @@ export default {
   },
   methods: {
     changeTab(para) {
-      this.getData()
+      if (this.tabIndex === '1') {
+        this.getData()
+      }
     },
     // 重置列表
     resetData() {

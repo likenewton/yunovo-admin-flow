@@ -73,7 +73,7 @@
             </el-table-column>
             <el-table-column prop="user_id" label="操作者" min-width="120" sortable="custom">
               <template slot-scope="scope">
-                <span>{{scope.row.user_name}}</span>
+                <span>{{scope.row.create_by}}</span>
               </template>
             </el-table-column>
             <el-table-column prop="batch_time" label="出货时间" min-width="155" sortable="custom"></el-table-column>

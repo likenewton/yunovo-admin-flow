@@ -63,6 +63,11 @@ export default {
           required: true,
           message: '请输入货币名称',
           trigger: 'blur'
+        }, {
+          min: 3,
+          max: 32,
+          message: '货币名称必须是3-32个字符',
+          trigger: 'blur'
         }],
         code: [{
           required: true,
@@ -124,13 +129,18 @@ export default {
               url: _axios.ajaxAd.updateCurrency,
               data: this.formInline,
               done: ((res) => {
-                this.$router.push({ name: 'currencyset' })
-                setTimeout(() => {
-                  this.showMsgBox({
-                    type: 'success',
-                    message: res.msg || '操作成功！'
-                  })
-                }, 150)
+                if (res.status === 400) {
+                  this.formInline[res.data] = ''
+                  this.$refs.ruleForm.validateField([res.data])
+                } else {
+                  this.$router.push({ name: 'currencyset' })
+                  setTimeout(() => {
+                    this.showMsgBox({
+                      type: 'success',
+                      message: res.msg || '操作成功！'
+                    })
+                  }, 150)
+                }
               })
             })
           } else {
@@ -139,13 +149,18 @@ export default {
               url: _axios.ajaxAd.addCurrency,
               data: this.formInline,
               done: ((res) => {
-                this.$router.push({ name: 'currencyset' })
-                setTimeout(() => {
-                  this.showMsgBox({
-                    type: 'success',
-                    message: res.msg || '操作成功！'
-                  })
-                }, 150)
+                if (res.status === 400) {
+                  this.formInline[res.data] = ''
+                  this.$refs.ruleForm.validateField([res.data])
+                } else {
+                  this.$router.push({ name: 'currencyset' })
+                  setTimeout(() => {
+                    this.showMsgBox({
+                      type: 'success',
+                      message: res.msg || '操作成功！'
+                    })
+                  }, 150)
+                }
               })
             })
           }

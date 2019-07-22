@@ -51,12 +51,12 @@
         <el-table-column prop="time_added" label="添加时间" :width="widthMap.time_added[size]" sortable="custom"></el-table-column>
         <el-table-column prop="user_id" label="操作者" :width="widthMap.user_id[size]" sortable="custom">
           <template slot-scope="scope">
-            <span>{{scope.row.first_name}}</span>
+            <span>{{scope.row.create_by}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="alter_id" label="更改者":width="widthMap.alter_id[size]" sortable="custom">
           <template slot-scope="scope">
-            <span>{{scope.row.alter_name}}</span>
+            <span>{{scope.row.update_by}}</span>
           </template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" :width="widthMap.op[size]" v-if="pageAuthBtn.FCP_01_003_UPDATE01">

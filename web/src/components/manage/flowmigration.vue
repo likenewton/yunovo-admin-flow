@@ -7,11 +7,11 @@
           <el-form class="editor-form" :model="formInline" :rules="rules" ref="ruleForm" label-width="126px" size="small">
             <el-form-item prop="old_card_iccid">
               <span slot="label">旧卡ICCID：</span>
-              <el-input v-model="formInline.old_card_iccid" @input="formInline.old_card_iccid = limitNumber(formInline.old_card_iccid, 20)" placeholder="请输入旧卡ICCID"></el-input>
+              <el-input v-model="formInline.old_card_iccid" @input="formInline.old_card_iccid = limitNumber(formInline.old_card_iccid, 20, 0)" placeholder="请输入旧卡ICCID"></el-input>
             </el-form-item>
             <el-form-item prop="new_card_iccid">
               <span slot="label">新卡ICCID：</span>
-              <el-input v-model="formInline.new_card_iccid" @input="formInline.new_card_iccid = limitNumber(formInline.new_card_iccid, 20)" placeholder="请输入新卡ICCID"></el-input>
+              <el-input v-model="formInline.new_card_iccid" @input="formInline.new_card_iccid = limitNumber(formInline.new_card_iccid, 20, 0)" placeholder="请输入新卡ICCID"></el-input>
             </el-form-item>
             <el-form-item prop="move_memo">
               <span slot="label">迁移备注：</span>
@@ -27,10 +27,10 @@
           <span slot="label"></i>历史迁移</span>
           <el-form class="search-form" :inline="true" :model="searchForm" size="small">
             <el-form-item>
-              <el-input v-model="searchForm.old_card_iccid" @input="searchForm.old_card_iccid = limitNumber(searchForm.old_card_iccid, 20)" @keyup.enter.native="searchData" placeholder="旧卡ICCID"></el-input>
+              <el-input v-model="searchForm.old_card_iccid" @input="searchForm.old_card_iccid = limitNumber(searchForm.old_card_iccid, 20, 0)" @keyup.enter.native="searchData" placeholder="旧卡ICCID"></el-input>
             </el-form-item>
             <el-form-item>
-              <el-input v-model="searchForm.card_iccid" @input="searchForm.card_iccid = limitNumber(searchForm.card_iccid, 20)" @keyup.enter.native="searchData" placeholder="新卡ICCID"></el-input>
+              <el-input v-model="searchForm.card_iccid" @input="searchForm.card_iccid = limitNumber(searchForm.card_iccid, 20, 0)" @keyup.enter.native="searchData" placeholder="新卡ICCID"></el-input>
             </el-form-item>
             <el-form-item>
               <el-select v-model="searchForm.org_id" filterable clearable placeholder="新卡机构" @change="searchData">
@@ -70,7 +70,7 @@
             <el-table-column prop="move_memo" label="迁移备注" show-overflow-tooltip min-width="160" sortable="custom"></el-table-column>
             <el-table-column prop="user_id" label="操作者" min-width="80" sortable="custom">
               <template slot-scope="scope">
-                <span>{{scope.row.first_name}}</span>
+                <span>{{scope.row.create_by}}</span>
               </template>
             </el-table-column>
             <el-table-column prop="time_added" label="迁移时间" min-width="155" sortable="custom"></el-table-column>

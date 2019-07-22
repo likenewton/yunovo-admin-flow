@@ -60,7 +60,10 @@ export default {
       _axios.send({
         method: 'get',
         url: _axios.ajaxAd.checkSyncUnicomData,
-        params: { card_sn: scope.row.card_sn },
+        params: { 
+          card_sn: scope.row.card_sn,
+          card_iccid: scope.row.card_iccid
+        },
         done: ((res) => {
           if (res.data.status === -1) {
             Vue.prototype.$notify.error({

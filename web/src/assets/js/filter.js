@@ -47,5 +47,4 @@ Vue.filter('sliceFloat', function(value, pos = 3) {
   } else {
     return (Math.floor(value * Math.pow(10, pos)) / Math.pow(10, pos)).toFixed(pos)
   }
-  
 })
