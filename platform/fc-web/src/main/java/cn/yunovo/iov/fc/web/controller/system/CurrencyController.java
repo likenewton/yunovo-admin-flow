@@ -1,11 +1,14 @@
 package cn.yunovo.iov.fc.web.controller.system;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
@@ -54,6 +57,7 @@ public class CurrencyController extends BaseController{
 	public Result<Object> insert(@RequestBody CurrencyForm form) {
 		
 		form.validate(InsertGroupValidate.class);
+		
 		iCcCurrencyService.insert(form, this.getLoginBaseInfo());
 		return ResultUtil.successCN(null);
 	}
@@ -66,6 +70,7 @@ public class CurrencyController extends BaseController{
 		iCcCurrencyService.update(form, this.getLoginBaseInfo());
 		return ResultUtil.successCN(null);
 	}
+	
 	
 	/*public Result<Object> delete(CurrencyForm form) {
 		
