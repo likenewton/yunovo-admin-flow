@@ -485,10 +485,9 @@ public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcReal
 		card.setOwner_real(0);
 		iCcGprsCardService.updateCard(card);
 		
-		//TODO 解除绑定用户名设置
 		data.setTime_audit(DateUtil.nowStr());
 		iCcCardLogService.log10Rlname(data, true);
-		isOk = SqlHelper.retBool(iCcRealnameMapper.updateIccidByCardid(form.getCard_id(), 0));
+		isOk = SqlHelper.retBool(iCcRealnameMapper.updateIccidByCardid(form.getCard_id(), null, user.getLoginName()));
 		
 		data = iCcRealnameMapper.getByCardId(form.getCard_id());
 		cache(data);
