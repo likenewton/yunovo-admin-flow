@@ -8,6 +8,7 @@ import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcCurrency;
+import cn.yunovo.iov.fc.model.exception.FormValidateException;
 import cn.yunovo.iov.fc.model.form.CurrencyForm;
 import cn.yunovo.iov.fc.service.FcConstant;
 import cn.yunovo.iov.fc.service.ICcCurrencyService;
@@ -15,6 +16,7 @@ import cn.yunovo.iov.fc.service.ICcSettingService;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -85,12 +87,31 @@ public class CcCurrencyServiceImpl extends ServiceImpl<ICcCurrencyMapper, CcCurr
 		return ccCurrency;
 	}
 	
+	public CcCurrency getByCode(String code) {
+		
+		if(StringUtils.isEmpty(code)) {
+			return null;
+		}
+	
+		QueryWrapper<CcCurrency> queryWrapper = new QueryWrapper<>();
+		queryWrapper.eq("code", code);
+		
+		CcCurrency ccCurrency = this.getOne(queryWrapper, false);
+		
+		return ccCurrency;
+		
+	}
+	
 	@Override
 	public int insert(CurrencyForm form, LoginInfo info) {
 		
 		CcCurrency ccCurrency = new CcCurrency();
 		ccCurrency.setDate_modified(DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
 		BeanUtils.copyProperties(form, ccCurrency);
+		
+		if(this.getByCode(form.getCode()) != null) {
+			throw new FormValidateException("货币代码不能重复新增", "code", form.buildJsonString());
+		}
 		
 		int result = this.baseMapper.insert(ccCurrency);
 		
@@ -103,6 +124,10 @@ public class CcCurrencyServiceImpl extends ServiceImpl<ICcCurrencyMapper, CcCurr
 		
 		CcCurrency ccCurrency = new CcCurrency();
 		BeanUtils.copyProperties(form, ccCurrency);
+		CcCurrency d = this.getByCode(form.getCode());
+		if(d != null && d.getCurrency_id() - form.getCurrency_id() != 0) {
+			throw new FormValidateException("货币代码已存在", "code", form.buildJsonString());
+		}
 		
 		return iCcCurrencyMapper.updateInfo(ccCurrency);
 	}
