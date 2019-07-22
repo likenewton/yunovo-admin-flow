@@ -143,7 +143,10 @@
 		<if test="user_id != null">
 		, user_id = #{user_id}
 		</if>
-		,update_by = #{update_by}
+		<if test="update_by != null">
+		,update_by = #{update_by}	
+		</if>
+		
 		
 		 WHERE card_id = #{card_id}
 	</update>

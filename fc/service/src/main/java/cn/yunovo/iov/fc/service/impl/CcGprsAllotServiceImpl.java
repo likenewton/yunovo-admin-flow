@@ -582,7 +582,7 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 		if(realname != null) {
 			realname.setTime_audit(DateUtil.nowStr());
 			iCcCardLogService.log10Rlname(realname, true);
-			iCcRealnameMapper.updateIccidByCardid(card.getCard_id(), null);
+			iCcRealnameMapper.updateIccidByCardid(card.getCard_id(), null, null);
 		}
 		
 		card.setOwner_real(0);
