@@ -244,7 +244,6 @@ export default {
         if (valid) {
           // 验证通过
           this.formInline.iccids = this.formInline.iccids.split('\n').filter((v) => v.trim()).join('\n')
-          this.loadData = true
           // 验证通过
           _axios.send({
             method: 'post',

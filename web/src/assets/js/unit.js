@@ -11,6 +11,7 @@ module.exports = {
       })
     })
     // 如果后台配置的页面在所有已开发的页面中都找不到不让其加到菜单列表当中
+    let newRecource = []
     resources.forEach((v1, i1) => {
       let level_1 = false
       asideData.forEach((v2, i2) => {
@@ -19,11 +20,11 @@ module.exports = {
           level_1 = true
         }
       })
-      if (!level_1) {
-        resources.splice(i1, 1)
+      if (level_1) {
+        newRecource.push(v1)
       }
     })
-    return resources
+    return newRecource
   },
   // 获取菜单动态路由
   getMenuRoute(menuRoute = [], resources = []) {

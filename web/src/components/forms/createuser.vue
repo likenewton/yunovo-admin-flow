@@ -154,9 +154,9 @@ export default {
           console.log(this.formInline)
         } else {
           Api.UNITS.showMsgBox()
-          return false;
+          return false
         }
-      });
+      })
     },
     // 重置表单
     resetForm(formName) {

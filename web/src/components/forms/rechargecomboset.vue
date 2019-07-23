@@ -55,7 +55,7 @@
       <el-form-item prop="live_month">
         <span slot="label">有效周期：</span>
         <el-select v-model="formInline.live_month" placeholder="请选择有效周期">
-          <el-option v-for="(item, index) in liveMonthSelect" v-if="item.value >= 1" :disabled="item.value < formInline.allot_month" :key="index" :label="item.label" :value="item.value - 0"></el-option>
+          <el-option v-for="(item, index) in liveMonthSelect" v-if="item.value > 0" :disabled="item.value < formInline.allot_month && formInline.allot ===0" :key="index" :label="item.label" :value="item.value - 0"></el-option>
         </el-select>
         <div class="annotation">有效周期时间不能比分配月数短</div>
       </el-form-item>
@@ -125,10 +125,16 @@ export default {
           required: true,
           message: '请输入套餐流量',
           trigger: 'blur'
+        }, {
+          validator: this.limitNumberSize2,
+          trigger: 'blur'
         }],
         gprs_price: [{
           required: true,
           message: '请输入套餐价格',
+          trigger: 'blur'
+        }, {
+          validator: this.limitNumberSize2,
           trigger: 'blur'
         }],
         gprs_discount: [{
@@ -271,6 +277,13 @@ export default {
     limitNumberSize(rule, value, callback) {
       if (value <= 0 || value > 1) {
         callback(new Error('折扣值必须在0.001~1之间'))
+      } else {
+        callback()
+      }
+    },
+    limitNumberSize2(rule, value, callback) {
+      if (value <= 0) {
+        callback(new Error('数值不能为零'))
       } else {
         callback()
       }
