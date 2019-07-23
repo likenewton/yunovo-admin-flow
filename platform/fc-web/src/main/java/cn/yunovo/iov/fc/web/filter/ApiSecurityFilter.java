@@ -18,7 +18,6 @@ import org.springframework.http.MediaType;
 import cn.yunovo.iov.cas.client.configuration.SpringCasProperties;
 import cn.yunovo.iov.cas.client.util.IgnoreOperatorUtils;
 import cn.yunovo.iov.cas.client.util.TokenUtil;
-import cn.yunovo.iov.fc.service.ISystemResourceService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

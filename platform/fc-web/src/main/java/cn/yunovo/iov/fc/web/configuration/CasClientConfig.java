@@ -25,9 +25,9 @@ import cn.yunovo.iov.cas.client.util.token.TokenBuilder;
 import cn.yunovo.iov.cas.client.validation.AbstractTicketValidationFilter;
 import cn.yunovo.iov.cas.client.validation.H5ClientCas20ProxyReceivingTicketValidationFilter;
 import cn.yunovo.iov.fc.service.ICcUserService;
-import cn.yunovo.iov.fc.service.ISystemResourceService;
 import cn.yunovo.iov.fc.web.filter.ApiSecurityFilter;
 import cn.yunovo.iov.fc.web.filter.H5LoginUserAdapterFilter;
+import cn.yunovo.iov.fc.web.filter.ISystemResourceService;
 import redis.clients.jedis.JedisPool;
 
 @Configuration

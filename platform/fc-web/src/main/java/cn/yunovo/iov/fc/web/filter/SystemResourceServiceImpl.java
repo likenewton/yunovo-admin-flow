@@ -1,4 +1,4 @@
-package cn.yunovo.iov.fc.service.impl;
+package cn.yunovo.iov.fc.web.filter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,14 +24,10 @@ import org.sunshine.dcda.system.service.model.SystemResourceQueryBean;
 import org.sunshine.dcda.system.service.model.SystemResourceVo;
 import org.sunshine.dcda.view.system.viewcomponent.ISystemResourceViewComponent;
 
-import com.alibaba.fastjson.JSONObject;
-
-import cn.yunovo.iov.cas.client.session.ClientSessionMappingStorage;
 import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
 import cn.yunovo.iov.fc.model.ResourcesBean;
 import cn.yunovo.iov.fc.model.UserResourceInfoBean;
 import cn.yunovo.iov.fc.service.FcConstant;
-import cn.yunovo.iov.fc.service.ISystemResourceService;
 import lombok.extern.slf4j.Slf4j;
 
 @Service

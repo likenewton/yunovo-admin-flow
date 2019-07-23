@@ -26,7 +26,7 @@ import cn.yunovo.iov.fc.common.utils.web.WebRequestUtil;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.ResourcesBean;
 import cn.yunovo.iov.fc.model.UserResourceInfoBean;
-import cn.yunovo.iov.fc.service.ISystemResourceService;
+import cn.yunovo.iov.fc.web.filter.ISystemResourceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;

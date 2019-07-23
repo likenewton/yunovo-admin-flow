@@ -1,0 +1,163 @@
+server: 
+  port: 9099
+  tomcat: 
+    uri-encoding: UTF-8
+#BasePath: /fc
+
+loging: 
+  config: classpath:logback.xml
+  level: 
+    cn.yunovo.iov: debug
+    com.ibatis: debug
+spring: 
+  redis:
+    host: 192.168.3.240
+    port: 6379
+    ssl: false
+    password: yunovo2Redis
+    database: 0
+    jedis: 
+      poll: 
+        maxIdle: 8
+        minIdle: 0
+        maxActive: 8
+  datasource:
+    clw: 
+      name: clw
+      type: com.alibaba.druid.pool.DruidDataSource
+      url: "jdbc:mysql://10.0.3.52:3306/gprs?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT"
+      username: root
+      password: 123456
+      driver-class-name: com.mysql.jdbc.Driver
+      minIdle: 0
+      maxActive: 20
+      initialSize: 1
+      timeBetweenEvictionRunsMillis: 3000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      
+cdp: 
+  isUrl: http://192.168.3.240:7000
+fc: 
+  gprs: 
+    file_server_url: http://t.wx.yunovo.cn/llpt/www/img/
+    file_dir_root: /home/hoojar/website/llpt/
+    ##流量计算偏移量单位MB(为了方便流量卡当月未使用任何流量而同样参加流量运算)
+    GPRS_CAL_OFFSET: 0.001
+    card_type: 
+      1: 智网吉林11位卡
+      2: 智网科技 JASPER
+      3: 吉林长春 JASPER
+      4: 智网定向流量卡
+      5: 吉林长春 新APN
+    arr_log_type: 
+      1: 流量卡入库
+      2: 流量卡激活
+      3: 流量赠送
+      4: 流量充值
+      5: 停卡操作
+      6: 开卡操作
+      7: 机构变更
+      8: 迁移套餐
+      9: 重置流量卡
+      10: 实名认证
+    arr_onofflog: 
+      api: 第三方机构调用API接口操作
+      lost: 24小时内失联但流量消耗大于50M
+      mend: 月结成功后执行开卡处理
+      topup: 用户充值成功执行开卡处理
+      shell: 小时对账流量卡余量不足停卡
+      reset: 重置流量卡时开卡
+      plstop: 批量执行停卡操作
+      plopen: 批量执行开卡操作
+      daylimit: 当天使用流量超过限定量停卡
+      jasper: 因流量卡切换设备联通系统停卡
+      syshell: 系统日结流量卡余量不足停卡
+      sys2api: 设备上报时流量不足经与联通对账确认停卡
+      selfop: 客户在流量详情处手动开卡
+    arr_ntf_type: 
+      unknown: 未知来源
+      yzzx: 云智公众号
+      wszl: 完善资料通知
+      jmapi: 静默API充值
+      expire: 流量微信通知
+      promotion: 流量促销通知
+      wxclw: 车联网微信号
+      qrcode: 设备端扫码充
+      qrcode-dpj: 大屏机端扫码
+      qrcode-hsj: 后视镜端扫码
+      rebate-event: 充值返现活动
+      lottery-event: 充值抽奖活动
+      discount-event: 充值折扣活动
+      near_200: 流量200M预警
+      near_100: 流量100M预警
+      near_50: 流量50M预警
+      near_00: 流量用完第一次预警
+      near_01: 流量用完第二次预警
+      near_02: 流量用完第三次预警
+      indate_15: 有效期15天预警
+      indate_7: 有效期7天预警
+      indate_3: 有效期3天预警
+      indate_1: 有效期1天预警
+      indate_00: 流量过期第一次预警
+      indate_01: 流量过期第二次预警
+      indate_02: 流量过期第三次预警
+    arr_pay_method: 
+      -1: 重置赠送
+      0: 系统赠送
+      1: 微信支付
+      2: 支付宝
+      3: 充值卡
+      4: 银行转账
+    pays: 
+      alipay: 
+        link_url: https://open.alipay.com/platform/home.htm
+        form_url: alipay
+        icon_url: alipay.png
+        name: 支付宝支付
+      wxpay: 
+        link_url: https://pay.weixin.qq.com
+        form_url: wechart
+        icon_url: wxpay.png
+        name: 微信支付
+    arr_live_month: 
+      "0": "无周期"
+      "0.01": "1天"
+      "0.02": "2天"
+      "0.03": "3天"
+      "0.05": "5天"
+      "0.07": "7天(一周)"
+      "0.1": "10天"
+      "0.14": "14天(二周)"
+      "0.15": "15天"
+      "0.21": "21天(3周)"
+      "1": "1个月"
+      "2": "2个月"
+      "3": "3个月(一季)"
+      "4": "4个月"
+      "5": "5个月"
+      "6": "6个月(半年)"
+      "7": "7个月"
+      "8": "8个月"
+      "9": "9个月(三季)"
+      "10": "10个月"
+      "11": "11个月"
+      "12": "12个月(一年)"
+      "16": "16个月"
+      "18": "18个月(一年半)"
+      "24": "24个月(二年)"
+      "30": "30个月(二年半)"
+      "36": "36个月(三年)"
+      "42": "42个月(三年半)"
+      "48": "48个月(四年)"
+      "999": "无限期"
+    arr_pay_status: 
+      0: 未付款
+      1: 已付款
+    arr_allot_reset: 
+      0: 不清零
+      1: 会清零
+

@@ -78,5 +78,6 @@ public class CurrencyController extends BaseController{
 		iCcCurrencyService.delete(form, this.getLoginBaseInfo());
 		return ResultUtil.successCN(null);
 	}*/
+
 	
 }
