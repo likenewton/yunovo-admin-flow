@@ -77,7 +77,7 @@ public class PackController extends BaseController{
 	@RequestMapping(path="/stop",method= {RequestMethod.POST})
 	public Result<Object> stop(@RequestBody GprsPackForm form) {
 		
-		form.validate(DeleteGroupValidate.class);
+		form.stopValidate();
 		iCcGprsPackService.stop(form, this.getLoginBaseInfo());
 		return ResultUtil.successCN(null);
 	}

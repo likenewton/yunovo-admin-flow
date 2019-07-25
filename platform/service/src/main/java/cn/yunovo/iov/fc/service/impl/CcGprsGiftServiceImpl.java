@@ -33,10 +33,14 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -162,9 +166,9 @@ public class CcGprsGiftServiceImpl extends ServiceImpl<ICcGprsGiftMapper, CcGprs
 		
 		Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
 		String iccidTemp = form.getIccids().replaceAll("\r\n", "\n");
-		String[] iccids = iccidTemp.split("\n");
+		String[] arr_iccids = iccidTemp.split("\n");
 		
-		if(iccids.length > 200) {
+		if(arr_iccids.length > 200) {
 			throw new FormValidateException("同一批次赠送ICCID个数不能超过200个！","iccids",form.buildJsonString());
 		}
 		
@@ -185,6 +189,8 @@ public class CcGprsGiftServiceImpl extends ServiceImpl<ICcGprsGiftMapper, CcGprs
 		CcGprsCard card = null;
 		List<CardGiftBean> returnData = new ArrayList<>();
 		CardGiftBean temp = null;
+		
+		Set<String> iccids = new LinkedHashSet<>(Arrays.asList(arr_iccids));
 		for (String iccid : iccids) {
 			
 			iccid = iccid.trim();
@@ -192,7 +198,15 @@ public class CcGprsGiftServiceImpl extends ServiceImpl<ICcGprsGiftMapper, CcGprs
 				continue;
 			}
 			temp = new CardGiftBean();
+			if(StringUtils.length(iccid) > 20) {
+				temp.setIccid(iccid);
+				temp.setMsg(arr_ret.get("notfound"));
+				temp.setRet("2");
+				returnData.add(temp);
+				continue;
+			}
 			try {
+				
 				card = iCcGprsCardService.getByIccid(iccid);
 				
 				if(card == null) {

@@ -34,7 +34,7 @@ import cn.yunovo.iov.fc.model.exception.FormValidateException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class AppApiFilter implements Filter{
+public class FcApiSignatureFilter implements Filter{
 
 	private WebApplicationContext wac;
 	
@@ -47,15 +47,15 @@ public class AppApiFilter implements Filter{
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		
-		Result<Object> errResult = null;
+		chain.doFilter(request, response);
+		/*Result<Object> errResult = null;
 		HttpServletRequest _request = (HttpServletRequest) request;
 		//必输参数校验
 		ApiCommonParamsForm form = null;
 		try {
 			form = this.verifyRequired(_request);
 		} catch (FormValidateException e) {
-			log.warn("[AppApiFilter][参数校验]params={},exception={}", form.buildJsonString(), ExceptionUtils.getStackTrace(e));
+			log.warn("[AppApiFilter][参数校验]params={},exception={}", e.getParams(), ExceptionUtils.getStackTrace(e));
 			errResult = ResultUtil.build(400, e.getMessage());
 			returnJson(errResult, response);
 			return;
@@ -114,7 +114,7 @@ public class AppApiFilter implements Filter{
 			errResult = ResultUtil.exception();
 			returnJson(errResult, response);
 			return;
-		}
+		}*/
 		
 		
 	}
@@ -197,7 +197,6 @@ public class AppApiFilter implements Filter{
 			}
 
 		}
-		
 		
 		return beforeSign;
 	}

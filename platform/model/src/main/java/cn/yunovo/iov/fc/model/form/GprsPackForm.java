@@ -121,10 +121,14 @@ public class GprsPackForm extends BaseForm implements Serializable{
 		this.pack_rebate = this.pack_rebate == null ? new BigDecimal(0) : this.pack_rebate;
 		float pack_pack_rebate =pack_rebate.floatValue();
 		float pack_gprs_price = gprs_price.floatValue();
-		if( pack_pack_rebate < 0F  || pack_pack_rebate > pack_gprs_price ) {
-			throw new FormValidateException("返利金额不能小于零且不能大于套餐金额","allot_month", JSONObject.toJSONString(this));
+		if( pack_pack_rebate < 0F  || pack_pack_rebate >= pack_gprs_price ) {
+			throw new FormValidateException("返利金额不能小于零且不能大于等于套餐金额","pack_rebate", JSONObject.toJSONString(this));
 		}
 		
+	}
+	
+	public void stopValidate() {
+		super.validate(DeleteGroupValidate.class);
 	}
 	
 	public static Double computeAllotValue(double gprs_amount, int allot_month) {
