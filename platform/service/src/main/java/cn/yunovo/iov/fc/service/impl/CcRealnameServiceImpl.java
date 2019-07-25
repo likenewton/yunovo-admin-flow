@@ -118,7 +118,7 @@ public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcReal
 		
 
 		Page<CcRealname> page = form.build(CcRealname.class, null, null);
-		page.setDesc("R.cdi_status","R.time_added");
+		page.setAsc("R.cdi_status","R.time_added");
 		PageData<CcRealname, Object> returnData = new PageData<>();
 		String orgpos = iCcUserService.getOrgpos(info.getLoginName());
 		if (StringUtils.isEmpty(orgpos)) {
