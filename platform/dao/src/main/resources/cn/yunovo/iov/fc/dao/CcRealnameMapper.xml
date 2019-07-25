@@ -137,6 +137,15 @@
 	
 	</select>
 	
+	<select id="getByCardIccid" resultType="cn.yunovo.iov.fc.model.entity.CcRealname">
+		
+		SELECT
+			card_id,user_id,device_sn,card_iccid,owner_name,owner_gender,owner_cdi,cdi_img1,cdi_img2,cdi_img3,
+			cdi_status,give_value,give_time,time_added,time_modify,time_audit
+		FROM	cc_realname
+			where card_iccid = card_iccid	
+	</select>
+	
 	<update id="updateIccidByCardid">
 	
 		UPDATE cc_realname SET card_iccid = CONCAT(card_iccid, '_'), time_modify = NOW()
@@ -146,7 +155,6 @@
 		<if test="update_by != null">
 		,update_by = #{update_by}	
 		</if>
-		
 		
 		 WHERE card_id = #{card_id}
 	</update>

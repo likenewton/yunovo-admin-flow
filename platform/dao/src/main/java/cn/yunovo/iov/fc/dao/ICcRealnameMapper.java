@@ -28,5 +28,7 @@ public interface ICcRealnameMapper extends BaseMapper<CcRealname> {
 	
 	public CcRealname getByCardId(@Param("card_id")Integer card_id);
 	
+	public CcRealname getByCardIccid(@Param("card_iccid")String card_iccid);
+	
 	public int updateIccidByCardid(@Param("card_id")Integer card_id, @Param("user_id")Integer user_id, @Param("update_by")String update_by);
 }

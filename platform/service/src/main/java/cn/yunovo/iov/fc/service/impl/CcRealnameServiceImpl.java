@@ -389,6 +389,8 @@ public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcReal
 		updateWrapper.eq("card_id", form.getCard_id());
 		ret = this.update(opData, updateWrapper);
 		this.getByIccid(data.getCard_iccid(), true);
+		data = iCcRealnameMapper.getByCardIccid(data.getCard_iccid());
+		cache(data);
 		return ret;
 	}
 	
@@ -486,7 +488,7 @@ public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcReal
 		iCcCardLogService.log10Rlname(data, true);
 		isOk = SqlHelper.retBool(iCcRealnameMapper.updateIccidByCardid(form.getCard_id(), null, user.getLoginName()));
 		
-		data = iCcRealnameMapper.getByCardId(form.getCard_id());
+		data = iCcRealnameMapper.getByCardIccid(card.getCard_iccid());
 		cache(data);
 		return isOk;
 	}
