@@ -289,8 +289,8 @@ export default {
       }
     },
     limitPackRebate(rule, value, callback) {
-      if (Number(value) > Number(this.formInline.gprs_price || 0)) {
-        callback(new Error('返利金额不能大于套餐价格'))
+      if (Number(value) >= Number(this.formInline.gprs_price || 0)) {
+        callback(new Error('返利金额须小于套餐价格'))
       } else {
         callback()
       }
