@@ -48,7 +48,7 @@ public class CcRealname implements Serializable {
 	private String owner_name;
 
 	@ApiModelProperty(value = "身份证性别0保密1男2女")
-	private Boolean owner_gender;
+	private Short owner_gender;
 
 	@ApiModelProperty(value = "身份证编号")
 	private String owner_cdi;
