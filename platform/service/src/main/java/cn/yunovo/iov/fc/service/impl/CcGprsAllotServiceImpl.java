@@ -210,22 +210,23 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 			value.setHow_month(curt_month_int);
 			value.setTime_added(DateUtil.nowStr());
 			value.setTime_modify(null);
-			
-			definition = new DefaultTransactionDefinition();
-			definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-			transactionStatus = clwTransactionManager.getTransaction(definition);
-			try {
 				
-				/**
-				 * 判断是否还有未分配的流量
-				 */
-				if(ccGprsAllot.getAssigned_month() - ccGprsAllot.getAllot_month() < 0) {
-					value.setGprs_value((ccGprsAllot.getAllot_reset() == null || ccGprsAllot.getAllot_reset() == 0) ? (value.getBalance_value() + ccGprsAllot.getAllot_value()) : ccGprsAllot.getAllot_value());
-					value.setBalance_value(value.getGprs_value());
-					value.setBalance_dval(value.getGprs_value());
-					
+			/**
+			 * 判断是否还有未分配的流量
+			 */
+			if(ccGprsAllot.getAssigned_month() - ccGprsAllot.getAllot_month() < 0) {
+				
+				value.setGprs_value((ccGprsAllot.getAllot_reset() == null || ccGprsAllot.getAllot_reset() == 0) ? (value.getBalance_value() + ccGprsAllot.getAllot_value()) : ccGprsAllot.getAllot_value());
+				value.setBalance_value(value.getGprs_value());
+				value.setBalance_dval(value.getGprs_value());
+				
+				definition = new DefaultTransactionDefinition();
+				definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+				transactionStatus = clwTransactionManager.getTransaction(definition);
+				try {
 					if(!iCcGprsValueService.save(value)) {
 						log.warn("[gprsAllot][保存流量分配信息失败]params={value:{},gprsAllot:{}}", JSONObject.toJSONString(value), JSONObject.toJSONString(ccGprsAllot));
+						clwTransactionManager.rollback(transactionStatus);
 						continue;
 					}
 					
@@ -236,24 +237,26 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 					}else {
 						clwTransactionManager.commit(transactionStatus);
 					}
-					
-				}else {
-					
-					/**
-					 * 如果套餐不清零且套剩余流量大于0，则需要(结转)继承上月余量
-					 */
-					if(ccGprsAllot.getAllot_reset() == 0 && value.getBalance_value() > 0) {
-						
-						value.setGprs_value(value.getBalance_value());
-						iCcGprsValueService.save(value);
-					}
+				
+				}catch(Exception e) {
+					log.warn("[gprsAllot][exception]params={gprsAllot:{}},exception={}", JSONObject.toJSONString(ccGprsAllot), ExceptionUtils.getStackTrace(e));
+					clwTransactionManager.rollback(transactionStatus);
+					throw e;
 				}
-			
-			}catch(Exception e) {
-				log.warn("[gprsAllot][exception]params={gprsAllot:{}},exception={}", JSONObject.toJSONString(ccGprsAllot), ExceptionUtils.getStackTrace(e));
-				clwTransactionManager.rollback(transactionStatus);
-				throw e;
+				
+			}else {
+				
+				/**
+				 * 如果套餐不清零且套剩余流量大于0，则需要(结转)继承上月余量
+				 */
+				if(ccGprsAllot.getAllot_reset() == 0 && value.getBalance_value() > 0) {
+					
+					value.setGprs_value(value.getBalance_value());
+					iCcGprsValueService.save(value);
+				}
 			}
+			
+			
 		}
 		
 //		if(card_id != null) {
