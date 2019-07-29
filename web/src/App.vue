@@ -23,7 +23,7 @@ export default {
     let width = $(window).width();
     if (width > 1200) {
       let ratio = width / window.screen.width;
-      document.querySelector("body").style.zoom = ratio;
+      // document.querySelector("body").style.zoom = ratio;
     }
   }
 }

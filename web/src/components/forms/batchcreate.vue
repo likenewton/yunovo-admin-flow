@@ -46,7 +46,7 @@
       </el-form-item>
       <el-form-item prop="clw_batch_id">
         <span slot="label">车联网批次：</span>
-        <el-input v-model="formInline.clw_batch_id" placeholder="请输入车联网批次" :disabled="isUpdate"></el-input>
+        <el-input v-model="formInline.clw_batch_id" @input="formInline.clw_batch_id = limitNumber(formInline.clw_batch_id, 9, 0)" placeholder="请输入车联网批次" :disabled="isUpdate"></el-input>
         <div class="annotation">若需将车联网设备中的卡归属到本批次初始化信息中，需关联车联网出货批次编号</div>
       </el-form-item>
       <el-form-item prop="card_type" v-if="!isUpdate">
@@ -252,9 +252,10 @@ export default {
   },
   mounted() {
     this.isUpdate = Api.UNITS.getQuery('type') === 'update'
-    this.setRegionData(1, 'provinceData')
     if (this.isUpdate) {
       this.getData()
+    } else {
+      this.setRegionData(1, 'provinceData')
     }
   },
   methods: {
@@ -264,6 +265,9 @@ export default {
       let formInline = this.formInline
       delete formInline.city_id
       delete formInline.district_id
+      this.$nextTick(() => {
+        this.$refs.ruleForm.clearValidate('city_id')
+      })
     },
     citySelect(id) {
       this.setRegionData(id, 'districtData')
@@ -295,6 +299,7 @@ export default {
           this.$nextTick(() => {
             this.$refs.ruleForm.clearValidate()
           })
+          this.setRegionData(1, 'provinceData')
           if (this.formInline.province_id) this.setRegionData(this.formInline.province_id, 'cityData')
           if (this.formInline.city_id) this.setRegionData(this.formInline.city_id, 'districtData')
         })
@@ -303,6 +308,47 @@ export default {
     setRegionData(id, key) {
       this.getNations(id, (res) => {
         this[key] = res.data || []
+
+        if (this.isUpdate) {
+          // 在这里省市区有可能被删除了，如果被删除了就要清除数据
+          if (key === 'provinceData') {
+            let flag = false
+            this[key].forEach((v) => {
+              if (v.value === this.formInline.province_id) {
+                flag = true
+              }
+            })
+            if (!flag) {
+              this.formInline.province_id = undefined
+              this.formInline.city_id = undefined
+              this.formInline.district_id = undefined
+              this.$nextTick(() => {
+                this.$refs.ruleForm.clearValidate('city_id')
+              })
+            }
+          } else if (key === 'cityData') {
+            let flag = false
+            this[key].forEach((v) => {
+              if (v.value === this.formInline.city_id) {
+                flag = true
+              }
+            })
+            if (!flag) {
+              this.formInline.city_id = undefined
+              this.formInline.district_id = undefined
+            }
+          } else if (key === 'districtData') {
+            let flag = false
+            this[key].forEach((v) => {
+              if (v.value === this.formInline.district_id) {
+                flag = true
+              }
+            })
+            if (!flag) {
+              this.formInline.district_id = undefined
+            }
+          }
+        }
       })
     },
     resetForm(formName) {

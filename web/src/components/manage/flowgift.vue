@@ -29,8 +29,8 @@
             </el-form-item>
             <el-form-item prop="allot_reset">
               <span slot="label">是否清零：</span>
-              <el-radio v-model="formInline.allot_reset" :label="1">不清零</el-radio>
-              <el-radio v-model="formInline.allot_reset" :label="0">会清零</el-radio>
+              <el-radio v-model="formInline.allot_reset" :label="0">不清零</el-radio>
+              <el-radio v-model="formInline.allot_reset" :label="1">会清零</el-radio>
             </el-form-item>
             <el-form-item prop="live_month">
               <span slot="label">有效周期：</span>

@@ -117,6 +117,7 @@ export default {
           }
         },
         legend: {
+          // selectedMode: false,
           data: ['已激活', '未激活']
         },
         grid: {

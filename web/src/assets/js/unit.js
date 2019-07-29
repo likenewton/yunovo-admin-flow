@@ -338,7 +338,8 @@ module.exports = {
     // let height = $(window).height() - (220 + 300000 / ($(window).height() + 1000))
     // if (height < 400) height = 400
     let winWidth = $(window).width()
-    let zoom = winWidth > 1200 ? winWidth / window.screen.width : 1
+    // let zoom = winWidth > 1200 ? winWidth / window.screen.width : 1
+    let zoom = 1
     let calcHeight = ($(window).height() - leftHeight * zoom) / zoom
     return calcHeight
   },
