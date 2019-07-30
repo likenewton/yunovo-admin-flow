@@ -44,10 +44,16 @@
       <span slot="title">可选机构<span>({{orgpos_name_arr.length}}/50)</span></span>
       <div class="dialog_content">
         <div slot>
+          <el-form class="org_filter" :inline="true" size="small">
+            <el-form-item>
+              <el-input size="small" @input="filterOrg" v-model="jgFitler" placeholder="机构过滤"></el-input>
+            </el-form-item>
+          </el-form>
           <!-- <el-checkbox class="title-checkbox" :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox> -->
-          <el-checkbox-group v-model="orgpos_name_arr" @change="handleChoiceChange" :max="50" :style="{'maxHeight': winHeight/2 + 'px'}">
-            <el-checkbox v-for="item in orgs" :label="item.value" :key="item.value">{{item.label}}</el-checkbox>
+          <el-checkbox-group v-shadow:[flag] v-model="orgpos_name_arr" @change="handleChoiceChange" :max="50" :style="{'maxHeight': winHeight/2 + 'px'}">
+            <el-checkbox v-for="item in jgs" :label="item.value" :key="item.value">{{item.label}}</el-checkbox>
           </el-checkbox-group>
+          <div v-if="jgs.length === 0" style="text-align: center; color: #ccc; line-height: 100px">没有符合条件的机构</div>
         </div>
       </div>
       <div slot="footer" class="dialog-footer">
@@ -64,6 +70,7 @@ import Api from 'assets/js/api.js'
 export default {
   data() {
     return {
+      flag: true, // 没什么作用。控制shadow延迟显示
       dialogVisible: false,
       isUpdate: false,
       checkAll: false,
@@ -71,6 +78,8 @@ export default {
       orgpos_alias: -1,
       orgpos_name_arr: [],
       orgpos_name_arr_tmp: [],
+      jgFitler: '',
+      jgs: [],
       rules: {
         org_id: [{
           required: true,
@@ -115,11 +124,20 @@ export default {
     }
   },
   methods: {
+    filterOrg() {
+      this.jgs = this.orgs.filter((v) => {
+        return v.label.indexOf(this.jgFitler) > -1
+      })
+    },
     openChoice() {
       this.dialogVisible = true
       // checked弹框关闭的时候都会被清空，打开弹框的时候要从temp获取选择的数据
-      this.orgpos_name_arr = this.orgpos_name_arr_tmp
-      this.handleChoiceChange(this.orgpos_name_arr)
+      this.handleChoiceChange(this.orgpos_name_arr_tmp)
+      this.jgFitler = ''
+      this.filterOrg(this.jgFitler)
+      setTimeout(() => {
+        this.flag = !this.flag
+      }, 200)
     },
     // 弹框关闭的时清空checked
     cancelChoice() {
@@ -278,6 +296,12 @@ export default {
       height: 35px;
       padding: 5px;
     }
+  }
+
+  .org_filter {
+    position: absolute;
+    bottom: 2px;
+    right: 232px;
   }
 }
 

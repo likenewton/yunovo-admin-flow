@@ -1,88 +1,90 @@
 <template>
-  <el-card class="batchcreate_container" shadow="never">
+  <el-card class="rechargecomboset_container" shadow="never">
     <div slot="header" class="clearfix">
       <span>充值套餐设置</span>
     </div>
-    <el-form class="editor-form" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="120px" size="small" v-loading="loadData">
-      <el-form-item prop="org_id">
-        <span slot="label">机构名称：</span>
-        <el-select v-model="formInline.org_id" filterable placeholder="请选择机构">
-          <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value - 0"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item prop="pack_mode">
-        <span slot="label">套餐模式：</span>
-        <el-radio v-model="formInline.pack_mode" :label="0">叠加</el-radio>
-        <el-radio v-model="formInline.pack_mode" :label="1">延期</el-radio>
-      </el-form-item>
-      <el-form-item prop="pack_name">
-        <span slot="label">套餐名称：</span>
-        <el-input v-model="formInline.pack_name" placeholder="请输入套餐名称"></el-input>
-        <!-- <div class="annotation">若为空将根据套餐情况规则组合名称</div> -->
-      </el-form-item>
-      <el-form-item prop="gprs_amount">
-        <span slot="label">套餐流量：</span>
-        <el-input v-model="formInline.gprs_amount" @input="formInline.gprs_amount = limitNumber(formInline.gprs_amount)" placeholder="请输入套餐流量"></el-input>
-        <div class="annotation">默认单位为M，精确到3位小数(无限制填：99999999)</div>
-      </el-form-item>
-      <el-form-item prop="gprs_price">
-        <span slot="label">套餐价格：</span>
-        <el-input v-model="formInline.gprs_price" @input="formInline.gprs_price = limitNumber(formInline.gprs_price, 5)" placeholder="请输入套餐价格"></el-input>
-        <div class="annotation">最多精确到3位小数</div>
-      </el-form-item>
-      <el-form-item prop="gprs_discount">
-        <span slot="label">套餐折扣：</span>
-        <el-input v-model="formInline.gprs_discount" @input="formInline.gprs_discount = limitNumber(formInline.gprs_discount, 1)" placeholder="请输入套餐折扣"></el-input>
-        <div class="annotation">折扣范围0.1至1，0.5代表打5折，1为不打折</div>
-      </el-form-item>
-      <el-form-item prop="allot">
-        <span slot="label">套餐类型：</span>
-        <el-radio v-model="formInline.allot" :label="1" @change="formInline.allot_month=1">固定套餐</el-radio>
-        <el-radio v-model="formInline.allot" :label="0" @change="formInline.allot_month=2">月均套餐</el-radio>
-      </el-form-item>
-      <el-form-item prop="allot_month">
-        <span slot="label">分配月数：</span>
-        <el-select v-model="formInline.allot_month" placeholder="请选择分配月数" :disabled="formInline.allot==1" @change="changeAllotMonth">
-          <el-option v-if="item.value >= 1 && item.value <= 48" v-for="(item, index) in liveMonthSelect" :disabled="formInline.allot==0&&item.value==1" :key="index" :label="item.label" :value="item.value - 0"></el-option>
-        </el-select>
-        <div class="annotation">月均流量：{{gprsMonth}}</div>
-      </el-form-item>
-      <el-form-item prop="allot_reset">
-        <span slot="label">是否清零：</span>
-        <el-radio v-model="formInline.allot_reset" :label="0">不清零</el-radio>
-        <el-radio v-model="formInline.allot_reset" :label="1">会清零</el-radio>
-      </el-form-item>
-      <el-form-item prop="live_month">
-        <span slot="label">有效周期：</span>
-        <el-select v-model="formInline.live_month" placeholder="请选择有效周期">
-          <el-option v-for="(item, index) in liveMonthSelect" v-if="item.value > 0" :disabled="item.value < formInline.allot_month && formInline.allot ===0" :key="index" :label="item.label" :value="item.value - 0"></el-option>
-        </el-select>
-        <div class="annotation">有效周期时间不能比分配月数短</div>
-      </el-form-item>
-      <el-form-item prop="pack_rebate">
-        <span slot="label">返利金额：</span>
-        <el-input v-model="formInline.pack_rebate" @input="formInline.pack_rebate = limitNumber(formInline.pack_rebate, 5)" placeholder="请输入返利金额"></el-input>
-        <div class="annotation">填 0 代表套餐无返利，将根据机构返利情况计算</div>
-      </el-form-item>
-      <el-form-item prop="pack_memo">
-        <span slot="label">套餐备注：</span>
-        <el-input type="textarea" v-model="formInline.pack_memo" placeholder="请输入套餐备注" rows="4"></el-input>
-        <div class="annotation">显示在充值处给用户看的套餐详细描述</div>
-      </el-form-item>
-      <el-form-item prop="pack_recom">
-        <span slot="label">是否推荐：</span>
-        <el-select v-model="formInline.pack_recom" clearable placeholder="请选择是否推荐">
-          <el-option label="否" :value="0"></el-option>
-          <el-option label="是" :value="1"></el-option>
-        </el-select>
-        <div class="annotation">用户充值选择套餐处显示推荐</div>
-      </el-form-item>
-      <el-form-item>
-        <el-button @click="$router.back()">返回</el-button>
-        <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
-        <el-button type="warning" @click="resetForm('ruleForm')">重置</el-button>
-      </el-form-item>
-    </el-form>
+    <div :style="{height: maxFormHeight + 'px'}" style="overflow: auto" v-shadow>
+      <el-form class="editor-form" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="120px" size="small" v-loading="loadData">
+        <el-form-item prop="org_id">
+          <span slot="label">机构名称：</span>
+          <el-select v-model="formInline.org_id" filterable placeholder="请选择机构">
+            <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value - 0"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item prop="pack_mode">
+          <span slot="label">套餐模式：</span>
+          <el-radio v-model="formInline.pack_mode" :label="0">叠加</el-radio>
+          <el-radio v-model="formInline.pack_mode" :label="1">延期</el-radio>
+        </el-form-item>
+        <el-form-item prop="pack_name">
+          <span slot="label">套餐名称：</span>
+          <el-input v-model="formInline.pack_name" placeholder="请输入套餐名称"></el-input>
+          <!-- <div class="annotation">若为空将根据套餐情况规则组合名称</div> -->
+        </el-form-item>
+        <el-form-item prop="gprs_amount">
+          <span slot="label">套餐流量：</span>
+          <el-input v-model="formInline.gprs_amount" @input="formInline.gprs_amount = limitNumber(formInline.gprs_amount)" placeholder="请输入套餐流量"></el-input>
+          <div class="annotation">默认单位为M，精确到3位小数(无限制填：99999999)</div>
+        </el-form-item>
+        <el-form-item prop="gprs_price">
+          <span slot="label">套餐价格：</span>
+          <el-input v-model="formInline.gprs_price" @input="formInline.gprs_price = limitNumber(formInline.gprs_price, 5)" placeholder="请输入套餐价格"></el-input>
+          <div class="annotation">最多精确到3位小数</div>
+        </el-form-item>
+        <el-form-item prop="gprs_discount">
+          <span slot="label">套餐折扣：</span>
+          <el-input v-model="formInline.gprs_discount" @input="formInline.gprs_discount = limitNumber(formInline.gprs_discount, 1)" placeholder="请输入套餐折扣"></el-input>
+          <div class="annotation">折扣范围0.1至1，0.5代表打5折，1为不打折</div>
+        </el-form-item>
+        <el-form-item prop="allot">
+          <span slot="label">套餐类型：</span>
+          <el-radio v-model="formInline.allot" :label="1" @change="formInline.allot_month=1">固定套餐</el-radio>
+          <el-radio v-model="formInline.allot" :label="0" @change="formInline.allot_month=2">月均套餐</el-radio>
+        </el-form-item>
+        <el-form-item prop="allot_month">
+          <span slot="label">分配月数：</span>
+          <el-select v-model="formInline.allot_month" placeholder="请选择分配月数" :disabled="formInline.allot==1" @change="changeAllotMonth">
+            <el-option v-if="item.value >= 1 && item.value <= 48" v-for="(item, index) in liveMonthSelect" :disabled="formInline.allot==0&&item.value==1" :key="index" :label="item.label" :value="item.value - 0"></el-option>
+          </el-select>
+          <div class="annotation">月均流量：{{gprsMonth}}</div>
+        </el-form-item>
+        <el-form-item prop="allot_reset">
+          <span slot="label">是否清零：</span>
+          <el-radio v-model="formInline.allot_reset" :label="0">不清零</el-radio>
+          <el-radio v-model="formInline.allot_reset" :label="1">会清零</el-radio>
+        </el-form-item>
+        <el-form-item prop="live_month">
+          <span slot="label">有效周期：</span>
+          <el-select v-model="formInline.live_month" placeholder="请选择有效周期">
+            <el-option v-for="(item, index) in liveMonthSelect" v-if="item.value > 0" :disabled="item.value < formInline.allot_month && formInline.allot ===0" :key="index" :label="item.label" :value="item.value - 0"></el-option>
+          </el-select>
+          <div class="annotation">有效周期时间不能比分配月数短</div>
+        </el-form-item>
+        <el-form-item prop="pack_rebate">
+          <span slot="label">返利金额：</span>
+          <el-input v-model="formInline.pack_rebate" @input="formInline.pack_rebate = limitNumber(formInline.pack_rebate, 5)" placeholder="请输入返利金额"></el-input>
+          <div class="annotation">填 0 代表套餐无返利，将根据机构返利情况计算</div>
+        </el-form-item>
+        <el-form-item prop="pack_memo">
+          <span slot="label">套餐备注：</span>
+          <el-input type="textarea" v-model="formInline.pack_memo" placeholder="请输入套餐备注" rows="4"></el-input>
+          <div class="annotation">显示在充值处给用户看的套餐详细描述</div>
+        </el-form-item>
+        <el-form-item prop="pack_recom">
+          <span slot="label">是否推荐：</span>
+          <el-select v-model="formInline.pack_recom" clearable placeholder="请选择是否推荐">
+            <el-option label="否" :value="0"></el-option>
+            <el-option label="是" :value="1"></el-option>
+          </el-select>
+          <div class="annotation">用户充值选择套餐处显示推荐</div>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="$router.back()">返回</el-button>
+          <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+          <el-button type="warning" @click="resetForm('ruleForm')">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
   </el-card>
 </template>
 <script>
@@ -92,6 +94,7 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
+      maxFormHeight: Api.UNITS.maxTableHeight(268),
       loadData: false,
       isUpdate: false,
       formInline: {
@@ -307,7 +310,7 @@ export default {
 
 </script>
 <style lang="scss">
-.batchcreate_container {
+.rechargecomboset_container {
   .el-card__header {
     margin: 0 15px;
   }
@@ -315,6 +318,11 @@ export default {
   .el-transfer-panel {
     width: 30%;
     min-width: 250px;
+  }
+
+  input,
+  textarea {
+    background: transparent;
   }
 }
 

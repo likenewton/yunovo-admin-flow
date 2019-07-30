@@ -191,7 +191,7 @@
                   <el-row v-if="bottomCardData_0.orgrank.length" v-for="(item, index) in bottomCardData_0.orgrank.slice(0, 8)" :key="index" class="rank-item" :gutter="5">
                     <el-col :class="'a_' + index" :span="3">{{index + 1}}</el-col>
                     <el-col :span="12">{{item.org_name}}</el-col>
-                    <el-col :span="8">￥{{formatMoney(item.val)}}</el-col>
+                    <el-col :span="8" style="text-align: right">￥{{formatMoney(item.val)}}</el-col>
                   </el-row>
                   <el-row v-if="!bottomCardData_0.orgrank.length"><span style="color:#999">暂无数据</span></el-row>
                 </el-col>
@@ -207,7 +207,7 @@
                   <el-row v-if="bottomCardData_1.orgrank.length" v-for="(item, index) in bottomCardData_1.orgrank.slice(0, 8)" :key="index" class="rank-item" :gutter="5">
                     <el-col :class="'a_' + index" :span="3">{{index + 1}}</el-col>
                     <el-col :span="12">{{item.org_name}}</el-col>
-                    <el-col :span="8">￥{{formatMoney(item.val)}}</el-col>
+                    <el-col :span="8" style="text-align: right">{{item.val}} 笔</el-col>
                   </el-row>
                   <el-row v-if="!bottomCardData_1.orgrank.length"><span style="color:#999">暂无数据</span></el-row>
                 </el-col>
@@ -223,7 +223,7 @@
                   <el-row v-if="bottomCardData_2.orgrank.length" v-for="(item, index) in bottomCardData_2.orgrank.slice(0, 8)" :key="index" class="rank-item" :gutter="5">
                     <el-col :class="'a_' + index" :span="3">{{index + 1}}</el-col>
                     <el-col :span="12">{{item.org_name}}</el-col>
-                    <el-col :span="8">{{formatFlowUnit(item.val, 3, false)}}</el-col>
+                    <el-col :span="8" style="text-align: right">{{formatFlowUnit(item.val, 3, false)}}</el-col>
                   </el-row>
                   <el-row v-if="!bottomCardData_2.orgrank.length"><span style="color:#999">暂无数据</span></el-row>
                 </el-col>
@@ -239,7 +239,7 @@
                   <el-row v-if="bottomCardData_3.orgrank.length" v-for="(item, index) in bottomCardData_3.orgrank.slice(0, 8)" :key="index" class="rank-item" :gutter="5">
                     <el-col :class="'a_' + index" :span="3">{{index + 1}}</el-col>
                     <el-col :span="12">{{item.org_name}}</el-col>
-                    <el-col :span="8">￥{{formatMoney(item.val)}}</el-col>
+                    <el-col :span="8" style="text-align: right">￥{{formatMoney(item.val)}}</el-col>
                   </el-row>
                   <el-row v-if="!bottomCardData_3.orgrank.length"><span style="color:#999">暂无数据</span></el-row>
                 </el-col>

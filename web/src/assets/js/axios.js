@@ -168,17 +168,14 @@ class AXIOS {
       } else {
         localStorage.setItem('loginCount', '0')
         // status === 0 为正常返回, 表示已经登录了
-        if (res.data.status === 0) {
+        if (res.data.status === 0 || res.data.status === 400) {
           return data.done && data.done(res.data)
         } else {
+          data.fail && data.fail()
           Vue.prototype.$notify.error({
             title: '错误',
             message: res.data.msg
           })
-        }
-        if (res.data.status === 400) {
-          // 400 表单提交业务验证异常
-          return data.done && data.done(res.data)
         }
       }
     }).catch(error => {

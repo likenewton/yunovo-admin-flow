@@ -75,6 +75,9 @@ export default {
             this.dialogDetailLoadData = false
             this.selectData = Object.assign({}, scope.row, res.data)
           }
+        }),
+        fail: (() => {
+          this.dialogDetailLoadData = false
         })
       })
     },
