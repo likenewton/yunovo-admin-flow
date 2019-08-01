@@ -37,6 +37,11 @@ export default {
           required: true,
           message: '请输入区域名称',
           trigger: 'blur'
+        }, {
+          min: 2,
+          max: 40,
+          message: '区域名称必须在2~40个字符之间',
+          trigger: 'blur'
         }],
         zipcode: [{
           required: true,
@@ -79,13 +84,18 @@ export default {
               url: _axios.ajaxAd.upDateNation,
               data: this.formInline,
               done: ((res) => {
-                this.$router.push({ name: 'nationset', query: { ntid: this.formInline.parent } })
-                setTimeout(() => {
-                  this.showMsgBox({
-                    type: 'success',
-                    message: res.msg || '修改成功！'
-                  })
-                }, 150)
+                if (res.status === 400) {
+                  this.formInline[res.data] = ''
+                  this.$refs.ruleForm.validateField([res.data])
+                } else {
+                  this.$router.push({ name: 'nationset', query: { ntid: this.formInline.parent } })
+                  setTimeout(() => {
+                    this.showMsgBox({
+                      type: 'success',
+                      message: res.msg || '修改成功！'
+                    })
+                  }, 150)
+                }
               })
             })
           } else { // 新增

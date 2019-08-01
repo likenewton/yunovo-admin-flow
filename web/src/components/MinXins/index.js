@@ -68,6 +68,7 @@ export default {
         }
       })
     },
+    expNumStr: Api.UNITS.expNumStr,
     showMsgBox: Api.UNITS.showMsgBox,
     limitNumber: Api.UNITS.limitNumber,
     formatMoney: Api.UNITS.formatMoney,

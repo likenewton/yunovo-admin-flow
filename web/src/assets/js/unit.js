@@ -115,6 +115,16 @@ module.exports = {
     return val.match(new RegExp(expStr)) && val.match(new RegExp(expStr))[0]
   },
 
+  expNumStr(val, num1 = 99) {
+    let value = ''
+    val.split('').forEach((v) => {
+      if (/^[0-9a-zA-Z]$/.test(v)) {
+        value += v
+      }
+    })
+    return value
+  },
+
   // 加载动画
   loading(vue, paras = {
     lock: true,
@@ -167,7 +177,7 @@ module.exports = {
     return breadArr
   },
   // 格式化 流量M / G / T, 默认保留三位小数
-  formatFlowUnit(count, fix = 3, isHtmlStr = true) {
+  formatFlowUnit(count = 0, fix = 3, isHtmlStr = true) {
     count -= 0
     let htmlStr = ''
     if (isHtmlStr) {
@@ -193,7 +203,7 @@ module.exports = {
     }
     return htmlStr
   },
-  formatMoney(value, type = 2) {
+  formatMoney(value = 0, type = 2) {
     if (!value) {
       if (type === 0) return '0'
       else return '0.' + '0'.repeat(type)
@@ -211,7 +221,7 @@ module.exports = {
     return value
   },
   // 格式化流量套餐
-  formatComboFlow(val, isHtml = true) {
+  formatComboFlow(val = 0, isHtml = true) {
     let htmlStr = ''
     if (isHtml) {
       if (val == '0.01') {

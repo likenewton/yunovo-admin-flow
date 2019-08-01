@@ -11,11 +11,11 @@
           <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value - 0"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item prop="username">
+      <el-form-item>
         <span slot="label">用户账号：</span>
         <el-input v-model="formInline.username" disabled placeholder="请输入用户账号"></el-input>
       </el-form-item>
-      <el-form-item prop="firstname">
+      <el-form-item>
         <span slot="label">真实姓名：</span>
         <el-input v-model="formInline.firstname" disabled placeholder="请输入真实姓名"></el-input>
       </el-form-item>
@@ -89,24 +89,6 @@ export default {
           validator: this.validatorOrgId,
           trigger: 'change'
         }],
-        username: [{
-          required: true,
-          message: '请输入用户账号',
-          trigger: 'blur'
-        }, {
-          max: 50,
-          message: '不能超过50个字符',
-          trigger: 'blur'
-        }],
-        firstname: [{
-          required: true,
-          message: '请输入真实姓名',
-          trigger: 'blur'
-        }, {
-          max: 20,
-          message: '不能超过20个字符',
-          trigger: 'blur'
-        }],
         status: [{
           required: true,
           message: '请选择用户状态',
@@ -174,7 +156,8 @@ export default {
       _axios.send({
         method: 'get',
         url: _axios.ajaxAd.getDispatchDetail,
-        params: { username: Api.UNITS.getQuery('username') },
+        // 因为是从浏览器地址上取下来的，所以要decode一下
+        params: { username: decodeURIComponent(Api.UNITS.getQuery('username')) },
         done: ((res) => {
           this.loadData = false
           this.formInline = res.data || {}

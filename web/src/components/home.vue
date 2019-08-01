@@ -188,12 +188,12 @@
                 </el-col>
                 <el-col :span="8" class="rank-list">
                   <el-row class="title">机构续费排名</el-row>
-                  <el-row v-if="bottomCardData_0.orgrank.length" v-for="(item, index) in bottomCardData_0.orgrank.slice(0, 8)" :key="index" class="rank-item" :gutter="5">
+                  <el-row v-if="bottomCardData.length" v-for="(item, index) in bottomCardData" :key="index" class="rank-item" :gutter="5">
                     <el-col :class="'a_' + index" :span="3">{{index + 1}}</el-col>
                     <el-col :span="12">{{item.org_name}}</el-col>
                     <el-col :span="8" style="text-align: right">￥{{formatMoney(item.val)}}</el-col>
                   </el-row>
-                  <el-row v-if="!bottomCardData_0.orgrank.length"><span style="color:#999">暂无数据</span></el-row>
+                  <el-row v-if="!bottomCardData.length"><span style="color:#999">暂无数据</span></el-row>
                 </el-col>
               </el-row>
             </el-tab-pane>
@@ -204,12 +204,12 @@
                 </el-col>
                 <el-col :span="8" class="rank-list">
                   <el-row class="title">机构订单排名</el-row>
-                  <el-row v-if="bottomCardData_1.orgrank.length" v-for="(item, index) in bottomCardData_1.orgrank.slice(0, 8)" :key="index" class="rank-item" :gutter="5">
+                  <el-row v-if="bottomCardData.length" v-for="(item, index) in bottomCardData" :key="index" class="rank-item" :gutter="5">
                     <el-col :class="'a_' + index" :span="3">{{index + 1}}</el-col>
                     <el-col :span="12">{{item.org_name}}</el-col>
                     <el-col :span="8" style="text-align: right">{{item.val}} 笔</el-col>
                   </el-row>
-                  <el-row v-if="!bottomCardData_1.orgrank.length"><span style="color:#999">暂无数据</span></el-row>
+                  <el-row v-if="!bottomCardData.length"><span style="color:#999">暂无数据</span></el-row>
                 </el-col>
               </el-row>
             </el-tab-pane>
@@ -220,12 +220,12 @@
                 </el-col>
                 <el-col :span="8" class="rank-list">
                   <el-row class="title">流量消耗排名</el-row>
-                  <el-row v-if="bottomCardData_2.orgrank.length" v-for="(item, index) in bottomCardData_2.orgrank.slice(0, 8)" :key="index" class="rank-item" :gutter="5">
+                  <el-row v-if="bottomCardData.length" v-for="(item, index) in bottomCardData" :key="index" class="rank-item" :gutter="5">
                     <el-col :class="'a_' + index" :span="3">{{index + 1}}</el-col>
                     <el-col :span="12">{{item.org_name}}</el-col>
                     <el-col :span="8" style="text-align: right">{{formatFlowUnit(item.val, 3, false)}}</el-col>
                   </el-row>
-                  <el-row v-if="!bottomCardData_2.orgrank.length"><span style="color:#999">暂无数据</span></el-row>
+                  <el-row v-if="!bottomCardData.length"><span style="color:#999">暂无数据</span></el-row>
                 </el-col>
               </el-row>
             </el-tab-pane>
@@ -236,12 +236,12 @@
                 </el-col>
                 <el-col :span="8" class="rank-list">
                   <el-row class="title">客单价排名</el-row>
-                  <el-row v-if="bottomCardData_3.orgrank.length" v-for="(item, index) in bottomCardData_3.orgrank.slice(0, 8)" :key="index" class="rank-item" :gutter="5">
+                  <el-row v-if="bottomCardData.length" v-for="(item, index) in bottomCardData" :key="index" class="rank-item" :gutter="5">
                     <el-col :class="'a_' + index" :span="3">{{index + 1}}</el-col>
                     <el-col :span="12">{{item.org_name}}</el-col>
                     <el-col :span="8" style="text-align: right">￥{{formatMoney(item.val)}}</el-col>
                   </el-row>
-                  <el-row v-if="!bottomCardData_3.orgrank.length"><span style="color:#999">暂无数据</span></el-row>
+                  <el-row v-if="!bottomCardData.length"><span style="color:#999">暂无数据</span></el-row>
                 </el-col>
               </el-row>
             </el-tab-pane>
@@ -443,7 +443,10 @@ export default {
         url: _axios.ajaxAd.getEl2pack,
         done: ((res) => {
           this.middleCardLoadData = false
-          this.middleCardData = res.data
+          this.middleCardData = res.data || {
+            rlname_num: 0,
+            pack_num: 0
+          }
         })
       })
     },
@@ -453,7 +456,11 @@ export default {
         url: _axios.ajaxAd.getPayCase,
         done: ((res) => {
           this.colorCardLoadData = false
-          this.colorCardData = res.data
+          this.colorCardData = res.data || {
+            pres: {}, // 累计
+            tres: {}, // 今日
+            dy_pres: {}, // 当月
+          }
         })
       })
     },
@@ -464,44 +471,50 @@ export default {
         url: _axios.ajaxAd.getSiminfo,
         done: ((res) => {
           this.pieCardLoadData = false
-          this.pieCardData = res.data
+          this.pieCardData = res.data || {
+            active_total: 0,
+            stop_total: 0,
+            card_total: 0,
+            rlname_total: 0,
+            unicom_total: 0,
+          }
           this.tableData_1_0 = [{ // card_total
             color: Api.UNITS.getColorList('success'),
             status: '已激活',
-            percent: this.toFixed(res.data.active_total - res.data.stop_total, res.data.card_total),
-            card_num: res.data.active_total - res.data.stop_total
+            percent: this.toFixed(this.pieCardData.active_total - this.pieCardData.stop_total, this.pieCardData.card_total || 1),
+            card_num: this.pieCardData.active_total - this.pieCardData.stop_total
           }, {
             color: Api.UNITS.getColorList('warning'),
             status: '未激活',
-            percent: this.toFixed(res.data.card_total - res.data.active_total, res.data.card_total),
-            card_num: res.data.card_total - res.data.active_total
+            percent: this.toFixed(this.pieCardData.card_total - this.pieCardData.active_total, this.pieCardData.card_total || 1),
+            card_num: this.pieCardData.card_total - this.pieCardData.active_total
           }, {
             color: Api.UNITS.getColorList('danger'),
             status: '已停卡',
-            percent: this.toFixed(res.data.stop_total, res.data.card_total),
-            card_num: res.data.stop_total
+            percent: this.toFixed(this.pieCardData.stop_total, this.pieCardData.card_total || 1),
+            card_num: this.pieCardData.stop_total
           }]
           this.tableData_1_1 = [{
             color: Api.UNITS.getColorList('success'),
             status: '已实名',
-            percent: this.toFixed(res.data.rlname_total, res.data.card_total),
-            card_num: res.data.rlname_total
+            percent: this.toFixed(this.pieCardData.rlname_total, this.pieCardData.card_total || 1),
+            card_num: this.pieCardData.rlname_total
           }, {
             color: Api.UNITS.getColorList('warning'),
             status: '未实名',
-            percent: this.toFixed(res.data.card_total - res.data.rlname_total, res.data.card_total),
-            card_num: res.data.card_total - res.data.rlname_total
+            percent: this.toFixed(this.pieCardData.card_total - this.pieCardData.rlname_total, this.pieCardData.card_total || 1),
+            card_num: this.pieCardData.card_total - this.pieCardData.rlname_total
           }]
           this.tableData_1_2 = [{
             color: Api.UNITS.getColorList('success'),
             status: '云智设备激活',
-            percent: this.toFixed(res.data.active_total - res.data.unicom_total, res.data.active_total),
-            card_num: res.data.active_total - res.data.unicom_total
+            percent: this.toFixed(this.pieCardData.active_total - this.pieCardData.unicom_total, this.pieCardData.active_total || 1),
+            card_num: this.pieCardData.active_total - this.pieCardData.unicom_total
           }, {
             color: Api.UNITS.getColorList('warning'),
             status: '其它设备激活',
-            percent: this.toFixed(res.data.unicom_total, res.data.active_total),
-            card_num: res.data.unicom_total
+            percent: this.toFixed(this.pieCardData.unicom_total, this.pieCardData.active_total || 1),
+            card_num: this.pieCardData.unicom_total
           }]
           this.showPie()
         })
@@ -520,7 +533,7 @@ export default {
         },
         done: ((res) => {
           this.bottomCardLoadData = false
-          this[`bottomCardData_${this.tabIndex_2}`] = res.data
+          this[`bottomCardData_${this.tabIndex_2}`] = res.data || { chart: [] }
           this[`showLine_${this.tabIndex_2}`]()
         })
       })
@@ -697,6 +710,12 @@ export default {
         if (series.dataIndex === 0) return `{a|激活卡总数}\n{b|${this.formatMoney(this.pieCardData.active_total, 0)}}`
         else return ''
       }
+    }
+  },
+  computed: {
+    bottomCardData() {
+      let data = this[`bottomCardData_${this.tabIndex_2}`].orgrank || []
+      return data.slice(0, 8)
     }
   },
   watch: {

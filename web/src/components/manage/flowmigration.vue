@@ -7,11 +7,11 @@
           <el-form class="editor-form" :model="formInline" :rules="rules" ref="ruleForm" label-width="126px" size="small">
             <el-form-item prop="old_card_iccid">
               <span slot="label">旧卡ICCID：</span>
-              <el-input v-model="formInline.old_card_iccid" @input="formInline.old_card_iccid = limitNumber(formInline.old_card_iccid, 20, 0)" placeholder="请输入旧卡ICCID"></el-input>
+              <el-input v-model="formInline.old_card_iccid" @input="formInline.old_card_iccid = expNumStr(formInline.old_card_iccid)" placeholder="请输入旧卡ICCID"></el-input>
             </el-form-item>
             <el-form-item prop="new_card_iccid">
               <span slot="label">新卡ICCID：</span>
-              <el-input v-model="formInline.new_card_iccid" @input="formInline.new_card_iccid = limitNumber(formInline.new_card_iccid, 20, 0)" placeholder="请输入新卡ICCID"></el-input>
+              <el-input v-model="formInline.new_card_iccid" @input="formInline.new_card_iccid = expNumStr(formInline.new_card_iccid)" placeholder="请输入新卡ICCID"></el-input>
             </el-form-item>
             <el-form-item prop="move_memo">
               <span slot="label">迁移备注：</span>
@@ -163,7 +163,10 @@ export default {
                   })
                 }, 150)
               }
-            })
+            }),
+            fail: () => {
+              this.loadData = false
+            }
           })
         } else {
           Api.UNITS.showMsgBox()

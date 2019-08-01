@@ -120,13 +120,18 @@ export default {
               url: _axios.ajaxAd.updatePay,
               data: Object.assign({ type: Api.UNITS.getQuery('pay') }, this.formInline),
               done: ((res) => {
-                this.$router.push({ name: 'paySet' })
-                setTimeout(() => {
-                  this.showMsgBox({
-                    type: 'success',
-                    message: res.msg || '操作成功！'
-                  })
-                }, 150)
+                if (res.status === 400) {
+                  this.formInline[res.data] = ''
+                  this.$refs.ruleForm.validateField([res.data])
+                } else {
+                  this.$router.push({ name: 'paySet' })
+                  setTimeout(() => {
+                    this.showMsgBox({
+                      type: 'success',
+                      message: res.msg || '操作成功！'
+                    })
+                  }, 150)
+                }
               })
             })
           }

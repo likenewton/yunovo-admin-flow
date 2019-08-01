@@ -6,7 +6,7 @@
       </el-button-group>
       <el-form :inline="true" :model="formInline" class="search-form" size="small" @submit.native.prevent>
         <el-form-item>
-          <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = limitNumber(formInline.card_iccid, 20, 0)" @keyup.enter.native="simpleSearchData" placeholder="卡ICCID"></el-input>
+          <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = expNumStr(formInline.card_iccid)" @keyup.enter.native="simpleSearchData" placeholder="卡ICCID"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="simpleSearchData" :disabled="!pageAuthBtn.FCP_02_004_CHECK01">查询</el-button>
