@@ -489,7 +489,6 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 		if(data.getUnicom_stop() == 1 && data.getMax_unused() > 0 && (gprs.getOpen_card() == null || !gprs.getOpen_card())) {
 			
 			String username = (data.getCard_type() == 1 && DateUtil.getDayOfMonth(null) == 1) || (data.getCard_type() >= 2 && DateUtil.getDayOfMonth(null) == 27) ? "mend" : "topup";
-			//TODO 这块暂未完成
 			if(this.cardOnoff(card, 0, 0, username)) {
 				data.setUnicom_stop((short)0);
 			}

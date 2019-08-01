@@ -14,4 +14,7 @@ import cn.yunovo.iov.fc.model.entity.CcApkWhitelistUsedDay;
  */
 public interface ICcApkWhitelistUsedDayService extends IService<CcApkWhitelistUsedDay> {
 
+	
+	CcApkWhitelistUsedDay getToDayApkWhitelistUsedTotal(String iccid, Integer day);
+
 }

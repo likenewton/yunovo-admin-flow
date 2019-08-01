@@ -35,7 +35,7 @@ public class BaseController {
 	public Result<?> formValidateException(FormValidateException e) {
 		
 		log.error("[formValidateException][exception]params={},exception={}", e.getParams(), ExceptionUtils.getStackTrace(e));
-		return ResultUtil.build(e.getCode(), e.getMessage(),e.getFiled());
+		return ResultUtil.build(e.getCode(), e.getMessage());
 	}
 	
 	@ExceptionHandler(value=HttpMessageNotReadableException.class)

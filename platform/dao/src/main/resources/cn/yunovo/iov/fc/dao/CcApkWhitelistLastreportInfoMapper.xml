@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.yunovo.iov.fc.dao.ICcApkWhitelistLastreportInfoMapper">
+
+	<update id="updateInfoById" parameterType="cn.yunovo.iov.fc.model.entity.CcApkWhitelistLastreportInfo">
+		update cc_apk_whitelist_lastreport_info
+		set org_gprs_month = #{info.org_gprs_month},
+			yunovo_gprs_month = #{info.yunovo_gprs_month},
+			nonce = #{info.nonce},
+			sn = #{info.sn},
+			count = count + 1,
+			update_datetime = #{info.update_datetime}
+		where 
+			id = #{info.id}
+	</update>
+	
+</mapper>

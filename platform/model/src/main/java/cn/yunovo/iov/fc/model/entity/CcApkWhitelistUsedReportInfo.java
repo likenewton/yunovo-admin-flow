@@ -48,11 +48,11 @@ public class CcApkWhitelistUsedReportInfo implements Serializable {
 	@ApiModelProperty(value = "当月云智白名单流量消耗")
 	private Long yunovo_gprs_month;
 
-	@ApiModelProperty(value = "本次渠道补偿流量值")
-	private Long org_gprs;
+	@ApiModelProperty(value = "上一次流量消耗值")
+	private Long prev_org_gprs_month;
 
-	@ApiModelProperty(value = "本次云智补偿流量值")
-	private Long yunovo_gprs;
+	@ApiModelProperty(value = "上一次流量消耗值")
+	private Long prev_yunovo_gprs_month;
 
 	@ApiModelProperty(value = "状态：0 待补偿，1 已补偿，2、不补偿，3、补偿失败")
 	private Integer status;
@@ -65,6 +65,9 @@ public class CcApkWhitelistUsedReportInfo implements Serializable {
 
 	@ApiModelProperty(value = "场景值")
 	private Long nonce;
+	
+	@ApiModelProperty(value = "流量卡id")
+	private Integer card_id;
 
 	@ApiModelProperty(value = "备注")
 	private String memo;
