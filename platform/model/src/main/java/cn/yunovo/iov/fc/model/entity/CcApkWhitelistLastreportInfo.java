@@ -3,8 +3,6 @@ package cn.yunovo.iov.fc.model.entity;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-
 import java.time.LocalDateTime;
 import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
@@ -19,13 +17,12 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author bill
- * @since 2019-07-29
+ * @since 2019-08-04
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @ApiModel(value = "Cc_apk_whitelist_lastreport_info对象", description = "流量卡最后一次应用白名单消耗上报信息")
-@TableName(value="cc_apk_whitelist_lastreport_info")
 public class CcApkWhitelistLastreportInfo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -34,12 +31,12 @@ public class CcApkWhitelistLastreportInfo implements Serializable {
 	@TableId(value = "id", type = IdType.AUTO)
 	private Integer id;
 
+	@ApiModelProperty(value = "流量卡id")
+	private Integer card_id;
+
 	@ApiModelProperty(value = "流量卡iccid")
 	private String iccid;
 
-	@ApiModelProperty(value = "流量卡id")
-	private Integer card_id;
-	
 	@ApiModelProperty(value = "当月渠道商apk白名单流量消耗数")
 	private Long org_gprs_month;
 
@@ -63,7 +60,10 @@ public class CcApkWhitelistLastreportInfo implements Serializable {
 
 	private String create_by;
 
-	public String cacheJsonSring() {
+	public Object cacheJsonSring() {
 		return JSONObject.toJSONString(this);
 	}
+	
+	
+
 }

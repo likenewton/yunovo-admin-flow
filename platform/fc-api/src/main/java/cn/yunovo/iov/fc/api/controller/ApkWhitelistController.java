@@ -13,7 +13,6 @@ import cn.yunovo.iov.fc.service.ICcApkWhitelistUsedReportInfoService;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@Slf4j
 @RequestMapping("/fc/api")
 public class ApkWhitelistController extends BaseController{
 
@@ -27,7 +26,7 @@ public class ApkWhitelistController extends BaseController{
 		//表单校验
 		form.validate();
 		iCcApkWhitelistUsedReportInfoService.report(form);
-		return ResultUtil.build(0, "OK");
+		return ResultUtil.build(1, "OK");
 	}
 	
 }

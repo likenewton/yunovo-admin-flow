@@ -41,6 +41,8 @@ public class CcApkWhitelistUsedReportInfoServiceImpl extends ServiceImpl<ICcApkW
 	@Autowired
 	private ICcApkWhitelistLastreportInfoService iCcApkWhitelistLastreportInfoService;
 	
+	private final Long MAX_VALUE_32 = 4294967295L;
+	
 	@Autowired
 	private ICcGprsCardService iCcGprsCardService;
 	
@@ -64,10 +66,65 @@ public class CcApkWhitelistUsedReportInfoServiceImpl extends ServiceImpl<ICcApkW
 			throw new BusinessException(3, "iccid unsupported");
 		}
 		
-		//从缓存中获取该流量卡最后一次上报数据
+		//从缓存中获取该流量卡最后一次上报数据,如果缓存中没有则从数据库中获取
 		CcApkWhitelistLastreportInfo lastInfo = iCcApkWhitelistLastreportInfoService.getLastReportInfoInCache(card.getCard_iccid());
-		//判断nonce是否有效
-		if(lastInfo == null) {
+		
+		//首次上报、清除缓存、恢复出厂设置 
+		boolean isZeroNonce = this.isZero(card.getCard_iccid(), form.getNonce());
+		
+		//如果未找到最后一次上报信息，则认为用户是首次上报
+		if(lastInfo == null && !isZeroNonce) {
+			throw new FormValidateException("invalid nonce", "nonce", form.buildJsonString());
+		}
+		
+		Long prev_yunovo_gprs_month = 0L;
+		Long prev_org_gprs_month = 0L;
+		Long yunovo_gprs_month = form.getYunovo_gprs_month();
+		Long org_gprs_month = form.getOrg_gprs_month();
+		if(lastInfo != null){
+			
+			if(!isZeroNonce && form.getNonce() - lastInfo.getNonce() != 0) {
+				log.warn("[report][Nonce 异常]params={lastInfo:{},form:{}}", lastInfo.cacheJsonSring(), form.buildJsonString());
+			}
+			
+			if(!isZeroNonce) {
+			
+				prev_yunovo_gprs_month = lastInfo.getYunovo_gprs_month();
+				prev_org_gprs_month = lastInfo.getOrg_gprs_month();
+				
+				//32bit 限制
+				if(yunovo_gprs_month - prev_yunovo_gprs_month < 0 ) {
+					
+					if(form.getNonce() - lastInfo.getNonce() == 0) {
+						yunovo_gprs_month = prev_yunovo_gprs_month + (MAX_VALUE_32 - prev_yunovo_gprs_month + yunovo_gprs_month);
+					}else {
+						yunovo_gprs_month = prev_yunovo_gprs_month + (0 + yunovo_gprs_month);
+					}
+					
+				}
+				
+				//32bit 限制
+				if(org_gprs_month - prev_org_gprs_month < 0) {
+					
+					if(form.getNonce() - lastInfo.getNonce() == 0) {
+						org_gprs_month = prev_org_gprs_month + (MAX_VALUE_32 - prev_org_gprs_month + org_gprs_month);
+					}else {
+						org_gprs_month = prev_org_gprs_month + (0 + org_gprs_month);
+					}
+					
+				}
+			}
+			
+		}else {
+			if(!isZeroNonce) { //nonce 错误,打印日志，不做其他处理
+				log.warn("[report][Nonce 异常]params={form:{}}", form.buildJsonString());
+			}
+		}
+		
+		//判断nonce是否有效,需要考虑到网络情况
+		
+		
+		/*if(lastInfo == null) {
 			
 			//从数据库中获取最后一次上报数据
 			lastInfo = iCcApkWhitelistLastreportInfoService.getLastReportInfoInDB(card.getCard_iccid());
@@ -86,7 +143,7 @@ public class CcApkWhitelistUsedReportInfoServiceImpl extends ServiceImpl<ICcApkW
 					throw new FormValidateException("invalid nonce", "nonce", form.buildJsonString());
 				}
 			}
-		}
+		}*/
 		
 		//事务
 		//事务定义
@@ -103,15 +160,12 @@ public class CcApkWhitelistUsedReportInfoServiceImpl extends ServiceImpl<ICcApkW
 			CcApkWhitelistUsedReportInfo info = new CcApkWhitelistUsedReportInfo();
 			info.setIccid(card.getCard_iccid());
 			info.setCard_id(card.getCard_id());
-			info.setOrg_gprs_month(form.getOrg_gprs_month());
-			info.setYunovo_gprs_month(form.getYunovo_gprs_month());
-			if(lastInfo == null) {
-				info.setPrev_org_gprs_month(0L);
-				info.setPrev_yunovo_gprs_month(0L);
-			}else {
-				info.setPrev_org_gprs_month(lastInfo.getOrg_gprs_month());
-				info.setPrev_yunovo_gprs_month(lastInfo.getYunovo_gprs_month());
-			}
+			info.setOrg_id(card.getOrg_id());
+			info.setOrg_gprs_month(org_gprs_month);
+			info.setYunovo_gprs_month(yunovo_gprs_month);
+			info.setPrev_org_gprs_month(prev_org_gprs_month);
+			info.setPrev_yunovo_gprs_month(prev_yunovo_gprs_month);
+			
 			info.setNonce(form.getNonce());
 			info.setSn(form.getSn());
 			info.setCreate_datetime(DateUtil.nowStr());
@@ -130,7 +184,7 @@ public class CcApkWhitelistUsedReportInfoServiceImpl extends ServiceImpl<ICcApkW
 			throw new BusinessException(0, "error");
 		}
 		
-		
+		log.info("[report][ok]params={}",form.buildJsonString());
 	}
 
 
@@ -150,6 +204,21 @@ public class CcApkWhitelistUsedReportInfoServiceImpl extends ServiceImpl<ICcApkW
 		}
 	}
 
+	public boolean isZero(String iccid, Long nonce) {
+		
+		if(nonce == null) {
+			return false;
+		}
+		
+		//判断是否是首次上报或设备恢复出厂设置或缓存清空时数据置0 后的首次上报
+		String nonceStr = iccid + ",0,0";
+		
+		byte[] keys = nonceStr.getBytes();
+		LongPair out = new LongPair();
+		MurmurHash3.murmurhash3_x64_128(keys, 0, keys.length, 0, out);
+		
+		return out.val1 ==  nonce;
+	}
 
 	public boolean verifyNonce(CcApkWhitelistLastreportInfo info, String iccid, Long nonce, boolean is_zero) {
 		
@@ -172,4 +241,8 @@ public class CcApkWhitelistUsedReportInfoServiceImpl extends ServiceImpl<ICcApkW
 		}
 	}
 	
+	
+	public static void main(String[] args) {
+		System.out.println(Integer.MAX_VALUE);
+	}
 }

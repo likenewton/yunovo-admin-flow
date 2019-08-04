@@ -711,8 +711,10 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 		if(!CollectionUtils.isEmpty(records)) {
 			Map<String, String> cardTypes = getCard_type();
 			Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
+			CcOrg tt1 = null;
 			for (CcGprsCardExportBean ccGprsCard : records) {
-				ccGprsCard.setOrg_name(orgs.get(String.valueOf(ccGprsCard.getOrg_id())).getName());
+				tt1 = orgs.get(String.valueOf(ccGprsCard.getOrg_id()));
+				ccGprsCard.setOrg_name(tt1 == null ? "":tt1.getName());
 				ccGprsCard.setCard_type_name(cardTypes.get(String.valueOf(ccGprsCard.getCard_type())));
 			}
 		}

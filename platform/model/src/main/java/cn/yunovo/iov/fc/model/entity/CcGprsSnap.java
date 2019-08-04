@@ -22,8 +22,8 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@ApiModel(value = "Cc_gprs_snap对象", description = "GPRS流量快照表")
 @TableName(value="cc_gprs_snap")
+@ApiModel(value = "Cc_gprs_snap对象", description = "GPRS流量快照表")
 public class CcGprsSnap implements Serializable {
 
 	private static final long serialVersionUID = 1L;

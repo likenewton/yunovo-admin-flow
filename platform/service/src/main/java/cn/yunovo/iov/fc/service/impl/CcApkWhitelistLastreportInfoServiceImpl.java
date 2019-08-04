@@ -42,11 +42,14 @@ public class CcApkWhitelistLastreportInfoServiceImpl extends ServiceImpl<ICcApkW
 		
 		String cacheKey = FcConstant.memResKey(String.format(LAST_REPORT_INFO_KEY, iccid));
 		String data = jedisPoolUtil.get(cacheKey);
+		CcApkWhitelistLastreportInfo info = null;
 		if(StringUtils.isEmpty(data)) {
-			return null;
+			info = this.getLastReportInfoInDB(iccid);
+		}else {
+			info = JSONObject.parseObject(data, CcApkWhitelistLastreportInfo.class);
 		}
 		
-		return JSONObject.parseObject(data, CcApkWhitelistLastreportInfo.class);
+		return info;
 		
 	}
 	
@@ -75,7 +78,7 @@ public class CcApkWhitelistLastreportInfoServiceImpl extends ServiceImpl<ICcApkW
 		
 		boolean isOk = this.save(info);
 		if(isOk) {
-			this.cacheInof(info);
+			return this.cacheInof(info);
 		}
 		return isOk;
 	}
@@ -106,7 +109,7 @@ public class CcApkWhitelistLastreportInfoServiceImpl extends ServiceImpl<ICcApkW
 		
 		boolean isOk = retBool(iCcApkWhitelistLastreportInfoMapper.updateInfoById(info));
 		if(isOk) {
-			this.cacheInof(info);
+			return this.cacheInof(info);
 		}
 		
 		return isOk;
