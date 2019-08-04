@@ -160,12 +160,22 @@ public class CcResetLogServiceImpl extends ServiceImpl<ICcResetLogMapper, CcRese
 			}
 			iccid = iccid.trim();
 			try {
+				
+				if(StringUtils.length(iccid) > 20) {
+					temp = new CardRestBean();
+					temp.setIccid(iccid);
+					temp.setMsg(arr_ret.get("notfound"));
+					temp.setRet("2");
+					result.add(temp);
+					continue;
+				}
+				
 				card = iCcGprsCardService.getByIccid(iccid);
 				if(card == null) {
 					temp = new CardRestBean();
 					temp.setIccid(iccid);
 					temp.setRet("2");
-					temp.setMsg("非本公司卡不可重置");
+					temp.setMsg(arr_ret.get("notfound"));
 					result.add(temp);
 					continue;
 				}
