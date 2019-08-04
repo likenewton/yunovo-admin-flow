@@ -215,9 +215,9 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 			/**
 			 * 判断是否还有未分配的流量
 			 */
-			if(ccGprsAllot.getAssigned_month() - ccGprsAllot.getAllot_month() < 0) {
+			if(ccGprsAllot.getAssigned_month() < ccGprsAllot.getAllot_month()) {
 				
-				value.setGprs_value((ccGprsAllot.getAllot_reset() == null || ccGprsAllot.getAllot_reset() == 0) ? (value.getBalance_value() + ccGprsAllot.getAllot_value()) : ccGprsAllot.getAllot_value());
+				value.setGprs_value((ccGprsAllot.getAllot_reset() == 0 && value.getBalance_value() > 0) ? (value.getBalance_value() + ccGprsAllot.getAllot_value()) : ccGprsAllot.getAllot_value());
 				value.setBalance_value(value.getGprs_value());
 				value.setBalance_dval(value.getGprs_value());
 				
@@ -507,7 +507,7 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 		jedisPoolUtil.del(cardLockCacheKey);
 		this.whiteList(data, month, null);
 		
-		return iCcGprsCardService.updateCard(card) ? card : null;
+		return iCcGprsCardService.updateCard(data) ? data : null;
 		
 	}
 	

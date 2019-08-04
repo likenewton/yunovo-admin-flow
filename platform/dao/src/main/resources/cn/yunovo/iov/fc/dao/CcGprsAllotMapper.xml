@@ -7,9 +7,7 @@
 		SELECT GA.*, GC.card_type 
 		FROM cc_gprs_allot GA INNER JOIN cc_gprs_card GC ON GC.card_id = GA.card_id 
 		WHERE 1 = 1 
-		<if test="card_id != null">
-			
-		</if>
+
 		
 		<choose>
 			<when test='card_id != null'>
@@ -35,7 +33,7 @@
 	</update>
 	
 	<select id="getAllotIdByCardidAndValueAndTimeexpire" resultType="int">
-		SELECT allot_id FROM cc_gprs_allot WHERE card_id = #{card_id} AND allot_value = #{allot_value} AND time_expire > NOW()
+		SELECT allot_id FROM cc_gprs_allot WHERE card_id = #{card_id} AND allot_value = #{allot_value} AND time_expire > NOW()  ORDER BY time_expire DESC limit 1
 	</select>
 	
 	<update id="updateTimeExpireById">

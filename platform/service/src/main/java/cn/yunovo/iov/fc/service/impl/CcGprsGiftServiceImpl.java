@@ -176,8 +176,6 @@ public class CcGprsGiftServiceImpl extends ServiceImpl<ICcGprsGiftMapper, CcGprs
 		Date time_expire = CcRealnameServiceImpl.liveMonthConverToExpireTime(form.getLive_month(), DateUtil.now());
 		// 初始套餐信息
 		CcGprsGift pack = new CcGprsGift();
-//		pack.setUser_id(info.getId());
-//		pack.setUser_id(0);
 		pack.setCreate_by(info.getLoginName());
 		pack.setGprs_amount(form.getGprs_amount());
 		pack.setAllot_month(form.getAllot_month());
@@ -403,7 +401,7 @@ public class CcGprsGiftServiceImpl extends ServiceImpl<ICcGprsGiftMapper, CcGprs
 		 */
 		try {
 			JSONObject pay_queue = new JSONObject();
-			pay_queue.put("payid", pay.getPack_id());
+			pay_queue.put("payid", pay.getPay_id());
 			pay_queue.put("iccid", card.getCard_iccid());
 			jedisPoolUtil.lpush(FcConstant.PAY_QUEUE_CACHEKEY, pay_queue.toJSONString());
 		} catch (Exception e) {
