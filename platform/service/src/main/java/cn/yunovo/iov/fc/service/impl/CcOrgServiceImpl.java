@@ -329,7 +329,9 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 		CcOrg ccOrg = new CcOrg();
 		BeanUtils.copyProperties(form, ccOrg);
 		
-		ccOrg.setSpell(PinYinUtil.getFirstSpell(ccOrg.getName(), HanyuPinyinCaseType.UPPERCASE));
+		String spell = PinYinUtil.getFirstSpell(ccOrg.getName(), HanyuPinyinCaseType.UPPERCASE);
+		
+		ccOrg.setSpell(StringUtils.substring(spell, 0, 30));
 		ccOrg.setPartner_id(RandomStringUtils.randomAlphanumeric(15));
 		ccOrg.setPartner_key(Md5Util.getMD5String(RandomStringUtils.randomAlphanumeric(20)));
 		ccOrg.setTime_added(DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
@@ -367,7 +369,9 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 		
 		CcOrg ccOrg = new CcOrg();
 		BeanUtils.copyProperties(org, ccOrg);
-		ccOrg.setSpell(PinYinUtil.getFirstSpell(ccOrg.getName(), HanyuPinyinCaseType.UPPERCASE));
+		
+		String spell = PinYinUtil.getFirstSpell(ccOrg.getName(), HanyuPinyinCaseType.UPPERCASE);
+		ccOrg.setSpell(StringUtils.substring(spell, 0, 30));
 		//ccOrg.setAlter_id(user.getUser_id());
 		ccOrg.setTime_modify(DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
 		ccOrg.setUpdate_by(info.getLoginName());
@@ -429,8 +433,5 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 		}
 	}
 	
-	public static void main(String[] args) {
-		System.out.println(Long.MAX_VALUE);
-	}
-	
+
 }

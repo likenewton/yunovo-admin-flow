@@ -793,7 +793,7 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 			} catch (Exception e) {
 				log.error("[syncUnicomData][exception]params={card:{}},exception={}", JSONObject.toJSONString(card), ExceptionUtils.getStackTrace(e));
 				result.setStatus(-1);
-				result.setMsg("接口调用失败");
+				result.setMsg("第三方接口调用失败");
 				return result;
 			}
 			
@@ -820,6 +820,10 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 			consumeDataAll = StringUtils.equals("[]", apiData.getJSONObject("data").getString("consumeDataAll"))? 0L : NumberUtils.createLong(apiData.getJSONObject("data").getString("consumeDataAll"));
 			gprs_month = MathUtils.round(consumeDataMon / 1048576D, 3); //当前月使用流量情况MB
 			gprs_total = MathUtils.round(consumeDataAll / 1048576D,3 ); //流量卡总使用流量情况MB
+		}else if(card.getCard_type() == 4){
+			result.setStatus(-1);
+			result.setMsg("该流量卡暂不支持同步功能");
+			return result;
 		}else {
 			
 			try {
@@ -827,7 +831,7 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 			} catch (Exception e) {
 				log.error("[syncUnicomData][exception]params={card:{}},exception={}", JSONObject.toJSONString(card), ExceptionUtils.getStackTrace(e));
 				result.setStatus(-1);
-				result.setMsg("接口调用失败");
+				result.setMsg("第三方接口调用失败");
 				return result;
 			}
 			if(apiData == null) {
