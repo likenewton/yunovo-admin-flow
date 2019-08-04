@@ -101,8 +101,10 @@ public class CcOnoffLogServiceImpl extends ServiceImpl<ICcOnoffLogMapper, CcOnof
 		}
 		Map<String, String> cardTypes = iCcGprsCardService.getCard_type();
 		Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
+		CcOrg tt = null;
 		for (CcOnoffLog ccOnoffLog : records) {
-			ccOnoffLog.setOrg_name(orgs.get(String.valueOf(ccOnoffLog.getOrg_id())).getName());
+			tt = orgs.get(String.valueOf(ccOnoffLog.getOrg_id()));
+			ccOnoffLog.setOrg_name(tt == null ? "" : tt.getName());
 			ccOnoffLog.setCard_type_name(cardTypes.get(String.valueOf(ccOnoffLog.getCard_type())));
 		}
 		

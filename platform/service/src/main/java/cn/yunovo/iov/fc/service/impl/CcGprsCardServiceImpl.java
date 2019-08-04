@@ -143,8 +143,10 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 
 		Map<String, String> cardTypes = getCard_type();
 		Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
+		CcOrg tt = null;
 		for (CcGprsCard ccGprsCard : records) {
-			ccGprsCard.setOrg_name(orgs.get(String.valueOf(ccGprsCard.getOrg_id())).getName());
+			tt = orgs.get(String.valueOf(ccGprsCard.getOrg_id()));
+			ccGprsCard.setOrg_name(tt == null ? "" : tt.getName());
 			ccGprsCard.setCard_type_name(cardTypes.get(String.valueOf(ccGprsCard.getCard_type())));
 		}
 		page.setRecords(records);
@@ -191,8 +193,10 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 		
 		if(!CollectionUtils.isEmpty(records)) {
 			
+			CcOrg tt = null;
 			for (HaltPageExportBean ccGprsCard : records) {
-				ccGprsCard.setOrg_name(orgs.get(String.valueOf(ccGprsCard.getOrg_id())).getName());
+				tt = orgs.get(String.valueOf(ccGprsCard.getOrg_id()));
+				ccGprsCard.setOrg_name(tt == null ? "" : tt.getName());
 			}
 			totalBean.setCard_iccid("总计");
 			records.add(totalBean);
@@ -251,8 +255,11 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 
 		Map<String, String> cardTypes = getCard_type();
 		Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
+		CcOrg tt = null;
 		for (CcGprsCard ccGprsCard : records) {
-			ccGprsCard.setOrg_name(orgs.get(String.valueOf(ccGprsCard.getOrg_id())).getName());
+			
+			tt = orgs.get(String.valueOf(ccGprsCard.getOrg_id()));
+			ccGprsCard.setOrg_name(tt == null ? "" : tt.getName());
 			ccGprsCard.setCard_type_name(cardTypes.get(String.valueOf(ccGprsCard.getCard_type())));
 		}
 
@@ -340,8 +347,11 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 		}
 
 		Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
+		
+		CcOrg tt = null;
 		for (SellPayResultBean sellPayResultBean : records) {
-			sellPayResultBean.setOrg_name(orgs.get(String.valueOf(sellPayResultBean.getOrg_id())).getName());
+			tt = orgs.get(String.valueOf(sellPayResultBean.getOrg_id()));
+			sellPayResultBean.setOrg_name(tt == null ? "" : tt.getName());
 		}
 
 		//Long count = iGprsCardMapper.getSellPayPageCount(org_id, date_start, date_end, orgpos, orgpos.split(","));
@@ -404,9 +414,11 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 		}
 
 		CardUsedResultBean total = iGprsCardMapper.getCardUsedTotal(org_id, date_start, date_end, orgpos,orgpos.split(","));
+		CcOrg tt = null;
 		Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
 		for (CardUsedResultBean sellPayResultBean : records) {
-			sellPayResultBean.setOrg_name(orgs.get(String.valueOf(sellPayResultBean.getOrg_id())).getName());
+			tt = orgs.get(String.valueOf(sellPayResultBean.getOrg_id()));
+			sellPayResultBean.setOrg_name(tt == null ? "" : tt.getName());
 		}
 
 		page.setRecords(records);
@@ -450,8 +462,10 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 			CardUsedResultBean total = iGprsCardMapper.getCardUsedTotal(org_id, date_start, date_end, orgpos,orgpos.split(","));
 			total.setOrg_name("总计");
 			Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
+			CcOrg tt = null;
 			for (CardUsedResultBean sellPayResultBean : records) {
-				sellPayResultBean.setOrg_name(orgs.get(String.valueOf(sellPayResultBean.getOrg_id())).getName());
+				tt = orgs.get(String.valueOf(sellPayResultBean.getOrg_id()));
+				sellPayResultBean.setOrg_name(tt == null ? "" : tt.getName());
 			}
 			records.add(total);
 		}
@@ -520,8 +534,10 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 		UnicomStatResultBean total = iGprsCardMapper.getUnicomStatTotal(org_id, date_start, date_end, jstart, jend,
 				orgpos, orgpos.split(","));
 		Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
+		CcOrg tt = null;
 		for (UnicomStatResultBean sellPayResultBean : records) {
-			sellPayResultBean.setOrg_name(orgs.get(String.valueOf(sellPayResultBean.getOrg_id())).getName());
+			tt = orgs.get(String.valueOf(sellPayResultBean.getOrg_id()));
+			sellPayResultBean.setOrg_name(tt == null ? "" : tt.getName());
 		}
 
 		page.setRecords(records);
@@ -569,8 +585,10 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 			UnicomStatResultBean total = iGprsCardMapper.getUnicomStatTotal(org_id, date_start, date_end, jstart, jend,
 					orgpos, orgpos.split(","));
 			Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
+			CcOrg tt = null;
 			for (UnicomStatResultBean sellPayResultBean : records) {
-				sellPayResultBean.setOrg_name(orgs.get(String.valueOf(sellPayResultBean.getOrg_id())).getName());
+				tt = orgs.get(String.valueOf(sellPayResultBean.getOrg_id()));
+				sellPayResultBean.setOrg_name(tt == null ? "" : tt.getName());
 			}
 			total.setOrg_name("总计");
 			records.add(total);
@@ -673,11 +691,14 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 		}
 		
 		List<CcGprsCard> records = iGprsCardMapper.queryCardListPage(page, card_iccid, card_type, org_id, date_start, date_end, time_expire, unicom_stop, status, orgpos, orgpos.split(","));
+		
 		if(!CollectionUtils.isEmpty(records)) {
 			Map<String, String> cardTypes = getCard_type();
+			CcOrg tt = null;
 			Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
 			for (CcGprsCard ccGprsCard : records) {
-				ccGprsCard.setOrg_name(orgs.get(String.valueOf(ccGprsCard.getOrg_id())).getName());
+				tt = orgs.get(String.valueOf(ccGprsCard.getOrg_id()));
+				ccGprsCard.setOrg_name(tt == null ? "" : tt.getName());
 				ccGprsCard.setCard_type_name(cardTypes.get(String.valueOf(ccGprsCard.getCard_type())));
 			}
 		}
@@ -772,8 +793,10 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 		List<CardTotalByOrgidInfoBean> records = iGprsCardMapper.cardTotalByOrgidGroup(page, orgpos, orgpos.split(","));
 		if(!CollectionUtils.isEmpty(records)) {
 			Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
+			CcOrg tt = null;
 			for (CardTotalByOrgidInfoBean ccGprsCard : records) {
-				ccGprsCard.setOrg_name(orgs.get(String.valueOf(ccGprsCard.getOrg_id())).getName());
+				tt = orgs.get(String.valueOf(ccGprsCard.getOrg_id()));
+				ccGprsCard.setOrg_name(tt == null ? "" : tt.getName());
 			}
 		}
 		page.setRecords(records);
@@ -971,7 +994,6 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 //			isSuccess = iCcGprsAllotService.cardOnoff(card, form.getStatus(), loginBaseInfo.getId(), loginBaseInfo.getLoginName());
 			isSuccess = iCcGprsAllotService.cardOnoff(card, form.getStatus(), 0, loginBaseInfo.getLoginName());
 		} catch (Exception e) {
-			
 			log.error("[onoff][exception]params={},logininfo={},exception={}", form.buildJsonString(), loginBaseInfo.buildJsonString(),ExceptionUtils.getStackTrace(e));
 			return false;
 		}

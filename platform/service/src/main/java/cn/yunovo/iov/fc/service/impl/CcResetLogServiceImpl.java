@@ -130,9 +130,10 @@ public class CcResetLogServiceImpl extends ServiceImpl<ICcResetLogMapper, CcRese
 			
 			Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
 			Map<String, String> userMap = iCcUserService.userMap();
+			CcOrg tt = null;
 			for (CcResetLog ccResetLog : records) {
-
-				ccResetLog.setOrg_name(orgs.get(String.valueOf(ccResetLog.getOrg_id())).getName());
+				tt = orgs.get(String.valueOf(ccResetLog.getOrg_id()));
+				ccResetLog.setOrg_name(tt == null ? "" : tt.getName());
 				ccResetLog.setCreate_by(StringUtils.defaultIfEmpty(userMap.get(ccResetLog.getUser_name()),ccResetLog.getUser_name()));
 			}
 		}

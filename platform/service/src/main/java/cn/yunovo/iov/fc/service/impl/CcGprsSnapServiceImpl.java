@@ -115,9 +115,10 @@ public class CcGprsSnapServiceImpl extends ServiceImpl<ICcGprsSnapMapper, CcGprs
 			Map<String, String> card_types = iCcGprsCardService.getCard_type();
 			Map<String, String> ntfType = iCcNotifyService.getArr_ntf_type();
 			Map<Short, String> arr_allot_reset = fcProperties.getArr_allot_reset();
+			CcOrg tt = null;
 			for (CcGprsSnapExportBean ccGprsPay : records) {
-				
-				ccGprsPay.setOrg_name(orgs.get(String.valueOf(ccGprsPay.getOrg_id())).getName());
+				tt = orgs.get(String.valueOf(ccGprsPay.getOrg_id()));
+				ccGprsPay.setOrg_name(tt == null ? "" : tt.getName());
 				ccGprsPay.setCard_type_name(card_types.get(String.valueOf(ccGprsPay.getCard_type())));
 				ccGprsPay.setPay_from(ntfType.get(StringUtils.defaultIfEmpty(ccGprsPay.getPay_from(), "unknown")));
 				ccGprsPay.setAllot_reset_cn(arr_allot_reset.get(ccGprsPay.getAllot_reset()));

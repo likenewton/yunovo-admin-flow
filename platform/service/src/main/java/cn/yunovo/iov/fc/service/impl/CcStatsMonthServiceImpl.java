@@ -182,9 +182,10 @@ public class CcStatsMonthServiceImpl extends ServiceImpl<ICcStatsMonthMapper, Cc
 
 		Map<String, String> cardTypes = iCcGprsCardService.getCard_type();
 		Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
+		CcOrg tt = null;
 		for (CcStatsMonth ccStatsMonth : records) {
-
-			ccStatsMonth.setOrg_name(orgs.get(ccStatsMonth.getOrg_id()).getName());
+			tt = orgs.get(String.valueOf(ccStatsMonth.getOrg_id()));
+			ccStatsMonth.setOrg_name(tt == null ? "" : tt.getName());
 			ccStatsMonth.setCard_type_name(cardTypes.get(ccStatsMonth.getCard_type()));
 		}
 
@@ -227,9 +228,10 @@ public class CcStatsMonthServiceImpl extends ServiceImpl<ICcStatsMonthMapper, Cc
 		if (!CollectionUtils.isEmpty(records)) {
 			Map<String, String> cardTypes = iCcGprsCardService.getCard_type();
 			Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
+			CcOrg tt = null;
 			for (CcStatsMonthExportBean ccStatsMonth : records) {
-
-				ccStatsMonth.setOrg_name(orgs.get(ccStatsMonth.getOrg_id()).getName());
+				tt = orgs.get(String.valueOf(ccStatsMonth.getOrg_id()));
+				ccStatsMonth.setOrg_name(tt == null ? "" : tt.getName());
 				ccStatsMonth.setCard_type_name(cardTypes.get(ccStatsMonth.getCard_type()));
 			}
 		}

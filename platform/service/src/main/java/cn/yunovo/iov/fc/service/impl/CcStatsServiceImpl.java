@@ -187,8 +187,10 @@ public class CcStatsServiceImpl extends ServiceImpl<ICcStatsMapper, CcStats> imp
 		
 		if(!CollectionUtils.isEmpty(records)) {
 			Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
+			CcOrg tt = null;
 			for (CcStats ccStats : records) {
-				ccStats.setOrg_name(orgs.get(String.valueOf(ccStats.getOrg_id())).getName());
+				tt = orgs.get(String.valueOf(ccStats.getOrg_id()));
+				ccStats.setOrg_name(tt == null ? "" : tt.getName());
 			}
 		}
 		page.setRecords(records);
@@ -217,8 +219,12 @@ public class CcStatsServiceImpl extends ServiceImpl<ICcStatsMapper, CcStats> imp
 		
 		if(!CollectionUtils.isEmpty(records)) {
 			Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
+
+
+			CcOrg tt = null;
 			for (CcStatsOrgExportBean ccStats : records) {
-				ccStats.setOrg_name(orgs.get(String.valueOf(ccStats.getOrg_id())).getName());
+				tt = orgs.get(String.valueOf(ccStats.getOrg_id()));
+				ccStats.setOrg_name(tt == null ? "" : tt.getName());
 			}
 		}
 		

@@ -149,9 +149,12 @@ public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcReal
 			
 			Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
 			Map<String, String> userMap = iCcUserService.userMap();
+			CcOrg tt = null;
+			
+			
 			for (CcRealname ccRealname : records) {
-
-				ccRealname.setOrg_name(orgs.get(String.valueOf(ccRealname.getOrg_id())).getName());
+				tt = orgs.get(String.valueOf(ccRealname.getOrg_id()));
+				ccRealname.setOrg_name(tt == null ? "" : tt.getName());
 				ccRealname.setUpdate_by(StringUtils.defaultIfEmpty(userMap.get(ccRealname.getUpdate_by()), ccRealname.getUpdate_by()));
 				ccRealname.setCdi_img1(fcProperties.getFile_server_url()+ccRealname.getCdi_img1());
 				ccRealname.setCdi_img2(fcProperties.getFile_server_url()+ccRealname.getCdi_img2());

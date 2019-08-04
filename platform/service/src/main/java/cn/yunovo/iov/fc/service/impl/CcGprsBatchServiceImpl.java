@@ -128,9 +128,10 @@ public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGp
 			Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
 			Map<String, String> userMap = iCcUserService.userMap();
 			JSONObject nation = iCcNationService.nationMap();
+			CcOrg tt = null;
 			for (CcGprsBatch ccGprsBatch : records) {
-
-				ccGprsBatch.setOrg_name(orgs.get(String.valueOf(ccGprsBatch.getOrg_id())).getName());
+				tt = orgs.get(String.valueOf(ccGprsBatch.getOrg_id()));
+				ccGprsBatch.setOrg_name(tt == null ? "" : tt.getName());
 				ccGprsBatch.setProvince_name(ccGprsBatch.getProvince_id() == null ? "": StringUtils.defaultIfEmpty(nation.getString(ccGprsBatch.getProvince_id().toString()),ccGprsBatch.getProvince_id().toString()));
 				ccGprsBatch.setDistrict_name(ccGprsBatch.getDistrict_id() == null ? "": StringUtils.defaultIfEmpty(nation.getString(ccGprsBatch.getDistrict_id().toString()),ccGprsBatch.getDistrict_id().toString()));
 				ccGprsBatch.setCity_name(nation.getString(ccGprsBatch.getCity_id().toString()));

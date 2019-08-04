@@ -138,8 +138,10 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 
 		PayCountResultBean total = iCcGprsPayMapper.getPayCountTotal(org_id, date_start, date_end, orgpos, orgpos.split(","));
 		Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
+		CcOrg tt = null;
 		for (PayCountResultBean ccGprsPay : records) {
-			ccGprsPay.setOrg_name(orgs.get(String.valueOf(ccGprsPay.getOrg_id())).getName());
+			tt = orgs.get(String.valueOf(ccGprsPay.getOrg_id()));
+			ccGprsPay.setOrg_name(tt == null ? "" : tt.getName());
 		}
 
 		page.setRecords(records);
@@ -193,8 +195,10 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 		OrgPayReportResultBean total = iCcGprsPayMapper.getOrgPayReportTotal(org_id,pay_method, date_start, date_end, mdate, orgpos, orgpos.split(","));
 		Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
 		Map<String, String>  arr_pay_method = this.getArr_pay_method();
+		CcOrg tt = null;
 		for (OrgPayReportResultBean ccGprsPay : records) {
-			ccGprsPay.setOrg_name(orgs.get(String.valueOf(ccGprsPay.getOrg_id())).getName());
+			tt = orgs.get(String.valueOf(ccGprsPay.getOrg_id()));
+			ccGprsPay.setOrg_name(tt == null ? "" : tt.getName());
 			ccGprsPay.setPay_method_name(arr_pay_method.get(String.valueOf(ccGprsPay.getPay_method())));
 		}
 
@@ -302,8 +306,10 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 		Map<String, String>  arr_pay_method = this.getArr_pay_method();
 		Map<String, String> ntfType = iCcNotifyService.getArr_ntf_type();
 		Map<String, String> card_types = iCcGprsCardService.getCard_type();
+		CcOrg tt = null;
 		for (CcGprsPay ccGprsPay : records) {
-			ccGprsPay.setOrg_name(orgs.get(String.valueOf(ccGprsPay.getOrg_id())).getName());
+			tt = orgs.get(String.valueOf(ccGprsPay.getOrg_id()));
+			ccGprsPay.setOrg_name(tt == null ? "" : tt.getName());
 			ccGprsPay.setPay_method_name(arr_pay_method.get(String.valueOf(ccGprsPay.getPay_method())));
 			ccGprsPay.setPay_from_name(ntfType.get(StringUtils.defaultIfEmpty(ccGprsPay.getPay_from(), "unknown")));
 			ccGprsPay.setCard_type_name(card_types.get(String.valueOf(ccGprsPay.getCard_type())));
@@ -364,13 +370,15 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 			Map<String, String> card_types = iCcGprsCardService.getCard_type();
 			Map<Short, String> arr_pay_status = fcProperties.getArr_pay_status();
 			Date time_expire = null;
+			CcOrg tt = null;
 			for (CcGprsPayExportBean ccGprsPay : records) {
+				tt = orgs.get(String.valueOf(ccGprsPay.getOrg_id()));
 				try {
 					time_expire = StringUtils.isEmpty(ccGprsPay.getTime_paid()) ? null : DateUtils.addMonths(DateUtils.parseDate(ccGprsPay.getTime_paid(), "yyyy-MM-dd HH:mm:ss"), ccGprsPay.getLive_month().intValue());
 				} catch (ParseException e) {
 				}
 				ccGprsPay.setTime_expire(time_expire == null ? "" : DateFormatUtils.format(time_expire, "yyyy-MM-dd HH:mm:ss"));
-				ccGprsPay.setOrg_name(orgs.get(String.valueOf(ccGprsPay.getOrg_id())).getName());
+				ccGprsPay.setOrg_name(tt == null ? "" : tt.getName());
 				ccGprsPay.setPay_method_name(arr_pay_method.get(String.valueOf(ccGprsPay.getPay_method())));
 				ccGprsPay.setCard_type_name(card_types.get(String.valueOf(ccGprsPay.getCard_type())));
 				ccGprsPay.setIs_paid_name(arr_pay_status.get(ccGprsPay.getIs_paid()));
@@ -477,8 +485,10 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 		}
 		
 		Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
+		CcOrg tt = null;
 		for (MonthPayReportResultBean monthPay : records) {
-			monthPay.setOrg_name(orgs.get(String.valueOf(monthPay.getOrg_id())).getName());
+			tt = orgs.get(String.valueOf(monthPay.getOrg_id()));
+			monthPay.setOrg_name(tt == null ? "" : tt.getName());
 		}
 
 		p.setOther(iCcGprsPayMapper.getOrgPayReportTotal(org_id, null, null, null, mdate, orgpos, orgpos.split(",")));

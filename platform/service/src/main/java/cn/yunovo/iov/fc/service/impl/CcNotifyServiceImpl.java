@@ -181,8 +181,10 @@ public class CcNotifyServiceImpl extends ServiceImpl<ICcNotifyMapper, CcNotify> 
 		
 		if(!CollectionUtils.isEmpty(records)) {
 			Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
+			CcOrg tt = null;
 			for (CcNotify ccNotify : records) {
-				ccNotify.setOrg_name(orgs.get(String.valueOf(ccNotify.getOrg_id())).getName());
+				tt = orgs.get(String.valueOf(ccNotify.getOrg_id()));
+				ccNotify.setOrg_name(tt == null ? "" : tt.getName());
 				ccNotify.setNtf_type_name(arr_ntf_type.get(StringUtils.defaultIfEmpty(ccNotify.getNtf_type(), "unknown")));
 			}
 		}
