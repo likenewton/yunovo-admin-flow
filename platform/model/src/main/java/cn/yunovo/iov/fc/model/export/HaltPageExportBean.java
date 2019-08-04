@@ -40,13 +40,13 @@ public class HaltPageExportBean extends BaseRowModel implements Serializable {
 	@ExcelProperty(index=1,value="卡ICCID")
 	private String card_iccid;
 
-	@ExcelProperty(index=4,value = "累记使用流量")
+	@ExcelProperty(index=4,value = "累记使用流量（MB）")
 	private Double used_total;
 
-	@ExcelProperty(index=3, value="当月使用流量")
+	@ExcelProperty(index=3, value="当月使用流量（MB）")
 	private Double used_month;
 
-	@ExcelProperty(index=5,value = "剩余流量")
+	@ExcelProperty(index=5,value = "剩余流量（MB）")
 	private Double max_unused;
 
 	@ExcelProperty(index=7, value = "激活时间")
