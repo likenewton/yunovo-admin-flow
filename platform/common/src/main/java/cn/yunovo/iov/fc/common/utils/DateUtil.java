@@ -14,7 +14,7 @@ public final class DateUtil {
 	 */
 	public  static Integer getDayOfMonth(Date date) {
 
-		Date _date = new Date();
+		Date _date = null;
 		if(date == null) {
 			
 			_date = new Date();
@@ -45,8 +45,8 @@ public final class DateUtil {
 	 */
 	public static int compare(Date d1, Date d2) {
 		
-		Long time1 = d1.getTime();
-		Long time2 = d2.getTime();
+		long time1 = d1.getTime();
+		long time2 = d2.getTime();
 		
 		return time1 == time2 ? 0 : (time1 > time2 ? 1 : -1);
 	}

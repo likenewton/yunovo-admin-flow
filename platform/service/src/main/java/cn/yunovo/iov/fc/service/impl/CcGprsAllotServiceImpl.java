@@ -50,6 +50,7 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.client.RestClientException;
 
 /**
  * <p>
@@ -297,6 +298,9 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 		String cardLockCacheKey = FcConstant.memResKey(String.format(FcConstant.CARD_LOCK_CACHEKEY, card.getCard_iccid()));
 		jedisPoolUtil.setEx(cardLockCacheKey, "1");
 		
+		/**
+		 * 判断是否当月因重置流量卡需要做特殊差异化对等当月使用量处理
+		 */
 		if(card.getReset_diff() > 0 && gprs.getMonth() - card.getReset_diff() > 0) {
 			
 			gprs.setMonth(gprs.getMonth() - card.getReset_diff());
@@ -310,17 +314,18 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 		Integer month = null;
 		Date month_date = null;
 		Double gprs_diff = null;
+		
 		/**
 		 * 判断是否为联通数据计算，因联通脚本是计算的昨天的流量数据，则当为该月第一天时，计算时需以上个月的查询为准
 		 */
 		if(gprs.getIs_unicom()) {
 			
-			card.setMax_unused(card.getUnicom_unused());
-			data.setUnicom_total(gprs.getTotal());
-			data.setUnicom_month(gprs.getMonth());
-			data.setUnicom_diff(gprs.getMonth() - card.getUnicom_month());
-			month = gprs.getThis_month();
-			gprs_diff = data.getUnicom_diff();
+			card.setMax_unused(card.getUnicom_unused());//计算字段统一为设备剩余流量
+			data.setUnicom_total(gprs.getTotal());//累计使用流量
+			data.setUnicom_month(gprs.getMonth());//当前月使用流量
+			data.setUnicom_diff(gprs.getMonth() - card.getUnicom_month());//距离上次月流量的差异值
+			month = gprs.getThis_month();//需要计算的月份，区分联通月结
+			gprs_diff = data.getUnicom_diff();//距离上次月流量的差异值
 		}else {
 			month_date = (card.getCard_type() >= 2 && DateUtil.getDayOfMonth(null)>=27) ? DateUtils.addMonths(new Date(), 1):DateUtil.now();
 			month = NumberUtils.toInt(DateFormatUtils.format(month_date, "yyyyMM")); //计算当月的流量
@@ -330,7 +335,7 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 		//查询该卡当月的流量套餐列表
 		List<CcGprsValue> temp2 = iCcGprsValueMapper.getGprsInfoByCardidAndHowmonth(card.getCard_id(), card.getCard_type(), month);
 		
-		if(CollectionUtils.isEmpty(temp2)) {
+		if(CollectionUtils.isEmpty(temp2)) { //判断是否有套餐流量
 			
 			/**
 			 * 没有套餐时，也需要扣除流量，将其计算到剩余流量中方便日后待扣; 如果原来最大可使用流量大于零将其作废
@@ -377,7 +382,7 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 		 */
 		Integer pack_count = temp2.size();
 		
-		if(pack_count > 1) {
+		if(pack_count > 1) {//流量卡拥有的套餐数大于1方可进行排序才有意义
 			
 			if(gprs.getIs_unicom()) {
 				
@@ -415,14 +420,18 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 		Double balance_val = null;
 		Double balance_dval = null;
 		CcGprsValue temp3 = null;
+		int k = 0;
 		/**
 		 * 循环流量值列表计算剩余的流量
 		 */
-		for(int k = 0; k < temp2.size(); k ++) {
-			
-			temp3 = temp2.get(k);
+		for(int i = 0; i < temp2.size(); i ++) {
+			k ++;
+			temp3 = temp2.get(i);
 			balance_val = gprs.getIs_unicom() ? temp3.getBalance_value() : temp3.getBalance_dval();
 			
+			/**
+			 * 判断此套餐流量是否等于0，且不是最后一个套餐则继续运算下一个套餐
+			 */
 			if(balance_val == 0 && pack_count != k) {
 				continue;
 			}
@@ -436,9 +445,9 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 			}
 			
 			if(balance_val >= 0) {
-				balance_dval = balance_val - gprs_diff;
+				balance_dval = balance_val - gprs_diff;//扣除差异值流量，得此套餐剩余流量
 			}else {
-				balance_dval = (balance_val = card.getMax_unused()) - gprs_diff;
+				balance_dval = (balance_val - card.getMax_unused()) - gprs_diff;//剩余流量与流量卡最大可使用流量对等
 			}
 			
 			CcGprsValue gprs_value = new CcGprsValue();
@@ -448,6 +457,7 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 			gprs_value.setBalance_dval(balance_dval > 0 ? balance_dval : (pack_count == k ? balance_dval : 0));
 			gprs_value.setTime_modify(DateUtil.nowStr());
 			gprs_value.setBalance_value(gprs.getIs_unicom() ? gprs_value.getBalance_dval() : gprs_value.getBalance_value());
+			gprs_value.setGprs_vid(temp3.getGprs_vid());
 			iCcGprsValueService.updateById(gprs_value);
 			
 			if(balance_dval < 0) {
@@ -643,9 +653,9 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 			try {
 				apiData = zhiWangApiService.cardOnoff(card.getCard_sn(), onoff);
 				isSuccess = zhiWangApiService.isSuccess(apiData);
-			} catch (Exception e) {
+			} catch (RestClientException e) {
 				log.error("[cardOnoff][exception]params={card:{},onoff:{},userid:{},username:{}},exception={}", JSONObject.toJSONString(card),onoff,userid,username, ExceptionUtils.getStackTrace(e));
-				return false;
+				throw e;
 			}
 		}else if(card.getCard_type() == 4) {//智网定向流量卡无开关功能
 			
@@ -655,9 +665,9 @@ public class CcGprsAllotServiceImpl extends ServiceImpl<ICcGprsAllotMapper, CcGp
 			try {
 				apiData = m2mService.editTerminal(card.getCard_type(), "", "", card.getCard_iccid(), 3, onoff == 1 ? "DEACTIVATED_NAME":"ACTIVATED_NAME");
 				isSuccess = m2mService.isSuccess(apiData);
-			} catch (Exception e) {
+			} catch (RestClientException e) {
 				log.error("[cardOnoff][exception]params={card:{},onoff:{},userid:{},username:{}},exception={}", JSONObject.toJSONString(card),onoff,userid,username, ExceptionUtils.getStackTrace(e));
-				return false;
+				throw e;
 			}
 		}
 		if(!isSuccess) {

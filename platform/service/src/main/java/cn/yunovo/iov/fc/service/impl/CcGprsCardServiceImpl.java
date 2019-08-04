@@ -61,6 +61,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.client.RestClientException;
 
 /**
  * <p>
@@ -988,25 +989,30 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 		if(card == null) {
 			throw new BusinessException("系统提示：未找到对应的流量卡信息");
 		}
-		
+		if(card.getCard_type() == 4) {
+			throw new BusinessException("系统提示：该卡暂不支持开停卡功能");
+		}
 		boolean isSuccess = true;
 		try {
 //			isSuccess = iCcGprsAllotService.cardOnoff(card, form.getStatus(), loginBaseInfo.getId(), loginBaseInfo.getLoginName());
 			isSuccess = iCcGprsAllotService.cardOnoff(card, form.getStatus(), 0, loginBaseInfo.getLoginName());
+		}catch (RestClientException e1) {
+			log.error("[onoff][RestClientException]params={},logininfo={},exception={}", form.buildJsonString(), loginBaseInfo.buildJsonString(),ExceptionUtils.getStackTrace(e1));
+			throw new BusinessException("系统提示：调用第三方停开卡接口异常");
 		} catch (Exception e) {
 			log.error("[onoff][exception]params={},logininfo={},exception={}", form.buildJsonString(), loginBaseInfo.buildJsonString(),ExceptionUtils.getStackTrace(e));
 			return false;
 		}
 		
 		if(isSuccess) {
-			card.setUnicom_stop(form.getStatus());
+			card.setUnicom_stop(form.getStatus()); //更新流量卡缓存中状态
 			if(form.getStatus() == 1) {
 				card.setTime_stop(DateUtil.nowStr());
 			}
 		}else {
-			if(form.getStatus() == 0) {
+			if(form.getStatus() == 0) {  //开卡失败代表此止已开，所以只需要更新卡的状态即可
 				card.setUnicom_stop((short)0);
-			}else {
+			}else {//停卡失败代表此止已停，所以只需要更新卡的状态即可
 				card.setUnicom_stop((short)1);
 			}
 		}
