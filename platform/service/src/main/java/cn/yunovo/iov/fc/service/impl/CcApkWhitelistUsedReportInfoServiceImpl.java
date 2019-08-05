@@ -174,13 +174,12 @@ public class CcApkWhitelistUsedReportInfoServiceImpl extends ServiceImpl<ICcApkW
 				throw new BusinessException(0, "save error");
 			}
 			
-			
 			//保存上报数据
 			if(!this.saveLastReportInfo(form, lastInfo, card)) {
 				log.error("[report][save last report info faild]params={card:{},form:{},lastInfo:{}}", JSONObject.toJSONString(card), form.buildJsonString(), JSONObject.toJSONString(lastInfo));
 				throw new BusinessException(0, "save error");
 			}
-			
+			clwTransactionManager.commit(transactionStatus);
 		}catch(BusinessException e){
 			clwTransactionManager.rollback(transactionStatus);
 			throw e;
