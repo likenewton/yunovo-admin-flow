@@ -499,12 +499,13 @@ public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcReal
 	private final String CACHE_SQL_KEY = "SELECT * FROM cc_realname WHERE card_iccid = '%s'";
 	public void cache(CcRealname data) {
 		
-		if(data == null) {
-			return ;
-		}
 		String cacheKey = String.format(CACHE_SQL_KEY, data.getCard_iccid());
 		cacheKey = FcConstant.memSqlKey(cacheKey, FcConstant.DB_GET_ROW);
-		jedisPoolUtil.setEx(cacheKey, data.cacheJsonString());
+		String content = "[]";
+		if(data != null) {
+			content = data.cacheJsonString();
+		}
+		jedisPoolUtil.setEx(cacheKey, content);
 	}
 	
 	
