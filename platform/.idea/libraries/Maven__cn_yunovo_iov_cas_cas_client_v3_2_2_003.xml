@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: cn.yunovo.iov.cas:cas-client:v3.2.2.003">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/cn/yunovo/iov/cas/cas-client/v3.2.2.003/cas-client-v3.2.2.003.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/cn/yunovo/iov/cas/cas-client/v3.2.2.003/cas-client-v3.2.2.003-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/cn/yunovo/iov/cas/cas-client/v3.2.2.003/cas-client-v3.2.2.003-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -92,7 +92,7 @@ public class CcApkWhitelistLastreportInfoServiceImpl extends ServiceImpl<ICcApkW
 		}
 		String cacheKey = FcConstant.memResKey(String.format(LAST_REPORT_INFO_KEY, info.getIccid()));
 		try {
-			return retBool(jedisPoolUtil.setEx(cacheKey, info.cacheJsonSring()));
+			return retBool(jedisPoolUtil.setEx(cacheKey, JSONObject.toJSONString(info)));
 		} catch (Exception e) {
 			log.error("[cacheInof][exception]params={},exception={}", info.cacheJsonSring(), ExceptionUtils.getStackTrace(e));
 			return false;

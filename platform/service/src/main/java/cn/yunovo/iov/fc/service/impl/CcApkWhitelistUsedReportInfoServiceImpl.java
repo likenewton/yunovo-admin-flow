@@ -42,6 +42,7 @@ public class CcApkWhitelistUsedReportInfoServiceImpl extends ServiceImpl<ICcApkW
 	private ICcApkWhitelistLastreportInfoService iCcApkWhitelistLastreportInfoService;
 	
 	private final Long MAX_VALUE_32 = 4294967295L;
+	private final String ID_PREFIX = "APK-";
 	
 	@Autowired
 	private ICcGprsCardService iCcGprsCardService;
@@ -152,13 +153,10 @@ public class CcApkWhitelistUsedReportInfoServiceImpl extends ServiceImpl<ICcApkW
 		TransactionStatus transactionStatus = clwTransactionManager.getTransaction(definition);
 		
 		try {
-			//保存上报数据
-			if(!this.saveLastReportInfo(form, lastInfo, card)) {
-				log.error("[report][save last report info faild]params={card:{},form:{},lastInfo:{}}", JSONObject.toJSONString(card), form.buildJsonString(), JSONObject.toJSONString(lastInfo));
-				throw new BusinessException(0, "save error");
-			}
+			
 			CcApkWhitelistUsedReportInfo info = new CcApkWhitelistUsedReportInfo();
 			info.setIccid(card.getCard_iccid());
+			info.setId(makeId(card.getCard_iccid()));
 			info.setCard_id(card.getCard_id());
 			info.setOrg_id(card.getOrg_id());
 			info.setOrg_gprs_month(org_gprs_month);
@@ -175,6 +173,14 @@ public class CcApkWhitelistUsedReportInfoServiceImpl extends ServiceImpl<ICcApkW
 				log.error("[report][save report faild]params={form:{},info:{}}", form.buildJsonString(),JSONObject.toJSONString(info));
 				throw new BusinessException(0, "save error");
 			}
+			
+			
+			//保存上报数据
+			if(!this.saveLastReportInfo(form, lastInfo, card)) {
+				log.error("[report][save last report info faild]params={card:{},form:{},lastInfo:{}}", JSONObject.toJSONString(card), form.buildJsonString(), JSONObject.toJSONString(lastInfo));
+				throw new BusinessException(0, "save error");
+			}
+			
 		}catch(BusinessException e){
 			clwTransactionManager.rollback(transactionStatus);
 			throw e;
@@ -187,7 +193,11 @@ public class CcApkWhitelistUsedReportInfoServiceImpl extends ServiceImpl<ICcApkW
 		log.info("[report][ok]params={}",form.buildJsonString());
 	}
 
-
+	public String makeId(String iccid) {
+		
+		return ID_PREFIX + iccid + "-" + System.currentTimeMillis();
+	}
+	
 	private boolean saveLastReportInfo(WhitelistsReportForm form, CcApkWhitelistLastreportInfo lastInfo, CcGprsCard card) {
 
 		if(lastInfo == null) {
