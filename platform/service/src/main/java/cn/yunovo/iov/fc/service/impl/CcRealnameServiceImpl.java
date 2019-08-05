@@ -393,7 +393,7 @@ public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcReal
 		ret = this.update(opData, updateWrapper);
 		this.getByIccid(data.getCard_iccid(), true);
 		data = iCcRealnameMapper.getByCardIccid(data.getCard_iccid());
-		cache(data);
+		cache(data, data.getCard_iccid());
 		return ret;
 	}
 	
@@ -492,14 +492,14 @@ public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcReal
 		isOk = SqlHelper.retBool(iCcRealnameMapper.updateIccidByCardid(form.getCard_id(), null, user.getLoginName()));
 		
 		data = iCcRealnameMapper.getByCardIccid(card.getCard_iccid());
-		cache(data);
+		cache(data, card.getCard_iccid());
 		return isOk;
 	}
 	
 	private final String CACHE_SQL_KEY = "SELECT * FROM cc_realname WHERE card_iccid = '%s'";
-	public void cache(CcRealname data) {
+	public void cache(CcRealname data, String card_iccid) {
 		
-		String cacheKey = String.format(CACHE_SQL_KEY, data.getCard_iccid());
+		String cacheKey = String.format(CACHE_SQL_KEY, card_iccid);
 		cacheKey = FcConstant.memSqlKey(cacheKey, FcConstant.DB_GET_ROW);
 		String content = "[]";
 		if(data != null) {
