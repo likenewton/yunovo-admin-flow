@@ -42,7 +42,7 @@ public class CcApkWhitelistUsedReportInfoServiceImpl extends ServiceImpl<ICcApkW
 	private ICcApkWhitelistLastreportInfoService iCcApkWhitelistLastreportInfoService;
 	
 	private final Long MAX_VALUE_32 = 4294967295L;
-	private final String ID_PREFIX = "APK-";
+	private final String ID_PREFIX = "APK_";
 	
 	@Autowired
 	private ICcGprsCardService iCcGprsCardService;
@@ -194,7 +194,7 @@ public class CcApkWhitelistUsedReportInfoServiceImpl extends ServiceImpl<ICcApkW
 
 	public String makeId(String iccid) {
 		
-		return ID_PREFIX + iccid + "-" + System.currentTimeMillis();
+		return ID_PREFIX + iccid + "_" + System.currentTimeMillis();
 	}
 	
 	private boolean saveLastReportInfo(WhitelistsReportForm form, CcApkWhitelistLastreportInfo lastInfo, CcGprsCard card) {
@@ -209,7 +209,9 @@ public class CcApkWhitelistUsedReportInfoServiceImpl extends ServiceImpl<ICcApkW
 			lastInfo.setSn(form.getSn());
 			lastInfo.setNonce(form.getNonce());
 			
-			return iCcApkWhitelistLastreportInfoService.updateInfo(lastInfo);
+			iCcApkWhitelistLastreportInfoService.updateInfo(lastInfo);
+			
+			return true;
 		}
 	}
 
