@@ -501,7 +501,7 @@ public class CcRealnameServiceImpl extends ServiceImpl<ICcRealnameMapper, CcReal
 		
 		String cacheKey = String.format(CACHE_SQL_KEY, card_iccid);
 		cacheKey = FcConstant.memSqlKey(cacheKey, FcConstant.DB_GET_ROW);
-		String content = "[]";
+		String content = "{}";
 		if(data != null) {
 			content = data.cacheJsonString();
 		}
