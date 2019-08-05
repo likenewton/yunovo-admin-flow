@@ -209,9 +209,7 @@ public class CcApkWhitelistUsedReportInfoServiceImpl extends ServiceImpl<ICcApkW
 			lastInfo.setSn(form.getSn());
 			lastInfo.setNonce(form.getNonce());
 			
-			iCcApkWhitelistLastreportInfoService.updateInfo(lastInfo);
-			
-			return true;
+			return iCcApkWhitelistLastreportInfoService.updateInfo(lastInfo);
 		}
 	}
 

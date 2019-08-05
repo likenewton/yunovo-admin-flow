@@ -107,11 +107,8 @@ public class CcApkWhitelistLastreportInfoServiceImpl extends ServiceImpl<ICcApkW
 			return false;
 		}
 		
-		boolean isOk = retBool(iCcApkWhitelistLastreportInfoMapper.updateInfoById(info));
-		if(isOk) {
-			return this.cacheInof(info);
-		}
+		iCcApkWhitelistLastreportInfoMapper.updateInfoById(info);
+		return this.cacheInof(info);
 		
-		return isOk;
 	}
 }
