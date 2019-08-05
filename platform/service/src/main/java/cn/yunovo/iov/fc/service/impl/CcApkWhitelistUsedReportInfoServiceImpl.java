@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -199,7 +200,7 @@ public class CcApkWhitelistUsedReportInfoServiceImpl extends ServiceImpl<ICcApkW
 	
 	private boolean saveLastReportInfo(WhitelistsReportForm form, CcApkWhitelistLastreportInfo lastInfo, CcGprsCard card) {
 
-		if(lastInfo == null) {
+		if(StringUtils.isEmpty(lastInfo.getCreate_datetime())) {
 			return iCcApkWhitelistLastreportInfoService.saveInfo(card.getCard_id(), card.getCard_iccid(), form.getNonce(),form.getOrg_gprs_month(), form.getYunovo_gprs_month(), form.getSn());
 		}else {
 			
