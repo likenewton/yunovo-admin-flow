@@ -136,6 +136,8 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 				orgpos.split(","));
 
 		if (CollectionUtils.isEmpty(records)) {
+			
+			total.put("time", System.currentTimeMillis() + 0D);
 			page.setTotal(0);
 			page.setRecords(null);
 			p.setPage(page);

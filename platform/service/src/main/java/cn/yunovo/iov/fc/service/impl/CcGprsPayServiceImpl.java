@@ -307,8 +307,10 @@ public class CcGprsPayServiceImpl extends ServiceImpl<ICcGprsPayMapper, CcGprsPa
 		Map<String, String> ntfType = iCcNotifyService.getArr_ntf_type();
 		Map<String, String> card_types = iCcGprsCardService.getCard_type();
 		CcOrg tt = null;
+		long time = System.currentTimeMillis();
 		for (CcGprsPay ccGprsPay : records) {
 			tt = orgs.get(String.valueOf(ccGprsPay.getOrg_id()));
+			ccGprsPay.setTime(time);
 			ccGprsPay.setOrg_name(tt == null ? "" : tt.getName());
 			ccGprsPay.setPay_method_name(arr_pay_method.get(String.valueOf(ccGprsPay.getPay_method())));
 			ccGprsPay.setPay_from_name(ntfType.get(StringUtils.defaultIfEmpty(ccGprsPay.getPay_from(), "unknown")));

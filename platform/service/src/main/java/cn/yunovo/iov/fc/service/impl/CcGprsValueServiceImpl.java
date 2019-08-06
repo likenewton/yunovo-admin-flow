@@ -10,6 +10,7 @@ import cn.yunovo.iov.fc.model.entity.CcResetLog;
 import cn.yunovo.iov.fc.model.result.GprsAllotResultBean;
 import cn.yunovo.iov.fc.service.ICcGprsValueService;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -44,8 +45,11 @@ public class CcGprsValueServiceImpl extends ServiceImpl<ICcGprsValueMapper, CcGp
 		Page<GprsAllotResultBean> page = pageForm.build(GprsAllotResultBean.class, null, "V.time_added");
 		PageData<GprsAllotResultBean, Object> returnData = new PageData<>();
 		List<GprsAllotResultBean> records = iCcGprsValueMapper.getAllotPage(page, card_id);
+		JSONObject other = new JSONObject();
+		other.put("time", System.currentTimeMillis());
 		page.setRecords(records);
 		returnData.setPage(page);
+		returnData.setOther(other);
 		return returnData;
 	}
 	
