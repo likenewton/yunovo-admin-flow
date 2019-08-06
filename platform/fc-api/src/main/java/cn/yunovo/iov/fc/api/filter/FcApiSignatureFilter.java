@@ -152,7 +152,7 @@ public class FcApiSignatureFilter implements Filter{
 	public AppKey getAppKey(String api_key) {
 		
 		JedisPoolUtil jedisPoolUtil = wac.getBean(JedisPoolUtil.class);
-		List<String> data = jedisPoolUtil.hmget("", api_key);
+		List<String> data = jedisPoolUtil.hmget("appKeyAndAppSecret", api_key);
 		
 		if(CollectionUtils.isEmpty(data) || StringUtils.isEmpty(data.get(0))) {
 			return null;
