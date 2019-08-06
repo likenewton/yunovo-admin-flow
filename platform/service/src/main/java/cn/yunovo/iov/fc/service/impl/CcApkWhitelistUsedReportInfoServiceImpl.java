@@ -200,7 +200,7 @@ public class CcApkWhitelistUsedReportInfoServiceImpl extends ServiceImpl<ICcApkW
 	
 	private boolean saveLastReportInfo(WhitelistsReportForm form, CcApkWhitelistLastreportInfo lastInfo, CcGprsCard card) {
 
-		if(StringUtils.isEmpty(lastInfo.getCreate_datetime())) {
+		if(lastInfo == null) {
 			return iCcApkWhitelistLastreportInfoService.saveInfo(card.getCard_id(), card.getCard_iccid(), form.getNonce(),form.getOrg_gprs_month(), form.getYunovo_gprs_month(), form.getSn());
 		}else {
 			
