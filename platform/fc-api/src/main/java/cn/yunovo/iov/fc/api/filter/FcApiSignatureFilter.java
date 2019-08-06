@@ -104,7 +104,7 @@ public class FcApiSignatureFilter implements Filter{
 			} else {
 				
 				log.warn("[AppApiFilter][invalid api_sign]params={}", form.buildJsonString());
-				errResult = ResultUtil.build(400, "invalid api_sign");
+				errResult = ResultUtil.build(401, "invalid api_sign");
 				returnJson(errResult, response);
 				return;
 			}
