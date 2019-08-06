@@ -47,8 +47,8 @@ public class FcApiSignatureFilter implements Filter{
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		chain.doFilter(request, response);
-		/*Result<Object> errResult = null;
+		//chain.doFilter(request, response);
+		Result<Object> errResult = null;
 		HttpServletRequest _request = (HttpServletRequest) request;
 		//必输参数校验
 		ApiCommonParamsForm form = null;
@@ -114,7 +114,7 @@ public class FcApiSignatureFilter implements Filter{
 			errResult = ResultUtil.exception();
 			returnJson(errResult, response);
 			return;
-		}*/
+		}
 		
 		
 	}
