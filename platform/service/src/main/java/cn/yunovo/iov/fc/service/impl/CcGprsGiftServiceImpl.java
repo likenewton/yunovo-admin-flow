@@ -141,7 +141,8 @@ public class CcGprsGiftServiceImpl extends ServiceImpl<ICcGprsGiftMapper, CcGprs
 		}
 		
 		List<CcGprsGift> records = iCcGprsGiftMapper.getItemsPage(page, org_id, card_iccid, date_start, date_end, orgpos, orgpos.split(","));
-		
+		JSONObject other = new JSONObject();
+		other.put("time", System.currentTimeMillis());
 		if(!CollectionUtils.isEmpty(records)) {
 			
 			Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
@@ -156,6 +157,7 @@ public class CcGprsGiftServiceImpl extends ServiceImpl<ICcGprsGiftMapper, CcGprs
 		
 		page.setRecords(records);
 		returnData.setPage(page);
+		returnData.setOther(other);
 		return returnData;
 	}
 	

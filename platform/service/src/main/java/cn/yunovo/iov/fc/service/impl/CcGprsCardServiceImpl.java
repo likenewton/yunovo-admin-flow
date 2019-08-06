@@ -692,7 +692,8 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 		}
 		
 		List<CcGprsCard> records = iGprsCardMapper.queryCardListPage(page, card_iccid, card_type, org_id, date_start, date_end, time_expire, unicom_stop, status, orgpos, orgpos.split(","));
-		
+		JSONObject other = new JSONObject();
+		other.put("time", System.currentTimeMillis());
 		if(!CollectionUtils.isEmpty(records)) {
 			Map<String, String> cardTypes = getCard_type();
 			CcOrg tt = null;
@@ -705,8 +706,12 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 		}
 		page.setRecords(records);
 		returnData.setPage(page);
+		returnData.setOther(other);
 		return returnData;
 	}
+	
+
+	
 	
 	@Override
 	public void queryCardListPageExport(String card_iccid, Integer org_id, String date_start, String date_end, Integer time_expire, Integer unicom_stop, Integer status, LoginInfo info, Integer card_type) throws Exception {
