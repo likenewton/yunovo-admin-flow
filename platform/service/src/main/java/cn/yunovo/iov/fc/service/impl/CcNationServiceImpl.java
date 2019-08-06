@@ -148,4 +148,22 @@ public class CcNationServiceImpl extends ServiceImpl<ICcNationMapper, CcNation> 
 		return returnData;
 	}
 	
+	@Override
+	public CcNation getByParentAndNtname(Integer parent, String ntname) {
+		
+		if(parent == null) {
+			return null;
+		}
+		
+		if(StringUtils.isEmpty(ntname)) {
+			return null;
+		}
+		
+		QueryWrapper<CcNation> queryWrapper = new QueryWrapper<>();
+		queryWrapper.eq("parent", parent);
+		queryWrapper.eq("ntname", ntname);
+		
+		return this.getOne(queryWrapper, false);
+	}
+	
 }

@@ -30,5 +30,7 @@ public interface ICcNationService extends IService<CcNation> {
 	List<SelectBean> select(Integer parent);
 
 	JSONObject nationMap();
+
+	CcNation getByParentAndNtname(Integer parent, String ntname);
 	
 }

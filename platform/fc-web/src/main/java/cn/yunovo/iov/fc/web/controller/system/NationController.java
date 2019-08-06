@@ -17,6 +17,7 @@ import cn.yunovo.iov.fc.common.utils.ResultUtil;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcNation;
+import cn.yunovo.iov.fc.model.exception.FormValidateException;
 import cn.yunovo.iov.fc.model.form.NationForm;
 import cn.yunovo.iov.fc.model.form.group.DeleteGroupValidate;
 import cn.yunovo.iov.fc.model.form.group.InsertGroupValidate;
@@ -70,6 +71,10 @@ public class NationController extends BaseController{
 			form.setParent(0);
 		}
 		
+		CcNation nation = iCcNationService.getByParentAndNtname(form.getParent(), form.getNtname());
+		if(nation != null) {
+			throw new FormValidateException("请勿添加重复的区域名称【"+form.getNtname()+"】", "ntname", form.buildJsonString());
+		}
 		CcNation entity = new CcNation();
 		BeanUtils.copyProperties(form, entity);
 		
@@ -83,6 +88,12 @@ public class NationController extends BaseController{
 	public Result<?> update(@RequestBody NationForm form) {
 		
 		form.validate(UpdateGroupValidate.class);
+		
+		CcNation nation = iCcNationService.getByParentAndNtname(form.getParent(), form.getNtname());
+		if(nation != null && nation.getNtid() - form.getNtid() != 0) {
+			throw new FormValidateException("请勿添加重复的区域名称【"+form.getNtname()+"】", "ntname", form.buildJsonString());
+		}
+		
 		CcNation entity = new CcNation();
 		BeanUtils.copyProperties(form, entity);
 		
