@@ -109,6 +109,8 @@ public class CcGprsPay implements Serializable {
 	@ApiModelProperty(value = "订单来源中文名称")
 	private String pay_from_name;
 	
-	
+	@TableField(exist=false)
+	@ApiModelProperty(value = "服务器时间")
+	private Long time;
 
 }
