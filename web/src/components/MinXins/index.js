@@ -7,6 +7,7 @@ export default {
     return {
       loadData: true,
       searchVipVisible: false, // 是否显示高级查询dialog
+      now: new Date().getTime(),
       pageSizes: Api.STATIC.pageSizes,
       maxTableHeight: Api.UNITS.maxTableHeight(),
       list: {

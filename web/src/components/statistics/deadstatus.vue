@@ -67,7 +67,7 @@
         <el-table-column prop="time_stop" label="上次停用" :width="widthMap.time_stop[size]" sortable="custom"></el-table-column>
         <el-table-column prop="time_expire" label="过期时间" :min-width="widthMap.time_expire[size]">
           <template slot-scope="scope">
-            <div v-if="!scope.row.sums" v-html="calcLeftTime(scope.row.time_expire)"></div>
+            <div v-if="!scope.row.sums" v-html="calcLeftTime(scope.row.time_expire, now)"></div>
           </template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" :width="widthMap.op[size]" v-if="pageAuthBtn.FCP_02_002_OP01 || pageAuthBtn.FCP_02_002_OP2">
@@ -121,6 +121,9 @@ export default {
         url: _axios.ajaxAd.getHalt,
         cb: (res) => {
           let other = res.data.other || {}
+          if (other.time) {
+            this.now = other.time
+          }
           if (this.list.data.length === 0) return
           // 一下计算合计
           this.list.data.push(...[{

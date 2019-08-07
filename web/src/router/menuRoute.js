@@ -51,7 +51,10 @@ let menuRoute = {
     children: [{
       path: 'card',
       name: 'card',
-      component: Card
+      component: Card,
+      meta: {
+        keepAlive: true // 需要被缓存
+      }
     }, {
       path: 'cardreset',
       name: 'cardreset',

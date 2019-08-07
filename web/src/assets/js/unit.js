@@ -247,9 +247,8 @@ module.exports = {
     return htmlStr
   },
   // 计算到期时间
-  calcLeftTime(time) {
+  calcLeftTime(time, now) {
     let htmlStr = ''
-    let now = new Date().getTime()
     // ie 下兼容性问题
     if (time) {
       var a = new Date(time).getTime() || new Date(time.replace(/-/g, "/")).getTime()

@@ -44,7 +44,7 @@
             <el-table-column prop="is_paid" label="支付状态" width="90" sortable="custom">
               <template slot-scope="scope">
                 <span v-if="scope.row.is_paid==1">已付款</span>
-                <span v-else>未付款</span>
+                <span v-else-if="scope.row.is_paid==0">未付款</span>
               </template>
             </el-table-column>
             <el-table-column prop="transfer_id" label="支付流水号" min-width="140" sortable="custom"></el-table-column>
@@ -53,7 +53,7 @@
             <el-table-column prop="time_paid" label="付款时间" width="153" sortable="custom"></el-table-column>
             <el-table-column prop="time_expire" label="过期时间" width="210" sortable="custom">
               <template slot-scope="scope">
-                <div v-html="calcLeftTime(scope.row.time_expire)"></div>
+                <div v-html="calcLeftTime(scope.row.time_expire, scope.row.time || now)"></div>
               </template>
             </el-table-column>
             <el-table-column prop="pay_from" label="订单来源" min-width="120" sortable="custom">
@@ -115,7 +115,7 @@
             <el-table-column prop="time_added" label="分配时间" min-width="155" sortable="custom"></el-table-column>
             <el-table-column prop="time_expire" label="过期时间" min-width="210" sortable="custom">
               <template slot-scope="scope">
-                <div v-html="calcLeftTime(scope.row.time_expire)"></div>
+                <div v-html="calcLeftTime(scope.row.time_expire, now)"></div>
               </template>
             </el-table-column>
           </el-table>
@@ -352,7 +352,22 @@ export default {
         url: _axios.ajaxAd[this.ajaxData[tabIndex]],
         list: `list_${tabIndex}`,
         sort: `sort_${tabIndex}`,
-        formInline: `formInline_${tabIndex}`
+        formInline: `formInline_${tabIndex}`,
+        cb: ((res) => {
+          let other = res.data.other || {}
+          if (other.time) {
+            this.now = other.time
+          }
+          if (this.tabIndex === '0') {
+            if (this.list_0.data.length === 0) return
+            // 一下计算合计
+            this.list_0.data.push({
+              sums: true,
+              gprs_amount: other.gprs_amount || 0,
+              gprs_price: other.gprs_price || 0,
+            })
+          }
+        })
       })
     },
     // tab上方的card详情
@@ -459,12 +474,14 @@ export default {
 <style lang="scss">
 .recharge_detail {
   position: relative;
+
   .search-form {
     position: absolute;
     right: 12px;
     transform: translateY(-4px);
     z-index: 1;
   }
+
   .common-display {
     font-size: 14px;
     margin-bottom: 10px;

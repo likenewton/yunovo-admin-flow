@@ -52,7 +52,7 @@
         <el-table-column prop="time_last" label="设备更新" :width="widthMap.time_last[size]" sortable="custom"></el-table-column>
         <el-table-column prop="time_expire" label="过期时间" :min-width="widthMap.time_expire[size]" sortable="custom">
           <template slot-scope="scope">
-            <div v-html="calcLeftTime(scope.row.time_expire)"></div>
+            <div v-html="calcLeftTime(scope.row.time_expire, now)"></div>
           </template>
         </el-table-column>
         <el-table-column prop="unicom_stop" label="运行状态" :width="widthMap.unicom_stop[size]">
@@ -203,6 +203,7 @@ export default {
           name: '机构流量ICCID卡',
           data: [], // 2
           type: 'bar',
+          barMaxWidth: 100,
           itemStyle: {
             //通常情况下：
             normal: {
@@ -257,7 +258,13 @@ export default {
     getData() {
       Api.UNITS.getListData({
         vue: this,
-        url: _axios.ajaxAd.getCards
+        url: _axios.ajaxAd.getCards,
+        cb: ((res) => {
+          let other = res.data.other || {}
+          if (other.time) {
+            this.now = other.time
+          }
+        })
       })
     },
     resetData() {

@@ -108,7 +108,6 @@ export default {
       })
     },
     formatFlowUnit: Api.UNITS.formatFlowUnit,
-    calcLeftTime: Api.UNITS.calcLeftTime
   },
   computed: {
     ...mapState({

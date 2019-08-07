@@ -9,7 +9,9 @@
         <el-main class="small-scroll">
           <div class="main-inner">
             <v-breadcrumb></v-breadcrumb>
-            <router-view></router-view>
+            <keep-alive>
+              <router-view></router-view>
+            </keep-alive>
             <el-footer height="50px">
               <v-footer></v-footer>
             </el-footer>

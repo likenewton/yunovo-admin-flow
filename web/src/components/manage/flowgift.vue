@@ -120,7 +120,7 @@
             <el-table-column prop="time_added" label="添加时间" :width="widthMap.time_added[size]" sortable="custom"></el-table-column>
             <el-table-column prop="time_expire" label="过期时间" :width="widthMap.time_expire[size]" sortable="custom">
               <template slot-scope="scope">
-                <span v-html="calcLeftTime(scope.row.time_expire)"></span>
+                <span v-html="calcLeftTime(scope.row.time_expire, now)"></span>
               </template>
             </el-table-column>
           </el-table>
@@ -293,7 +293,13 @@ export default {
       Api.UNITS.getListData({
         vue: this,
         url: _axios.ajaxAd.getGift,
-        formInline: 'searchForm'
+        formInline: 'searchForm',
+        cb: ((res) => {
+          let other = res.data.other || {}
+          if (other.time) {
+            this.now = other.time
+          }
+        })
       })
     },
     validateIccidCount(rule, value, callback) {
