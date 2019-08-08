@@ -86,7 +86,7 @@ public class CcApkWhitelistUsedReportInfoServiceImpl extends ServiceImpl<ICcApkW
 		if(lastInfo != null){
 			
 			if(!isZeroNonce && form.getNonce() - lastInfo.getNonce() != 0) {
-				log.warn("[report][Nonce 异常]params={lastInfo:{},form:{}}", lastInfo.cacheJsonSring(), form.buildJsonString());
+				log.warn("[report][Nonce 异常]params={lastInfo:{},form:{}}", JSONObject.toJSONString(lastInfo), form.buildJsonString());
 			}
 			
 			if(!isZeroNonce) {

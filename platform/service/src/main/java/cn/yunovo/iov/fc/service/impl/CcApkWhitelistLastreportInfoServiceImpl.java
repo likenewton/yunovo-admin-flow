@@ -94,7 +94,7 @@ public class CcApkWhitelistLastreportInfoServiceImpl extends ServiceImpl<ICcApkW
 		try {
 			return retBool(jedisPoolUtil.setEx(cacheKey, JSONObject.toJSONString(info)));
 		} catch (Exception e) {
-			log.error("[cacheInof][exception]params={},exception={}", info.cacheJsonSring(), ExceptionUtils.getStackTrace(e));
+			log.error("[cacheInof][exception]params={},exception={}", JSONObject.toJSONString(info), ExceptionUtils.getStackTrace(e));
 			return false;
 		}
 	}
