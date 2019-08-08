@@ -26,6 +26,7 @@ import cn.yunovo.iov.fc.common.utils.web.WebRequestUtil;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.ResourcesBean;
 import cn.yunovo.iov.fc.model.UserResourceInfoBean;
+import cn.yunovo.iov.fc.model.YunovoTomcatProperties;
 import cn.yunovo.iov.fc.web.filter.ISystemResourceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -37,8 +38,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SsoController extends BaseController{
 	
-	@Value("${server.servlet.context-path}")
-	private String contextPath;
+	@Autowired
+	private YunovoTomcatProperties yunovoTomcatProperties;
 
 	@Autowired
 	private SpringCasProperties springCasProperties;
@@ -113,7 +114,7 @@ public class SsoController extends BaseController{
 	public Result<LoginInfo> getLoginInfo() {
 		
 		LoginInfo loginInfo = this.getLoginBaseInfo();
-		loginInfo.setLogoutUrl(springCasProperties.getCasClient().getServerName() + contextPath + "/api/sso/logout?iov-token="+TokenUtil.getToken(WebRequestUtil.request()));
+		loginInfo.setLogoutUrl(springCasProperties.getCasClient().getServerName() + yunovoTomcatProperties.getContext().getPath() + "/api/sso/logout?iov-token="+TokenUtil.getToken(WebRequestUtil.request()));
 		loginInfo.setUcIndexUrl(springCasProperties.getCasClient().getUcIndexUrl());
 		return ResultUtil.build(0, "ok", loginInfo);
 		

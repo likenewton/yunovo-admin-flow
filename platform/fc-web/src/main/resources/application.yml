@@ -1,9 +1,9 @@
-server: 
-  port: 9098
-  servlet: 
-    context-path: /fc
-  tomcat: 
-    uri-encoding: UTF-8
+#server: 
+#  port: 9098
+#  servlet: 
+#    context-path: /fc
+#  tomcat: 
+#    uri-encoding: UTF-8
 #BasePath: /fc
 
 loging: 
@@ -165,10 +165,21 @@ fc:
     arr_allot_reset: 
       0: 不清零
       1: 会清零
+tomcat: 
+  connector: 
+      port: 9098
+      protocol: "org.apache.coyote.http11.Http11Nio2Protocol"
+  context: 
+      path: /fc
+      docBase: /apps/svr/fc
 #cas
 ---
 spring: 
   profiles: dev
+tomcat: 
+  context: 
+    path: /fc
+    docBase: d:/fc
 fc: 
   gprs: 
     file_dir_root: E://PHP
