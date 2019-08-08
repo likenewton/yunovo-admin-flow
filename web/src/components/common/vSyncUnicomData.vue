@@ -23,13 +23,13 @@
             <span class="fbs-left">联通流量卡状态</span>
             <span class="fbs-right">{{selectData.msg}}</span>
           </div>
-          <div class="item" v-if="selectData.consumeDataAll || selectData.consumeDataAll===0">
-            <span class="fbs-left">联通当月使用流量</span>
-            <span class="fbs-right" v-html="formatFlowUnit(selectData.consumeDataAll)"></span>
-          </div>
           <div class="item" v-if="selectData.consumeDataMon || selectData.consumeDataMon===0">
-            <span class="fbs-left">联通累计使用流量</span>
+            <span class="fbs-left">联通当月使用流量</span>
             <span class="fbs-right" v-html="formatFlowUnit(selectData.consumeDataMon)"></span>
+          </div>
+          <div class="item" v-if="selectData.consumeDataAll || selectData.consumeDataAll===0">
+            <span class="fbs-left">联通累计使用流量</span>
+            <span class="fbs-right" v-html="formatFlowUnit(selectData.consumeDataAll)"></span>
           </div>
         </div>
       </div>
@@ -37,7 +37,6 @@
   </div>
 </template>
 <script>
-
 export default {
   name: 'vSyncUnicomData',
   data() {
@@ -60,7 +59,7 @@ export default {
       _axios.send({
         method: 'get',
         url: _axios.ajaxAd.checkSyncUnicomData,
-        params: { 
+        params: {
           card_sn: scope.row.card_sn,
           card_iccid: scope.row.card_iccid
         },
