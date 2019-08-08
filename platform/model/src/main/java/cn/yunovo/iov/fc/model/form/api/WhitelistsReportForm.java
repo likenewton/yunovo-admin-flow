@@ -2,6 +2,7 @@ package cn.yunovo.iov.fc.model.form.api;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -27,10 +28,12 @@ public class WhitelistsReportForm extends BaseForm implements Serializable{
 	private String sn;
 	
 	@NotNull(message="yunovo_gprs_month missing")
+	@Min(value = 0, message = "invalid yunovo_gprs_month")
 	@ApiModelProperty(value="当月云智apk白名单流量消耗数，单位Byte")
 	private Long yunovo_gprs_month;
 	
 	@NotNull(message="org_gprs_month missing")
+	@Min(value = 0, message = "invalid org_gprs_month")
 	@ApiModelProperty(value="当月渠道商apk白名单流量消耗数，单位Byte")
 	private Long org_gprs_month;
 	

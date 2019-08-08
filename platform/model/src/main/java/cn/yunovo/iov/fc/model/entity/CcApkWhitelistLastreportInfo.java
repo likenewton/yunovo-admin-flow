@@ -60,10 +60,4 @@ public class CcApkWhitelistLastreportInfo implements Serializable {
 
 	private String create_by;
 
-	public Object cacheJsonSring() {
-		return JSONObject.toJSONString(this);
-	}
-	
-	
-
 }

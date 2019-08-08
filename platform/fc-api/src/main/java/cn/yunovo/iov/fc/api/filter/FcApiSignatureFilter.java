@@ -30,7 +30,9 @@ import cn.yunovo.iov.fc.api.model.AppKey;
 import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
+import cn.yunovo.iov.fc.model.entity.CcOrg;
 import cn.yunovo.iov.fc.model.exception.FormValidateException;
+import cn.yunovo.iov.fc.service.ICcOrgService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -61,6 +63,23 @@ public class FcApiSignatureFilter implements Filter{
 			return;
 		}
 		
+		//partner_id 校验
+		CcOrg org = null;
+		try {
+			org = this.getOrgByPartnerid(form.getPartner_id());
+		} catch (Exception e1) {
+			log.error("[AppApiFilter][exception]params={},exception={}", form.buildJsonString(), ExceptionUtils.getStackTrace(e1));
+			errResult = ResultUtil.exception();
+			returnJson(errResult, response);
+			return;
+		}
+		
+		if(org == null) {
+			log.warn("[AppApiFilter][invalid partner_id]params={}", form.buildJsonString());
+			errResult = ResultUtil.build(400, "invalid partner_id");
+			returnJson(errResult, response);
+			return;
+		}
 		//api key 信息校验
 		AppKey appkey = null;
 		
@@ -72,6 +91,8 @@ public class FcApiSignatureFilter implements Filter{
 			returnJson(errResult, response);
 			return;
 		}
+		
+		
 		
 		if(appkey == null) {
 			log.warn("[AppApiFilter][invalid api_key]params={}", form.buildJsonString());
@@ -161,6 +182,13 @@ public class FcApiSignatureFilter implements Filter{
 		String app_str = data.get(0);
 		
 		return JSONObject.parseObject(app_str, AppKey.class);
+	}
+	
+	public CcOrg getOrgByPartnerid(String partner_id) {
+		
+		ICcOrgService orgService = wac.getBean(ICcOrgService.class);
+		
+		return orgService.getByPartnerId(partner_id);
 	}
 	
 

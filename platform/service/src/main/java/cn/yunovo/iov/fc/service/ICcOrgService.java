@@ -56,4 +56,12 @@ public interface ICcOrgService extends IService<CcOrg> {
 	 * @return
 	 */
 	Map<Integer, String> orgMaps();
+
+	
+	/**
+	 * 通过partner_id查找机构信息，先获取缓存中信息，如果缓存中未查到则直接查库
+	 * @param partner_id
+	 * @return 机构信息
+	 */
+	CcOrg getByPartnerId(String partner_id);
 }

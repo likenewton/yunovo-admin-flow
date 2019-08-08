@@ -433,5 +433,39 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 		}
 	}
 	
+	String GET_BY_PARTNERID_SQL_KEY = "SELECT * FROM cc_org WHERE partner_id = '%s'";
+	
+	@Override
+	public CcOrg getByPartnerId(String partner_id) {
+		
+		if(StringUtils.isEmpty(partner_id)) {
+			return null;
+		}
+		
+		String cacheKey = FcConstant.memSqlKey(String.format(GET_BY_PARTNERID_SQL_KEY, partner_id), FcConstant.DB_GET_ROW);
+		String cache = jedisPoolUtil.get(cacheKey);
+		CcOrg org = null;
+		if(StringUtils.isEmpty(cache)) {
+		
+			QueryWrapper<CcOrg> queryWrapper = new QueryWrapper<>();
+			queryWrapper.eq("partner_id", partner_id);
+			org = this.getOne(queryWrapper,false);
+
+			if(org!= null) {
+				jedisPoolUtil.setEx(cacheKey, org.cacheJsonString());
+			}else {
+				jedisPoolUtil.setEx(cacheKey, "[]");
+			}
+			
+			return org;
+		}else {
+			
+			if(StringUtils.equals("[]", cache)) {
+				return null;
+			}
+			return JSONObject.parseObject(cache, CcOrg.class);
+		}
+		
+	}
 
 }

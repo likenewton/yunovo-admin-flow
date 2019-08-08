@@ -2,6 +2,7 @@ package cn.yunovo.iov.fc.api.controller;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.alibaba.fastjson.JSONObject;
@@ -23,6 +24,12 @@ public class BaseController {
 		
 		log.error("[exception][exception]params={},exception={}", JSONObject.toJSONString(WebRequestUtil.request().getParameterMap()), ExceptionUtils.getStackTrace(e));
 		return ResultUtil.exception();
+	}
+	
+	@ExceptionHandler(value=BindException.class)
+	public Result<?> bindException(BindException e) {
+		log.error("[bindException][exception]params={},exception={}", JSONObject.toJSONString(WebRequestUtil.request().getParameterMap()), ExceptionUtils.getStackTrace(e));
+		return ResultUtil.build(400, "invalid parameter");
 	}
 	
 	@ExceptionHandler(value=BusinessException.class)
