@@ -200,8 +200,6 @@ public class SelectController extends BaseController{
 		return ResultUtil.success("ok", nation);
 	}
 	
-	private final String DEVICE_ORGS_FORMAT = "%s(%s)";
-	
 	@ApiOperation(notes="车联网机构下拉", value = "车联网机构下拉")
 	@RequestMapping(path="/api/select/deviceOrgs", method= {RequestMethod.GET})
 	public Result<List<SelectBean>> deviceOrgs() {
@@ -220,7 +218,7 @@ public class SelectController extends BaseController{
 				@Override
 				public SelectBean apply(CooperateOrganVo t) {
 					SelectBean select2 = new SelectBean();
-					select2.setLabel(String.format(DEVICE_ORGS_FORMAT, t.getCooOrganName(), t.getCode()));
+					select2.setLabel(t.getCooOrganName());
 					select2.setValue(t.getCode());
 					return select2;
 				}
