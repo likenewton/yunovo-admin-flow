@@ -111,6 +111,8 @@ public class CcGprsBatch implements Serializable {
 	@ApiModelProperty(value = "最近一次修改者用户名")
 	private String update_by;
 	
+	@ApiModelProperty(value = "sim卡类型;0 插拔卡,1 贴片卡")
+	private Short sim_type;
 	
 	@TableField(exist=false)
 	@ApiModelProperty(value = "机构名称")

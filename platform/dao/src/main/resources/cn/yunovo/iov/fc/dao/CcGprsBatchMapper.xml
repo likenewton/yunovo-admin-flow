@@ -5,7 +5,7 @@
 	<select id="getItemsPage" resultType="cn.yunovo.iov.fc.model.entity.CcGprsBatch" >
 		
 		SELECT
-			batch_id,batch_sn,batch_name,batch_memo,batch_shipper,card_amount,org_id,
+			batch_id,batch_sn,batch_name,batch_memo,batch_shipper,card_amount,org_id,sim_type,
 			user_id,alter_id,province_id,city_id,district_id,clw_batch_id,gprs_amount,
 			allot_month,allot_value,allot_reset,live_month,give_value,give_live_month,
 			wszl_value,wszl_live_month,bind_value,bind_live_month,time_added,time_modify,create_by,update_by
@@ -52,7 +52,7 @@
 	<select id="getInfoById" resultType="cn.yunovo.iov.fc.model.entity.CcGprsBatch" >
 		
 		SELECT
-			batch_id,batch_sn,batch_name,batch_memo,batch_shipper,card_amount,org_id,
+			batch_id,batch_sn,batch_name,batch_memo,batch_shipper,card_amount,org_id,sim_type,
 			user_id,alter_id,province_id,city_id,district_id,clw_batch_id,gprs_amount,
 			allot_month,allot_value,allot_reset,live_month,give_value,give_live_month,
 			wszl_value,wszl_live_month,bind_value,bind_live_month,time_added,time_modify

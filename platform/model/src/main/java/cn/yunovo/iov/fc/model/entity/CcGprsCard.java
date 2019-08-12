@@ -120,6 +120,9 @@ public class CcGprsCard implements Serializable {
 	@ApiModelProperty(value = "过期时间")
 	private String time_expire;
 	
+	@ApiModelProperty(value = "sim卡类型;0 插拔卡,1 贴片卡")
+	private Short sim_type;
+	
 	@TableField(exist=false)
 	@ApiModelProperty(value = "卡类型中文名称")
 	private String card_type_name;
@@ -127,6 +130,7 @@ public class CcGprsCard implements Serializable {
 	@TableField(exist=false)
 	@ApiModelProperty(value = "机构名称")
 	private String org_name;
+
 	
 	/**
 	 * 该字段用来保持跟php缓存一致

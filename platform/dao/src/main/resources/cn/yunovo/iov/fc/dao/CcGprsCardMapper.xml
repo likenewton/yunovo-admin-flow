@@ -823,10 +823,7 @@
 	<select id="getByLikeIccid" resultType="cn.yunovo.iov.fc.model.entity.CcGprsCard">
 	
 		<bind name="card_iccid_bind" value="card_iccid+'%'" />
-		SELECT card_id,org_id,batch_id,card_sn,card_iccid,card_imsi,card_imei,card_type,
-			card_openid,owner_bind,owner_real,owner_wszl,used_total,used_month,pay_total,
-			max_unused,reset_diff,unicom_total,unicom_month,unicom_unused,unicom_diff,unicom_stop,
-			unicom_ctime,time_active,time_added,time_last,time_paid,time_stop,time_expire
+		SELECT *
 	   FROM cc_gprs_card WHERE card_iccid like #{card_iccid_bind}
 	
 	</select>
@@ -836,7 +833,7 @@
 		SELECT card_id,org_id,batch_id,card_sn,card_iccid,card_imsi,card_imei,card_type,
 			card_openid,owner_bind,owner_real,owner_wszl,used_total,used_month,pay_total,
 			max_unused,reset_diff,unicom_total,unicom_month,unicom_unused,unicom_diff,unicom_stop,
-			unicom_ctime,time_active,time_added,time_last,time_paid,time_stop,time_expire
+			unicom_ctime,time_active,time_added,time_last,time_paid,time_stop,time_expire,sim_type
 		FROM
 			cc_gprs_card
 		where card_sn = #{card_sn}
@@ -848,7 +845,7 @@
 	
 	<select id="getGprsCardByIccid" resultType="cn.yunovo.iov.fc.model.entity.CcGprsCard">
 	
-		SELECT card_id, org_id,card_iccid, time_active FROM cc_gprs_card WHERE card_iccid = #{card_iccid}
+		SELECT card_id, org_id,card_iccid, time_active,sim_type FROM cc_gprs_card WHERE card_iccid = #{card_iccid}
 	</select>
 	
 	<!-- //导出激活明细 -->

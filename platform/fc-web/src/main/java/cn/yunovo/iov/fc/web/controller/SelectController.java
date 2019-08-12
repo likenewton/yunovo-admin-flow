@@ -2,12 +2,20 @@ package cn.yunovo.iov.fc.web.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import javax.annotation.Resource;
+
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.sunshine.dcda.system.service.model.CooperateOrganVo;
+import org.sunshine.dcda.view.system.viewcomponent.ICooperateOrganViewComponent;
 
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
@@ -26,8 +34,10 @@ import cn.yunovo.iov.fc.service.ICcStatsMonthService;
 import cn.yunovo.iov.fc.service.ICcUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
+@Slf4j
 @RequestMapping(path="", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 @Api(value="/api/select", tags="下拉框接口列表")
 public class SelectController extends BaseController{
@@ -61,6 +71,9 @@ public class SelectController extends BaseController{
 	
 	@Autowired
 	private ICcGprsBatchService iCcGprsBatchService;
+	
+	@Resource
+	private ICooperateOrganViewComponent cooperateOrganViewComponent;
 	
 	public static List<SelectBean> CARD_TYPES = new ArrayList<>();
 	
@@ -186,4 +199,32 @@ public class SelectController extends BaseController{
 		List<SelectBean> nation = iCcGprsPayService.monthSelect(this.getLoginBaseInfo());
 		return ResultUtil.success("ok", nation);
 	}
+	
+	@ApiOperation(notes="车联网机构下拉", value = "月度充值-充值月份下拉")
+	@RequestMapping(path="/api/select/deviceOrgs", method= {RequestMethod.GET})
+	public Result<List<SelectBean>> deviceOrgs() {
+		
+		List<SelectBean> orgs  = null;
+		List<CooperateOrganVo> organList = null;
+		try {
+			organList = cooperateOrganViewComponent.queryCooperateOrganList(null, null);
+		} catch (Exception e) {
+			log.error("[deviceOrgs][exception]exception={}", ExceptionUtils.getStackTrace(e));
+		}
+		
+		if(!CollectionUtils.isEmpty(organList)) {
+			orgs = organList.stream().map(new Function<CooperateOrganVo, SelectBean>() {
+
+				@Override
+				public SelectBean apply(CooperateOrganVo t) {
+					SelectBean select2 = new SelectBean();
+					select2.setLabel(t.getCode());
+					select2.setValue(t.getCooOrganName());
+					return select2;
+				}
+			}).collect(Collectors.toList());
+		}
+		return ResultUtil.success("ok", orgs);
+	}
+	
 }
