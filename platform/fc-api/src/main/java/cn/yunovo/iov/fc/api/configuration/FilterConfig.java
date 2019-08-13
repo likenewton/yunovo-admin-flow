@@ -5,6 +5,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import cn.yunovo.iov.fc.api.filter.FcApiFilter;
 import cn.yunovo.iov.fc.api.filter.FcApiSignatureFilter;
 
 
@@ -26,6 +27,20 @@ public class FilterConfig {
         return registration;
     }
 
+	/**
+	 * 验签过滤器
+	 * @return
+	 */
+	@Bean
+	public FilterRegistrationBean<FcApiFilter> appApiFilter() {
+
+        FilterRegistrationBean<FcApiFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(new FcApiFilter());
+        registration.addUrlPatterns("/app/api/*");
+        registration.setName("appApiFilter");
+        registration.setOrder(1);
+        return registration;
+    }
 
 	
 }

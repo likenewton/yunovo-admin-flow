@@ -105,5 +105,12 @@ public class OrgController extends BaseController{
 		return ResultUtil.build(0, "删除成功");
 	}
 	
+	@ApiOperation(value="根据机构id获取机构信息")
+	@RequestMapping(path="/detail",method= {RequestMethod.GET})
+	public Result<Object> detail(Integer org_id){
+		
+		return ResultUtil.success(iCcOrgService.getByOrgId(org_id));
+	}
+	
 	
 }

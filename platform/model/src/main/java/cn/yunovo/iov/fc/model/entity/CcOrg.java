@@ -82,9 +82,6 @@ public class CcOrg implements Serializable {
 	@ApiModelProperty(value = "最近一次修改者用户名")
 	private String update_by;
 	
-	@ApiModelProperty(value = "关联的设备中心机构，多个逗号分割")
-	private	String device_orgs;
-	
 	@ApiModelProperty(value = "机构用户数")
 	@TableField(exist=false)
 	private Integer user_count;
@@ -116,7 +113,6 @@ public class CcOrg implements Serializable {
 		cache.put("time_modify", this.time_modify);
 		cache.put("create_by", this.create_by);
 		cache.put("update_by", this.update_by);
-		cache.put("device_orgs", this.device_orgs);
 
 		return JSONObject.toJSONString(cache, SerializerFeature.WriteMapNullValue);
 		

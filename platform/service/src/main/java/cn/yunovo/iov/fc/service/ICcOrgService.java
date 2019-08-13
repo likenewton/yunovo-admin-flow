@@ -6,6 +6,7 @@ import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
 import cn.yunovo.iov.fc.model.form.OrgForm;
+import cn.yunovo.iov.fc.model.result.CcOrgDetailBean;
 
 import java.util.List;
 import java.util.Map;
@@ -64,4 +65,11 @@ public interface ICcOrgService extends IService<CcOrg> {
 	 * @return 机构信息
 	 */
 	CcOrg getByPartnerId(String partner_id);
+
+	/**
+	 * 获取机构信息通过机构id
+	 * @param org_id
+	 * @return
+	 */
+	CcOrgDetailBean getByOrgId(Integer org_id);
 }
