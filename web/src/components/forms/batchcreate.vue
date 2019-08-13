@@ -27,6 +27,16 @@
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value - 0"></el-option>
           </el-select>
         </el-form-item>
+        <!-- new start -->
+        <el-form-item prop="sim_type">
+          <span slot="label">SIM卡类型：</span>
+          <el-radio-group v-model="formInline.sim_type" :disabled="isUpdate">
+            <el-radio :label="1">贴片卡</el-radio>
+            <el-radio :label="0">插拔卡</el-radio>
+          </el-radio-group>
+          <div class="annotation">贴片卡机构归属与设备软件版本机构同步，插拔卡则固定与入库时机构配置为准</div>
+        </el-form-item>
+        <!-- new end -->
         <el-form-item prop="province_id">
           <span slot="label">销往省份：</span>
           <el-select v-model="formInline.province_id" filterable placeholder="请选择" @change="provinceSelect">
@@ -173,6 +183,7 @@ export default {
       cityData: [], // 城市
       districtData: [], // 县区
       formInline: {
+        sim_type: 0,
         allot_month: 1
       },
       formData: new FormData(), // new FormData() 对象
@@ -218,6 +229,11 @@ export default {
         org_id: [{
           required: true,
           message: '请选择机构名称',
+          trigger: 'change'
+        }],
+        sim_type: [{
+          required: true,
+          message: '请选择SIM卡类型',
           trigger: 'change'
         }],
         province_id: [{
@@ -357,6 +373,7 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields()
       this.formInline = {
+        sim_type: 0,
         allot_month: 1
       }
       this.fileList = []
@@ -523,7 +540,8 @@ export default {
     }
   }
 
-  input, textarea {
+  input,
+  textarea {
     background: transparent;
   }
 }

@@ -31,6 +31,7 @@ class AXIOS {
       getLangSelect: '/fc/api/select/language',
       getNationSelect: '/fc/api/select/nation',
       getLiveMonth: '/fc/api/select/liveMonth',
+      getDeviceOrgs: '/fc/api/select/deviceOrgs', // 设备中心机构列表
       // table列表
       getStats: '/fc/api/gprs/stats/', // 月度用量
       getHalt: '/fc/api/gprs/halt/', // 已停卡况
@@ -75,6 +76,7 @@ class AXIOS {
       getComboDetail: '/fc/api/gprs/pack/detail',
       getBatchDetail: '/fc/api/gprs/batch/detail', // 编辑批次
       getDispatchDetail: '/fc/api/user/detail',
+      getOrgsDetail: '/fc/api/user/org/detail', // 机构管理表单查询
       // 导出
       statsExport: '/fc/api/gprs/stats/export', // 
       cardExport: '/fc/api/gprs/card/export', // 流量卡

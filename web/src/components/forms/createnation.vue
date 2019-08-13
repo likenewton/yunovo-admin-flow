@@ -104,13 +104,18 @@ export default {
               url: _axios.ajaxAd.addNation,
               data: this.formInline,
               done: ((res) => {
-                this.$router.push({ name: 'nationset', query: { ntid: this.formInline.parent } })
-                setTimeout(() => {
-                  this.showMsgBox({
-                    type: 'success',
-                    message: res.msg || '新增成功！'
-                  })
-                }, 150)
+                if (res.status === 400) {
+                  this.formInline[res.data] = ''
+                  this.$refs.ruleForm.validateField([res.data])
+                } else {
+                  this.$router.push({ name: 'nationset', query: { ntid: this.formInline.parent } })
+                  setTimeout(() => {
+                    this.showMsgBox({
+                      type: 'success',
+                      message: res.msg || '新增成功！'
+                    })
+                  }, 150)
+                }
               })
             })
           }
@@ -134,6 +139,7 @@ export default {
     width: 30%;
     min-width: 250px;
   }
+  
 }
 
 </style>
