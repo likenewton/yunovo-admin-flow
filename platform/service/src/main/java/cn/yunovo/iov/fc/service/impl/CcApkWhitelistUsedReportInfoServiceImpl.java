@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -186,7 +186,7 @@ public class CcApkWhitelistUsedReportInfoServiceImpl extends ServiceImpl<ICcApkW
 			throw e;
 		}catch(Exception e) {
 			clwTransactionManager.rollback(transactionStatus);
-			log.error("[report][exception]params={card:{},form:{},lastInfo:{}}", JSONObject.toJSONString(card), form.buildJsonString(), JSONObject.toJSONString(lastInfo));
+			log.error("[report][exception]params={card:{},form:{},lastInfo:{}},exception={}", JSONObject.toJSONString(card), form.buildJsonString(), JSONObject.toJSONString(lastInfo), ExceptionUtils.getStackTrace(e));
 			throw new BusinessException(0, "error");
 		}
 		
