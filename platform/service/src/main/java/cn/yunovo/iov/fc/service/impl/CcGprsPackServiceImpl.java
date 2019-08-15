@@ -248,6 +248,8 @@ public class CcGprsPackServiceImpl extends ServiceImpl<ICcGprsPackMapper, CcGprs
 	@Override
 	public String liveFormat(Float live_month) {
 		
+		if(live_month == null) return "";
+		
 		return (live_month < 1) ? ((MathUtils.round(live_month, 2).intValue() * 100) + "天") : (live_month == 999 ? "无限期": live_month.intValue() + "个月" );
 	}
 	

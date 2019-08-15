@@ -137,13 +137,13 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 
 		if (CollectionUtils.isEmpty(records)) {
 			
-			total.put("time", System.currentTimeMillis() + 0D);
+			//total.put("time", System.currentTimeMillis() + 0D);
 			page.setTotal(0);
 			page.setRecords(null);
 			p.setPage(page);
 			return p;
 		}
-
+		total.put("time", System.currentTimeMillis() + 0D);
 		Map<String, String> cardTypes = getCard_type();
 		Map<String, CcOrg> orgs = iCcOrgService.getTree(0, orgpos);
 		CcOrg tt = null;
@@ -1122,7 +1122,6 @@ public class CcGprsCardServiceImpl extends ServiceImpl<ICcGprsCardMapper, CcGprs
 		if(card == null || card.getCard_id() == null) {
 			return false;
 		}
-		
 		return retBool(iGprsCardMapper.updateInfoById(card));
 	}
 
