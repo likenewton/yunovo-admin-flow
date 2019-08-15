@@ -52,13 +52,6 @@ module.exports = {
     name: 'createjg'
   }, {
     title: {
-      create: '新增语言设置',
-      update: '编辑语言设置',
-      check: '预览语言设置'
-    },
-    name: 'createlang'
-  }, {
-    title: {
       create: '新增货币设置',
       update: '编辑货币设置',
       check: '预览货币设置'
@@ -78,9 +71,6 @@ module.exports = {
       check: '预览权限'
     },
     name: 'createauth'
-  }, {
-    title: '流量预警设置',
-    name: 'flowwarningset'
   }, {
     title: 'ICCID卡详情列表',
     name: 'rechargeDetail'

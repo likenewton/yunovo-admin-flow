@@ -405,7 +405,7 @@ module.exports = {
   },
   // 导出excel
   exportExcel(url, params = {}) {
-    let link = `${url}?iov-token=${localStorage.getItem('iov-token')}`
+    let link = `${url}?iov-token=${this.getCookie('iov-token')}`
     for (let key in params) {
       if (params[key]) {
         link += `&${key}=${params[key]}`
@@ -435,5 +435,31 @@ module.exports = {
         }
       }
     }
-  }
+  },
+  setCookie(cname, cvalue, exhours) { // 设置cookie
+    let expires = 'expires='
+    if (exhours) {
+      let d = new Date()
+      d.setTime(d.getTime() + (exhours * 60 * 60 * 1000))
+      expires += d.toUTCString()
+      document.cookie = `${cname}=${cvalue};${expires};path=/`
+    } else {
+      document.cookie = `${cname}=${cvalue};path=/`
+    }
+  },
+
+  getCookie(attr) { // 获取cookie
+    let cookieStr = document.cookie
+    let cookieArr = cookieStr.split(';')
+    let cookieObj = {}
+    cookieArr.forEach((v) => {
+      let tplArr = v.split('=')
+      while (tplArr[0].charAt(0) === ' ') {
+        tplArr[0] = tplArr[0].substring(1)
+      }
+      cookieObj[tplArr[0]] = tplArr[1]
+    })
+    if (attr) return cookieObj[attr]
+    else return cookieObj
+  },
 }

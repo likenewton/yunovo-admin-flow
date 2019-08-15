@@ -143,6 +143,7 @@ const _echart = new Api.ECHARTS({
 export default {
   data() {
     return {
+      keepAlive: true,
       dialogChartLoadData: true,
       formInline: {
         card_iccid: Api.UNITS.getQuery('card_iccid'),
@@ -229,6 +230,15 @@ export default {
   },
   mounted() {
     this.getData()
+  },
+  activated() {
+    if (!this.keepAlive) {
+      this.formInline = {
+        card_iccid: Api.UNITS.getQuery('card_iccid'),
+        org_id: Api.UNITS.getQuery('org_id')
+      }
+      this.getData()
+    }
   },
   methods: {
     // dialog(图表)中的分页
@@ -352,6 +362,17 @@ export default {
     // 结束时间约数
     endDatePicker() {
       return Api.UNITS.endDatePicker(this, this.formInline.date_start)
+    }
+  },
+  watch: {
+    '$route': function(to, from) {
+      if (from.name === 'rechargeDetail' && to.name === 'card') {
+        // 如果是从devRecord跳转过来的不做任何处理
+        this.keepAlive = true
+      } else {
+        // 如果是从其他页面跳转过来的
+        this.keepAlive = false
+      }
     }
   }
 }

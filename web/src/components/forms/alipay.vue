@@ -100,7 +100,7 @@ export default {
               data: Object.assign({ type: Api.UNITS.getQuery('pay') }, this.formInline),
               done: ((res) => {
                 if (res.status === 400) {
-                  this.formInline[res.data] = ''
+                  this.$delete(this.formInline, res.data)
                   this.$refs.ruleForm.validateField([res.data])
                 } else {
                   this.$router.push({ name: 'paySet' })

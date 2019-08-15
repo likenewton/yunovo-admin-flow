@@ -17,7 +17,7 @@
           <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="选择结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item>
-          <!-- <el-button type="primary" @click="searchData" :disabled="!pageAuthBtn.FCP_03_004_CHECK01">查询</el-button> -->
+          <el-button type="primary" @click="searchData" :disabled="!pageAuthBtn.FCP_03_004_CHECK01">查询</el-button>
           <el-button type="warning" @click="resetData" :disabled="!pageAuthBtn.FCP_03_004_CHECK01">重置</el-button>
         </el-form-item>
       </el-form>

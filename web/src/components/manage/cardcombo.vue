@@ -80,7 +80,7 @@
             <span>{{scope.row.update_by}}</span>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" width="88" v-if="pageAuthBtn.FCP_01_004_UPDATE01 || pageAuthBtn.FCP_01_004_OP02">
+        <el-table-column fixed="right" prop="pack_status" label="操作" width="88" v-if="pageAuthBtn.FCP_01_004_UPDATE01 || pageAuthBtn.FCP_01_004_OP02" sortable="custom">
           <template slot-scope="scope">
             <el-button v-if="pageAuthBtn.FCP_01_004_UPDATE01" type="text" class="text_editor" @click="$router.push({name: 'rechargecomboset', query: {type: 'update', pack_id: scope.row.pack_id}})">编辑</el-button>
             <el-button type="text" class="text_danger" v-if="scope.row.pack_status==1 && pageAuthBtn.FCP_01_004_OP02" @click="checkComboStop(scope, 0)">停用</el-button>

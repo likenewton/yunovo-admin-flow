@@ -130,7 +130,7 @@ export default {
               data: this.formInline,
               done: ((res) => {
                 if (res.status === 400) {
-                  this.formInline[res.data] = ''
+                  this.$delete(this.formInline, res.data)
                   this.$refs.ruleForm.validateField([res.data])
                 } else {
                   this.$router.push({ name: 'currencyset' })

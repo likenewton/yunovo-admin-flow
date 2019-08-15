@@ -1,10 +1,10 @@
 <template>
-  <el-card class="create_org" shadow="never">
+  <el-card class="create_org" shadow="never" v-loading="loadData">
     <div slot="header" class="clearfix">
       <span>机构管理</span>
     </div>
     <div class="form-wrapper" v-shadow :style="{maxHeight: maxTableHeight + 'px'}">
-      <el-form class="editor-form" v-loading="loadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="140px" size="small">
+      <el-form class="editor-form" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="140px" size="small">
         <el-form-item prop="name">
           <span slot="label">机构名称：</span>
           <el-input v-model="formInline.name" placeholder="请选择机构名称"></el-input>
@@ -170,18 +170,19 @@ export default {
     submitForm(formName) {
       // 全校验
       this.$refs[formName].validate((valid) => {
-        console.log(this.formInline)
         if (valid) {
           // 验证通过
           let url = _axios.ajaxAd.addOrg
           if (this.isUpdate) url = _axios.ajaxAd.updateOrg
+          this.loadData = true
           _axios.send({
             method: 'post',
             url,
             data: this.formInline,
             done: ((res) => {
+              this.loadData = false
               if (res.status === 400) {
-                this.formInline[res.data] = ''
+                this.$delete(this.formInline, res.data)
                 this.$refs.ruleForm.validateField([res.data])
               } else {
                 this.$router.push({ name: 'jgManage' })
@@ -193,7 +194,10 @@ export default {
                   })
                 }, 150)
               }
-            })
+            }),
+            fail: () => {
+              this.loadData = false
+            }
           })
         } else {
           Api.UNITS.showMsgBox()

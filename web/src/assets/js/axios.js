@@ -1,4 +1,5 @@
 import { token } from './static.js'
+import { getCookie } from './unit.js'
 
 class AXIOS {
   constructor(para) {
@@ -140,7 +141,7 @@ class AXIOS {
   send(para) {
     let data = Object.assign({}, this.constData, para)
     data.headers = para.headers || {}
-    data.headers[token] = localStorage.getItem(token) || ''
+    data.headers[token] = getCookie(token) || ''
 
     axios({
       method: data.method,

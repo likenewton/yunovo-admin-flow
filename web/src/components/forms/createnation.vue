@@ -1,9 +1,9 @@
 <template>
-  <el-card class="batchcreate_container" shadow="never">
+  <el-card class="batchcreate_container" shadow="never" v-loading="loadData">
     <div slot="header" class="clearfix">
       <span>国家区域</span>
     </div>
-    <el-form class="editor-form" v-loading="loadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="140px" size="small">
+    <el-form class="editor-form" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="140px" size="small">
       <el-form-item prop="ntname">
         <span slot="label">区域名称：</span>
         <el-input v-model="formInline.ntname" placeholder="请输入区域名称"></el-input>
@@ -85,7 +85,7 @@ export default {
               data: this.formInline,
               done: ((res) => {
                 if (res.status === 400) {
-                  this.formInline[res.data] = ''
+                  this.$delete(this.formInline, res.data)
                   this.$refs.ruleForm.validateField([res.data])
                 } else {
                   this.$router.push({ name: 'nationset', query: { ntid: this.formInline.parent } })
@@ -105,7 +105,7 @@ export default {
               data: this.formInline,
               done: ((res) => {
                 if (res.status === 400) {
-                  this.formInline[res.data] = ''
+                  this.$delete(this.formInline, res.data)
                   this.$refs.ruleForm.validateField([res.data])
                 } else {
                   this.$router.push({ name: 'nationset', query: { ntid: this.formInline.parent } })
@@ -124,7 +124,15 @@ export default {
           return false;
         }
       })
-    }
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields()
+      this.formInline = {
+        parent: Api.UNITS.getQuery('parent'),
+        ntid: Api.UNITS.getQuery('ntid')
+      }
+      this.isUpdate && this.getData()
+    },
   }
 }
 
@@ -139,7 +147,7 @@ export default {
     width: 30%;
     min-width: 250px;
   }
-  
+
 }
 
 </style>

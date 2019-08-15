@@ -8,7 +8,6 @@ const Cardbatch = r => require.ensure([], () => r(require('@/components/manage/c
 const Cardcombo = r => require.ensure([], () => r(require('@/components/manage/cardcombo.vue')), 'chunk2') // 充值套餐
 const Flowgift = r => require.ensure([], () => r(require('@/components/manage/flowgift.vue')), 'chunk2') // 流量赠送
 const Flowmigration = r => require.ensure([], () => r(require('@/components/manage/flowmigration.vue')), 'chunk2') // 流量迁移
-const Flowwarning = r => require.ensure([], () => r(require('@/components/manage/flowwarning.vue')), 'chunk2') // 流量预警
 const Cardauth = r => require.ensure([], () => r(require('@/components/manage/cardauth.vue')), 'chunk2') // 卡实名制
 // 统计分析
 const Monthuse = r => require.ensure([], () => r(require('@/components/statistics/monthuse.vue')), 'chunk2') // 月度用量
@@ -31,11 +30,9 @@ const JgManage = r => require.ensure([], () => r(require('@/components/userauth/
 const JgDispatch = r => require.ensure([], () => r(require('@/components/userauth/jgDispatch.vue')), 'chunk2') // 机构分配
 // 系统设置
 const PaySet = r => require.ensure([], () => r(require('@/components/systemset/payset.vue')), 'chunk2') // 支付管理
-const Langset = r => require.ensure([], () => r(require('@/components/systemset/langset.vue')), 'chunk2') // 语言设置
 const Currencyset = r => require.ensure([], () => r(require('@/components/systemset/currencyset.vue')), 'chunk2') // 货币设置
 const Nationset = r => require.ensure([], () => r(require('@/components/systemset/nationset.vue')), 'chunk2') // 国家区域
 const Sysparaset = r => require.ensure([], () => r(require('@/components/systemset/sysparaset.vue')), 'chunk2') // 系统参数
-const Datapreserve = r => require.ensure([], () => r(require('@/components/systemset/datapreserve.vue')), 'chunk2') // 数据维护
 
 // 这里面试所有的配置，后续根据权限动态删除一些路由
 let menuRoute = {
@@ -75,10 +72,6 @@ let menuRoute = {
       path: 'flowmigration',
       name: 'flowmigration',
       component: Flowmigration
-    }, {
-      path: 'flowwarning',
-      name: 'flowwarning',
-      component: Flowwarning
     }, {
       path: 'cardauth',
       name: 'cardauth',
@@ -172,10 +165,6 @@ let menuRoute = {
       name: 'paySet',
       component: PaySet
     }, {
-      path: 'langset',
-      name: 'langset',
-      component: Langset
-    }, {
       path: 'currencyset',
       name: 'currencyset',
       component: Currencyset
@@ -187,10 +176,6 @@ let menuRoute = {
       path: 'sysparaset',
       name: 'sysparaset',
       component: Sysparaset
-    }, {
-      path: 'datapreserve',
-      name: 'datapreserve',
-      component: Datapreserve
     }]
   }]
 }
