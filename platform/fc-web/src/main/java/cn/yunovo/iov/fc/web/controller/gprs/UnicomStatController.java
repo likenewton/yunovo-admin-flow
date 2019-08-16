@@ -14,7 +14,6 @@ import cn.yunovo.iov.fc.common.utils.log.OpLog;
 import cn.yunovo.iov.fc.common.utils.log.OpTypeEnum;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
-import cn.yunovo.iov.fc.model.result.CardUsedResultBean;
 import cn.yunovo.iov.fc.model.result.UnicomStatResultBean;
 import cn.yunovo.iov.fc.service.ICcGprsCardService;
 import cn.yunovo.iov.fc.web.controller.BaseController;
@@ -30,7 +29,7 @@ public class UnicomStatController extends BaseController {
 
 	@Autowired
 	private ICcGprsCardService iCcGprsCardService;
-
+	
 	@ApiOperation(value = "统计分析-联通情况")
 	@ApiImplicitParams(value = {
 			@ApiImplicitParam(name = "org_id", value = "机构id", required = false, dataType = "int", paramType = "query"),

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
+import cn.yunovo.iov.fc.common.utils.log.OpLog;
+import cn.yunovo.iov.fc.common.utils.log.OpTypeEnum;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcGprsGift;
@@ -38,6 +40,7 @@ public class GprsGiftController extends BaseController{
 			@ApiImplicitParam(name = "date_start", value = "重置时间-开始日期（YYYY-MM-DD）", required = false, dataType = "String",paramType = "query"),
 			@ApiImplicitParam(name = "date_end", value = "重置时间-结束日期（YYYY-MM-DD）", required = false, dataType = "String",paramType = "query")
 			})
+	@OpLog(opType=OpTypeEnum.QUERY, opName="业务管理-流量赠送历史查询接口")
 	@RequestMapping(path="/history",method= {RequestMethod.GET, RequestMethod.POST})
 	public Result<PageData<CcGprsGift, Object>> list(PageForm form, String card_iccid, Integer org_id, String date_start,
 			String date_end) {
@@ -46,6 +49,7 @@ public class GprsGiftController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
+	@OpLog(opType=OpTypeEnum.UPDATE, opName="业务管理-流量赠送接口")
 	@SuppressWarnings("unchecked")
 	@ApiOperation(value="业务管理-流量赠送接口")
 	@RequestMapping(path="/",method= {RequestMethod.GET, RequestMethod.POST})

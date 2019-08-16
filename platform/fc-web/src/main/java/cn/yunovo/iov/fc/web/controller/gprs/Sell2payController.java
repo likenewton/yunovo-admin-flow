@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
+import cn.yunovo.iov.fc.common.utils.log.OpLog;
+import cn.yunovo.iov.fc.common.utils.log.OpTypeEnum;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.SellPayResultBean;
@@ -32,6 +34,7 @@ public class Sell2payController extends BaseController{
 			@ApiImplicitParam(name = "date_start", value = "开始日期", required = false, dataType = "String",paramType = "query"),
 			@ApiImplicitParam(name = "date_end", value = "结束日期", required = false, dataType = "String",paramType = "query")})
 	@RequestMapping(path="/",method= {RequestMethod.GET, RequestMethod.POST})
+	@OpLog(opType=OpTypeEnum.QUERY, opName="统计分析-续费数据")
 	public Result<PageData<SellPayResultBean, Object>> getSellPayPage(PageForm pageForm, Integer org_id, String date_start, String date_end) {
 		
 		PageData<SellPayResultBean, Object>  data = iCcGprsCardService.getSellPayPage(pageForm, org_id, date_start, date_end, this.getLoginBaseInfo());

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
+import cn.yunovo.iov.fc.common.utils.log.OpLog;
+import cn.yunovo.iov.fc.common.utils.log.OpTypeEnum;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcOnoffLog;
@@ -36,6 +38,7 @@ public class OnoffLogController extends BaseController{
 			@ApiImplicitParam(name = "card_id", value = "流量卡id", required = false, dataType = "int",paramType = "query"),
 			@ApiImplicitParam(name = "card_iccid", value = "卡iccid", required = false, dataType = "String",paramType = "query")})
 	@RequestMapping(path="/",method= {RequestMethod.GET, RequestMethod.POST})
+	@OpLog(opType=OpTypeEnum.QUERY, opName="统计分析-停卡日志")
 	public Result<PageData<CcOnoffLog, Object>> onoffLogs(Integer org_id, Integer card_type, String card_iccid, PageForm page, Integer card_id){
 	
 		PageData<CcOnoffLog, Object>  result = iCcOnoffLogService.getItems(page, card_iccid, card_type, org_id, card_id, this.getLoginBaseInfo());
@@ -47,6 +50,7 @@ public class OnoffLogController extends BaseController{
 			@ApiImplicitParam(name = "card_id", value = "流量卡id", required = false, dataType = "int",paramType = "query"),
 			@ApiImplicitParam(name = "card_iccid", value = "卡iccid", required = false, dataType = "String",paramType = "query")})
 	@RequestMapping(path="/detail",method= {RequestMethod.GET, RequestMethod.POST})
+	@OpLog(opType=OpTypeEnum.QUERY, opName="统计分析-停卡日志明细")
 	public Result<List<CcOnoffLog>> detail(Integer card_id, String card_iccid){
 		
 		return ResultUtil.success(iCcOnoffLogService.stopDetail(card_id, card_iccid, this.getLoginBaseInfo()));

@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
+import cn.yunovo.iov.fc.common.utils.log.OpLog;
+import cn.yunovo.iov.fc.common.utils.log.OpTypeEnum;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcNotify;
@@ -32,6 +34,7 @@ public class NotifyFromController extends BaseController{
 			@ApiImplicitParam(name = "date_end", value = "导卡时间-结束日期 YYYY-MM-DD", required = false, dataType = "String", paramType = "query"),
 			@ApiImplicitParam(name = "ntf_type", value = "通知或来源", required = false, dataType = "String", paramType = "query")
 			})
+	@OpLog(opType=OpTypeEnum.QUERY, opName="统计分析-通知来源")
 	@RequestMapping(path = "/", method = { RequestMethod.GET, RequestMethod.POST })
 	public Result<PageData<CcNotify, Object>> getItemsPage(PageForm pageForm, String ntf_type, String date_start, String date_end) {
 		
@@ -39,6 +42,7 @@ public class NotifyFromController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="统计分析-通知来源(机构明细)")
 	@ApiOperation(value = "统计分析-通知来源(机构明细)")
 	@ApiImplicitParams(value = {
 			@ApiImplicitParam(name = "ntf_date", value = "统计日期", required = true, dataType = "String", paramType = "query"),

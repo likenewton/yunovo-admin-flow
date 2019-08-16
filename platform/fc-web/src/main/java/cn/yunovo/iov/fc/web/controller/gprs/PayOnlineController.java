@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
+import cn.yunovo.iov.fc.common.utils.log.OpLog;
+import cn.yunovo.iov.fc.common.utils.log.OpTypeEnum;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcStats;
@@ -33,6 +35,7 @@ public class PayOnlineController extends BaseController{
 			@ApiImplicitParam(name = "date_start", value = "导卡时间-开始日期 YYYY-MM-DD", required = false, dataType = "String", paramType = "query"),
 			@ApiImplicitParam(name = "date_end", value = "导卡时间-结束日期 YYYY-MM-DD", required = false, dataType = "String", paramType = "query")
 			})
+	@OpLog(opType=OpTypeEnum.QUERY, opName="统计分析-流量卡运营统计")
 	@RequestMapping(path = "/", method = { RequestMethod.GET, RequestMethod.POST })
 	public Result<PageData<CcStats, Object>> getItemsPage(PageForm pageForm, String date_start, String date_end) {
 		
@@ -40,6 +43,7 @@ public class PayOnlineController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
+	@OpLog(opType=OpTypeEnum.DOWNLOAD, opName="统计分析-流量卡运营统计导出")
 	@ApiOperation(value = "统计分析-流量卡运营统计导出")
 	@ApiImplicitParams(value = {
 			@ApiImplicitParam(name = "date_start", value = "导卡时间-开始日期 YYYY-MM-DD", required = false, dataType = "String", paramType = "query"),
@@ -51,6 +55,7 @@ public class PayOnlineController extends BaseController{
 		iCcStatsService.getItemsPageExport(null, date_start, date_end, this.getLoginBaseInfo());
 	}
 	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="统计分析-流量卡运营统计(机构明细)")
 	@ApiOperation(value = "统计分析-流量卡运营统计(机构明细)")
 	@ApiImplicitParams(value = {
 			@ApiImplicitParam(name = "stats_date", value = "统计日期 YYYY-MM-DD", required = true, dataType = "String", paramType = "query"),
@@ -63,6 +68,8 @@ public class PayOnlineController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
+	
+	@OpLog(opType=OpTypeEnum.DOWNLOAD, opName="统计分析-流量卡运营统计(机构明细)导出")
 	@ApiOperation(value = "统计分析-流量卡运营统计(机构明细)导出")
 	@ApiImplicitParams(value = {
 			@ApiImplicitParam(name = "stats_date", value = "统计日期 YYYY-MM-DD", required = true, dataType = "String", paramType = "query"),

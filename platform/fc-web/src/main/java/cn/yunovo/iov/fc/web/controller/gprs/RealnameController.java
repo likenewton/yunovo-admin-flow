@@ -14,6 +14,8 @@ import com.alibaba.fastjson.JSONObject;
 
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
+import cn.yunovo.iov.fc.common.utils.log.OpLog;
+import cn.yunovo.iov.fc.common.utils.log.OpTypeEnum;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcRealname;
@@ -37,6 +39,7 @@ public class RealnameController extends BaseController{
 	@Autowired
 	private ICcRealnameService iCcRealnameService;
 	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="业务管理-流量卡实名列表接口")
 	@ApiOperation(value="业务管理-流量卡实名列表接口")
 	@ApiImplicitParams(value = { 
 			@ApiImplicitParam(name = "org_id", value = "机构id", required = false, dataType = "int",paramType = "query"),
@@ -53,7 +56,8 @@ public class RealnameController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
-	@ApiOperation(value="业务管理-流量卡实名列表接口")
+	@OpLog(opType=OpTypeEnum.DOWNLOAD, opName="业务管理-流量卡实名列表导出")
+	@ApiOperation(value="业务管理-流量卡实名列表导出")
 	@ApiImplicitParams(value = { 
 			@ApiImplicitParam(name = "org_id", value = "机构id", required = false, dataType = "int",paramType = "query"),
 			@ApiImplicitParam(name = "card_iccid", value = "卡iccid", required = false, dataType = "String",paramType = "query"),
@@ -68,6 +72,7 @@ public class RealnameController extends BaseController{
 		iCcRealnameService.getItemsPageExport(org_id, card_iccid, date_start, date_end, status, this.getLoginBaseInfo());
 	}
 	
+	@OpLog(opType=OpTypeEnum.UPDATE, opName="业务管理-流量卡实名审批接口")
 	@ApiOperation(value="业务管理-流量卡实名审批接口")
 	@RequestMapping(path="/audit",method= {RequestMethod.POST})
 	public Result<String> audit(@RequestBody RealnameForm form) {
@@ -82,6 +87,7 @@ public class RealnameController extends BaseController{
 		}
 	}
 	
+	@OpLog(opType=OpTypeEnum.UPDATE, opName="业务管理-流量卡实名解除")
 	@ApiOperation(value="业务管理-流量卡实名解除")
 	@RequestMapping(path="/unbind",method= {RequestMethod.POST})
 	public Result<String> unbind(@RequestBody RealnameForm form) {

@@ -11,6 +11,8 @@ import org.sunshine.dcda.system.service.model.SystemResourceVo;
 
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
+import cn.yunovo.iov.fc.common.utils.log.OpLog;
+import cn.yunovo.iov.fc.common.utils.log.OpTypeEnum;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcGprsCard;
@@ -37,6 +39,7 @@ public class AbnormalController extends BaseController{
 			@ApiImplicitParam(name = "max_unused", value = "剩余流量", required = false, dataType = "int",paramType = "query"),
 			@ApiImplicitParam(name = "unicom_diff", value = "日差异流量", required = false, dataType = "int",paramType = "query")})
 	@RequestMapping(path="/",method= {RequestMethod.GET, RequestMethod.POST})
+	@OpLog(opType=OpTypeEnum.QUERY, opName="统计分析-用量异常查询接口")
 	public Result<PageData<CcGprsCard, Object>> getItemsPage(Integer org_id, Integer card_type, String card_iccid, Integer max_unused,Integer unicom_diff, PageForm page) {
 	
 		PageData<CcGprsCard, Object> data = iCcGprsCardService.getItemsPage(page, card_iccid, card_type, org_id, max_unused, unicom_diff, this.getLoginBaseInfo());
@@ -51,6 +54,7 @@ public class AbnormalController extends BaseController{
 			@ApiImplicitParam(name = "max_unused", value = "剩余流量", required = false, dataType = "int",paramType = "query"),
 			@ApiImplicitParam(name = "unicom_diff", value = "日差异流量", required = false, dataType = "int",paramType = "query")})
 	@RequestMapping(path="/export",method= {RequestMethod.GET, RequestMethod.POST})
+	@OpLog(opType=OpTypeEnum.DOWNLOAD, opName="统计分析-用量异常导出接口")
 	public void export(Integer org_id, Integer card_type, String card_iccid, Integer max_unused,Integer unicom_diff) throws IOException {
 	
 		iCcGprsCardService.getItemsPageExport(card_iccid, card_type, org_id, max_unused, unicom_diff, this.getLoginBaseInfo());

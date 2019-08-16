@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
+import cn.yunovo.iov.fc.common.utils.log.OpLog;
+import cn.yunovo.iov.fc.common.utils.log.OpTypeEnum;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcGprsCard;
@@ -35,6 +37,7 @@ public class HaltController extends BaseController{
 			@ApiImplicitParam(name = "card_type", value = "卡商类型id", required = false, dataType = "int",paramType = "query"),
 			@ApiImplicitParam(name = "card_iccid", value = "卡iccid", required = false, dataType = "String",paramType = "query"),
 			@ApiImplicitParam(name = "time_expire", value = "过期时间，空表示所有，1 代表未过期，0 代表已过期", required = false, dataType = "int",paramType = "query")})
+	@OpLog(opType=OpTypeEnum.QUERY, opName="统计分析-已停卡况查询接口")
 	@RequestMapping(path="/",method= {RequestMethod.GET, RequestMethod.POST})
 	public Result<PageData<CcGprsCard, HashMap<String, Double>>> getHaltPage(Integer org_id, Integer card_type, String card_iccid, Integer time_expire, PageForm page){
 	
@@ -48,6 +51,7 @@ public class HaltController extends BaseController{
 			@ApiImplicitParam(name = "card_type", value = "卡商类型id", required = false, dataType = "int",paramType = "query"),
 			@ApiImplicitParam(name = "card_iccid", value = "卡iccid", required = false, dataType = "String",paramType = "query"),
 			@ApiImplicitParam(name = "time_expire", value = "过期时间，空表示所有，1 代表未过期，0 代表已过期", required = false, dataType = "int",paramType = "query")})
+	@OpLog(opType=OpTypeEnum.DOWNLOAD, opName="统计分析-已停卡况查询导出接口")
 	@RequestMapping(path="/export",method= {RequestMethod.GET, RequestMethod.POST})
 	public void export(Integer org_id, Integer card_type, String card_iccid, Integer time_expire) throws IOException{
 		

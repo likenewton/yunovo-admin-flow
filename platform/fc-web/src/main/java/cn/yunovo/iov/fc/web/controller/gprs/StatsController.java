@@ -14,6 +14,8 @@ import com.alibaba.fastjson.JSONObject;
 
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
+import cn.yunovo.iov.fc.common.utils.log.OpLog;
+import cn.yunovo.iov.fc.common.utils.log.OpTypeEnum;
 import cn.yunovo.iov.fc.common.utils.web.WebRequestUtil;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
@@ -35,6 +37,7 @@ public class StatsController extends BaseController{
 	@Autowired
 	private ICcStatsMonthService iCcStatsMonthService;
 	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="统计分析-月度用量查询接口")
 	@ApiOperation(value="统计分析-月度用量查询接口")
 	@ApiImplicitParams(value = { 
 			@ApiImplicitParam(name = "org_id", value = "机构id", required = false, dataType = "int",paramType = "query"),
@@ -48,6 +51,7 @@ public class StatsController extends BaseController{
 		return ResultUtil.build(0, "ok",pageInfo);
 	}
 	
+	@OpLog(opType=OpTypeEnum.DOWNLOAD, opName="统计分析-月度用量导出接口")
 	@ApiOperation(value="统计分析-月度用量导出接口")
 	@ApiImplicitParams(value = { 
 			@ApiImplicitParam(name = "org_id", value = "机构id", required = false, dataType = "int",paramType = "query"),

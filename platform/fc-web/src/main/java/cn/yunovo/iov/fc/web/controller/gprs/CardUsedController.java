@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
+import cn.yunovo.iov.fc.common.utils.log.OpLog;
+import cn.yunovo.iov.fc.common.utils.log.OpTypeEnum;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.result.CardUsedResultBean;
@@ -34,6 +36,7 @@ public class CardUsedController extends BaseController{
 			@ApiImplicitParam(name = "date_start", value = "开始日期 YYYY-MM-DD", required = false, dataType = "String",paramType = "query"),
 			@ApiImplicitParam(name = "date_end", value = "结束日期 YYYY-MM-DD", required = false, dataType = "String",paramType = "query")})
 	@RequestMapping(path="/",method= {RequestMethod.GET, RequestMethod.POST})
+	@OpLog(opType=OpTypeEnum.QUERY, opName="统计分析-累计用量")
 	public Result<PageData<CardUsedResultBean, CardUsedResultBean>> getCardUsedPage(PageForm pageForm, Integer org_id, String date_start, String date_end) {
 		
 		PageData<CardUsedResultBean, CardUsedResultBean>  data = iCcGprsCardService.getCardUsedPage(pageForm, org_id, date_start, date_end, this.getLoginBaseInfo());
@@ -46,6 +49,7 @@ public class CardUsedController extends BaseController{
 			@ApiImplicitParam(name = "date_start", value = "开始日期 YYYY-MM-DD", required = false, dataType = "String",paramType = "query"),
 			@ApiImplicitParam(name = "date_end", value = "结束日期 YYYY-MM-DD", required = false, dataType = "String",paramType = "query")})
 	@RequestMapping(path="/export",method= {RequestMethod.GET, RequestMethod.POST})
+	@OpLog(opType=OpTypeEnum.DOWNLOAD, opName="统计分析-累计用量导出")
 	public void export(PageForm pageForm, Integer org_id, String date_start, String date_end) throws IOException {
 		
 		iCcGprsCardService.getCardUsedPageExport(org_id, date_start, date_end, this.getLoginBaseInfo());

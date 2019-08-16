@@ -12,6 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
+import cn.yunovo.iov.fc.common.utils.log.OpLog;
+import cn.yunovo.iov.fc.common.utils.log.OpTypeEnum;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcGprsBatch;
@@ -45,6 +47,7 @@ public class BatchController extends BaseController{
 			@ApiImplicitParam(name = "date_start", value = "重置时间-开始日期（YYYY-MM-DD）", required = false, dataType = "String",paramType = "query"),
 			@ApiImplicitParam(name = "date_end", value = "重置时间-结束日期（YYYY-MM-DD）", required = false, dataType = "String",paramType = "query")
 			})
+	@OpLog(opType=OpTypeEnum.QUERY, opName="业务管理-流量卡批次查询接口")
 	@RequestMapping(path="/history",method= {RequestMethod.GET, RequestMethod.POST})
 	public Result<PageData<CcGprsBatch, Object>> list(PageForm form, String batch_sn, Integer org_id, String date_start,
 			String date_end) {
@@ -57,6 +60,7 @@ public class BatchController extends BaseController{
 	@ApiImplicitParams(value = { 
 			@ApiImplicitParam(name = "batch_id", value = "批次id", required = false, dataType = "int",paramType = "query"),
 	})
+	@OpLog(opType=OpTypeEnum.QUERY, opName="业务管理-流量批次详情接口")
 	@RequestMapping(path="/detail",method= {RequestMethod.GET, RequestMethod.POST})
 	public Result<CcGprsBatch> detail(Integer batch_id) {
 		
@@ -65,7 +69,7 @@ public class BatchController extends BaseController{
 	}
 	
 	
-	
+	@OpLog(opType=OpTypeEnum.INSERT, opName="业务管理-流量卡批次新增接口")
 	@ApiOperation(value="业务管理-流量卡批次新增接口")
 	@RequestMapping(path="/insert",method= {RequestMethod.POST})
 	public Result<BatchSaveResultBean> insert(@ModelAttribute CcGprsBatchForm form) {
@@ -77,6 +81,7 @@ public class BatchController extends BaseController{
 	}
 	
 
+	@OpLog(opType=OpTypeEnum.UPDATE, opName="业务管理-流量卡批次信息变更接口")
 	@ApiOperation(value="业务管理-流量卡批次信息变更接口")
 	@RequestMapping(path="/update",method= {RequestMethod.POST})
 	public Result<BatchSaveResultBean> update(@RequestBody CcGprsBatchForm form) {

@@ -25,7 +25,6 @@ import cn.yunovo.iov.fc.model.result.GprsAllotResultBean;
 import cn.yunovo.iov.fc.model.result.PayListTotalResulBean;
 import cn.yunovo.iov.fc.model.result.UnicomDataBean;
 import cn.yunovo.iov.fc.service.ICcCardLogService;
-import cn.yunovo.iov.fc.service.ICcGprsAllotService;
 import cn.yunovo.iov.fc.service.ICcGprsCardService;
 import cn.yunovo.iov.fc.service.ICcGprsPayService;
 import cn.yunovo.iov.fc.service.ICcGprsValueService;
@@ -91,6 +90,7 @@ public class GprsCardController extends BaseController{
 			@ApiImplicitParam(name = "unicom_stop", value = "是否在联通已停卡0（正常）1（停用）", required = false, dataType = "int",paramType = "query"),
 			@ApiImplicitParam(name = "status", value = "激活状态0（未激活）1（已激活）", required = false, dataType = "int",paramType = "query")})
 	@RequestMapping(path="/export",method= {RequestMethod.GET, RequestMethod.POST})
+	@OpLog(opType=OpTypeEnum.DOWNLOAD, opName="业务管理-流量卡列表导出")
 	public void export(String card_iccid, Integer org_id, String date_start,
 			String date_end, Integer time_expire, Integer unicom_stop, Integer status,
 			Integer card_type) throws Exception {
@@ -109,6 +109,7 @@ public class GprsCardController extends BaseController{
 			@ApiImplicitParam(name = "paid_end", value = "付款时间-结束日期 YYYY-MM-DD", required = false, dataType = "String", paramType = "query"),
 			@ApiImplicitParam(name = "pay_method", value = "付款方式", required = false, dataType = "int", paramType = "query")
 			})
+	@OpLog(opType=OpTypeEnum.QUERY, opName="业务管理-流量卡充值明细")
 	@RequestMapping(path="/payDetail",method= {RequestMethod.GET, RequestMethod.POST})
 	public Result<PageData<CcGprsPay, PayListTotalResulBean>> cardPayDetail(PageForm pageForm, Integer card_id, String pay_from, Short pay_method, Short is_paid, String date_start, String date_end, String paid_start, String paid_end) {
 		
@@ -124,6 +125,7 @@ public class GprsCardController extends BaseController{
 	@ApiImplicitParams(value = {
 			@ApiImplicitParam(name = "card_id", value = "流量卡id", required = true, dataType = "int", paramType = "query")
 	})
+	@OpLog(opType=OpTypeEnum.QUERY, opName="业务管理-流量分配详情")
 	@RequestMapping(path="/gprsAllotList",method= {RequestMethod.GET, RequestMethod.POST})
 	public Result<PageData<GprsAllotResultBean, Object>> gprsAllotList(PageForm pageForm, Integer card_id) {
 		
@@ -139,6 +141,7 @@ public class GprsCardController extends BaseController{
 	@ApiImplicitParams(value = {
 			@ApiImplicitParam(name = "card_id", value = "流量卡id", required = true, dataType = "int", paramType = "query")
 	})
+	@OpLog(opType=OpTypeEnum.QUERY, opName="业务管理-流量卡生命周期日志")
 	@RequestMapping(path="/logList",method= {RequestMethod.GET, RequestMethod.POST})
 	public Result<PageData<CcCardLog, Object>> logList(PageForm pageForm, Integer card_id) {
 		
@@ -154,6 +157,7 @@ public class GprsCardController extends BaseController{
 	@ApiImplicitParams(value = {
 			@ApiImplicitParam(name = "card_id", value = "流量卡id", required = true, dataType = "int", paramType = "query")
 	})
+	@OpLog(opType=OpTypeEnum.QUERY, opName="业务管理-流量卡日使用情况")
 	@RequestMapping(path="/dayUse",method= {RequestMethod.GET, RequestMethod.POST})
 	public Result<PageData<CcStatsDay, Object>> dayUsePage(PageForm pageForm, Integer card_id) {
 		
@@ -169,6 +173,7 @@ public class GprsCardController extends BaseController{
 	@ApiImplicitParams(value = {
 			@ApiImplicitParam(name = "card_id", value = "流量卡id", required = true, dataType = "int", paramType = "query")
 	})
+	@OpLog(opType=OpTypeEnum.QUERY, opName="业务管理-流量卡月使用情况")
 	@RequestMapping(path="/monthUse",method= {RequestMethod.GET, RequestMethod.POST})
 	public Result<PageData<CcStatsMonth, Object>> monthUsePage(PageForm pageForm, Integer card_id) {
 		
@@ -184,6 +189,7 @@ public class GprsCardController extends BaseController{
 	@ApiImplicitParams(value = {
 			@ApiImplicitParam(name = "card_id", value = "流量卡id", required = true, dataType = "int", paramType = "query")
 	})
+	@OpLog(opType=OpTypeEnum.QUERY, opName="业务管理-流量卡基本信息")
 	@RequestMapping(path="/detail",method= {RequestMethod.GET, RequestMethod.POST})
 	public Result<CardDetailInfoBean> detail(PageForm pageForm, Integer card_id) {
 		
@@ -195,6 +201,7 @@ public class GprsCardController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="业务管理-机构流量卡统计")
 	@ApiOperation(value = "业务管理-机构流量卡统计")
 	@RequestMapping(path="/cardTotalByOrgidGroup",method= {RequestMethod.GET, RequestMethod.POST})
 	public Result<PageData<CardTotalByOrgidInfoBean, Object>> cardTotalByOrgidGroupPage(PageForm pageForm) {
@@ -203,6 +210,7 @@ public class GprsCardController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
+	@OpLog(opType=OpTypeEnum.UPDATE, opName="业务管理-数据同步")
 	@ApiOperation(value = "业务管理-数据同步")
 	@RequestMapping(path="/syncUnicomData",method= {RequestMethod.GET, RequestMethod.POST})
 	public Result<UnicomDataBean> syncUnicomData(String card_sn, String card_iccid) {
@@ -211,6 +219,7 @@ public class GprsCardController extends BaseController{
 		return ResultUtil.success(bean);
 	}
 	
+	@OpLog(opType=OpTypeEnum.UPDATE, opName="业务管理-流量卡管理(开卡/停卡)")
 	@ApiOperation(value = "业务管理-流量卡管理(开卡/停卡)")
 	@RequestMapping(path="/onoff",method= {RequestMethod.POST})
 	public Result<UnicomDataBean> onoff(@RequestBody CardOnoffForm form) {

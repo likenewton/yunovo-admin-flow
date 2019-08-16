@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
+import cn.yunovo.iov.fc.common.utils.log.OpLog;
+import cn.yunovo.iov.fc.common.utils.log.OpTypeEnum;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcGprsPay;
@@ -45,6 +47,7 @@ public class ReportController extends BaseController{
 	@Autowired
 	private ICcGprsSnapService iCcGprsSnapService;
 	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="财务报表-充值总额")
 	@ApiOperation(value = "财务报表-充值总额")
 	@ApiImplicitParams(value = {
 			@ApiImplicitParam(name = "date_start", value = "开始日期 YYYY-MM-DD", required = false, dataType = "String", paramType = "query"),
@@ -58,6 +61,7 @@ public class ReportController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="财务报表-机构充值统计")
 	@ApiOperation(value = "财务报表-机构充值统计")
 	@ApiImplicitParams(value = {
 			@ApiImplicitParam(name = "date_start", value = "开始日期 YYYY-MM-DD", required = false, dataType = "String", paramType = "query"),
@@ -72,6 +76,7 @@ public class ReportController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="财务报表-充值明细")
 	@ApiOperation(value = "财务报表-充值明细")
 	@ApiImplicitParams(value = {
 			@ApiImplicitParam(name = "date_start", value = "充值时间-开始日期 YYYY-MM-DD", required = false, dataType = "String", paramType = "query"),
@@ -95,6 +100,7 @@ public class ReportController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
+	@OpLog(opType=OpTypeEnum.DOWNLOAD, opName="财务报表-充值明细导出")
 	@ApiOperation(value = "财务报表-充值明细导出")
 	@ApiImplicitParams(value = {
 			@ApiImplicitParam(name = "date_start", value = "充值时间-开始日期 YYYY-MM-DD", required = false, dataType = "String", paramType = "query"),
@@ -116,6 +122,8 @@ public class ReportController extends BaseController{
 		iCcGprsPayService.getPayListPageExport(org_id, pay_sn, card_iccid, null, card_type, transfer_id, gprs_amount, pay_from, pay_method, is_paid, date_start, date_end, paid_start, paid_end, this.getLoginBaseInfo());
 	}
 	
+	
+	@OpLog(opType=OpTypeEnum.DOWNLOAD, opName="财务报表-充值快照明细导出")
 	@ApiOperation(value = "财务报表-充值快照明细导出")
 	@ApiImplicitParams(value = {
 			@ApiImplicitParam(name = "date_start", value = "充值时间-开始日期 YYYY-MM-DD", required = false, dataType = "String", paramType = "query"),
@@ -133,6 +141,7 @@ public class ReportController extends BaseController{
 		iCcGprsSnapService.export(org_id, card_iccid, card_type, pay_from, pay_method, date_start, date_end, paid_start, paid_end, this.getLoginBaseInfo());
 	}
 	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="财务报表-机构充值明细")
 	@ApiOperation(value = "财务报表-机构充值明细")
 	@ApiImplicitParams(value = {
 			@ApiImplicitParam(name = "date_start", value = "开始日期 YYYY-MM-DD", required = false, dataType = "String", paramType = "query"),
@@ -147,6 +156,7 @@ public class ReportController extends BaseController{
 	}
 	
 	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="财务报表-套餐充值统计")
 	@ApiOperation(value = "财务报表-套餐充值统计")
 	@ApiImplicitParams(value = {
 			@ApiImplicitParam(name = "date_start", value = "开始日期 YYYY-MM-DD", required = false, dataType = "String", paramType = "query"),
@@ -161,7 +171,7 @@ public class ReportController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
-	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="财务报表-充值月度统计")
 	@ApiOperation(value = "财务报表-充值月度统计")
 	@ApiImplicitParams(value = {
 			@ApiImplicitParam(name = "mdate", value = "统计月份 YYYY-MM", required = false, dataType = "String", paramType = "query"),
@@ -174,7 +184,7 @@ public class ReportController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
-	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="财务报表-充值与分析统计图表")
 	@ApiOperation(value = "财务报表-充值与分析统计图表")
 	@ApiImplicitParams(value = {
 			@ApiImplicitParam(name = "date_start", value = "充值时间-开始日期 YYYY-MM-DD", required = false, dataType = "String", paramType = "query"),

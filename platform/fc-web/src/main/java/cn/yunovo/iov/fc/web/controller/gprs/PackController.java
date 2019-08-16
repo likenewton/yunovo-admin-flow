@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
+import cn.yunovo.iov.fc.common.utils.log.OpLog;
+import cn.yunovo.iov.fc.common.utils.log.OpTypeEnum;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcGprsPack;
@@ -35,6 +37,7 @@ public class PackController extends BaseController{
 	@ApiImplicitParams(value = { 
 			@ApiImplicitParam(name = "org_id", value = "机构id", required = false, dataType = "int",paramType = "query")
 			})
+	@OpLog(opType=OpTypeEnum.QUERY, opName="业务管理-套餐查询接口")
 	@RequestMapping(path="/",method= {RequestMethod.GET, RequestMethod.POST})
 	public Result<PageData<CcGprsPack, Object>> list(PageForm form, Integer org_id) {
 		
@@ -44,6 +47,7 @@ public class PackController extends BaseController{
 	
 	@ApiOperation(value="业务管理-套餐新增接口")
 	@RequestMapping(path="/insert",method= {RequestMethod.POST})
+	@OpLog(opType=OpTypeEnum.INSERT, opName="业务管理-套餐新增接口")
 	public Result<String> insert(@RequestBody GprsPackForm form) {
 		
 		form.validate(InsertGroupValidate.class);
@@ -54,6 +58,7 @@ public class PackController extends BaseController{
 	
 	@ApiOperation(value="业务管理-套餐修改接口")
 	@RequestMapping(path="/update",method= {RequestMethod.POST})
+	@OpLog(opType=OpTypeEnum.UPDATE, opName="业务管理-套餐修改接口")
 	public Result<String> update(@RequestBody GprsPackForm form) {
 		
 		form.validate(UpdateGroupValidate.class);
@@ -66,6 +71,7 @@ public class PackController extends BaseController{
 	@ApiImplicitParams(value = { 
 			@ApiImplicitParam(name = "pack_id", value = "套餐id", required = false, dataType = "int",paramType = "query")
 			})
+	@OpLog(opType=OpTypeEnum.QUERY, opName="业务管理-套餐详情")
 	@RequestMapping(path="/detail",method= {RequestMethod.GET, RequestMethod.POST})
 	public Result<CcGprsPack> detail(Integer pack_id) {
 		
@@ -73,6 +79,7 @@ public class PackController extends BaseController{
 		return ResultUtil.successCN(pack);
 	}
 	
+	@OpLog(opType=OpTypeEnum.UPDATE, opName="业务管理-套餐停用")
 	@ApiOperation(value="业务管理-套餐停用")
 	@RequestMapping(path="/stop",method= {RequestMethod.POST})
 	public Result<Object> stop(@RequestBody GprsPackForm form) {
