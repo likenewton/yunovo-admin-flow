@@ -52,7 +52,7 @@
           <span slot="label"></i>历史赠送</span>
           <el-form class="search-form" :inline="true" :model="searchForm" size="small">
             <el-form-item>
-              <el-input v-model="searchForm.card_iccid" @input="searchForm.card_iccid = limitNumber(searchForm.card_iccid, 20, 0)" placeholder="卡ICCID" @keyup.enter.native="searchData"></el-input>
+              <el-input v-model="searchForm.card_iccid" @input="searchForm.card_iccid = expNumStr(searchForm.card_iccid)" placeholder="卡ICCID" @keyup.enter.native="searchData"></el-input>
             </el-form-item>
             <el-form-item>
               <el-select v-model="searchForm.org_id" filterable clearable placeholder="机构名称" @change="searchData">

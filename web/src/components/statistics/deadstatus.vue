@@ -130,7 +130,15 @@ export default {
             sums: true,
             card_iccid: '小计',
             used_month: Api.UNITS.pageSums(this.list.data, 'used_month'),
-            max_unused: Api.UNITS.pageSums(this.list.data, 'max_unused'),
+            max_unused: (() => {
+              let sum = 0
+              this.list.data.forEach((v) => {
+                if (Number(v.max_unused) < 0) {
+                  sum += Number(v.max_unused) || 0
+                }
+              })
+              return sum
+            })(),
             used_total: Api.UNITS.pageSums(this.list.data, 'used_total')
           }, {
             sums: true,
