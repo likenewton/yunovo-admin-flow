@@ -4,6 +4,7 @@ import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcCardLog;
+import cn.yunovo.iov.fc.model.entity.CcGprsBatch;
 import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.CcGprsMove;
 import cn.yunovo.iov.fc.model.entity.CcOnoffLog;
@@ -42,8 +43,20 @@ public interface ICcCardLogService extends IService<CcCardLog> {
 	 */
 	boolean log8Move(CcGprsMove res);
 
+	/**
+	 * 流量卡机构变更日志
+	 * @param log 数据
+	 * @return
+	 */
 	public boolean log7Change(JSONObject log);
 
-	boolean log1Storage(CcGprsCard card_data, Float live_month, Double gprs_amount);
+
+	/**
+	 * 流量卡入库日志
+	 * @param card_data
+	 * @param batch
+	 * @return
+	 */
+	public boolean log1Storage(CcGprsCard card_data, CcGprsBatch batch);
 	
 }

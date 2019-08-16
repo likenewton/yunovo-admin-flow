@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +21,8 @@ import cn.yunovo.iov.cas.client.constant.CasConstant;
 import cn.yunovo.iov.cas.client.util.TokenUtil;
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
+import cn.yunovo.iov.fc.common.utils.log.OpLog;
+import cn.yunovo.iov.fc.common.utils.log.OpTypeEnum;
 import cn.yunovo.iov.fc.common.utils.web.WebRequestUtil;
 import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.ResourcesBean;
@@ -53,6 +54,7 @@ public class SsoController extends BaseController{
 		return ResultUtil.build(0, "ok", true);
 	}
 	
+	@OpLog(opType=OpTypeEnum.LOGIN, opName="登录成功")
 	@RequestMapping(path="/ssoLogin",method= {RequestMethod.GET, RequestMethod.POST})
 	public void ssoLogin(HttpServletRequest request, HttpServletResponse response) {
 		
@@ -121,6 +123,7 @@ public class SsoController extends BaseController{
 	}
 	
 	@ApiOperation(notes="系统登录接口", value = "系统登录接口")
+	@OpLog(opType=OpTypeEnum.LOGOUT, opName="登出成功")
 	@GetMapping(path="/logout", produces = MediaType.APPLICATION_JSON_VALUE)
 	public void logout() {
 		iSystemResourceService.destory(TokenUtil.getToken(WebRequestUtil.request()));
@@ -137,6 +140,7 @@ public class SsoController extends BaseController{
 	 * @return
 	 */
 	@ApiOperation(notes="获取当前用户菜单列表", value = "获取当前用户菜单列表")
+	@OpLog(opType=OpTypeEnum.QUERY, opName="获取菜单")
 	@GetMapping(path = "/menus", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Result<List<ResourcesBean>> menus() {
 		
@@ -155,6 +159,7 @@ public class SsoController extends BaseController{
 	 * @return
 	 */
 	@ApiOperation(notes="获取当前用户对应按钮权限", value = "获取当前用户对应按钮权限")
+	@OpLog(opType=OpTypeEnum.QUERY, opName="获取功能按钮")
 	@GetMapping(path = "/buttons", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Result<Map<String, Map<String, Boolean>>> buttons() {
 		

@@ -7,6 +7,7 @@ import cn.yunovo.iov.fc.model.LoginInfo;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcCardLog;
+import cn.yunovo.iov.fc.model.entity.CcGprsBatch;
 import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.CcGprsMove;
 import cn.yunovo.iov.fc.model.entity.CcOnoffLog;
@@ -232,7 +233,15 @@ public class CcCardLogServiceImpl extends ServiceImpl<ICcCardLogMapper, CcCardLo
 		String unicom_month_str = iCcGprsCardService.gprsFormat(log.getDouble("gprs_amount"));
 		String live_month_str = iCcGprsPackService.liveFormat(log.getFloat("live_month"));
 		
-		String log_text = String.format("从机构 “%s” 变更到 “%s” 机构，初始流量%s 有效周期%s", old_org, new_org, unicom_month_str, live_month_str);
+		String temp = "";
+		if(!StringUtils.isEmpty(unicom_month_str)) {
+			temp = temp + " 初始流量" + unicom_month_str;
+		}
+		
+		if(!StringUtils.isEmpty(live_month_str)) {
+			temp = temp + " 有效周期" + live_month_str;
+		}
+		String log_text = String.format("从机构 “%s” 变更到 “%s” 机构，", old_org, new_org, temp);
 		
 		String sql = String.format(INSERT_SQL, log.getInteger("card_id"), 7,log_text, log_url, log.getString("time_added"));
 		boolean isOk = jedisPoolUtil.lpush(FcConstant.SQL_QUEUE_CACHEKEY, sql) > 0 ? true : false;
@@ -243,14 +252,34 @@ public class CcCardLogServiceImpl extends ServiceImpl<ICcCardLogMapper, CcCardLo
 		return true;
 	}
 
-	@Override
-	public boolean log1Storage(CcGprsCard card_data, Float live_month, Double gprs_amount) {
+	
+/*	public boolean log1Storage(CcGprsCard card_data, Float live_month, Double gprs_amount) {
 
 		Map<Integer, String> orgMaps = iCcOrgService.orgMaps();
 		String org_name = StringUtils.defaultIfEmpty(orgMaps.get(card_data.getOrg_id()), "暂未知晓");
 		String log_url = "gprs/batch/update?batch_id="+card_data.getBatch_id();
 		String unicom_month_str = iCcGprsCardService.gprsFormat(gprs_amount);
 		String live_month_str = iCcGprsPackService.liveFormat(live_month);
+		
+		String log_text = String.format("入库到“%s”机构，初始流量%s 有效周期%s", org_name, unicom_month_str, live_month_str);
+		
+		String sql = String.format(INSERT_SQL, card_data.getCard_id(), 1,log_text, log_url, card_data.getTime_added());
+		boolean isOk = jedisPoolUtil.lpush(FcConstant.SQL_QUEUE_CACHEKEY, sql) > 0 ? true : false;
+		if(!isOk) {
+			CcCardLog res = build(card_data.getCard_id(), 1, log_text, log_url, card_data.getTime_added());
+			this.save(res);
+		}
+		return true;
+	}*/
+	
+	@Override
+	public boolean log1Storage(CcGprsCard card_data, CcGprsBatch batch) {
+
+		Map<Integer, String> orgMaps = iCcOrgService.orgMaps();
+		String org_name = StringUtils.defaultIfEmpty(orgMaps.get(card_data.getOrg_id()), "暂未知晓");
+		String log_url = "gprs/batch/update?batch_id="+card_data.getBatch_id();
+		String unicom_month_str = iCcGprsCardService.gprsFormat(batch.getGprs_amount());
+		String live_month_str = iCcGprsPackService.liveFormat(batch.getLive_month());
 		
 		String log_text = String.format("入库到“%s”机构，初始流量%s 有效周期%s", org_name, unicom_month_str, live_month_str);
 		

@@ -419,7 +419,7 @@ public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGp
 					if(iCcGprsCardService.save(card_data)) {
 						success_count ++;
 						if(card_data.getOrg_id() != 1) {//导入到非(自营)机构下的卡记录入库日志
-							iCcCardLogService.log1Storage(card_data, batch.getLive_month(), batch.getGprs_amount());
+							iCcCardLogService.log1Storage(card_data, batch);
 						}
 						continue;
 					}

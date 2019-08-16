@@ -26,6 +26,10 @@ public class BaseController {
 		return  WebRequestUtil.getAttribute(H5ClientAuthenticationFilter.CONST_CAS_ASSERTION) != null ? (Assertion)WebRequestUtil.getAttribute(H5ClientAuthenticationFilter.CONST_CAS_ASSERTION) : null;
 	}
 	
+	public static Assertion getAssertionStatic() {
+		return  WebRequestUtil.getAttribute(H5ClientAuthenticationFilter.CONST_CAS_ASSERTION) != null ? (Assertion)WebRequestUtil.getAttribute(H5ClientAuthenticationFilter.CONST_CAS_ASSERTION) : null;
+	}
+	
 	@ExceptionHandler(value=Exception.class)
 	public Result<?> exception(Exception e) {
 		
