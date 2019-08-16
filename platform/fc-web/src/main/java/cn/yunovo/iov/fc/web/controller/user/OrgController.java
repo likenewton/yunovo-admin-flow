@@ -16,6 +16,8 @@ import com.alibaba.fastjson.JSONObject;
 
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
+import cn.yunovo.iov.fc.common.utils.log.OpLog;
+import cn.yunovo.iov.fc.common.utils.log.OpTypeEnum;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
@@ -41,7 +43,7 @@ public class OrgController extends BaseController{
 	@Autowired
 	private ICcOrgService iCcOrgService;
 	
-	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="用户权限-机构管理列表")
 	@ApiOperation(value="用户权限-机构管理列表")
 	@ApiImplicitParams(value = { 
 			@ApiImplicitParam(name = "org_id", value = "机构id", required = false, dataType = "int",paramType = "query")
@@ -53,6 +55,8 @@ public class OrgController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
+	
+	@OpLog(opType=OpTypeEnum.INSERT, opName="用户权限-机构新增")
 	@SuppressWarnings("unchecked")
 	@ApiOperation(value="用户权限-机构新增")
 	@RequestMapping(path="/insert",method= {RequestMethod.POST})
@@ -71,6 +75,7 @@ public class OrgController extends BaseController{
 		return ResultUtil.build(0, "新增成功");
 	}
 	
+	@OpLog(opType=OpTypeEnum.UPDATE, opName="用户权限-机构修改")
 	@SuppressWarnings("unchecked")
 	@ApiOperation(value="用户权限-机构修改")
 	@RequestMapping(path="/update",method= {RequestMethod.POST})
@@ -88,6 +93,7 @@ public class OrgController extends BaseController{
 		return ResultUtil.build(0, "修改成功");
 	}
 	
+	@OpLog(opType=OpTypeEnum.DELETE, opName="用户权限-机构删除")
 	@SuppressWarnings("unchecked")
 	@ApiOperation(value="用户权限-机构删除")
 	@RequestMapping(path="/delete",method= {RequestMethod.POST})
@@ -105,6 +111,7 @@ public class OrgController extends BaseController{
 		return ResultUtil.build(0, "删除成功");
 	}
 	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="根据机构id获取机构信息")
 	@ApiOperation(value="根据机构id获取机构信息")
 	@RequestMapping(path="/detail",method= {RequestMethod.GET})
 	public Result<Object> detail(Integer org_id){

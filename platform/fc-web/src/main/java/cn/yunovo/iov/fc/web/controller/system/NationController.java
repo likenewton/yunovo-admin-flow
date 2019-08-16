@@ -1,11 +1,13 @@
 package cn.yunovo.iov.fc.web.controller.system;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
+import cn.yunovo.iov.fc.common.utils.log.OpLog;
+import cn.yunovo.iov.fc.common.utils.log.OpTypeEnum;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcNation;
@@ -37,6 +41,7 @@ public class NationController extends BaseController{
 	@Autowired
 	private ICcNationService iCcNationService;
 	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="系统设置-国家区域查询列表")
 	@RequestMapping(path="/nations/", method= {RequestMethod.GET, RequestMethod.POST})
 	@ApiOperation(value="系统设置-国家区域查询列表")
 	@ApiImplicitParams(value = {
@@ -49,6 +54,7 @@ public class NationController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="系统设置-国家区域详情接口")
 	@RequestMapping(path="/nations/detail", method= {RequestMethod.GET, RequestMethod.POST})
 	@ApiOperation(value="系统设置-国家区域详情接口")
 	@ApiImplicitParams(value = {
@@ -60,6 +66,7 @@ public class NationController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
+	@OpLog(opType=OpTypeEnum.INSERT, opName="系统设置-国家区域新增接口")
 	@SuppressWarnings("unchecked")
 	@RequestMapping(path="/nations/insert", method= {RequestMethod.POST})
 	@ApiOperation(value="系统设置-国家区域新增接口")
@@ -82,6 +89,7 @@ public class NationController extends BaseController{
 		return ResultUtil.successCN(null);
 	}
 	
+	@OpLog(opType=OpTypeEnum.UPDATE, opName="系统设置-国家区域修改接口")
 	@SuppressWarnings("unchecked")
 	@RequestMapping(path="/nations/update", method= {RequestMethod.POST})
 	@ApiOperation(value="系统设置-国家区域修改接口")
@@ -112,6 +120,5 @@ public class NationController extends BaseController{
 		iCcNationService.removeByIds(Arrays.asList(form.getNtids()));
 		return ResultUtil.successCN(null);
 	}
-	
 	
 }

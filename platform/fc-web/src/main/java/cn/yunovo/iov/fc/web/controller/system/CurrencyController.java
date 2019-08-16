@@ -12,6 +12,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
+import cn.yunovo.iov.fc.common.utils.log.OpLog;
+import cn.yunovo.iov.fc.common.utils.log.OpTypeEnum;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.entity.CcCurrency;
@@ -33,6 +35,7 @@ public class CurrencyController extends BaseController{
 	@Autowired
 	private ICcCurrencyService iCcCurrencyService;
 	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="系统设置-货币查询")
 	@RequestMapping(path="/currency/", method= {RequestMethod.GET, RequestMethod.POST})
 	@ApiOperation(value="系统设置-货币查询")
 	public Result<PageData<CcCurrency, Object>> getItemsPage(PageForm form) {
@@ -41,6 +44,7 @@ public class CurrencyController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="系统设置-货币详情")
 	@RequestMapping(path="/currency/detail", method= {RequestMethod.GET, RequestMethod.POST})
 	@ApiImplicitParams(value = {
 			@ApiImplicitParam(name = "currency_id", value = "货币id", required = true, dataType = "int",paramType = "query")
@@ -51,6 +55,7 @@ public class CurrencyController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
+	@OpLog(opType=OpTypeEnum.INSERT, opName="系统设置-货币新增")
 	@RequestMapping(path="/currency/insert", method= {RequestMethod.POST})
 	@ApiOperation(value="系统设置-货币新增")
 	@SuppressWarnings("unchecked")
@@ -62,6 +67,7 @@ public class CurrencyController extends BaseController{
 		return ResultUtil.successCN(null);
 	}
 	
+	@OpLog(opType=OpTypeEnum.UPDATE, opName="系统设置-货币修改")
 	@RequestMapping(path="/currency/update", method= {RequestMethod.POST})
 	@ApiOperation(value="系统设置-货币修改")
 	public Result<Object> update(@RequestBody CurrencyForm form) {

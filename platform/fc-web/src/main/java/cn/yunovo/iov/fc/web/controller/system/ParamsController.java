@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
+import cn.yunovo.iov.fc.common.utils.log.OpLog;
+import cn.yunovo.iov.fc.common.utils.log.OpTypeEnum;
 import cn.yunovo.iov.fc.model.form.SystemParamsForm;
 import cn.yunovo.iov.fc.service.ICcSettingService;
 import cn.yunovo.iov.fc.web.controller.BaseController;
@@ -23,6 +25,7 @@ public class ParamsController extends BaseController{
 	@Autowired
 	private ICcSettingService iCcSettingService;
 	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="系统设置-系统参数详情")
 	@RequestMapping(path="/params/", method= {RequestMethod.GET, RequestMethod.POST})
 	@ApiOperation(value="系统设置-系统参数详情")
 	public Result<SystemParamsForm> detail() {
@@ -30,6 +33,7 @@ public class ParamsController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
+	@OpLog(opType=OpTypeEnum.UPDATE, opName="系统设置-系统参数详情编辑")
 	@RequestMapping(path="/params/update", method= {RequestMethod.POST})
 	@ApiOperation(value="系统设置-系统参数详情编辑")
 	public Result<Object> update(@RequestBody SystemParamsForm form) {

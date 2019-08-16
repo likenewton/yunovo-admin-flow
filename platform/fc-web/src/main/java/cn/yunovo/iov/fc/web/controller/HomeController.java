@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.yunovo.iov.fc.common.utils.DateUtil;
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
+import cn.yunovo.iov.fc.common.utils.log.OpLog;
+import cn.yunovo.iov.fc.common.utils.log.OpTypeEnum;
 import cn.yunovo.iov.fc.model.entity.CcStats;
 import cn.yunovo.iov.fc.model.result.HomeChartDataBean;
 import cn.yunovo.iov.fc.model.result.HomeSimTrendInfoBean;
@@ -32,6 +34,7 @@ public class HomeController extends BaseController{
 	@Autowired
 	private IHomeService homeService;
 	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="获取数据看板数据接口")
 	@ApiOperation(notes="获取数据看板数据接口", value = "获取数据看板数据接口")
 	@RequestMapping(path="/payCase", method= {RequestMethod.GET})
 	public Result<HashMap<String, HashMap<String, Object>>> getPayDetail() throws Exception {
@@ -40,6 +43,7 @@ public class HomeController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="首页-SIM卡统计")
 	@ApiOperation(notes="首页-SIM卡统计", value = "首页-SIM卡统计")
 	@RequestMapping(path="/siminfo", method= {RequestMethod.GET})
 	public Result<CcStats> siminfo() throws Exception {
@@ -48,6 +52,7 @@ public class HomeController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="首页-数据总览")
 	@ApiOperation(notes="首页-数据总览", value = "首页-数据总览")
 	@RequestMapping(path="/rl2pack", method= {RequestMethod.GET})
 	public Result<Map<String, Integer>> rl2pack() throws Exception {
@@ -56,6 +61,7 @@ public class HomeController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="首页-sim卡使用趋势")
 	@ApiOperation(notes="首页-sim卡使用趋势", value = "首页-sim卡使用趋势")
 	@ApiImplicitParams(value = { 
 			@ApiImplicitParam(name = "date_start", value = "统计日期-开始日期（YYYY-MM-DD）", required = true, dataType = "String",paramType = "query"),
@@ -76,6 +82,7 @@ public class HomeController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="首页-充值趋势")
 	@ApiOperation(notes="首页-充值趋势", value = "首页-充值趋势")
 	@ApiImplicitParams(value = { 
 			@ApiImplicitParam(name = "date_start", value = "统计日期-开始日期（YYYY-MM-DD）", required = true, dataType = "String",paramType = "query"),
@@ -96,6 +103,7 @@ public class HomeController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="首页-订单趋势")
 	@ApiOperation(notes="首页-订单趋势", value = "首页-订单趋势")
 	@ApiImplicitParams(value = { 
 			@ApiImplicitParam(name = "date_start", value = "统计日期-开始日期（YYYY-MM-DD）", required = true, dataType = "String",paramType = "query"),
@@ -116,6 +124,7 @@ public class HomeController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="首页-流量消耗趋势")
 	@ApiOperation(notes="首页-流量消耗趋势", value = "首页-流量消耗趋势")
 	@ApiImplicitParams(value = { 
 			@ApiImplicitParam(name = "date_start", value = "统计日期-开始日期（YYYY-MM-DD）", required = true, dataType = "String",paramType = "query"),
@@ -136,6 +145,7 @@ public class HomeController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="首页-客单价趋势")
 	@ApiOperation(notes="首页-客单价趋势", value = "首页-客单价趋势")
 	@ApiImplicitParams(value = { 
 			@ApiImplicitParam(name = "date_start", value = "统计日期-开始日期（YYYY-MM-DD）", required = true, dataType = "String",paramType = "query"),

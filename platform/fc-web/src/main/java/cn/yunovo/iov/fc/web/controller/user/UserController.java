@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
+import cn.yunovo.iov.fc.common.utils.log.OpLog;
+import cn.yunovo.iov.fc.common.utils.log.OpTypeEnum;
 import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.form.UserForm;
@@ -35,7 +37,7 @@ public class UserController extends BaseController{
 	@Autowired
 	private ICcUserService iCcUserService;
 	
-	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="用户权限-用户信息查询")
 	@ApiOperation(value="用户权限-用户信息查询")
 	@ApiImplicitParams(value = { 
 			@ApiImplicitParam(name = "org_id", value = "所属机构", required = false, dataType = "int",paramType = "query"),
@@ -49,7 +51,7 @@ public class UserController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
-	
+	@OpLog(opType=OpTypeEnum.UPDATE, opName="用户权限-用户信息修改")
 	@ApiOperation(value="用户权限-用户信息修改")
 	@RequestMapping(path="/edit",method= {RequestMethod.POST})
 	public Result<Object> edit(@RequestBody UserForm form) {
@@ -65,6 +67,7 @@ public class UserController extends BaseController{
 		}
 	}
 	
+	@OpLog(opType=OpTypeEnum.UPDATE, opName="用户权限-用户启用停用修改")
 	@ApiOperation(value="用户权限-用户启用停用修改")
 	@RequestMapping(path="/onoff",method= {RequestMethod.POST})
 	public Result<Object> onoff(@RequestBody UserForm form) {
@@ -80,6 +83,7 @@ public class UserController extends BaseController{
 		}
 	}
 	
+	@OpLog(opType=OpTypeEnum.DELETE, opName="用户权限-用户信息删除")
 	@ApiOperation(value="用户权限-用户信息删除")
 	@RequestMapping(path="/del",method= {RequestMethod.POST})
 	public Result<Object> del(@RequestBody UserForm form) {
@@ -95,6 +99,7 @@ public class UserController extends BaseController{
 		}
 	}
 	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="用户权限-用户详情")
 	@ApiOperation(value="用户权限-用户详情")
 	@ApiImplicitParams(value = { 
 			@ApiImplicitParam(name = "username", value = "用户账号", required = false, dataType = "String",paramType = "query")

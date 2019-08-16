@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.yunovo.iov.fc.common.utils.Result;
 import cn.yunovo.iov.fc.common.utils.ResultUtil;
+import cn.yunovo.iov.fc.common.utils.log.OpLog;
+import cn.yunovo.iov.fc.common.utils.log.OpTypeEnum;
 import cn.yunovo.iov.fc.model.form.PayForm;
 import cn.yunovo.iov.fc.model.result.PayInfoBean;
 import cn.yunovo.iov.fc.service.ICcExtensionService;
@@ -29,6 +31,7 @@ public class PaysController extends BaseController{
 	@Autowired
 	private ICcExtensionService iCcExtensionService;
 	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="系统设置-支付方式查询")
 	@RequestMapping(path="/pays/", method= {RequestMethod.GET, RequestMethod.POST})
 	@ApiOperation(value="系统设置-支付方式查询")
 	public Result<List<PayInfoBean>> getItems() {
@@ -38,6 +41,7 @@ public class PaysController extends BaseController{
 		
 	}
 	
+	@OpLog(opType=OpTypeEnum.INSERT, opName="系统设置-支付方式(安装)")
 	@RequestMapping(path="/pays/install", method= {RequestMethod.POST})
 	@ApiOperation(value="系统设置-支付方式(安装)")
 	public Result<Object> install(@RequestBody PayForm form) {
@@ -50,6 +54,7 @@ public class PaysController extends BaseController{
 		return ResultUtil.successCN(null);
 	}
 	
+	@OpLog(opType=OpTypeEnum.DELETE, opName="系统设置-支付方式(卸载)")
 	@RequestMapping(path="/pays/uninstall", method= {RequestMethod.POST})
 	@ApiOperation(value="系统设置-支付方式(卸载)")
 	public Result<Object> uninstall(@RequestBody PayForm form) {
@@ -61,6 +66,7 @@ public class PaysController extends BaseController{
 		return ResultUtil.successCN(null);
 	}
 	
+	@OpLog(opType=OpTypeEnum.QUERY, opName="系统设置-支付方式(详情)")
 	@RequestMapping(path="/pays/detail", method= {RequestMethod.GET, RequestMethod.POST})
 	@ApiOperation(value="系统设置-支付方式(详情)")
 	public Result<Map<String, String>> detail(@ApiParam(value="支付方式")String type) {
@@ -68,6 +74,7 @@ public class PaysController extends BaseController{
 		return ResultUtil.success(data);
 	}
 	
+	@OpLog(opType=OpTypeEnum.UPDATE, opName="系统设置-支付方式(编辑)")
 	@RequestMapping(path="/pays/update", method= {RequestMethod.GET, RequestMethod.POST})
 	@ApiOperation(value="系统设置-支付方式(编辑)")
 	public Result<Object> update(@RequestBody PayForm form) {
