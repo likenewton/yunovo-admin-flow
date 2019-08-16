@@ -31,16 +31,19 @@ public class LogBean implements Serializable{
 	private boolean error = false;
 	
 	@ApiModelProperty("错误代码")
-	private String error_code;
+	private String errorCode;
 	
 	@ApiModelProperty("错误消息")
-	private String error_msg;
+	private String errorMsg;
 	
 	@ApiModelProperty("系统标识消息,fc-web")
 	private String sysFlag;
 	
 	@ApiModelProperty("ip")
 	private String ip;
+	
+	@ApiModelProperty("requestURI")
+	private String requestURI;
 	
 	@ApiModelProperty("操作用户信息")
 	private OpUser user;

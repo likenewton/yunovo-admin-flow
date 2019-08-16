@@ -45,6 +45,11 @@ public class LogAspect {
 		
 		LogBean logBean = new LogBean();
 		logBean.setStartTimestamp(System.currentTimeMillis());
+		logBean.setSysFlag("fc-web");
+		
+		HttpServletRequest request = WebRequestUtil.request();
+		
+		logBean.setRequestURI(this.getRequestUrl(request));
 		Object result = null;
 		
 		//获取请求参数
@@ -55,8 +60,8 @@ public class LogAspect {
 		OpUser user = this.getOpUser();
 		logBean.setUser(user);
 		
-		logBean.setToken(TokenUtil.getToken(WebRequestUtil.request()));
-		logBean.setIp(getClientIp(WebRequestUtil.request()));
+		logBean.setToken(TokenUtil.getToken(request));
+		logBean.setIp(getClientIp(request));
 		try {
 			result = point.proceed();
 			logBean.setEndTimestamp(System.currentTimeMillis());
@@ -68,8 +73,8 @@ public class LogAspect {
 				op.setResult(this.buildExceptionResult((BusinessException) e));
 			}else {
 				logBean.setError(true);
-				logBean.setError_code("500");
-				logBean.setError_msg(ExceptionUtils.getStackTrace(e));
+				logBean.setErrorCode("500");
+				logBean.setErrorMsg(ExceptionUtils.getStackTrace(e));
 			}
 			
 			this.log(logBean);
@@ -92,6 +97,15 @@ public class LogAspect {
 		
 		this.log(logBean);
 		return result;
+	}
+
+	private String getRequestUrl(HttpServletRequest request) {
+		
+		if(request == null) {
+			return null;
+		}
+		
+		return request.getRequestURI();
 	}
 
 	private OpUser getOpUser() {
@@ -177,6 +191,7 @@ public class LogAspect {
             	
             	data.put(paramNames[i], args[i]);
             }
+            op.setData(data);
         }
         
         return op;
@@ -207,6 +222,8 @@ public class LogAspect {
 		}
 		return request.getRemoteAddr(); 
 	}
+	
+	
 	
 	
 }
