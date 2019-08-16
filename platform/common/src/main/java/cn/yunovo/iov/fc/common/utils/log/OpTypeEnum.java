@@ -5,7 +5,7 @@ public enum OpTypeEnum {
 	/**
 	 * 创建
 	 */
-	CREATE("CREATE"),
+	INSERT("INSERT"),
 	/**
 	 * 查询
 	 */

@@ -79,7 +79,7 @@ public class UnicomStatResultBean extends BaseRowModel implements Serializable{
 			return 0F;
 		}
 		
-		return MathUtils.round(nonactivated / card_count.floatValue() * 100, 2, BigDecimal.ROUND_DOWN).floatValue();
+		return MathUtils.round(nonactivated / card_count.floatValue() * 100, 3, BigDecimal.ROUND_DOWN).floatValue();
 	}
 
 	public Float getActivated_rate() {
@@ -88,7 +88,7 @@ public class UnicomStatResultBean extends BaseRowModel implements Serializable{
 		if(card_count == 0) {
 			return 0F;
 		}
-		return MathUtils.round(activated / card_count.floatValue() * 100, 2, BigDecimal.ROUND_DOWN).floatValue();
+		return MathUtils.round(activated / card_count.floatValue() * 100, 3, BigDecimal.ROUND_DOWN).floatValue();
 	}
 	
 }
