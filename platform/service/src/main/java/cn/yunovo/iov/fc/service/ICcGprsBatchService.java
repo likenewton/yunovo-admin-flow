@@ -50,9 +50,9 @@ public interface ICcGprsBatchService extends IService<CcGprsBatch> {
 	BatchSaveResultBean saveBatch(CcGprsBatchForm form, LoginInfo info);
 
 	/**
-	 * 通过批次id获取批次详情信息
-	 * @param batch_id
-	 * @param info
+	 * 通过批次id获取批次详情信息,有数据权限
+	 * @param batch_id 批次id
+	 * @param info 当前登录者信息
 	 * @return
 	 */
 	CcGprsBatch getInfoByBatchId(Integer batch_id, LoginInfo info);
