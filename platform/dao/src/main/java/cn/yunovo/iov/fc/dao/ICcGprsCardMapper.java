@@ -197,4 +197,11 @@ public interface ICcGprsCardMapper extends BaseMapper<CcGprsCard> {
 	 * @return
 	 */
 	public int updateInfoById(@Param("card")CcGprsCard card);
+	
+	/**
+	 * 通过流量卡id更新流量卡所属机构
+	 * @param card 流量卡信息
+	 * @return
+	 */
+	public int updateOrgIdById(@Param("card_id")Integer card_id, @Param("org_id")Integer org_id);
 }

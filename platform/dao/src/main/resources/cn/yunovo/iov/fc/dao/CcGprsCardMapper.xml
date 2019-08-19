@@ -983,5 +983,11 @@
 		
 		
 	</update>
+	
+	<update id="updateOrgIdById" parameterType="cn.yunovo.iov.fc.model.entity.CcGprsCard">
+		UPDATE `gprs`.`cc_gprs_card` SET
+			org_id=#{org_id}
+		WHERE `card_id` = #{card_id}
+	</update>
 
 </mapper>

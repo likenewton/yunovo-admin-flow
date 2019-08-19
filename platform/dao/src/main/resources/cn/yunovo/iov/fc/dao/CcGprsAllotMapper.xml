@@ -44,7 +44,7 @@
 	<update id="UpdateGprsAmountAndAllotMonthAndTimeExById">
 	
 		UPDATE cc_gprs_allot SET gprs_amount = gprs_amount + #{gprs_amount}, allot_month = allot_month + #{allot_month},
-					time_expire = DATE_ADD(IF(time_expire > NOW(), time_expire, NOW()), #{live_month} MONTH) WHERE allot_id = #{allot_id}
+					time_expire = DATE_ADD(IF(time_expire > NOW(), time_expire, NOW()), INTERVAL #{live_month} MONTH) WHERE allot_id = #{allot_id}
 	</update>
 	
 	<select id="getAllotByCardIdAndGprsAmountAndTimeExpire" resultType="java.lang.Integer">
