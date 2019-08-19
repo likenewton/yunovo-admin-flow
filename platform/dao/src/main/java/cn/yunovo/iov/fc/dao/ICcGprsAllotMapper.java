@@ -37,7 +37,7 @@ public interface ICcGprsAllotMapper extends BaseMapper<CcGprsAllot> {
 	 * @param allot_value
 	 * @return
 	 */
-	public int getAllotIdByCardidAndValueAndTimeexpire(@Param("card_id")Integer card_id, @Param("allot_value")Double allot_value);
+	public Integer getAllotIdByCardidAndValueAndTimeexpire(@Param("card_id")Integer card_id, @Param("allot_value")Double allot_value);
 	
 	/**
 	 * 
