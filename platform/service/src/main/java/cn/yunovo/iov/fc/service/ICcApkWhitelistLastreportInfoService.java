@@ -30,7 +30,7 @@ public interface ICcApkWhitelistLastreportInfoService extends IService<CcApkWhit
 	 */
 	CcApkWhitelistLastreportInfo getLastReportInfoInDB(String iccid);
 
-	boolean saveInfo(Integer card_id, String iccid, Long nonce, Long org_gprs_month, Long yunovo_gprs_month, String sn);
+	boolean saveInfo(Integer card_id, String iccid, Long nonce, Long org_gprs_month, Long yunovo_gprs_month, String sn, Double used_total);
 
 	boolean updateInfo(CcApkWhitelistLastreportInfo info);
 

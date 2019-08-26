@@ -64,7 +64,7 @@ public class CcApkWhitelistLastreportInfoServiceImpl extends ServiceImpl<ICcApkW
 	}
 
 	@Override
-	public boolean saveInfo(Integer card_id, String iccid, Long nonce, Long org_gprs_month, Long yunovo_gprs_month, String sn) {
+	public boolean saveInfo(Integer card_id, String iccid, Long nonce, Long org_gprs_month, Long yunovo_gprs_month, String sn, Double used_total) {
 
 		CcApkWhitelistLastreportInfo info = new CcApkWhitelistLastreportInfo();
 		info.setIccid(iccid);
@@ -75,7 +75,7 @@ public class CcApkWhitelistLastreportInfoServiceImpl extends ServiceImpl<ICcApkW
 		info.setCount(1L);
 		info.setOrg_gprs_month(org_gprs_month);
 		info.setYunovo_gprs_month(yunovo_gprs_month);
-		
+		info.setUsed_total(used_total == null ? 0 : used_total);
 		boolean isOk = this.save(info);
 		if(isOk) {
 			return this.cacheInof(info);

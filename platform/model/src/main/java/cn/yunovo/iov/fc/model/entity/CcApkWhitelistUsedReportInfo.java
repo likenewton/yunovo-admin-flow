@@ -80,4 +80,9 @@ public class CcApkWhitelistUsedReportInfo implements Serializable {
 	@ApiModelProperty(value = "赠送流量数")
 	private Long give_org_gprs;
 
+	@ApiModelProperty(value = "本次上报时流量卡累记使用流量(MB)")
+	private Double used_total;
+
+	@ApiModelProperty(value = "前一次流量卡使用总量(MB)")
+	private Double prev_used_total;
 }

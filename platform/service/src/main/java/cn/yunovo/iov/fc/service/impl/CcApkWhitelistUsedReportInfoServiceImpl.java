@@ -146,29 +146,30 @@ public class CcApkWhitelistUsedReportInfoServiceImpl extends ServiceImpl<ICcApkW
 				}
 			}
 		}*/
-		
-		//事务
+
+
+
+		CcApkWhitelistUsedReportInfo info = new CcApkWhitelistUsedReportInfo();
+		info.setIccid(card.getCard_iccid());
+		info.setId(makeId(card.getCard_iccid()));
+		info.setCard_id(card.getCard_id());
+		info.setOrg_id(card.getOrg_id());
+		info.setOrg_gprs_month(org_gprs_month);
+		info.setYunovo_gprs_month(yunovo_gprs_month);
+		info.setPrev_org_gprs_month(prev_org_gprs_month);
+		info.setPrev_yunovo_gprs_month(prev_yunovo_gprs_month);
+
+		info.setNonce(form.getNonce());
+		info.setSn(form.getSn());
+		info.setCreate_datetime(DateUtil.nowStr());
+		info.setPrev_used_total(lastInfo == null || lastInfo.getUsed_total() == null ? 0 : lastInfo.getUsed_total());
+		info.setUsed_total(card.getUsed_total() == null ? 0:card.getUsed_total());
 		//事务定义
 		DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
 		definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
 		TransactionStatus transactionStatus = clwTransactionManager.getTransaction(definition);
-		
 		try {
-			
-			CcApkWhitelistUsedReportInfo info = new CcApkWhitelistUsedReportInfo();
-			info.setIccid(card.getCard_iccid());
-			info.setId(makeId(card.getCard_iccid()));
-			info.setCard_id(card.getCard_id());
-			info.setOrg_id(card.getOrg_id());
-			info.setOrg_gprs_month(org_gprs_month);
-			info.setYunovo_gprs_month(yunovo_gprs_month);
-			info.setPrev_org_gprs_month(prev_org_gprs_month);
-			info.setPrev_yunovo_gprs_month(prev_yunovo_gprs_month);
-			
-			info.setNonce(form.getNonce());
-			info.setSn(form.getSn());
-			info.setCreate_datetime(DateUtil.nowStr());
-			
+
 			//保存上报数据
 			if(!this.save(info)) {
 				log.error("[report][save report faild]params={form:{},info:{}}", form.buildJsonString(),JSONObject.toJSONString(info));
@@ -201,9 +202,9 @@ public class CcApkWhitelistUsedReportInfoServiceImpl extends ServiceImpl<ICcApkW
 	private boolean saveLastReportInfo(WhitelistsReportForm form, CcApkWhitelistLastreportInfo lastInfo, CcGprsCard card) {
 
 		if(lastInfo == null) {
-			return iCcApkWhitelistLastreportInfoService.saveInfo(card.getCard_id(), card.getCard_iccid(), form.getNonce(),form.getOrg_gprs_month(), form.getYunovo_gprs_month(), form.getSn());
+			return iCcApkWhitelistLastreportInfoService.saveInfo(card.getCard_id(), card.getCard_iccid(), form.getNonce(),form.getOrg_gprs_month(), form.getYunovo_gprs_month(), form.getSn(),card.getUsed_total());
 		}else {
-			
+			lastInfo.setUsed_total(card.getUsed_total());
 			lastInfo.setUpdate_datetime(DateUtil.nowStr());
 			lastInfo.setYunovo_gprs_month(form.getYunovo_gprs_month());
 			lastInfo.setOrg_gprs_month(form.getOrg_gprs_month());

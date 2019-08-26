@@ -52,6 +52,9 @@ public class CcApkWhitelistLastreportInfo implements Serializable {
 	@ApiModelProperty(value = "上报次数")
 	private Long count;
 
+	@ApiModelProperty(value = "累记使用流量(MB)")
+	private Double used_total;
+
 	private String create_datetime;
 
 	private String update_datetime;
