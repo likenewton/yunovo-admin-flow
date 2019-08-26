@@ -76,9 +76,5 @@ public class OrgForm  extends BaseForm implements Serializable{
 	@ApiModelProperty("需要被删的机构id")
 	@NotEmpty(message="系统提示：请选择您需要删除的机构", groups=DeleteGroupValidate.class)
 	private Integer[] orgs;
-	
-	@Size(max=12, groups= {InsertGroupValidate.class, UpdateGroupValidate.class} ,message="最多可关联12个设备中心机构")
-	@ApiModelProperty("设备中心机构")
-	private String[] device_orgs;
 
 }

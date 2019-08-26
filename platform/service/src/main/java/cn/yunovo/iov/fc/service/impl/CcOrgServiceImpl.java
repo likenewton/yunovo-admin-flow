@@ -1,7 +1,6 @@
 package cn.yunovo.iov.fc.service.impl;
 
 import cn.yunovo.iov.fc.common.utils.BusinessException;
-import cn.yunovo.iov.fc.common.utils.DateUtil;
 import cn.yunovo.iov.fc.common.utils.JedisPoolUtil;
 import cn.yunovo.iov.fc.common.utils.Md5Util;
 import cn.yunovo.iov.fc.common.utils.PinYinUtil;
@@ -11,22 +10,18 @@ import cn.yunovo.iov.fc.model.PageData;
 import cn.yunovo.iov.fc.model.PageForm;
 import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
-import cn.yunovo.iov.fc.model.entity.CcOrgRelationship;
 import cn.yunovo.iov.fc.model.entity.CcUser;
 import cn.yunovo.iov.fc.model.exception.FormValidateException;
 import cn.yunovo.iov.fc.model.form.OrgForm;
 import cn.yunovo.iov.fc.model.result.CcOrgDetailBean;
 import cn.yunovo.iov.fc.service.FcConstant;
-import cn.yunovo.iov.fc.service.ICcOrgRelationshipService;
 import cn.yunovo.iov.fc.service.ICcOrgService;
 import cn.yunovo.iov.fc.service.ICcUserService;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
 
-import com.alibaba.druid.sql.ast.expr.SQLCaseExpr.Item;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -47,12 +42,9 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.support.incrementer.DerbyMaxValueIncrementer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -77,9 +69,7 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 	@Autowired
 	private ICcUserService iCcUserService;
 	
-	@Autowired
-	private ICcOrgRelationshipService iCcOrgRelationshipService;
-	
+
 	@Override
 	public Map<String, CcOrg>  getTree(final Integer parent_id, final String orgpos) {
 		
@@ -336,27 +326,6 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 		if(this.getByName(form.getName()) != null) {
 			throw new FormValidateException(String.format("系统提示： 该【%s】机构已存在！", form.getName()), "name", form.buildJsonString());
 		}
-		
-		//如果关联车辆网机构字段不为空，一个车辆网机构只能关联一个流量平台机构
-		if(form.getDevice_orgs() != null && form.getDevice_orgs().length > 0) {
-			
-			StringBuilder orgs = new StringBuilder();
-			QueryWrapper<CcOrgRelationship> queryWrapper = new QueryWrapper<>();
-			queryWrapper.in("device_org_code", form.getDevice_orgs());
-			List<CcOrgRelationship> list = iCcOrgRelationshipService.list(queryWrapper);
-			
-			if(!CollectionUtils.isEmpty(list)) {
-				list.forEach(temp -> {
-					orgs.append(temp.getDevice_org_code());
-				});
-				
-				throw new FormValidateException(String.format("系统提示： 设备中心机构【%s】已存在关联关系,请勿重复关联！", orgs.toString()), "device_orgs", form.buildJsonString());
-			}
-			
-		}
-		
-		
-		
 		CcOrg ccOrg = new CcOrg();
 		BeanUtils.copyProperties(form, ccOrg);
 		
@@ -368,32 +337,7 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 		ccOrg.setTime_added(DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
 		ccOrg.setCreate_by(info.getLoginName());
 		//ccOrg.setUser_id(user.getUser_id());
-		if(retBool(iCcOrgMapper.insert(ccOrg))) {
-			
-			if(form.getDevice_orgs() != null && form.getDevice_orgs().length > 0) {
-				List<CcOrgRelationship> entityList = new ArrayList<>(12);
-				CcOrgRelationship ent = null;
-				String now = DateUtil.nowStr();
-				String device_org_code = null;
-				for(int i = 0, size = form.getDevice_orgs().length; i < size; i ++) {
-					device_org_code = form.getDevice_orgs()[i];
-					if(!StringUtils.isEmpty(StringUtils.trim(device_org_code))) {
-						
-						ent = new CcOrgRelationship();
-						ent.setCreate_by(info.getLoginName());
-						ent.setCreate_datetime(now);
-						ent.setOrg_id(ccOrg.getOrg_id());
-						ent.setDevice_org_code(device_org_code);
-						entityList.add(ent);
-					}
-				}
-				iCcOrgRelationshipService.saveBatch(entityList);
-			}
-			
-			return 1;
-		}else {
-			return 0;
-		}
+		return iCcOrgMapper.insert(ccOrg);
 		
 		
 	}
@@ -422,48 +366,7 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 		if(orgInfo != null && (orgInfo.getOrg_id() - org.getOrg_id()!= 0)) {
 			throw new BusinessException(String.format("系统提示： 该【%s】机构已存在！", org.getName()));
 		}
-		
-		QueryWrapper<CcOrgRelationship> queryWrapper = new QueryWrapper<>();
-		queryWrapper.eq("org_id", org.getOrg_id());
-		iCcOrgRelationshipService.remove(queryWrapper);
-		
-		//如果关联车辆网机构字段不为空，一个车辆网机构只能关联一个流量平台机构
-		if(org.getDevice_orgs() != null && org.getDevice_orgs().length > 0) {
-			
-			StringBuilder orgs = new StringBuilder();
-			queryWrapper = new QueryWrapper<>();
-			queryWrapper.in("device_org_code", org.getDevice_orgs());
-			List<CcOrgRelationship> list = iCcOrgRelationshipService.list(queryWrapper);
-			
-			if(!CollectionUtils.isEmpty(list)) {
-				list.forEach(temp -> {
-					orgs.append(temp.getDevice_org_code());
-				});
-				
-				throw new FormValidateException(String.format("系统提示： 设备中心机构【%s】已存在关联关系,请勿重复关联！", orgs.toString()), "device_orgs", org.buildJsonString());
-			}else {
-				List<CcOrgRelationship> entityList = new ArrayList<>(12);
-				CcOrgRelationship ent = null;
-				String now = DateUtil.nowStr();
-				String device_org_code = null;
-				for(int i = 0, size = org.getDevice_orgs().length; i < size; i ++) {
-					device_org_code = org.getDevice_orgs()[i];
-					if(!StringUtils.isEmpty(StringUtils.trim(device_org_code))) {
-						
-						ent = new CcOrgRelationship();
-						ent.setCreate_by(info.getLoginName());
-						ent.setCreate_datetime(now);
-						ent.setOrg_id(org.getOrg_id());
-						ent.setDevice_org_code(device_org_code);
-						entityList.add(ent);
-					}
-				}
-				iCcOrgRelationshipService.saveBatch(entityList);
-			}
-			
-		}
-		
-		
+
 		CcOrg ccOrg = new CcOrg();
 		BeanUtils.copyProperties(org, ccOrg);
 		
@@ -502,10 +405,6 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 			}
 			
 		}
-		
-		QueryWrapper<CcOrgRelationship> queryWrapper = new QueryWrapper<>();
-		queryWrapper.in("org_id", orgs);
-		iCcOrgRelationshipService.remove(queryWrapper);
 		
 		return iCcOrgMapper.deleteBatchIds(Arrays.asList(orgs));
 		
@@ -585,22 +484,7 @@ public class CcOrgServiceImpl extends ServiceImpl<ICcOrgMapper, CcOrg> implement
 		CcOrgDetailBean data = new CcOrgDetailBean();
 		BeanUtils.copyProperties(org, data);
 		
-		QueryWrapper<CcOrgRelationship> queryWrapper = new QueryWrapper<>();
-		queryWrapper.eq("org_id", org_id);
-		List<CcOrgRelationship> deviceOrgs = iCcOrgRelationshipService.list(queryWrapper);
-		
-		if(CollectionUtils.isEmpty(deviceOrgs)) {
-			return data;
-		}else {
-			
-			final List<String> oos = new ArrayList<>(12);
-			deviceOrgs.forEach(item -> {
-				oos.add(item.getDevice_org_code());
-			});
-			
-			data.setDevice_orgs(oos);
-			return data;
-		}
+		return data;
 	}
 
 }

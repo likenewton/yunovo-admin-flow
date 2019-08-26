@@ -119,12 +119,7 @@ public class CcGprsBatchForm extends BaseForm implements Serializable {
 	@Range(min = 0, max = 5, message="请填选择正确流量卡商", groups= {InsertGroupValidate.class})
 	@ApiModelProperty(value = "卡的类型:0未知卡,1智网吉林,2智网JASPER卡,3吉林长春,4智网定向卡")
 	private Integer card_type;
-	
-	
-	@NotNull(message="请选择SIM卡类型", groups= {InsertGroupValidate.class})
-	@Range(min = 0, max = 1, message="请填选择正确的SIM卡类型", groups= {InsertGroupValidate.class})
-	@ApiModelProperty(value = "SIM卡类型:1贴片卡,0插拔卡")
-	private Short sim_type;
+
 	
 	@NotNull(message="请上传对应的文件", groups= {InsertGroupValidate.class})
 	@ApiModelProperty("文件")

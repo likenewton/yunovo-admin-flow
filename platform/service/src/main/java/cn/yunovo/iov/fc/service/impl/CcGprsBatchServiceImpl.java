@@ -342,7 +342,6 @@ public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGp
 			for (GprsBatchBean gprsBatchBean : cards) {
 				card_data = new CcGprsCard();
 				card_data.setCard_type(form.getCard_type());
-				card_data.setSim_type(form.getSim_type());
 				card_data.setCard_sn(gprsBatchBean.getMSISDN());
 				card_data.setCard_iccid(gprsBatchBean.getICCID());
 				card_data.setCard_imsi(gprsBatchBean.getIMSI());
@@ -368,7 +367,6 @@ public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGp
 						if(cardCache != null) {
 							
 							cardCache.setBatch_id(batch_id);
-							card_data.setSim_type(form.getSim_type());
 							cardCache.setOrg_id(card_data.getOrg_id());
 							cardCache.setCard_type(card_data.getCard_type());
 							iCcGprsCardService.cacheCardInfo(cardCache);
