@@ -74,7 +74,7 @@ public class LogAspect {
 			}else {
 				logBean.setError(true);
 				logBean.setErrorCode("500");
-				logBean.setErrorMsg(ExceptionUtils.getStackTrace(e));
+				logBean.setErrorMsg(e.getMessage());
 			}
 			
 			this.log(logBean);
@@ -86,7 +86,11 @@ public class LogAspect {
 			if(result == null) {
 				
 			}else if(result instanceof Result) {
-				op.setResult(JSONObject.toJSONString(result));
+
+				Result resultData = new Result();
+				resultData.setStatus(((Result) result).getStatus());
+				resultData.setMsg(((Result) result).getMsg());
+				op.setResult(JSONObject.toJSONString(resultData));
 			}else {
 				op.setResult(result.toString());
 			}
