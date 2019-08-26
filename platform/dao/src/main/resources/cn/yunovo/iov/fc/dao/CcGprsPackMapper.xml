@@ -4,7 +4,7 @@
 
 	<select id="getPack" resultType="cn.yunovo.iov.fc.model.entity.CcGprsPack">
 	
-		SELECT pack_id,gprs_amount FROM cc_gprs_pack
+		SELECT pack_id,gprs_amount FROM cc_gprs_pack WHERE 1 = 1
 		
 		<choose>
 			<when test='orgpos == "*"'>
