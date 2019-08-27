@@ -58,5 +58,15 @@ public interface ICcGprsBatchService extends IService<CcGprsBatch> {
 	CcGprsBatch getInfoByBatchId(Integer batch_id, LoginInfo info);
 
 	boolean updateBatchInfo(CcGprsBatchForm form, LoginInfo info);
+
+	/**
+	 * 判断当前机构下是否存在相同配置的批次信息
+	 * @param org_id 出货批次机构id
+	 * @param device_org_code 设备中心机构id
+	 * @param pro_name 项目型号
+	 * @param sim_type 卡类型
+	 * @return 批次信息
+	 */
+	public CcGprsBatch check(Integer org_id, String device_org_code, String pro_name, Short sim_type);
 	
 }

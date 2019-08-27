@@ -12,6 +12,7 @@ import cn.yunovo.iov.fc.model.SelectBean;
 import cn.yunovo.iov.fc.model.entity.CcGprsBatch;
 import cn.yunovo.iov.fc.model.entity.CcGprsCard;
 import cn.yunovo.iov.fc.model.entity.CcOrg;
+import cn.yunovo.iov.fc.model.exception.FormValidateException;
 import cn.yunovo.iov.fc.model.form.CcGprsBatchForm;
 import cn.yunovo.iov.fc.model.result.BatchSaveResultBean;
 import cn.yunovo.iov.fc.model.result.GprsBatchBean;
@@ -35,11 +36,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
@@ -91,7 +88,12 @@ public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGp
 	
 	@Autowired
 	private ICcCardLogService iCcCardLogService;
-	
+
+	@Override
+	public boolean saveBatch(Collection<CcGprsBatch> entityList, int batchSize) {
+		return super.saveBatch(entityList, batchSize);
+	}
+
 	@Override
 	public PageData<CcGprsBatch, Object> getItemsPage(PageForm form, Integer org_id, String batch_sn, String date_start,
 			String date_end, LoginInfo info) {
@@ -316,8 +318,13 @@ public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGp
 		BeanUtils.copyProperties(form, batch);
 		batch.setTime_added(DateUtil.nowStr());
 		batch.setCreate_by(info.getLoginName());
-//		batch.setUser_id(info.getId());
-		//batch.setUser_id(0);
+
+		if(batch.getSim_type() == 0){
+			batch.setPro_name("");
+			batch.setDevice_org_code("");
+		}
+		this.check(form.getOrg_id(), form.getDevice_org_code(),form.getPro_name(),form.getSim_type());
+
 		if(!this.save(batch)) {
 			log.error("[save][保存批次信息出错]params={form:{},info:{}}", form.buildJsonString(), JSONObject.toJSONString(info));
 			throw new BusinessException(-1, "系统提示：保存批次信息出错");
@@ -484,6 +491,34 @@ public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGp
         //batch.setPro_name(form.getPro_name());
 		return this.updateById(batch);
 	}
-	
+
+	@Override
+	public CcGprsBatch check(Integer org_id, String device_org_code, String pro_name, Short sim_type){
+
+		JSONObject form = new JSONObject();
+		form.put("org_id", org_id);
+		form.put("device_org_code", device_org_code);
+		form.put("pro_name", pro_name);
+		form.put("sim_type", sim_type);
+		if(org_id == null){
+			return null;
+		}
+
+		if(sim_type == null || sim_type == 0 || StringUtils.isEmpty(device_org_code) || StringUtils.isEmpty(pro_name)){
+			return null;
+		}
+		//根据对应的条件获取批次信息
+		CcGprsBatch batch = this.iCcGprsBatchMapper.getByDeviceOrgAndProNameAndSimtype(device_org_code,pro_name,sim_type);
+		//如果为空则直接结束
+		//否则判断机构id是否一致，如果一致则返回状态码 1前端提示是否覆盖，否则返回-1 机构错误
+		if(batch == null){
+			return null;
+		}else if(org_id - batch.getOrg_id() != 0){
+			log.warn("[check][机构填写有误]params={}", form.toJSONString());
+			throw new BusinessException(-1, "请确认机构映射关系配置是否有误");
+		}else{
+			return batch;
+		}
+	}
 	
 }

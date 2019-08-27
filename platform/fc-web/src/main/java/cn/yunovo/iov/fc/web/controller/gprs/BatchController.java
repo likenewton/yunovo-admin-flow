@@ -96,6 +96,21 @@ public class BatchController extends BaseController{
 		//BatchSaveResultBean result = iCcGprsBatchService.saveBatch(form, this.getLoginBaseInfo());
 		//return ResultUtil.successCN(result);
 	}
+
+	@OpLog(opType=OpTypeEnum.QUERY, opName="业务管理-卡批次新增配置校验")
+	@ApiOperation(value="业务管理-卡批次新增配置校验")
+	@ApiImplicitParams(value = {
+			@ApiImplicitParam(name = "org_id", value = "出货批次机构id", required = false, dataType = "int",paramType = "query"),
+			@ApiImplicitParam(name = "device_org_code", value = "设备中心机构代码", required = false, dataType = "String",paramType = "query"),
+			@ApiImplicitParam(name = "pro_name", value = "项目型号", required = false, dataType = "String",paramType = "query"),
+			@ApiImplicitParam(name = "sim_type", value = "卡类型", required = false, dataType = "short",paramType = "query")
+	})
+	@RequestMapping(path="/check",method= {RequestMethod.GET})
+	public Result<CcGprsBatch> check(Integer org_id, String device_org_code, String pro_name, Short sim_type) {
+
+		CcGprsBatch batch = iCcGprsBatchService.check(org_id, device_org_code, pro_name, sim_type);
+		return ResultUtil.success(batch);
+	}
 	
 	
 }

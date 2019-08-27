@@ -26,4 +26,16 @@ public interface ICcGprsBatchMapper extends BaseMapper<CcGprsBatch> {
 	public CcGprsBatch getGiveInfoByBatchId(Integer batch_id);
 	
 	public int updateCardAmount();
+
+	/**
+	 *SELECT
+	 * batch_id,batch_sn,batch_name,allot_month,allot_value,allot_reset,live_month,give_value,give_live_month,wszl_value,
+	 * wszl_live_month,bind_value,bind_live_month,time_added,sim_type,device_org_code,pro_name
+	 * FROM cc_gprs_batch
+	 * where device_org_code = ? and pro_name = ? and sim_type = ?
+	 * ORDER BY time_added DESC
+	 * LIMIT 1
+	 * @return 批次信息
+	 */
+    CcGprsBatch getByDeviceOrgAndProNameAndSimtype(@Param("device_org_code") String device_org_code, @Param("pro_name")String pro_name, @Param("sim_type")Short sim_type);
 }
