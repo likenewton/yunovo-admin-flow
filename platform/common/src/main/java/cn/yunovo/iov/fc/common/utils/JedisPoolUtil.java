@@ -32,7 +32,7 @@ import redis.clients.jedis.exceptions.JedisDataException;
  */ 
 public class JedisPoolUtil { 
 	
-    private static final int DEFAULT_SETEX_TIMEOUT = 60 * 60;// setex的默认时间  
+    private static final int DEFAULT_SETEX_TIMEOUT = 30 * 60;// setex的默认时间
   
     private JedisPool jedisPool;
     
