@@ -345,6 +345,8 @@ public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGp
 				card_data.setCard_sn(gprsBatchBean.getMSISDN());
 				card_data.setCard_iccid(gprsBatchBean.getICCID());
 				card_data.setCard_imsi(gprsBatchBean.getIMSI());
+                card_data.setSim_type(batch.getSim_type());
+
 				/**
 				 * 如果导入ICCID卡已存在，则更新ICCID的相关信息
 				 */
@@ -354,7 +356,7 @@ public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGp
 					card_data.setBatch_id(batch_id);
 					card_data.setCard_id(res.getCard_id());
 					card_data.setOrg_id(batch.getOrg_id());
-					
+                    card_data.setSim_type(batch.getSim_type());
 					/**
 					 * 如果ICCID卡已经激活使用，只需要更新机构编号与卡类型
 					 */
@@ -369,6 +371,7 @@ public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGp
 							cardCache.setBatch_id(batch_id);
 							cardCache.setOrg_id(card_data.getOrg_id());
 							cardCache.setCard_type(card_data.getCard_type());
+                            cardCache.setSim_type(batch.getSim_type());
 							iCcGprsCardService.cacheCardInfo(cardCache);
 							
 							card_data.setMax_unused(cardCache.getMax_unused() - 0.01);
@@ -478,6 +481,7 @@ public class CcGprsBatchServiceImpl extends ServiceImpl<ICcGprsBatchMapper, CcGp
 		batch.setDistrict_id(form.getDistrict_id());
 		batch.setTime_modify(DateUtil.nowStr());
 		batch.setUpdate_by(info.getLoginName());
+        //batch.setPro_name(form.getPro_name());
 		return this.updateById(batch);
 	}
 	

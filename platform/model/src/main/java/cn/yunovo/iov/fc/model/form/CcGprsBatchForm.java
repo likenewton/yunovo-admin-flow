@@ -8,6 +8,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -120,7 +121,19 @@ public class CcGprsBatchForm extends BaseForm implements Serializable {
 	@ApiModelProperty(value = "卡的类型:0未知卡,1智网吉林,2智网JASPER卡,3吉林长春,4智网定向卡")
 	private Integer card_type;
 
-	
+	@NotNull(message="SIM卡类型", groups= {InsertGroupValidate.class})
+	@Range(min = 0, max = 1, message="请填选择正确的SIM卡类型", groups= {InsertGroupValidate.class})
+	@ApiModelProperty(value = "SIM卡类型:1贴片卡,0插拔卡")
+	private Short sim_type;
+
+	@Length(max = 32, message = "请选择一个有效的设备中心机构代码", groups = {InsertGroupValidate.class})
+	@ApiModelProperty(value = "设备中心机构代码")
+	private String device_org_code;
+
+	@Length(max = 50, message = "请输入一个合法的项目型号", groups = {InsertGroupValidate.class, UpdateGroupValidate.class})
+	@ApiModelProperty(value = "项目型号")
+	private String pro_name;
+
 	@NotNull(message="请上传对应的文件", groups= {InsertGroupValidate.class})
 	@ApiModelProperty("文件")
 	private MultipartFile file;

@@ -117,6 +117,9 @@ public class CcGprsCard implements Serializable {
 	@ApiModelProperty(value = "上次停号时间")
 	private String time_stop;
 
+	@ApiModelProperty(value = "SIM卡类型:1贴片卡,0插拔卡")
+	private Short sim_type;
+
 	@ApiModelProperty(value = "过期时间")
 	private String time_expire;
 	
