@@ -28,14 +28,14 @@
           </el-select>
         </el-form-item>
         <!-- new start -->
-        <el-form-item prop="sim_type">
+<!--         <el-form-item prop="sim_type">
           <span slot="label">SIM卡类型：</span>
           <el-radio-group v-model="formInline.sim_type" :disabled="isUpdate">
             <el-radio :label="1">贴片卡</el-radio>
             <el-radio :label="0">插拔卡</el-radio>
           </el-radio-group>
           <div class="annotation">贴片卡机构归属与设备软件版本机构同步，插拔卡则固定与入库时机构配置为准</div>
-        </el-form-item>
+        </el-form-item> -->
         <!-- new end -->
         <el-form-item prop="province_id">
           <span slot="label">销往省份：</span>
@@ -281,17 +281,15 @@ export default {
     // 省级选择
     provinceSelect(id) {
       this.setRegionData(id, 'cityData')
-      let formInline = this.formInline
-      delete formInline.city_id
-      delete formInline.district_id
+      this.$delete(this.formInline, 'city_id')
+      this.$delete(this.formInline, 'district_id')
       this.$nextTick(() => {
         this.$refs.ruleForm.clearValidate('city_id')
       })
     },
     citySelect(id) {
       this.setRegionData(id, 'districtData')
-      let formInline = this.formInline
-      delete formInline.district_id
+      this.$delete(this.formInline, 'district_id')
     },
     getNations(parent = 1, cb) {
       _axios.send({
@@ -338,9 +336,9 @@ export default {
               }
             })
             if (!flag) {
-              this.formInline.province_id = undefined
-              this.formInline.city_id = undefined
-              this.formInline.district_id = undefined
+              this.$delete(this.formInline, 'province_id')
+              this.$delete(this.formInline, 'city_id')
+              this.$delete(this.formInline, 'district_id')
               this.$nextTick(() => {
                 this.$refs.ruleForm.clearValidate('city_id')
               })
@@ -353,8 +351,8 @@ export default {
               }
             })
             if (!flag) {
-              this.formInline.city_id = undefined
-              this.formInline.district_id = undefined
+              this.$delete(this.formInline, 'city_id')
+              this.$delete(this.formInline, 'district_id')
             }
           } else if (key === 'districtData') {
             let flag = false
@@ -364,7 +362,7 @@ export default {
               }
             })
             if (!flag) {
-              this.formInline.district_id = undefined
+              this.$delete(this.formInline, 'district_id')
             }
           }
         }

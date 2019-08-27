@@ -1,6 +1,6 @@
 module.exports = {
-  // 获取权限菜单列表
-  getAuthMenu(asideData = [], resources = []) {
+
+  getAuthMenu(asideData = [], resources = []) { // 获取权限菜单列表
     // 排序
     resources.sort((v1, v2) => {
       return v1.seqNum - v2.seqNum
@@ -26,8 +26,8 @@ module.exports = {
     })
     return newRecource
   },
-  // 获取菜单动态路由
-  getMenuRoute(menuRoute = [], resources = []) {
+
+  getMenuRoute(menuRoute = [], resources = []) { // 获取菜单动态路由
     menuRoute.children.forEach((v1, i1) => {
       let level_1 = false
       resources.forEach((r1, j1) => {
@@ -53,16 +53,8 @@ module.exports = {
     })
     return menuRoute
   },
-  // 获取当前页面某个字段求和
-  pageSums(data, key) {
-    let sum = 0
-    data.forEach((v) => {
-      sum += Number(v[key]) || 0
-    })
-    return sum
-  },
-  // 设置升降序字段
-  setSortSearch(val, _this, sort = 'sort') {
+
+  setSortSearch(val, _this, sort = 'sort') { // 设置升降序字段
     if (!val.prop) return _this[sort] = {}
     if (val.order === 'descending') { // 降序
       _this[sort] = {
@@ -76,8 +68,16 @@ module.exports = {
       _this[sort] = {}
     }
   },
-  // 获取列表数据（通用） this, url, list, formInline, sort
-  getListData(paras) {
+
+  pageSums(data, key) { // 获取当前页面某个字段求和
+    let sum = 0
+    data.forEach((v) => {
+      sum += Number(v[key]) || 0
+    })
+    return sum
+  },
+
+  getListData(paras) { // 获取列表数据
     let para = paras
     let list = para.vue[para.list || 'list']
     let sort = para.vue[para.sort || 'sort']
@@ -102,8 +102,7 @@ module.exports = {
     })
   },
 
-  // 限制小数位数和整数位数 num1(整数)， num2(小数)
-  limitNumber(val, num1 = 8, num2 = 3) {
+  limitNumber(val, num1 = 8, num2 = 3) { // 限制小数位数和整数位数 num1(整数)， num2(小数)
     let expStr = ''
     if (num2 === 0) {
       // 如果是整数
@@ -125,8 +124,7 @@ module.exports = {
     return value
   },
 
-  // 加载动画
-  loading(vue, paras = {
+  loading(vue, paras = { // 加载动画
     lock: true,
     text: 'Loading',
     spinner: 'el-icon-loading',
@@ -144,8 +142,7 @@ module.exports = {
     return size
   },
 
-  // 获取页面面包屑数组
-  getBreadArr(name, authMenu) {
+  getBreadArr(name, authMenu) { // 获取页面面包屑数组
     let breadArr = []
     if (name === 'home') return [, , '首页']
     authMenu.forEach((v1) => {

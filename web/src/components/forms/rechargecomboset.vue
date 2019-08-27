@@ -8,7 +8,7 @@
         <el-form-item prop="org_id">
           <span slot="label">机构名称：</span>
           <el-select v-model="formInline.org_id" filterable placeholder="请选择机构">
-            <el-option :key="Newton" label="公共套餐" value="0"></el-option>
+            <el-option :key="Newton" label="公共套餐" :value="0"></el-option>
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value - 0"></el-option>
           </el-select>
         </el-form-item>

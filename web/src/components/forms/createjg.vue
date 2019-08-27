@@ -24,11 +24,11 @@
           <span slot="label">异步通知地址：</span>
           <el-input v-model="formInline.notify_url" placeholder="请输入异步通知地址"></el-input>
         </el-form-item>
-        <el-form-item prop="device_orgs">
+        <!-- <el-form-item prop="device_orgs">
           <span slot="label">设备中心机构关联：</span>
           <el-transfer v-model="formInline.device_orgs" :props="{key: 'value'}" :data="devOrgs" target-order="unshift" filterable :titles="['未关联', '已关联']" :render-content="renderFunc"></el-transfer>
           <div class="annotation">此配置用于同步SIM卡与设备机构归属</div>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item prop="memo">
           <span slot="label">机构描述：</span>
           <el-input type="textarea" v-model="formInline.memo" rows="4" placeholder="请输入"></el-input>

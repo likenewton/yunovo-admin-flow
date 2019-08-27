@@ -136,3 +136,24 @@
 // ::-webkit-scrollbar-track {
 //   background: #EBEEF5;
 // }
+
+#app .table-expand {
+  font-size: 0;
+
+  * {
+    line-height: 32px;
+  }
+
+  label {
+    width: 120px;
+    color: #99a9bf;
+    text-align: right;
+  }
+
+  .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+    width: 100%;
+
+  }
+}
