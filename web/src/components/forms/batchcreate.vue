@@ -44,7 +44,7 @@
         </el-form-item>
         <el-form-item prop="pro_name" v-if="formInline.sim_type === 1">
           <span slot="label">设备项目型号：</span>
-          <el-input v-model="formInline.pro_name" placeholder="请输入"></el-input>
+          <el-input v-model="formInline.pro_name" placeholder="请输入" :disabled="isUpdate"></el-input>
         </el-form-item>
         <!-- new end -->
         <el-form-item prop="province_id">
