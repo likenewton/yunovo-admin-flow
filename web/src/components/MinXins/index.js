@@ -71,6 +71,7 @@ export default {
     },
     expNumStr: Api.UNITS.expNumStr,
     showMsgBox: Api.UNITS.showMsgBox,
+    showCfmBox: Api.UNITS.showCfmBox,
     limitNumber: Api.UNITS.limitNumber,
     formatMoney: Api.UNITS.formatMoney,
     toUnicomLink: Api.UNITS.toUnicomLink,
@@ -82,6 +83,7 @@ export default {
     ...mapState({
       orgs: 'orgs', // 机构
       months: 'months', // 月份
+      simType: 'simType', // sim卡类型
       authMenu: 'authMenu', // 菜单权限
       paySelect: 'paySelect',
       cardTypes: 'cardTypes', // 卡商列表

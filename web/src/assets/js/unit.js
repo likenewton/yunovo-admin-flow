@@ -388,6 +388,20 @@ module.exports = {
       duration: isNaN(para.duration) ? 4500 : para.duration
     })
   },
+  showCfmBox(para = {}) { // 确认框
+    Vue.prototype.$confirm(`${para.message || '确定执行该操作吗？'}`, '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: para.type || 'warning'
+    }).then(() => {
+      para.cb && para.cb()
+    }).catch(() => {
+      this.showMsgBox({
+        type: 'info',
+        message: '操作已取消'
+      })
+    })
+  },
   toUnicomLink(iccid) {
     // let width = $(window).width() / 1.5
     let width = 500

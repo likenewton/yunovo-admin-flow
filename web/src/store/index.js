@@ -14,6 +14,7 @@ const state = {
   cardTypes: [], // 卡商列表
   orgs: [], // 机构列表
   months: [], // 月份列表
+  simType: [{ label: '贴片卡', value: 1 }, { label: '插拔卡', value: 0 }],
   notifysFrom: [], // 通知来源
   payMethodSelect: [], // 付款方式
   liveMonthSelect: [], // 有效周期

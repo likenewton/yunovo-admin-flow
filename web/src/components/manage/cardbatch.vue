@@ -42,15 +42,24 @@
               <el-form-item label="销往城市：">
                 <span>{{props.row.province_name}}{{props.row.city_name}}</span>
               </el-form-item>
+              <el-form-item label="SIM卡类型：">
+                <span>{{props.row.sim_type | valueToLabel(simType)}}</span>
+              </el-form-item>
+              <el-form-item label="设备ROM包机构编码：">
+                <span>{{props.row.device_org_code | valueToLabel(devOrgs) || '无'}}</span>
+              </el-form-item>
+              <el-form-item label="设备项目型号：">
+                <span>{{props.row.pro_name || '无'}}</span>
+              </el-form-item>
               <el-form-item label="批次备注：">
                 <span>{{props.row.batch_memo}}</span>
-              </el-form-item>              
+              </el-form-item>
               <el-form-item label="添加时间：">
                 <span>{{props.row.time_added}}</span>
-              </el-form-item>              
+              </el-form-item>
               <el-form-item label="操作者：">
                 <span>{{props.row.create_by}}</span>
-              </el-form-item>              
+              </el-form-item>
               <el-form-item label="更改者：">
                 <span>{{props.row.update_by}}</span>
               </el-form-item>
@@ -81,6 +90,13 @@
             <span>{{scope.row.province_name}}{{scope.row.city_name}}</span>
           </template>
         </el-table-column>
+        <el-table-column v-if="checkedData.includes('sim_type')" prop="sim_type" label="SIM卡类型" width="96" sortable="custom">
+          <template slot-scope="scope">{{scope.row.sim_type | valueToLabel(simType)}}</template>
+        </el-table-column>
+        <el-table-column v-if="checkedData.includes('device_org_code')" prop="device_org_code" label="设备ROM包机构编码" min-width="160" show-overflow-tooltip sortable="custom">
+          <template slot-scope="scope">{{scope.row.device_org_code | valueToLabel(devOrgs)}}</template>
+        </el-table-column>
+        <el-table-column v-if="checkedData.includes('pro_name')" prop="pro_name" label="设备项目型号" width="110" sortable="custom"></el-table-column>
         <el-table-column v-if="checkedData.includes('batch_memo')" prop="batch_memo" label="批次备注" min-width="150" sortable="custom" show-overflow-tooltip></el-table-column>
         <el-table-column v-if="checkedData.includes('time_added')" prop="time_added" label="添加时间" width="153" sortable="custom"></el-table-column>
         <el-table-column v-if="checkedData.includes('user_id')" prop="user_id" label="操作者" width="100" sortable="custom">
@@ -101,16 +117,26 @@
       </el-table>
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix"></el-pagination>
     </el-card>
-    <el-dialog title="高级查询" :visible.sync="searchVipVisible" width="630px" :close-on-click-modal="false">
+    <el-dialog title="高级查询" :visible.sync="searchVipVisible" width="690px" :close-on-click-modal="false">
       <div slot>
         <div class="searchForm_vip" style="width:100%;overflow: auto">
-          <el-form :inline="false" :model="formInline" size="small" label-width="90px" v-loading="loadData">
+          <el-form :inline="false" :model="formInline" size="small" label-width="145px" v-loading="loadData">
             <el-form-item label="批次编号">
               <el-input v-model="formInline.batch_sn" placeholder="请输入"></el-input>
             </el-form-item>
             <el-form-item label="机构名称">
               <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择">
                 <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="SIM卡类型">
+              <el-select v-model="formInline.sim_type" filterable clearable placeholder="请选择">
+                <el-option v-for="(item, index) in simType" :key="index" :label="item.label" :value="item.value"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="设备ROM包机构编码">
+              <el-select v-model="formInline.device_org_code" filterable placeholder="请选择">
+                <el-option v-for="(item, index) in devOrgs" :key="index" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="添加时间">
@@ -136,7 +162,7 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
-      size: Api.UNITS.getSize(),
+      devOrgs: [],
       // === 列表显示控制静态数据 ===
       checkboxData: [{
         label: '批次名称',
@@ -160,6 +186,15 @@ export default {
         label: '销往城市',
         value: 'city_name'
       }, {
+        label: 'SIM卡类型',
+        value: 'sim_type'
+      }, {
+        label: '设备ROM包机构编码',
+        value: 'device_org_code'
+      }, {
+        label: '设备项目型号',
+        value: 'pro_name'
+      }, {
         label: '批次备注',
         value: 'batch_memo'
       }, {
@@ -172,11 +207,12 @@ export default {
         label: '更改者',
         value: 'alter_id'
       }],
-      defaultData: ['batch_name', 'org_id', 'gprs_amount', 'live_month', 'card_amount', 'time_added'],
+      defaultData: ['batch_name', 'org_id', 'gprs_amount', 'live_month', 'card_amount', 'sim_type'],
       checkedData: [],
     }
   },
   mounted() {
+    this.getDeviceOrgs()
     this.checkGet()
     this.getData()
   },
@@ -201,7 +237,19 @@ export default {
     getLiveMonthAlias(value) {
       let item = this.liveMonthSelect.filter((v) => v.value == value)[0]
       return item ? item.label : ''
-    }
+    },
+    getDeviceOrgs() { // 获取机构中心机构列表
+      _axios.send({
+        method: 'get',
+        url: _axios.ajaxAd.getDeviceOrgs,
+        done: ((res) => {
+          this.devOrgs = res.data || []
+          this.devOrgs.forEach((v) => {
+            v.label = v.label + `(${v.value})`
+          })
+        })
+      })
+    },
   },
   computed: {
     // 起始时间约数
@@ -234,6 +282,10 @@ export default {
 
   .el-date-editor .el-range-separator {
     width: auto;
+  }
+
+  .table-expand label {
+    width: 165px !important;
   }
 }
 

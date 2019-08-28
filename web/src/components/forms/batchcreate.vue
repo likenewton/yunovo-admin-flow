@@ -28,14 +28,24 @@
           </el-select>
         </el-form-item>
         <!-- new start -->
-<!--         <el-form-item prop="sim_type">
+        <el-form-item prop="sim_type">
           <span slot="label">SIM卡类型：</span>
           <el-radio-group v-model="formInline.sim_type" :disabled="isUpdate">
-            <el-radio :label="1">贴片卡</el-radio>
-            <el-radio :label="0">插拔卡</el-radio>
+            <el-radio v-for="(item, index) in simType" :key="index" :label="item.value">{{item.label}}</el-radio>
           </el-radio-group>
-          <div class="annotation">贴片卡机构归属与设备软件版本机构同步，插拔卡则固定与入库时机构配置为准</div>
-        </el-form-item> -->
+          <div class="annotation">贴片卡机构归属与设备ROM包机构编码&项目型号关联同步，插拔卡则固定与入库时机构配置为准</div>
+        </el-form-item>
+        <el-form-item prop="device_org_code" v-if="formInline.sim_type === 1">
+          <span slot="label">设备ROM包机构编码：</span>
+          <el-select v-model="formInline.device_org_code" filterable placeholder="请选择" :disabled="isUpdate">
+            <el-option v-for="(item, index) in devOrgs" :key="index" :label="item.label" :value="item.value"></el-option>
+          </el-select>
+          <div class="annotation">务必确认无误后进行设置，一经确认无法编辑修改</div>
+        </el-form-item>
+        <el-form-item prop="pro_name" v-if="formInline.sim_type === 1">
+          <span slot="label">设备项目型号：</span>
+          <el-input v-model="formInline.pro_name" placeholder="请输入"></el-input>
+        </el-form-item>
         <!-- new end -->
         <el-form-item prop="province_id">
           <span slot="label">销往省份：</span>
@@ -186,6 +196,7 @@ export default {
         sim_type: 0,
         allot_month: 1
       },
+      devOrgs: [],
       formData: new FormData(), // new FormData() 对象
       fileList: [], // 文件上传列表
       rules: {
@@ -236,6 +247,16 @@ export default {
           message: '请选择SIM卡类型',
           trigger: 'change'
         }],
+        device_org_code: [{
+          required: true,
+          message: '请选择设备ROM包机构编码',
+          trigger: 'change'
+        }],
+        pro_name: [{
+          required: true,
+          message: '请输入设备项目型号',
+          trigger: 'blur'
+        }],
         province_id: [{
           required: true,
           message: '请选择省份',
@@ -271,6 +292,7 @@ export default {
   },
   mounted() {
     this.isUpdate = Api.UNITS.getQuery('type') === 'update'
+    this.getDeviceOrgs()
     if (this.isUpdate) {
       this.getData()
     } else {
@@ -298,6 +320,21 @@ export default {
         params: { parent },
         done: ((res) => {
           cb && cb(res)
+        })
+      })
+    },
+    getDeviceOrgs() { // 获取机构中心机构列表
+      _axios.send({
+        method: 'get',
+        url: _axios.ajaxAd.getDeviceOrgs,
+        done: ((res) => {
+          this.devOrgs = res.data || []
+          this.devOrgs.forEach((v) => {
+            v.label = v.label + `(${v.value})`
+          })
+          Vue.nextTick(() => {
+            this.$refs.ruleForm.clearValidate(['device_org_code'])
+          })
         })
       })
     },
@@ -381,77 +418,105 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          // 提交ajax
-          if (this.isUpdate) { // 修改操作
-            _axios.send({
-              method: 'post',
-              url: _axios.ajaxAd.updateBatch,
-              data: this.formInline,
-              done: ((res) => {
-                if (res.status === 400) {
-                  this.$delete(this.formInline, res.data)
-                  this.$refs.ruleForm.validateField([res.data])
-                } else {
-                  this.$router.push({ name: 'cardbatch' })
-                  setTimeout(() => {
-                    this.showMsgBox({
-                      type: 'success',
-                      message: `操作成功！`
-                    })
-                  }, 150)
+          // 首先校验“设备ROM包机构编码”及“设备项目型号”配置与已有的批次是否重复
+          _axios.send({
+            method: 'get',
+            url: _axios.ajaxAd.simCheck,
+            params: {
+              org_id: this.formInline.org_id,
+              device_org_code: this.formInline.device_org_code,
+              pro_name: this.formInline.pro_name,
+              sim_type: this.formInline.sim_type,
+            },
+            done: ((res) => {
+              if (res.status === 0) {
+                if (res.data) { // data有值就是覆盖
+                  this.showCfmBox({
+                    message: `该批次流量政策将会对已有批次“${res.data.batch_name}”的SIM卡进行覆盖，是否确认保存？`,
+                    cb: () => {
+                      this.saveSubmit()
+                    }
+                  })
+                } else { // data为null就是新增
+                  this.saveSubmit()
                 }
-              })
+              }
             })
-          } else { // 新增操作
-            // 如果上传的文件列表为空
-            if (this.fileList.length === 0) {
-              this.showMsgBox({
-                type: 'error',
-                message: '请选择上传的文件'
-              })
-              return
-            }
-            // 验证通过先将上传的文件与formInline中数据整合
-            this.formData = new FormData()
-            this.formData.append('file', this.fileList[0].raw)
-            for (let key in this.formInline) {
-              this.formData.append(key, this.formInline[key])
-            }
-            _axios.send({
-              method: 'post',
-              url: _axios.ajaxAd.addBatch,
-              data: this.formData,
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              },
-              done: ((res) => {
-                if (res.status === 400) {
-                  this.formInline[res.data] = ''
-                  this.$refs.ruleForm.validateField([res.data])
-                } else {
-                  let data = res.data
-                  this.$router.push({ name: 'cardbatch' })
-                  setTimeout(() => {
-                    this.showMsgBox({
-                      type: 'success',
-                      duration: 0,
-                      message: `操作成功！
-                      批次号 ${data.batch_sn},
-                      本次导入 ${data.iccid_count} 张手机卡,
-                      新增卡 ${data.success_count} 张,
-                      更新卡 ${data.update_count} 张,
-                      失败 ${data.failed_count} 张`
-                    })
-                  }, 150)
-                }
-              })
-            })
-          }
+          })
         } else {
           Api.UNITS.showMsgBox()
           return false;
         }
       });
+    },
+    saveSubmit() { // 最后的保存
+      if (this.isUpdate) { // 修改操作
+        _axios.send({
+          method: 'post',
+          url: _axios.ajaxAd.updateBatch,
+          data: Object.assign({}, this.formInline, { clw_batch_id: this.formInline.clw_batch_id || 0 }),
+          done: ((res) => {
+            if (res.status === 400) {
+              this.$delete(this.formInline, res.data)
+              this.$refs.ruleForm.validateField([res.data])
+            } else {
+              this.$router.push({ name: 'cardbatch' })
+              setTimeout(() => {
+                this.showMsgBox({
+                  type: 'success',
+                  message: `操作成功！`
+                })
+              }, 150)
+            }
+          })
+        })
+      } else { // 新增操作
+        // 如果上传的文件列表为空
+        if (this.fileList.length === 0) {
+          this.showMsgBox({
+            type: 'error',
+            message: '请选择上传的文件'
+          })
+          return
+        }
+        // 验证通过先将上传的文件与formInline中数据整合
+        this.formData = new FormData()
+        this.formData.append('file', this.fileList[0].raw)
+        for (let key in this.formInline) {
+          if (this.formInline[key]) {
+            this.formData.append(key, this.formInline[key])
+          }
+        }
+        _axios.send({
+          method: 'post',
+          url: _axios.ajaxAd.addBatch,
+          data: this.formData,
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          },
+          done: ((res) => {
+            if (res.status === 400) {
+              this.formInline[res.data] = ''
+              this.$refs.ruleForm.validateField([res.data])
+            } else {
+              let data = res.data
+              this.$router.push({ name: 'cardbatch' })
+              setTimeout(() => {
+                this.showMsgBox({
+                  type: 'success',
+                  duration: 0,
+                  message: `操作成功！
+                      批次号 ${data.batch_sn},
+                      本次导入 ${data.iccid_count} 张手机卡,
+                      新增卡 ${data.success_count} 张,
+                      更新卡 ${data.update_count} 张,
+                      失败 ${data.failed_count} 张`
+                })
+              }, 150)
+            }
+          })
+        })
+      }
     },
     beforeRemove(file) {
       this.fileList = []
