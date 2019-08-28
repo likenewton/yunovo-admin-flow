@@ -1,9 +1,9 @@
 <template>
-  <el-card class="batchcreate_container" shadow="never">
+  <el-card class="batchcreate_container" shadow="never" v-loading="loadData">
     <div slot="header" class="clearfix">
       <span>国家区域</span>
     </div>
-    <el-form v-loading="loadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="140px" size="small" :status-icon="true">
+    <el-form class="editor-form" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="140px" size="small">
       <el-form-item prop="ntname">
         <span slot="label">区域名称：</span>
         <el-input v-model="formInline.ntname" placeholder="请输入区域名称"></el-input>
@@ -36,6 +36,11 @@ export default {
         ntname: [{
           required: true,
           message: '请输入区域名称',
+          trigger: 'blur'
+        }, {
+          min: 2,
+          max: 40,
+          message: '区域名称必须在2~40个字符之间',
           trigger: 'blur'
         }],
         zipcode: [{
@@ -79,10 +84,18 @@ export default {
               url: _axios.ajaxAd.upDateNation,
               data: this.formInline,
               done: ((res) => {
-                this.$router.push({ name: 'nationset', query: { ntid: this.formInline.parent } })
-                setTimeout(() => {
-                  this.$message.success(res.msg || '修改成功')
-                }, 150)
+                if (res.status === 400) {
+                  this.$delete(this.formInline, res.data)
+                  this.$refs.ruleForm.validateField([res.data])
+                } else {
+                  this.$router.push({ name: 'nationset', query: { ntid: this.formInline.parent } })
+                  setTimeout(() => {
+                    this.showMsgBox({
+                      type: 'success',
+                      message: res.msg || '修改成功！'
+                    })
+                  }, 150)
+                }
               })
             })
           } else { // 新增
@@ -91,10 +104,18 @@ export default {
               url: _axios.ajaxAd.addNation,
               data: this.formInline,
               done: ((res) => {
-                this.$router.push({ name: 'nationset', query: { ntid: this.formInline.parent } })
-                setTimeout(() => {
-                  this.$message.success(res.msg || '新增成功')
-                }, 150)
+                if (res.status === 400) {
+                  this.$delete(this.formInline, res.data)
+                  this.$refs.ruleForm.validateField([res.data])
+                } else {
+                  this.$router.push({ name: 'nationset', query: { ntid: this.formInline.parent } })
+                  setTimeout(() => {
+                    this.showMsgBox({
+                      type: 'success',
+                      message: res.msg || '新增成功！'
+                    })
+                  }, 150)
+                }
               })
             })
           }
@@ -102,14 +123,16 @@ export default {
           Api.UNITS.showMsgBox()
           return false;
         }
-      });
+      })
     },
-    // 重置表单
     resetForm(formName) {
       this.$refs[formName].resetFields()
+      this.formInline = {
+        parent: Api.UNITS.getQuery('parent'),
+        ntid: Api.UNITS.getQuery('ntid')
+      }
       this.isUpdate && this.getData()
     },
-    limitNumber: Api.UNITS.limitNumber
   }
 }
 
@@ -124,6 +147,7 @@ export default {
     width: 30%;
     min-width: 250px;
   }
+
 }
 
 </style>

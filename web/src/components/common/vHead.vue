@@ -1,6 +1,5 @@
 <template>
   <div class="inner-head">
-    <v-token></v-token>
     <v-store></v-store>
     <img class="logo" src="../../assets/images/LOGO-188X56.png">
     <i v-if="showMenu" class="el-icon-fontcaidan1 pointer menu-icon" @click="collapseAside"></i>
@@ -10,7 +9,6 @@
     <el-dropdown trigger="click" class="pointer fr" @command="handleCommand">
       <span class="el-dropdown-link">{{userInfo.userName}}<i class="el-icon-caret-bottom el-icon--right"></i></span>
       <el-dropdown-menu slot="dropdown" style="">
-        <!-- <el-dropdown-item command="modify" icon="el-icon-fontxiugaimima1">修改密码</el-dropdown-item> -->
         <el-dropdown-item command="quit" icon="el-icon-fonticon-tuichu">退出</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
@@ -24,6 +22,7 @@
 </template>
 <script>
 import { mapMutations, mapState } from 'vuex'
+import Api from 'assets/js/api.js'
 
 export default {
   name: 'vHead',
@@ -111,6 +110,7 @@ export default {
 
     .logo {
       width: 132px;
+      height: 26px;
       margin-top: -8px;
     }
 
@@ -136,6 +136,8 @@ export default {
 
       img {
         position: absolute;
+        width: 40px;
+        height: 40px;
         top: 0;
         left: 0;
         width: 100%;

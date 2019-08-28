@@ -1,36 +1,87 @@
 module.exports = {
-  // 获取权限菜单
-  getAuthMenu(asideData) {
-    return asideData
+
+  getAuthMenu(asideData = [], resources = []) { // 获取权限菜单列表
+    // 排序
+    resources.sort((v1, v2) => {
+      return v1.seqNum - v2.seqNum
+    })
+    resources.forEach((v) => {
+      v.childResources.sort((v1, v2) => {
+        return v1.seqNum - v2.seqNum
+      })
+    })
+    // 如果后台配置的页面在所有已开发的页面中都找不到不让其加到菜单列表当中
+    let newRecource = []
+    resources.forEach((v1, i1) => {
+      let level_1 = false
+      asideData.forEach((v2, i2) => {
+        if (v1.resUrl === v2.name) {
+          v1.icon = v2.icon
+          level_1 = true
+        }
+      })
+      if (level_1) {
+        newRecource.push(v1)
+      }
+    })
+    return newRecource
   },
-  // 获取当前页面某个字段求和
-  pageSums(data, key) {
+
+  getMenuRoute(menuRoute = [], resources = []) { // 获取菜单动态路由
+    menuRoute.children.forEach((v1, i1) => {
+      let level_1 = false
+      resources.forEach((r1, j1) => {
+        if (v1.name === r1.resUrl) {
+          level_1 = true
+          v1.redirect = `/menu/${r1.resUrl}/${r1.childResources[0].resUrl}`
+          v1.children.forEach((v2, i2) => {
+            let level_2 = false
+            r1.childResources.forEach((r2, j2) => {
+              if (v2.name === r2.resUrl) {
+                level_2 = true
+              }
+            })
+            if (!level_2) {
+              v1.children.splice(i2, 1)
+            }
+          })
+        }
+      })
+      if (!level_1) {
+        menuRoute.children.splice(i1, 1)
+      }
+    })
+    return menuRoute
+  },
+
+  setSortSearch(val, _this, sort = 'sort') { // 设置升降序字段
+    if (!val.prop) return _this[sort] = {}
+    if (val.order === 'descending') { // 降序
+      _this[sort] = {
+        descs: val.prop
+      }
+    } else if (val.order === 'ascending') { // 升序
+      _this[sort] = {
+        ascs: val.prop,
+      }
+    } else { // 不排序
+      _this[sort] = {}
+    }
+  },
+
+  pageSums(data, key) { // 获取当前页面某个字段求和
     let sum = 0
     data.forEach((v) => {
       sum += Number(v[key]) || 0
     })
     return sum
   },
-  // 设置升降序字段
-  setSortSearch(val, _this, sort = 'sort') {
-    if (!val.prop) return _this[sort] = {}
-    if (val.order === 'descending') {
-      _this[sort] = {
-        descs: val.prop
-      }
-    } else if (val.order === 'ascending') {
-      _this[sort] = {
-        ascs: val.prop,
-      }
-    }
-  },
-  // 获取列表数据（通用） this, url, list, formInline, sort
-  getListData(paras) {
+
+  getListData(paras) { // 获取列表数据
     let para = paras
     let list = para.vue[para.list || 'list']
     let sort = para.vue[para.sort || 'sort']
     let formInline = para.vue[para.formInline || 'formInline'] || []
-
     para.vue[para.loadData || 'loadData'] = true
     _axios.send({
       method: para.method || 'get',
@@ -43,15 +94,15 @@ module.exports = {
       }),
       done: (res) => {
         para.vue[para.loadData || 'loadData'] = false
-        list.data = res.data ? res.data.page.records : []
+        para.vue.searchVipVisible = false // 高级查询功能
+        list.data = res.data ? (res.data.page.records ? res.data.page.records : []) : []
         list.total = res.data ? res.data.page.total : 0
         para.cb && para.cb(res)
       }
     })
   },
 
-  // 限制小数位数和整数位数 num1(整数)， num2(小数)
-  limitNumber(val, num1 = 8, num2 = 3) {
+  limitNumber(val, num1 = 8, num2 = 3) { // 限制小数位数和整数位数 num1(整数)， num2(小数)
     let expStr = ''
     if (num2 === 0) {
       // 如果是整数
@@ -63,8 +114,17 @@ module.exports = {
     return val.match(new RegExp(expStr)) && val.match(new RegExp(expStr))[0]
   },
 
-  // 加载动画
-  loading(vue, paras = {
+  expNumStr(val, num1 = 99) {
+    let value = ''
+    val.split('').forEach((v) => {
+      if (/^[0-9a-zA-Z]$/.test(v)) {
+        value += v
+      }
+    })
+    return value
+  },
+
+  loading(vue, paras = { // 加载动画
     lock: true,
     text: 'Loading',
     spinner: 'el-icon-loading',
@@ -75,26 +135,24 @@ module.exports = {
 
   // 获取页面的尺寸
   getSize() {
-    let size = 'medium'
+    let size = 0
     let width = $(window).width()
-    if (width > 1600) size = 'medium'
-    else if (width <= 1600 && width > 1300) size = 'small'
-    else size = 'mini'
+    if (width < 1920) size = 1
+    else if (width < 1440) size = 2
     return size
   },
 
-  // 获取页面面包屑数组
-  getBreadArr(name, authMenu) {
+  getBreadArr(name, authMenu) { // 获取页面面包屑数组
     let breadArr = []
     if (name === 'home') return [, , '首页']
     authMenu.forEach((v1) => {
-      if (v1.name === name) {
-        breadArr.push('首页', v1.title)
+      if (v1.resUrl === name) {
+        breadArr.push('首页', v1.resName)
         return false
       }
-      v1.children.forEach((v2) => {
-        if (v2.name === name) {
-          breadArr.push('首页', v1.title, v2.title)
+      v1.childResources.forEach((v2) => {
+        if (v2.resUrl === name) {
+          breadArr.push('首页', v1.resName, v2.resName)
           return false
         }
       })
@@ -110,13 +168,13 @@ module.exports = {
         breadArr = breadArr.split(',')
       } else {
         // 如果没有数据就代表是直接通过url进入的默认进入 第一个菜单第一项
-        breadArr = ['首页', authMenu[0].title, authMenu[0].children[0].title]
+        breadArr = ['首页', authMenu[0].resName, authMenu[0].childResources[0].resName]
       }
     }
     return breadArr
   },
   // 格式化 流量M / G / T, 默认保留三位小数
-  formatFlowUnit(count, fix = 3, isHtmlStr = true) {
+  formatFlowUnit(count = 0, fix = 3, isHtmlStr = true) {
     count -= 0
     let htmlStr = ''
     if (isHtmlStr) {
@@ -130,8 +188,10 @@ module.exports = {
         htmlStr = `<span>${(count / 1024 / 1024).toFixed(fix)}</span><span style="font-weight:bold" class="text_danger">&nbsp;T</span>`
       }
     } else {
-      if (Math.abs(count / 1024) < 1) {
-        htmlStr = `${count} M`
+      if (isNaN(count) || count == '99999999') {
+        htmlStr = '无限制'
+      } else if (Math.abs(count / 1024) < 1) {
+        htmlStr = `${count.toFixed(fix)} M`
       } else if (Math.abs(count / 1024 / 1024) < 1) {
         htmlStr = `${(count / 1024).toFixed(fix)} G`
       } else {
@@ -140,7 +200,7 @@ module.exports = {
     }
     return htmlStr
   },
-  formatMoney(value, type = 2) {
+  formatMoney(value = 0, type = 2) {
     if (!value) {
       if (type === 0) return '0'
       else return '0.' + '0'.repeat(type)
@@ -158,7 +218,7 @@ module.exports = {
     return value
   },
   // 格式化流量套餐
-  formatComboFlow(val, isHtml = true) {
+  formatComboFlow(val = 0, isHtml = true) {
     let htmlStr = ''
     if (isHtml) {
       if (val == '0.01') {
@@ -168,7 +228,7 @@ module.exports = {
       } else if (val == '99999999') {
         htmlStr = '<span style="font-weight:bold" class="text_danger">无限制</span>'
       } else {
-        htmlStr = this.formatFlowUnit(val, 0)
+        htmlStr = this.formatFlowUnit(val, 3)
       }
     } else {
       if (val == '0.01') {
@@ -178,15 +238,14 @@ module.exports = {
       } else if (val == '99999999') {
         htmlStr = '无限制'
       } else {
-        htmlStr = this.formatFlowUnit(val, 0, false)
+        htmlStr = this.formatFlowUnit(val, 3, false)
       }
     }
     return htmlStr
   },
   // 计算到期时间
-  calcLeftTime(time) {
+  calcLeftTime(time, now) {
     let htmlStr = ''
-    let now = new Date().getTime()
     // ie 下兼容性问题
     if (time) {
       var a = new Date(time).getTime() || new Date(time.replace(/-/g, "/")).getTime()
@@ -281,10 +340,14 @@ module.exports = {
     if (attr) return queryObj[attr]
     else return queryObj
   },
-  maxTableHeight() {
-    let height = $(window).height() - (220 + 300000 / ($(window).height() + 1000))
-    if (height < 400) height = 400
-    return height
+  maxTableHeight(leftHeight = 316) {
+    // let height = $(window).height() - (220 + 300000 / ($(window).height() + 1000))
+    // if (height < 400) height = 400
+    let winWidth = $(window).width()
+    // let zoom = winWidth > 1200 ? winWidth / window.screen.width : 1
+    let zoom = 1
+    let calcHeight = ($(window).height() - leftHeight * zoom) / zoom
+    return calcHeight
   },
   // 时间格式化
   formatdate(date, fmt) {
@@ -320,14 +383,94 @@ module.exports = {
   showMsgBox(para = {}) {
     Vue.prototype.$notify({
       type: para.type || 'error',
-      title: para.title || '错误',
-      message: para.message || '提交的表单数据不符合规范！'
+      title: para.title || (para.type === 'error' || !para.type ? '错误' : '温馨提示'),
+      message: para.message || '提交的表单数据不符合规范！',
+      duration: isNaN(para.duration) ? 4500 : para.duration
+    })
+  },
+  showCfmBox(para = {}) { // 确认框
+    Vue.prototype.$confirm(`${para.message || '确定执行该操作吗？'}`, '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: para.type || 'warning'
+    }).then(() => {
+      para.cb && para.cb()
+    }).catch(() => {
+      this.showMsgBox({
+        type: 'info',
+        message: '操作已取消'
+      })
     })
   },
   toUnicomLink(iccid) {
-    window.open(`http://t.gprs.yunovo.cn/app/main/info?iccid=${iccid}`)
+    // let width = $(window).width() / 1.5
+    let width = 500
+    let left = ($(window).width() - width) / 2
+    window.open(`http://t.gprs.yunovo.cn/app/main/info?iccid=${iccid}`, '_blank', `width=${width},height=700,top=100px,left=${left}px`)
   },
   toFixed(value, total, count = 2) {
     return (value / total * 100).toFixed(count) + '%'
-  }
+  },
+  compatibel_Ie_input() {
+    $('.el-select .el-input__inner').attr("unselectable", "on")
+  },
+  // 导出excel
+  exportExcel(url, params = {}) {
+    let link = `${url}?iov-token=${this.getCookie('iov-token')}`
+    for (let key in params) {
+      if (params[key]) {
+        link += `&${key}=${params[key]}`
+      }
+    }
+    window.open(link, '_self')
+  },
+  // 时间范围约束（一般用于有起止时间的选择器）
+  startDatePicker(vue, end) {
+    return {
+      disabledDate(time) {
+        if (end) {
+          return new Date(end).getTime() <= time.getTime() || time.getTime() > Date.now()
+        } else {
+          return time.getTime() > Date.now()
+        }
+      }
+    }
+  },
+  endDatePicker(vue, start) {
+    return {
+      disabledDate(time) {
+        if (start) {
+          return new Date(start).getTime() - 3600000 * 8 > time.getTime() || time.getTime() > Date.now()
+        } else {
+          return time.getTime() > Date.now()
+        }
+      }
+    }
+  },
+  setCookie(cname, cvalue, exhours) { // 设置cookie
+    let expires = 'expires='
+    if (exhours) {
+      let d = new Date()
+      d.setTime(d.getTime() + (exhours * 60 * 60 * 1000))
+      expires += d.toUTCString()
+      document.cookie = `${cname}=${cvalue};${expires};path=/`
+    } else {
+      document.cookie = `${cname}=${cvalue};path=/`
+    }
+  },
+
+  getCookie(attr) { // 获取cookie
+    let cookieStr = document.cookie
+    let cookieArr = cookieStr.split(';')
+    let cookieObj = {}
+    cookieArr.forEach((v) => {
+      let tplArr = v.split('=')
+      while (tplArr[0].charAt(0) === ' ') {
+        tplArr[0] = tplArr[0].substring(1)
+      }
+      cookieObj[tplArr[0]] = tplArr[1]
+    })
+    if (attr) return cookieObj[attr]
+    else return cookieObj
+  },
 }

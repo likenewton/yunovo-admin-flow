@@ -2,7 +2,7 @@
   <div class="currency_set">
     <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="mini" type="success" @click="$router.push({ name: 'createcurrency' })" icon="el-icon-circle-plus-outline">新增</el-button>
+        <el-button size="small" type="success" @click="$router.push({ name: 'createcurrency' })" :disabled="!pageAuthBtn.FCP_05_002_ADD01">新增</el-button>
       </el-button-group>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" border resizable size="mini">
         <el-table-column prop="title" label="货币名称" min-width="150" sortable="custom">
@@ -12,15 +12,15 @@
           </template>
         </el-table-column>
         <el-table-column prop="code" label="代码" min-width="140" sortable="custom"></el-table-column>
-        <el-table-column prop="value" label="汇率" min-width="140" sortable="custom"></el-table-column>
+        <el-table-column prop="value" label="汇率" min-width="140" sortable="custom" align="right"></el-table-column>
         <el-table-column prop="date_modified" label="最近更新" min-width="140" sortable="custom"></el-table-column>
-        <el-table-column label="管理" width="100">
+        <el-table-column label="管理" width="100" v-if="pageAuthBtn.FCP_05_002_UPDATE01">
           <template slot-scope="scope">
             <el-button type="text" class="text_editor" @click="editorData(scope)">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
   </div>
@@ -30,37 +30,13 @@ import Api from 'assets/js/api.js'
 
 export default {
   data() {
-    return {
-      loadData: true,
-      pageSizes: Api.STATIC.pageSizes,
-      // 列表
-      list: {
-        data: [],
-        pagesize: Api.STATIC.pageSizes[1],
-        currentPage: 1,
-        total: 0,
-      },
-      sort: {},
-      formInline: {}
-    }
+    return {}
   },
   mounted() {
     // 进入页面的时候请求数据
     this.getData()
   },
   methods: {
-    handleSizeChange(val) {
-      this.list.pagesize = val
-      this.getData()
-    },
-    handleCurrentChange(val) {
-      this.list.currentPage = val
-      this.getData()
-    },
-    handleSortChange(val = {}) {
-      Api.UNITS.setSortSearch(val, this)
-      this.getData()
-    },
     editorData(scope) {
       this.$router.push({
         name: 'createcurrency',
@@ -76,9 +52,7 @@ export default {
         vue: this,
         url: _axios.ajaxAd.getCurrency
       })
-    },
-    formatFlowUnit: Api.UNITS.formatFlowUnit,
-    calcLeftTime: Api.UNITS.calcLeftTime
+    }
   }
 }
 

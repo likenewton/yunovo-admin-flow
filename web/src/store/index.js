@@ -5,19 +5,21 @@ import actions from './actions'
 Vue.use(Vuex)
 
 const state = {
-  asideCollapse: false, // 侧边栏折叠状态
+  isLogin: false,
+  asideCollapse: true, // 侧边栏折叠状态
   asideFlag: [], // 面包屑地址导航数据，配合static.js中的数据使用，用于同步面包屑与侧边栏在选中菜单层级的一致性
   dialogVisible: false, // 公共dialog是否显示
   authMenu: [], // 授权可以展示的菜单
-  isLogin: false, // 登录状态
+  authButtons: {}, // 授权页面中的功能按钮权限
   cardTypes: [], // 卡商列表
   orgs: [], // 机构列表
   months: [], // 月份列表
+  simType: [{ label: '贴片卡', value: 1 }, { label: '插拔卡', value: 0 }],
   notifysFrom: [], // 通知来源
   payMethodSelect: [], // 付款方式
   liveMonthSelect: [], // 有效周期
   exceedSelect: [{ value: '1', label: '未过期' }, { value: '0', label: '已过期' }], // 下拉选择是否过期
-  activeSelect: [{ value: '1', label: '未激活' }, { value: '0', label: '已激活' }], // 下拉选择激活状态
+  activeSelect: [{ value: '0', label: '未激活' }, { value: '1', label: '已激活' }], // 下拉选择激活状态
   statusSelect: [{ value: 1, label: '启用' }, { value: 0, label: '停用' }], // 下拉选择启用状态
   paySelect: [{ value: '0', label: '未付款' }, { value: '1', label: '已付款' }], // 下拉选择是否支付
   langSelect: [{ value: 'cn', label: '简体中文' }, { value: 'en', label: 'English' }], // 下拉选语言

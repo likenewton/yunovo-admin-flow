@@ -3,7 +3,7 @@
     <div slot="header" class="clearfix">
       <span>微信支付</span>
     </div>
-    <el-form v-loading="loadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="190px" size="small" :status-icon="true">
+    <el-form class="editor-form" v-loading="loadData" :inline="false" :model="formInline" :rules="rules" ref="ruleForm" label-width="190px" size="small">
       <el-form-item prop="wxpay_appid">
         <span slot="label">支付APPID：</span>
         <el-input v-model="formInline.wxpay_appid"></el-input>
@@ -120,10 +120,18 @@ export default {
               url: _axios.ajaxAd.updatePay,
               data: Object.assign({ type: Api.UNITS.getQuery('pay') }, this.formInline),
               done: ((res) => {
-                this.$router.push({ name: 'paySet' })
-                setTimeout(() => {
-                  this.$message.success(res.msg || '操作成功')
-                }, 150)
+                if (res.status === 400) {
+                  this.formInline[res.data] = ''
+                  this.$refs.ruleForm.validateField([res.data])
+                } else {
+                  this.$router.push({ name: 'paySet' })
+                  setTimeout(() => {
+                    this.showMsgBox({
+                      type: 'success',
+                      message: res.msg || '操作成功！'
+                    })
+                  }, 150)
+                }
               })
             })
           }
@@ -132,12 +140,7 @@ export default {
           return false;
         }
       })
-    },
-    // 重置表单
-    resetForm(formName) {
-      this.$refs[formName].resetFields()
-      this.isUpdate && this.getData()
-    },
+    }
   }
 }
 

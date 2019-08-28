@@ -1,56 +1,54 @@
 <template>
   <div>
-    <el-card class="box-card" style="margin-bottom: 20px" shadow="never">
+    <el-card class="recharge_sum clearfix" style="margin-bottom: 20px" shadow="never" v-loading="loadData">
       <el-form class="search-form" :inline="true" :model="formInline" size="small">
-        <el-form-item label="机构名称">
-          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择">
+        <el-form-item>
+          <el-select v-model="formInline.org_id" filterable clearable placeholder="机构名称" @change="searchData">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="起止日期">
-          <el-date-picker v-model="formInline.date_start" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
-          <el-date-picker v-model="formInline.date_end" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
+        <el-form-item>
+          <el-date-picker v-model="formInline.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="开始日期"></el-date-picker> -
+          <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="searchData">查询</el-button>
-          <el-button type="warning" @click="resetData">重置</el-button>
+          <el-button type="primary" @click="searchData" :disabled="!pageAuthBtn.FCP_03_001_CHECK01">查询</el-button>
+          <el-button type="warning" @click="resetData" :disabled="!pageAuthBtn.FCP_03_001_CHECK01">重置</el-button>
         </el-form-item>
       </el-form>
-    </el-card>
-    <el-card class="recharge_sum clearfix" style="margin-bottom: 20px" shadow="never" v-loading="loadData">
       <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column prop="org_id" label="机构名称" min-width="200" sortable="custom">
           <template slot-scope="scope">
-            <span v-if="scope.row.sums">{{scope.row.org_name}}</span>
+            <span v-if="scope.row.sums || !pageAuthBtn.FCP_03_001_LINK02">{{scope.row.org_name}}</span>
             <span v-else class="btn-link" @click="$router.push({name: 'jgrecharge', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="pay_count" label="充值次数" min-width="110" sortable="custom"></el-table-column>
-        <el-table-column prop="gprs_amount" label="分配总流量" min-width="110" sortable="custom">
+        <el-table-column prop="pay_count" label="充值次数" min-width="110" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="gprs_amount" label="分配总流量" min-width="110" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.gprs_amount)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="money_count" label="充值总金额" min-width="110" sortable="custom">
+        <el-table-column prop="money_count" label="充值总金额" min-width="110" sortable="custom" align="right">
           <template slot-scope="scope">
             <div>￥{{scope.row.money_count|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="rebate_money" label="返利总金额" min-width="110" sortable="custom">
+        <el-table-column prop="rebate_money" label="返利总金额" min-width="110" sortable="custom" align="right">
           <template slot-scope="scope">
             <div>￥{{scope.row.rebate_money|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="操作" min-width="80">
+        <el-table-column label="操作" width="100" v-if="pageAuthBtn.FCP_03_001_LINK1">
           <template slot-scope="scope">
             <el-button v-if="!scope.row.sums" type="text" @click="$router.push({ name: 'iccidList', query: { org_id: scope.row.org_id } })">详情</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
-    <el-card class="box-card clearfix" shadow="never" v-loading="loadData">
+    <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-tabs @tab-click="changeTab">
         <el-tab-pane>
           <span slot="label">充值次数</span>
@@ -71,14 +69,14 @@
 <script>
 import Api from 'assets/js/api.js'
 import { mapMutations, mapState } from 'vuex'
-const _echart = new Api.ECHARTS()
+const _echart = new Api.ECHARTS({
+  dataViewTitle: '机构列表'
+})
 
 export default {
   data() {
     return {
-      loadData: true,
       tabIndex: '0',
-      pageSizes: Api.STATIC.pageSizes,
       // 列表数据
       list: {
         data: [],
@@ -86,21 +84,19 @@ export default {
         currentPage: 1,
         total: 0,
       },
-      formInline: {},
-      sort: {},
-      maxTableHeight: Api.UNITS.maxTableHeight(),
+      maxTableHeight: Api.UNITS.maxTableHeight(330),
       chartConst: {
         '0': {
           title: '机构充值记录统计',
           name: '充值总次数'
         },
         '1': {
-          title: '机构充值总流量(MB)',
+          title: '机构充值总流量（MB）',
           name: '充值总流量'
         },
         '2': {
-          title: '机构充值总金额(元)',
-          name: '充值总金额'
+          title: '机构充值总金额（元）',
+          name: '充值总金额（元）'
         }
       },
       myChart: null,
@@ -134,7 +130,9 @@ export default {
           axisLabel: {
             textStyle: {
               fontSize: 12
-            }
+            },
+            interval: 0,
+            rotate: 20
           },
         },
         series: [{
@@ -163,6 +161,7 @@ export default {
   mounted() {
     Vue.nextTick(() => {
       this.myChart = this.$echarts.init(document.getElementById('myChart_0'))
+      Api.UNITS.compatibel_Ie_input()
     })
     // 进入页面的时候请求数据
     this.getData()
@@ -175,31 +174,6 @@ export default {
         this.myChart.resize()
       })
       this.setOptionData()
-    },
-    handleSizeChange(val) {
-      this.list.pagesize = val
-      this.getData()
-    },
-    handleCurrentChange(val) {
-      this.list.currentPage = val
-      this.getData()
-    },
-    handleSortChange(val = {}) {
-      Api.UNITS.setSortSearch(val, this)
-      this.getData()
-    },
-    // 查询
-    searchData() {
-      this.list.currentPage = 1
-      this.getData()
-    },
-    // 重置列表
-    resetData() {
-      this.list.currentPage = 1
-      this.formInline = {} // 1、重置查询表单
-      this.sort = {} // 2、重置排序
-      this.$refs.listTable.clearSort() // 3、清空排序样式
-      this.getData()
     },
     // 获取列表数据
     getData() {
@@ -247,6 +221,7 @@ export default {
       // 绘图
       Vue.nextTick(() => {
         this.myChart.setOption(option)
+        $("[_echarts_instance_]").find(":last-child").trigger('click')
       })
     },
     // 格式化option
@@ -273,15 +248,17 @@ export default {
         '2': `${Api.UNITS.formatMoney(series.data)}元`
       }
       return `${variable[this.tabIndex]}`
-    },
-    formatFlowUnit: Api.UNITS.formatFlowUnit,
-    calcLeftTime: Api.UNITS.calcLeftTime
+    }
   },
   computed: {
-    ...mapState({
-      asideCollapse: 'asideCollapse',
-      orgs: 'orgs'
-    })
+    // 起始时间约数
+    startDatePicker() {
+      return Api.UNITS.startDatePicker(this, this.formInline.date_end)
+    },
+    // 结束时间约数
+    endDatePicker() {
+      return Api.UNITS.endDatePicker(this, this.formInline.date_start)
+    }
   },
   watch: {
     asideCollapse(val, oldVal) {

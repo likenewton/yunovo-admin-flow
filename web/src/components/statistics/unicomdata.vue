@@ -1,86 +1,102 @@
 <template>
   <div>
-    <el-card class="box-card" style="margin-bottom: 20px" shadow="never">
+    <el-card class="clearfix" style="margin-bottom: 20px" shadow="never" v-loading="loadData">
+      <el-button-group style="margin-bottom: 10px">
+        <el-button size="small" type="warning" :disabled="!pageAuthBtn.FCP_02_007_EXPORT03" @click="exportExcel">导出</el-button>
+        <el-button size="small" type="warning" :disabled="!pageAuthBtn.FCP_02_007_EXPORT01" @click="exportExcel_2(2)">已激活</el-button>
+      </el-button-group>
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
-        <el-form-item label="机构名称">
-          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择">
+        <el-form-item>
+          <el-select v-model="formInline.org_id" filterable clearable placeholder="机构名称" @change="simpleSearchData">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="导卡日期">
-          <el-date-picker v-model="formInline.date_start" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
-          <el-date-picker v-model="formInline.date_end" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
-        </el-form-item>
-        <el-form-item label="激活日期">
-          <el-date-picker v-model="formInline.jstart" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
-          <el-date-picker v-model="formInline.jend" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
-        </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="searchData">查询</el-button>
-          <el-button type="warning" @click="resetData">重置</el-button>
+          <el-button type="primary" @click="simpleSearchData" :disabled="!pageAuthBtn.FCP_02_007_CHECK01">查询</el-button>
+          <el-button type="primary" @click="searchVipVisible = true" :disabled="!pageAuthBtn.FCP_02_007_CHECK01">高级查询</el-button>
         </el-form-item>
       </el-form>
-    </el-card>
-    <el-card class="box-card clearfix" style="margin-bottom: 20px" shadow="never" v-loading="loadData">
-      <el-button-group style="margin-bottom: 10px">
-        <el-button size="mini" type="warning">导出</el-button>
-      </el-button-group>
       <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border size="mini" resizable>
         <el-table-column fixed="left" prop="org_id" label="机构名称" min-width="180" sortable="custom">
           <template slot-scope="scope">
-            <span v-if="scope.row.sums">{{scope.row.org_name}}</span>
+            <span v-if="scope.row.sums || !pageAuthBtn.FCP_02_007_LINK01">{{scope.row.org_name}}</span>
             <span v-else class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="card_count" label="售卡数量" min-width="95" sortable="custom"></el-table-column>
-        <el-table-column prop="nonactivated" label="未激活数" min-width="95" sortable="custom"></el-table-column>
-        <el-table-column prop="noactive_rate" label="未激活率" min-width="95">
+        <el-table-column prop="card_count" label="售卡数量" min-width="110" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="nonactivated" label="未激活数" min-width="110" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="noactive_rate" label="未激活率" min-width="110" align="right">
           <template slot-scope="scope">
-            <span>{{(scope.row.nonactivated/scope.row.card_count*100).toFixed(3)}}%</span>
+            <span>{{(scope.row.nonactivated/scope.row.card_count*100) | sliceFloat(3)}}%</span>
           </template>
         </el-table-column>
-        <el-table-column prop="activated" label="已激活数" min-width="95" sortable="custom"></el-table-column>
-        <el-table-column prop="active_rate" label="已激活率" min-width="95">
+        <el-table-column prop="activated" label="已激活数" min-width="110" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="active_rate" label="已激活率" min-width="110" align="right">
           <template slot-scope="scope">
-            <span>{{(scope.row.activated/scope.row.card_count*100).toFixed(3)}}%</span>
+            <span>{{(scope.row.activated/scope.row.card_count*100) | sliceFloat(3)}}%</span>
           </template>
         </el-table-column>
-        <el-table-column prop="unicom_count" label="使用总流量" min-width="105" sortable="custom">
+        <el-table-column prop="unicom_count" label="使用总流量" min-width="110" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.unicom_count)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="month_count" label="当月使用流量" min-width="117" sortable="custom">
+        <el-table-column prop="month_count" label="当月使用流量" min-width="110" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.month_count)"></div>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="导出" width="140">
-          <template slot-scope="scope">
-            <el-button type="text">已激活</el-button>
-            <el-button type="text">未激活</el-button>
+        <el-table-column fixed="right" label="导出" width="140" v-if="pageAuthBtn.FCP_02_007_EXPORT01 || pageAuthBtn.FCP_02_007_EXPORT02">
+          <template slot-scope="scope" v-if="!scope.row.sums">
+            <el-button type="text" class="text_success" v-if="pageAuthBtn.FCP_02_007_EXPORT01" @click="exportExcel_2(2, scope.row.org_id)">已激活</el-button>
+            <el-button type="text" class="text_danger" v-if="pageAuthBtn.FCP_02_007_EXPORT02" @click="exportExcel_2(1, scope.row.org_id)">未激活</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
-    <el-card class="box-card clearfix" shadow="never" v-loading="loadData">
-      <div id="myChart_0" style="width:100%; height:380px"></div>
+    <el-card class="clearfix" shadow="never" v-loading="loadData">
+      <div id="myChart_0" style="width:100%; height:420px"></div>
     </el-card>
+    <el-dialog title="高级查询" :visible.sync="searchVipVisible" width="630px" :close-on-click-modal="false">
+      <div slot>
+        <div class="searchForm_vip" style="width:100%;overflow: auto">
+          <el-form :inline="false" :model="formInline" size="small" label-width="90px" v-loading="loadData">
+            <el-form-item label="机构名称">
+              <el-select v-model="formInline.org_id" filterable clearable placeholder="机构名称">
+                <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="导卡日期">
+              <el-date-picker v-model="formInline.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="导卡日期开始"></el-date-picker> -
+              <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" placeholder="导卡日期结束"></el-date-picker>
+            </el-form-item>
+            <el-form-item label="激活日期">
+              <el-date-picker v-model="formInline.jstart" :picker-options="startDatePicker_2" type="date" value-format="yyyy-MM-dd" placeholder="激活日期开始"></el-date-picker> -
+              <el-date-picker v-model="formInline.jend" :picker-options="endDatePicker_2" type="date" value-format="yyyy-MM-dd" placeholder="激活日期结束"></el-date-picker>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="searchData">查询</el-button>
+              <el-button type="warning" @click="resetData">重置</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
 import Api from 'assets/js/api.js'
 import { mapMutations, mapState } from 'vuex'
-const _echart = new Api.ECHARTS()
+const _echart = new Api.ECHARTS({
+  dataViewTitle: '机构列表'
+})
 
 export default {
   data() {
     return {
-      loadData: true,
       tabIndex: '0',
-      pageSizes: Api.STATIC.pageSizes,
       // 列表数据
       list: {
         data: [],
@@ -88,9 +104,6 @@ export default {
         currentPage: 1,
         total: 0,
       },
-      sort: {},
-      formInline: {},
-      maxTableHeight: Api.UNITS.maxTableHeight(),
       myChart_0: null,
       // 激活-未激活柱状图数据
       option_0: {
@@ -104,6 +117,7 @@ export default {
           }
         },
         legend: {
+          // selectedMode: false,
           data: ['已激活', '未激活']
         },
         grid: {
@@ -123,17 +137,22 @@ export default {
           axisLabel: {
             textStyle: {
               fontSize: 12
-            }
+            },
+            interval: 0,
+            rotate: 20
           },
         },
+        // barGap: '-100%',
         series: [{
             name: '已激活',
             type: 'bar',
             stack: '总量',
+            barMaxWidth: 100,
             label: {
               normal: {
                 show: true,
-                formatter: ''
+                position: 'inside',
+                // formatter: ''
               }
             },
             data: [], //要设置的
@@ -151,8 +170,8 @@ export default {
             label: {
               normal: {
                 show: true,
-                position: 'top',
-                formatter: '',
+                position: 'inside',
+                // formatter: '',
                 rich: {
                   a: {
                     align: 'center'
@@ -182,32 +201,21 @@ export default {
     this.getData()
   },
   methods: {
-    handleSizeChange(val) {
-      this.list.pagesize = val
-      this.getData()
+    // 导出excel
+    exportExcel() {
+      Api.UNITS.exportExcel(_axios.ajaxAd.unicomdataExport, this.formInline)
     },
-    handleCurrentChange(val) {
-      this.list.currentPage = val
-      this.getData()
+    exportExcel_2(type, org_id) {
+      let params = Object.assign({}, this.formInline, { type })
+      if (org_id) params.org_id = org_id
+      Api.UNITS.exportExcel(_axios.ajaxAd.unicomdataExport_2, params)
     },
-    handleSortChange(val = {}) {
-      Api.UNITS.setSortSearch(val, this)
-      this.getData()
+    // 简单查询
+    simpleSearchData() {
+      let org_id = this.formInline.org_id
+      this.formInline = { org_id }
+      this.searchData()
     },
-    // 查询
-    searchData() {
-      this.list.currentPage = 1
-      this.getData()
-    },
-    // 重置列表
-    resetData() {
-      this.list.currentPage = 1
-      this.formInline = {} // 1、重置查询表单
-      this.sort = {} // 2、重置排序
-      this.$refs.listTable.clearSort() // 3、清空排序样式
-      this.getData()
-    },
-    // 获取列表数据
     getData() {
       Api.UNITS.getListData({
         vue: this,
@@ -247,23 +255,32 @@ export default {
           label.push(v.org_name)
           data1.push(v.activated)
           data2.push(v.nonactivated)
-          option.series[1].label.normal.formatter = function(series) {
-            return `{b|${option.series[0].data[series.dataIndex]}}\n{a|${series.data}}`
-          }
+          // option.series[1].label.normal.formatter = function(series) {
+          //   return `{b|${option.series[0].data[series.dataIndex]}}\n{a|${series.data}}`
+          // }
         }
       })
       setTimeout(() => {
         this[`myChart_${this.tabIndex}`].setOption(option)
+        $("[_echarts_instance_]").find(":last-child").trigger('click')
       }, 0)
-    },
-    formatFlowUnit: Api.UNITS.formatFlowUnit,
-    calcLeftTime: Api.UNITS.calcLeftTime
+    }
   },
   computed: {
-    ...mapState({
-      asideCollapse: 'asideCollapse',
-      orgs: 'orgs'
-    })
+    // 起始时间约数
+    startDatePicker() {
+      return Api.UNITS.startDatePicker(this, this.formInline.date_end)
+    },
+    startDatePicker_2() {
+      return Api.UNITS.startDatePicker(this, this.formInline.jend)
+    },
+    // 结束时间约数
+    endDatePicker() {
+      return Api.UNITS.endDatePicker(this, this.formInline.date_start)
+    },
+    endDatePicker_2() {
+      return Api.UNITS.endDatePicker(this, this.formInline.jstart)
+    }
   },
   watch: {
     asideCollapse(val, oldVal) {

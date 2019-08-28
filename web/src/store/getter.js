@@ -11,6 +11,9 @@ export default {
   authMenu: state => {
     return state.authMenu
   },
+  authButtons: state => {
+    return state.authButtons
+  },
   isLogin: state => {
     return state.isLogin
   }

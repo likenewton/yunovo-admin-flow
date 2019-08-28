@@ -1,9 +1,8 @@
 <template>
   <div class="pay_set">
     <el-card class="clearfix" shadow="never" v-loading="loadData">
-      <el-table class="payset_page" ref="listTable" @selection-change="handleSelectionChange" :data="list.data" border resizable size="mini">
+      <el-table class="payset_page" ref="listTable" :data="list.data" border resizable size="mini">
         <el-table-column prop="name" label="支付方式" min-width="150" sortable></el-table-column>
-        </el-table-column>
         <el-table-column align="center" min-width="150">
           <template slot-scope="scope">
             <a class="pointer" :href="scope.row.link_url" target="blank">
@@ -11,11 +10,11 @@
             </a>
           </template>
         </el-table-column>
-        <el-table-column label="管理" width="140">
+        <el-table-column label="管理" width="140" v-if="pageAuthBtn.FCP_05_001_UPDATE01 || pageAuthBtn.FCP_05_001_DELETE01">
           <template slot-scope="scope">
-            <el-button v-if="!scope.row.is_install" type="text" class="text_success" @click="installData(scope)">安装</el-button>
-            <el-button v-if="scope.row.is_install" type="text" class="text_editor" @click="editorData(scope)">编辑</el-button>
-            <el-button v-if="scope.row.is_install" type="text" class="text_danger" @click="deleteData(scope)">卸载</el-button>
+            <el-button v-if="!scope.row.is_install && pageAuthBtn.FCP_05_001_UPDATE01" type="text" class="text_success" @click="installData(scope)">安装</el-button>
+            <el-button v-if="scope.row.is_install && pageAuthBtn.FCP_05_001_UPDATE01" type="text" class="text_editor" @click="editorData(scope)">编辑</el-button>
+            <el-button v-if="scope.row.is_install && pageAuthBtn.FCP_05_001_DELETE01" type="text" class="text_danger" @click="deleteData(scope)">卸载</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -23,16 +22,13 @@
   </div>
 </template>
 <script>
-
 export default {
   data() {
     return {
-      loadData: true,
       // 列表
       list: {
         data: []
-      },
-      formInline: {}
+      }
     }
   },
   mounted() {
@@ -61,14 +57,17 @@ export default {
           done: ((res) => {
             this.getData()
             setTimeout(() => {
-              this.$message.success(res.msg || '操作成功')
+              this.showMsgBox({
+                type: 'success',
+                message: res.msg || '操作成功！'
+              })
             }, 150)
           })
         })
       }).catch(() => {
-        this.$message({
+        this.showMsgBox({
           type: 'info',
-          message: '已取消操作'
+          message: '已取消操作！'
         })
       })
     },
@@ -84,14 +83,17 @@ export default {
           done: ((res) => {
             this.getData()
             setTimeout(() => {
-              this.$message.success(res.msg || '操作成功')
+              this.showMsgBox({
+                type: 'success',
+                message: res.msg || '操作成功！'
+              })
             }, 150)
           })
         })
       }).catch(() => {
-        this.$message({
+        this.showMsgBox({
           type: 'info',
-          message: '已取消操作'
+          message: '已取消操作！'
         })
       })
     },

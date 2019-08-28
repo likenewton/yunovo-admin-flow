@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible="dialogVisible" @close="cancel">
+  <el-dialog :visible="dialogVisible" @close="cancel" :close-on-click-modal="false" width="65%">
     <span slot="title">{{config.title}}</span>
     <div v-loading="config.loadDialog" class="dialog_content">
       <div slot v-html="config.content"></div>

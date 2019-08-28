@@ -1,87 +1,87 @@
 <template>
-  <div>
-    <el-card class="box-card" style="margin-bottom: 20px" shadow="never">
+  <div class="dead_status">
+    <el-card class="clearfix" shadow="never" v-loading="loadData">
+      <el-button-group style="margin-bottom: 10px">
+        <el-button size="small" type="warning" :disabled="!pageAuthBtn.FCP_02_002_EXPORT01" @click="exportExcel">导出</el-button>
+      </el-button-group>
       <el-form :inline="true" :model="formInline" class="search-form" size="small">
-        <el-form-item label="卡ICCID">
-          <el-input v-model="formInline.card_iccid" placeholder="请输入卡的iccid"></el-input>
+        <el-form-item>
+          <el-input v-model="formInline.card_iccid" @input="formInline.card_iccid = expNumStr(formInline.card_iccid)" @keyup.enter.native="searchData" placeholder="卡ICCID"></el-input>
         </el-form-item>
-        <el-form-item label="卡商名称">
-          <el-select v-model="formInline.card_type" filterable clearable placeholder="请选择">
+        <el-form-item>
+          <el-select v-model="formInline.card_type" filterable clearable placeholder="卡商名称" @change="searchData">
             <el-option v-for="(item, index) in cardTypes" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="所属机构">
-          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择">
+        <el-form-item>
+          <el-select v-model="formInline.org_id" filterable clearable placeholder="所属机构" @change="searchData">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="是否过期">
-          <el-select v-model="formInline.time_expire" filterable clearable placeholder="请选择">
+        <el-form-item>
+          <el-select v-model="formInline.time_expire" filterable clearable placeholder="是否过期" @change="searchData">
             <el-option v-for="(item, index) in exceedSelect" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="searchData">查询</el-button>
-          <el-button type="warning" @click="resetData">重置</el-button>
+          <el-button type="primary" @click="searchData" :disabled="!pageAuthBtn.FCP_02_002_CHECK01">查询</el-button>
+          <el-button type="warning" @click="resetData" :disabled="!pageAuthBtn.FCP_02_002_CHECK01">重置</el-button>
         </el-form-item>
       </el-form>
-    </el-card>
-    <el-card class="box-card clearfix" shadow="never" v-loading="loadData">
-      <el-button-group style="margin-bottom: 10px">
-        <el-button size="mini" type="warning">导出</el-button>
-      </el-button-group>
       <el-table ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
-        <el-table-column fixed="left" prop="card_iccid" label="卡ICCID" width="178" sortable="custom">
+        <el-table-column fixed="left" prop="card_iccid" label="卡ICCID" width="182" sortable="custom">
           <template slot-scope="scope">
-            <span v-if="scope.row.sums">{{scope.row.card_iccid}}</span>
+            <span v-if="scope.row.sums || !pageAuthBtn.FCP_02_002_LINK1">{{scope.row.card_iccid}}</span>
             <span v-else class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="card_id" label="卡商名称" min-width="120" sortable="custom">
+        <el-table-column prop="card_id" label="卡商名称" width="widthMap.card_id[size]" sortable="custom">
           <template slot-scope="scope">
             <span>{{scope.row.card_type_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="org_id" label="所属机构" min-width="120" sortable="custom">
+        <el-table-column prop="org_id" label="所属机构" :min-width="widthMap.org_id[size]" sortable="custom">
           <template slot-scope="scope" prop="org_name">
-            <span class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
+            <span v-if="pageAuthBtn.FCP_02_002_LINK02" class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
+            <span v-else>{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="used_month" label="当月用量" width="95" sortable="custom">
+        <el-table-column prop="used_month" label="当月用量" :width="widthMap.used_month[size]" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.used_month)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="used_total" label="累计用量" width="95" sortable="custom">
+        <el-table-column prop="used_total" label="累计用量" :width="widthMap.used_total[size]" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.used_total)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="max_unused" label="剩余用量" width="95" sortable="custom">
+        <el-table-column prop="max_unused" label="剩余用量" :width="widthMap.max_unused[size]" sortable="custom" align="right">
           <template slot-scope="scope">
             <div v-html="formatFlowUnit(scope.row.max_unused)"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="time_added" label="导卡时间" width="153" sortable="custom"></el-table-column>
-        <el-table-column prop="time_active" label="激活时间" width="153" sortable="custom"></el-table-column>
-        <el-table-column prop="time_last" label="设备更新时间" width="153" sortable="custom"></el-table-column>
-        <el-table-column prop="time_stop" label="上次停用时间" width="153" sortable="custom"></el-table-column>
-        <el-table-column prop="time_expire" label="过期时间" width="210">
+        <el-table-column prop="time_added" label="导卡时间" :width="widthMap.time_added[size]" sortable="custom"></el-table-column>
+        <el-table-column prop="time_active" label="激活时间" :width="widthMap.time_active[size]" sortable="custom"></el-table-column>
+        <el-table-column prop="time_last" label="设备更新" :width="widthMap.time_last[size]" sortable="custom"></el-table-column>
+        <el-table-column prop="time_stop" label="上次停用" :width="widthMap.time_stop[size]" sortable="custom"></el-table-column>
+        <el-table-column prop="time_expire" label="过期时间" :min-width="widthMap.time_expire[size]">
           <template slot-scope="scope">
-            <div v-if="!scope.row.sums" v-html="calcLeftTime(scope.row.time_expire)"></div>
+            <div v-if="!scope.row.sums" v-html="calcLeftTime(scope.row.time_expire, now)"></div>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" width="98">
+        <el-table-column fixed="right" label="操作" :width="widthMap.op[size]" v-if="pageAuthBtn.FCP_02_002_OP01 || pageAuthBtn.FCP_02_002_OP2">
           <template slot-scope="scope" v-if="!scope.row.sums">
-            <el-button type="text">同步</el-button>
-            <el-button type="text" class="text_success" v-if="scope.row.unicom_stop">开启</el-button>
-            <el-button type="text" class="text_danger" v-else>停用</el-button>
+            <el-button type="text" @click="$refs.syncUniconData.getSyncUnicomData(scope)" v-if="pageAuthBtn.FCP_02_002_OP01">同步</el-button>
+            <el-button type="text" class="text_success" v-if="scope.row.unicom_stop && pageAuthBtn.FCP_02_002_OP2" @click="checkCardStop(scope, 0)">启用</el-button>
+            <el-button type="text" class="text_danger" v-else-if="!scope.row.unicom_stop && pageAuthBtn.FCP_02_002_OP2" @click="checkCardStop(scope, 1)">停用</el-button>
           </template>
         </el-table-column>
       </el-table>
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
+    <v-sync-unicom-data ref="syncUniconData"></v-sync-unicom-data>
   </div>
 </template>
 <script>
@@ -91,62 +91,54 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
-      loadData: true,
-      pageSizes: Api.STATIC.pageSizes,
-      list: {
-        data: [],
-        pagesize: Api.STATIC.pageSizes[1],
-        currentPage: 1,
-        total: 0,
+      size: Api.UNITS.getSize(),
+      widthMap: {
+        card_id: [130, 110],
+        org_id: [135, 130],
+        used_month: [100, 97],
+        used_total: [100, 97],
+        max_unused: [103, 103],
+        time_added: [153, 94],
+        time_active: [153, 94],
+        time_last: [153, 94],
+        time_stop: [153, 94],
+        time_expire: [153, 94],
+        op: [90, 88],
       },
-      sort: {},
-      formInline: {},
-      maxTableHeight: Api.UNITS.maxTableHeight()
     }
   },
   mounted() {
     this.getData()
   },
   methods: {
-    handleSizeChange(val) {
-      this.list.pagesize = val
-      this.list.currentPage = 1
-      this.getData()
+    // 导出excel
+    exportExcel() {
+      Api.UNITS.exportExcel(_axios.ajaxAd.deadstatusExport, this.formInline)
     },
-    handleCurrentChange(val) {
-      this.list.currentPage = val
-      this.getData()
-    },
-    handleSortChange(val) {
-      Api.UNITS.setSortSearch(val, this)
-      this.getData()
-    },
-    // 查询
-    searchData() {
-      this.list.currentPage = 1
-      this.getData()
-    },
-    resetData() {
-      this.list.currentPage = 1
-      this.formInline = {} // 1、重置查询表单
-      this.sort = {} // 2、重置排序
-      this.$refs.listTable.clearSort() // 3、清空排序样式
-      this.getData()
-    },
-    // 获取列表数据
     getData() {
       Api.UNITS.getListData({
         vue: this,
         url: _axios.ajaxAd.getHalt,
         cb: (res) => {
           let other = res.data.other || {}
+          if (other.time) {
+            this.now = other.time
+          }
           if (this.list.data.length === 0) return
           // 一下计算合计
           this.list.data.push(...[{
             sums: true,
             card_iccid: '小计',
             used_month: Api.UNITS.pageSums(this.list.data, 'used_month'),
-            max_unused: Api.UNITS.pageSums(this.list.data, 'max_unused'),
+            max_unused: (() => {
+              let sum = 0
+              this.list.data.forEach((v) => {
+                if (Number(v.max_unused) < 0) {
+                  sum += Number(v.max_unused) || 0
+                }
+              })
+              return sum
+            })(),
             used_total: Api.UNITS.pageSums(this.list.data, 'used_total')
           }, {
             sums: true,
@@ -158,37 +150,68 @@ export default {
         }
       })
     },
-    formatFlowUnit: Api.UNITS.formatFlowUnit,
-    calcLeftTime: Api.UNITS.calcLeftTime
-  },
-  computed: {
-    ...mapState({
-      cardTypes: 'cardTypes', // 卡商列表
-      orgs: 'orgs', // 机构列表
-      exceedSelect: 'exceedSelect'
-    })
+    // 卡开启/停用(card / deadstatus / useanomaly)
+    checkCardStop(scope, status) {
+      let prompt = ''
+      if (status === 1) {
+        prompt = '是否停用该流量卡？'
+      } else if (status === 0) {
+        prompt = '是否启用该流量卡？'
+      }
+      this.$confirm(prompt, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        _axios.send({
+          method: 'post',
+          url: _axios.ajaxAd.checkCardStop,
+          data: {
+            card_iccid: scope.row.card_iccid,
+            status
+          },
+          done: ((res) => {
+            setTimeout(() => {
+              this.modifiyData(this.list.data, scope.row, 'unicom_stop', status)
+              this.showMsgBox({
+                type: 'success',
+                message: '操作成功！'
+              })
+            }, 150)
+          })
+        })
+      }).catch(() => {
+        this.showMsgBox({
+          type: 'info',
+          message: '已取消操作！'
+        })
+      })
+    }
   }
 }
 
 </script>
 <style lang="scss">
-.el-pagination {
-  float: right;
-  margin: 25px 40px 0 0;
-}
+.dead_status {
+  .el-pagination {
+    float: right;
+    margin: 25px 40px 0 0;
+  }
 
-.el-table {
-  .table-head {}
+  .el-table {
+    .table-head {}
 
-  td {
-    * {
-      font-size: 14px;
+    td {
+      * {
+        font-size: 14px;
+      }
     }
   }
-}
 
-.el-date-editor .el-range-separator {
-  width: auto;
+  .el-date-editor .el-range-separator {
+    width: auto;
+  }
+
 }
 
 </style>

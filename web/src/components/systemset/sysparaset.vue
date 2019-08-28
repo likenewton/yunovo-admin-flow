@@ -1,11 +1,11 @@
 <template>
   <div>
     <el-card class="system_set" shadow="never">
-      <el-tabs @tab-click="changeTab">
+      <el-tabs @tab-click="changeTab" v-model="tabIndex">
         <!-- 编辑项目 -->
         <el-tab-pane>
           <span slot="label"></i>编辑项目</span>
-          <el-form v-loading="loadData" :inline="false" :model="formInline_0" :rules="rules_0" ref="ruleForm_0" label-width="140px" size="small" :status-icon="true">
+          <el-form class="editor-form" v-loading="loadData" :inline="false" :model="formInline_0" :rules="rules_0" ref="ruleForm_0" label-width="140px" size="small">
             <el-form-item prop="config_name">
               <span slot="label">系统名称：</span>
               <el-input v-model="formInline_0.config_name" placeholder="请输入系统名称"></el-input>
@@ -31,7 +31,7 @@
               <el-input v-model="formInline_0.config_fax" placeholder="请输入传真号码"></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="submitForm('ruleForm_0')">保存</el-button>
+              <el-button type="primary" @click="submitForm('ruleForm_0')" :disabled="!pageAuthBtn.FCP_05_004_UPDATE01">保存</el-button>
               <el-button type="warning" @click="resetForm('ruleForm_0')">重置</el-button>
             </el-form-item>
           </el-form>
@@ -39,7 +39,7 @@
         <!-- 系统设置 -->
         <el-tab-pane>
           <span slot="label">系统设置</span>
-          <el-form v-loading="loadData" :inline="false" :model="formInline_1" :rules="rules_1" ref="ruleForm_1" label-width="140px" size="small" :status-icon="true">
+          <el-form class="editor-form" v-loading="loadData" :inline="false" :model="formInline_1" :rules="rules_1" ref="ruleForm_1" label-width="140px" size="small">
             <el-form-item prop="config_title">
               <span slot="label">首页标题：</span>
               <el-input v-model="formInline_1.config_title" placeholder="请输入首页标题"></el-input>
@@ -61,7 +61,7 @@
               </el-card>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="submitForm('ruleForm_1')">保存</el-button>
+              <el-button type="primary" @click="submitForm('ruleForm_1')" :disabled="!pageAuthBtn.FCP_05_004_UPDATE01">保存</el-button>
               <el-button type="warning" @click="resetForm('ruleForm_1')">重置</el-button>
             </el-form-item>
           </el-form>
@@ -69,7 +69,7 @@
         <!-- 本地化设置 -->
         <el-tab-pane>
           <span slot="label">本地化设置</span>
-          <el-form v-loading="loadData" :inline="false" :model="formInline_2" :rules="rules_2" ref="ruleForm_2" label-width="220px" size="small" :status-icon="true">
+          <el-form class="editor-form" v-loading="loadData" :inline="false" :model="formInline_2" :rules="rules_2" ref="ruleForm_2" label-width="220px" size="small">
             <el-form-item prop="config_language">
               <span slot="label">前台语言：</span>
               <el-select v-model="formInline_2.config_language" placeholder="请选择">
@@ -105,7 +105,7 @@
               <div class="annotation">确定每页显示多少管理项目（订单，客户等）</div>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="submitForm('ruleForm_2')">保存</el-button>
+              <el-button type="primary" @click="submitForm('ruleForm_2')" :disabled="!pageAuthBtn.FCP_05_004_UPDATE01">保存</el-button>
               <el-button type="warning" @click="resetForm('ruleForm_2')">重置</el-button>
             </el-form-item>
           </el-form>
@@ -113,7 +113,7 @@
         <!-- 邮件协议 -->
         <el-tab-pane>
           <span slot="label">邮件协议</span>
-          <el-form v-loading="loadData" :inline="false" :model="formInline_3" :rules="rules_3" ref="ruleForm_3" label-width="140px" size="small" :status-icon="true">
+          <el-form class="editor-form" v-loading="loadData" :inline="false" :model="formInline_3" :rules="rules_3" ref="ruleForm_3" label-width="140px" size="small">
             <el-form-item prop="config_mail_protocol">
               <span slot="label">邮件协议：</span>
               <el-select v-model="formInline_3.config_mail_protocol" placeholder="请选择邮件协议">
@@ -148,7 +148,7 @@
               <el-input v-model="formInline_3.config_smtp_timeout" @input="formInline_3.config_smtp_timeout = limitNumber(formInline_3.config_smtp_timeout, 5, 0)" placeholder="请输入SMTP 超时时间"></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="submitForm('ruleForm_3')">保存</el-button>
+              <el-button type="primary" @click="submitForm('ruleForm_3')" :disabled="!pageAuthBtn.FCP_05_004_UPDATE01">保存</el-button>
               <el-button type="warning" @click="resetForm('ruleForm_3')">重置</el-button>
             </el-form-item>
           </el-form>
@@ -156,7 +156,7 @@
         <!-- 服务器设置 -->
         <el-tab-pane>
           <span slot="label">服务器设置</span>
-          <el-form v-loading="loadData" :inline="false" :model="formInline_4" :rules="rules_4" ref="ruleForm_4" label-width="170px" size="small" :status-icon="true">
+          <el-form class="editor-form" v-loading="loadData" :inline="false" :model="formInline_4" :rules="rules_4" ref="ruleForm_4" label-width="170px" size="small">
             <el-form-item prop="config_use_ssl">
               <span slot="label">使用 SSL：</span>
               <el-radio v-model="formInline_4.config_use_ssl" label="1">是</el-radio>
@@ -219,7 +219,7 @@
               <div class="annotation">登录您的 <a class="text_primary" href="http://www.google.com/analytics/" target="blank">Google Analytics</a> 账户，创建您的系统概述拷贝并粘贴统计代码到框内</div>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="submitForm('ruleForm_4')">保存</el-button>
+              <el-button type="primary" @click="submitForm('ruleForm_4')" :disabled="!pageAuthBtn.FCP_05_004_UPDATE01">保存</el-button>
               <el-button type="warning" @click="resetForm('ruleForm_4')">重置</el-button>
             </el-form-item>
           </el-form>
@@ -234,7 +234,6 @@ import Api from 'assets/js/api.js'
 export default {
   data() {
     return {
-      loadData: true, // 是否显示加载动画
       tabIndex: '0', // 当前激活的tab的下标值
       alias: { // 不同的tab对应的别名(tabName)
         'formInline_0': 'tab-general',
@@ -255,23 +254,40 @@ export default {
           required: true,
           message: '请输入系统名称',
           trigger: 'blur'
+        }, {
+          min: 2,
+          max: 32,
+          message: '系统名称必须在2至32个字符之间！',
+          trigger: ['blur', 'change']
         }],
         config_owner: [{
           required: true,
           message: '请输入系统拥有者',
           trigger: 'blur'
+        }, {
+          min: 3,
+          max: 64,
+          message: '系统拥有者必须在3至64个字符之间！',
+          trigger: ['blur', 'change']
         }],
         config_address: [{
           required: true,
           message: '请输入联系地址',
           trigger: 'blur'
+        }, {
+          min: 10,
+          max: 255,
+          message: '联系地址必须在10到255个字符之间！',
+          trigger: ['blur', 'change']
         }],
         config_email: [{
           required: true,
           message: '请输入电子邮箱',
           trigger: 'blur'
         }, {
-          validator: this.validatorEmall,
+          type: 'email',
+          message: '电子邮箱格式不正确',
+          // validator: this.validatorEmall,
           trigger: 'blur'
         }],
         config_telephone: [{
@@ -288,6 +304,11 @@ export default {
           required: true,
           message: '请输入首页标题',
           trigger: 'blur'
+        }, {
+          min: 2,
+          max: 32,
+          message: '首页标题必须在2至32个字符之间！',
+          trigger: ['blur', 'change']
         }],
         config_template: [{
           required: true,
@@ -323,9 +344,6 @@ export default {
     this.getData()
   },
   methods: {
-    changeTab(para) {
-      this.tabIndex = para.index
-    },
     getData() {
       this.loadData = true
       _axios.send({
@@ -339,6 +357,12 @@ export default {
           this.formInline_3 = res.data
           this.formInline_4 = res.data
           this.loadData = false
+          Vue.nextTick(() => {
+            // 清除该字段在数据填充的时候表现的验证通过的样式
+            this.$refs.ruleForm_0.clearValidate()
+            this.$refs.ruleForm_1.clearValidate()
+            this.$refs.ruleForm_2.clearValidate()
+          })
         })
       })
     },
@@ -373,9 +397,16 @@ export default {
             url: _axios.ajaxAd.updateSystemParams,
             data,
             done: ((res) => {
-              // 调用resetForm来清除表单验证的样式
-              this.resetForm()
-              this.$message.success(res.msg || '操作成功！')
+              if (res.status === 400) {
+
+              } else {
+                // 调用resetForm来清除表单验证的样式
+                this.resetForm()
+                this.showMsgBox({
+                  type: 'success',
+                  message: res.msg || '操作成功！'
+                })
+              }
             })
           })
         } else {
@@ -386,11 +417,10 @@ export default {
     },
     resetForm(formName) {
       // 5个表单的数据都是从getData取得，所以重置要重置5个表单
-      this.$refs['ruleForm_0'].resetFields()
-      this.$refs['ruleForm_1'].resetFields()
-      this.$refs['ruleForm_2'].resetFields()
-      this.$refs['ruleForm_3'].resetFields()
-      this.$refs['ruleForm_4'].resetFields()
+      for (let i = 0; i < 5; i++) {
+        this.$refs[`ruleForm_${i}`].resetFields()
+        this[`formInline_${i}`] = {}
+      }
       this.getData()
     },
     limitNumber: Api.UNITS.limitNumber, // 限制数字类型位数

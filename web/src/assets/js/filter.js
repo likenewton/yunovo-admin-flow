@@ -39,3 +39,23 @@ Vue.filter('formatSecond', function(second) {
   }
   return htmlStr
 })
+
+Vue.filter('sliceFloat', function(value, pos = 3) {
+  if (typeof value != 'number') {
+    let v = 0
+    return v.toFixed(pos)
+  } else {
+    return (Math.floor(value * Math.pow(10, pos)) / Math.pow(10, pos)).toFixed(pos)
+  }
+})
+
+// 将下拉列表中的value转化成客户看的label
+Vue.filter('valueToLabel', function(value, data = [], tag = 'label') {
+  let label = ''
+  data.forEach((v) => {
+    if (v.value == value) {
+      label = v[tag]
+    }
+  })
+  return label
+})

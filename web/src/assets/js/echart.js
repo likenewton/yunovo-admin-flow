@@ -1,5 +1,7 @@
+import { formatFlowUnit } from './unit.js'
+
 class Echarts {
-  constructor(para) {
+  constructor(para = {}) {
     // 实例化时初始的参数
     this.data = Object.assign({
       colorList: ['#3cb1ff', '#ffc367', '#ff7477', '#27da99', '#3ecec9', '#9a83da'],
@@ -36,17 +38,17 @@ class Echarts {
                 borderColor: '#9a8dda'
               }
             },
+            readOnly: true,
             optionToContent(opt) {
-              console.log(opt)
               let axisData = opt.xAxis[0].data
               let series = opt.series
-              let table = `<table style="width:100%;text-align:center"><tbody>
-                <tr>
-                  <td></td>
+              let table = `<div class="dataViewContainer"><table class="dataViewTable"><tbody>
+                <tr class="thead">
+                  <th class="th">${para.dataViewTitle || ''}</th>
                   ${function a() {
                     let str = ''
                     series.forEach((v) => {
-                      str += `<td>${v.name}</td>`
+                      str += `<th class="th">${v.name}</th>`
                     })
                     return str
                   }()}
@@ -54,15 +56,19 @@ class Echarts {
                 ${function b() {
                   let str = ''
                   axisData.forEach((v, i) => {
-                    str += `<tr><td>${v}</td>`
+                    str += `<tr class="tbody"><td class="td">${v}</td>`
                     series.forEach((v) => {
-                      str += `<td>${v.data[i]}</td>`
+                      if (v.name.indexOf('流量') > -1) {
+                        str += `<td class="td">${formatFlowUnit(v.data[i], 3, false)}</td>`
+                      } else {
+                        str += `<td class="td">${v.data[i]}</td>`
+                      }
                     })
                     str += '</tr>'
                   })
                   return str
                 }()}
-              </tbody></table>`
+              </tbody></table></div>`
               return table
             },
             // 调用optionToContent之后一定要配置此项
@@ -138,9 +144,10 @@ class Echarts {
     if (this.data.formatter) {
       this.option.tooltip.formatter = this.data.formatter
     }
+    // this.option.toolbox.feature
     this.data.series.forEach((v, i) => {
       this.option.series.push({
-        name: this.data.legend[i],
+        name: v.name || this.data.legend[i],
         type: v.type || this.data.type,
         data: v.data,
         stack: v.stack,

@@ -13,12 +13,13 @@ export default {
   },
   mounted() {
     if (this.getURLToken()) {
+      let name = sessionStorage.getItem('target_name') || 'home'
+      let query = JSON.parse(sessionStorage.getItem('target_query') || '{}')
       // 如果url中包含有token, 将token保存到localStorage中
       localStorage.setItem(this.token, this.getURLToken())
       // 然后刷新页面消除url中的token
-      let query = Api.UNITS.getQuery()
       delete query[this.token]
-      this.$router.replace({ name: this.$route.name, query })
+      this.$router.replace({ name, query })
     }
   },
   methods: {

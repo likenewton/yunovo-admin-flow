@@ -7,8 +7,8 @@
         <el-breadcrumb-item v-for="(item, index) in list.other" :key="index" :to="{name: 'nationset', query: {ntid: item.ntid}}">{{item.ntname}}</el-breadcrumb-item>
       </el-breadcrumb>
       <el-button-group style="margin-bottom: 10px">
-        <el-button size="mini" type="success" @click="addData" icon="el-icon-circle-plus-outline">新增</el-button>
-        <el-button size="mini" type="danger" @click="deleteDatas" icon="el-icon-delete">删除</el-button>
+        <el-button size="small" type="success" @click="addData" :disabled="!pageAuthBtn.FCP_05_003_ADD01">新增</el-button>
+        <el-button size="small" type="danger" @click="deleteDatas" :disabled="!pageAuthBtn.FCP_05_003_DELETE01">删除</el-button>
       </el-button-group>
       <el-table ref="listTable" :data="list.data" @selection-change="handleSelectionChange" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column fixed="left" type="selection" min-width="60"></el-table-column>
@@ -18,14 +18,14 @@
           </template>
         </el-table-column>
         <el-table-column prop="zipcode" label="邮政编码" min-width="140" sortable="custom"></el-table-column>
-        <el-table-column label="管理" width="120">
+        <el-table-column label="管理" width="120" v-if="pageAuthBtn.FCP_05_003_UPDATE01 || pageAuthBtn.FCP_05_003_DELETE01">
           <template slot-scope="scope">
-            <el-button type="text" class="text_editor" @click="editor(scope)">编辑</el-button>
-            <el-button type="text" class="text_danger" @click="deleteData(scope)">删除</el-button>
+            <el-button type="text" class="text_editor" @click="editor(scope)" v-if="pageAuthBtn.FCP_05_003_UPDATE01">编辑</el-button>
+            <el-button type="text" class="text_danger" @click="deleteData(scope)" v-if="pageAuthBtn.FCP_05_003_DELETE01">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="list.currentPage" :page-sizes="pageSizes" :page-size="list.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="list.total" class="clearfix">
       </el-pagination>
     </el-card>
   </div>
@@ -36,8 +36,6 @@ import Api from 'assets/js/api.js'
 export default {
   data() {
     return {
-      loadData: true,
-      pageSizes: Api.STATIC.pageSizes,
       // 列表
       list: {
         data: [],
@@ -48,32 +46,19 @@ export default {
       },
       // 在列表中选择的数据
       selectData: [],
-      sort: {},
       formInline: {
         ntid: Api.UNITS.getQuery('ntid')
       },
-      maxTableHeight: Api.UNITS.maxTableHeight()
+      maxTableHeight: Api.UNITS.maxTableHeight(354)
     }
   },
   mounted() {
-    // 进入页面的时候请求数据
     this.getData()
   },
   methods: {
-    handleSizeChange(val) {
-      this.list.pagesize = val
-      this.getData()
-    },
-    handleCurrentChange(val) {
-      this.list.currentPage = val
-      this.getData()
-    },
-    handleSelectionChange(selectData) {
-      this.selectData = selectData
-    },
-    handleSortChange(val = {}) {
-      Api.UNITS.setSortSearch(val, this)
-      this.getData()
+    // 处理列表选择
+    handleSelectionChange(data) {
+      this.selectData = data
     },
     editor(scope) {
       this.$router.push({
@@ -98,14 +83,18 @@ export default {
             ntids: [scope.row.ntid]
           },
           done: ((res) => {
+            this.$refs.listTable.toggleRowSelection(scope.row, false)
             this.getData()
             setTimeout(() => {
-              this.$message.success(res.msg || '删除成功')
+              this.showMsgBox({
+                type: 'success',
+                message: '删除成功'
+              })
             }, 150)
           })
         })
       }).catch(() => {
-        this.$message({
+        this.showMsgBox({
           type: 'info',
           message: '操作已取消'
         })
@@ -114,7 +103,10 @@ export default {
     // 批量删除
     deleteDatas() {
       if (this.selectData.length === 0) {
-        this.$message.warning('请先勾选要删除的项')
+        this.showMsgBox({
+          type: 'warning',
+          message: '请先勾选要删除的地区！'
+        })
       } else {
         this.$confirm(`您选中了${this.selectData.length}项，是否确认删除?`, '提示', {
           confirmButtonText: '确定',
@@ -128,25 +120,32 @@ export default {
               ntids: this.selectData.map((v) => v.ntid)
             },
             done: ((res) => {
+              this.$refs.listTable.clearSelection()
               this.getData()
               setTimeout(() => {
-                this.$message.success(res.msg || '删除成功')
+                this.showMsgBox({
+                  type: 'success',
+                  title: '成功',
+                  message: '删除成功'
+                })
               }, 150)
             })
           })
         }).catch(() => {
-          this.$message({
+          this.showMsgBox({
             type: 'info',
+            title: '温馨提示',
             message: '操作已取消'
           })
         })
       }
     },
     addData() {
+      console.log(this.list.data)
       this.$router.push({
         name: 'createnation',
         query: {
-          parent: this.list.data[0].parent // 添加必须要携带parent
+          parent: Api.UNITS.getQuery('ntid') || 0 // 添加必须要携带parent
         }
       })
     },
@@ -160,9 +159,7 @@ export default {
           this.list.other = (res.data.other || []).reverse()
         })
       })
-    },
-    formatFlowUnit: Api.UNITS.formatFlowUnit,
-    calcLeftTime: Api.UNITS.calcLeftTime
+    }
   },
   watch: {
     '$route': function() {

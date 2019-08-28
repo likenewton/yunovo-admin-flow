@@ -9,11 +9,15 @@
         <el-main class="small-scroll">
           <div class="main-inner">
             <v-breadcrumb></v-breadcrumb>
-            <router-view></router-view>
+            <keep-alive v-show="$route.meta.keepAlive">
+              <router-view v-if="$route.meta.keepAlive"></router-view>
+            </keep-alive>
+            <router-view v-if="!$route.meta.keepAlive"></router-view>
             <el-footer height="50px">
               <v-footer></v-footer>
             </el-footer>
           </div>
+          <el-backtop target=".el-main" :bottom="70" :right="40"></el-backtop>
         </el-main>
       </el-container>
     </el-container>
@@ -28,7 +32,6 @@ export default {
 
 </script>
 <style lang="scss">
-
 .el-container {
   overflow: hidden;
 }

@@ -2,41 +2,48 @@
   <div class="flow_gift">
     <el-card class="reset-card" shadow="never">
       <el-tabs @tab-click="changeTab" v-model="tabIndex">
-        <el-tab-pane>
+        <el-tab-pane v-loading="loadData">
           <span slot="label">赠送流量</span>
-          <el-form :model="formInline" :rules="rules" ref="ruleForm" label-width="126px" size="small" :status-icon="true">
-            <el-form-item prop="card_iccid">
+          <el-form class="editor-form" :model="formInline" :rules="rules" ref="ruleForm" label-width="126px" size="small">
+            <el-form-item prop="iccids">
               <span slot="label">卡ICCID列表：</span>
-              <el-input type="textarea" v-model="formInline.card_iccid" rows="4" placeholder="请输入卡ICCID"></el-input>
+              <el-input type="textarea" v-model="formInline.iccids" rows="4" placeholder="请输入卡ICCID"></el-input>
               <div class="annotation">一行代表一个ICCID，多行代表多个ICCID，建议不超过200个ICCID</div>
             </el-form-item>
-            <el-form-item prop="model">
+            <el-form-item prop="pack_mode">
               <span slot="label">套餐模式：</span>
-              <el-radio v-model="formInline.model" label="1">叠加</el-radio>
-              <el-radio v-model="formInline.model" label="2">延期</el-radio>
+              <el-radio v-model="formInline.pack_mode" :label="0">叠加</el-radio>
+              <el-radio v-model="formInline.pack_mode" :label="1">延期</el-radio>
             </el-form-item>
-            <el-form-item prop="tc_flow">
+            <el-form-item prop="gprs_amount">
               <span slot="label">套餐流量：</span>
-              <el-input v-model="formInline.tc_flow" @input="formInline.tc_flow = limitNumber(formInline.tc_flow)" placeholder="请输入套餐流量"></el-input>
+              <el-input v-model="formInline.gprs_amount" @input="formInline.gprs_amount = limitNumber(formInline.gprs_amount)" placeholder="请输入套餐流量"></el-input>
               <div class="annotation">默认单位为M，精确到3位小数(无限制填：99999999)</div>
             </el-form-item>
-            <el-form-item prop="is_clear">
+            <el-form-item prop="allot_month">
+              <span slot="label">分配月数：</span>
+              <el-select v-model="formInline.allot_month" placeholder="请选择分配月数" @change="changeAllotMonth">
+                <el-option v-if="item.value >= 1 && item.value <= 48" v-for="(item, index) in liveMonthSelect" :disabled="formInline.allot==0&&item.value==1" :key="index" :label="item.label" :value="item.value - 0"></el-option>
+              </el-select>
+              <div class="annotation">月均流量：{{gprsMonth}}</div>
+            </el-form-item>
+            <el-form-item prop="allot_reset">
               <span slot="label">是否清零：</span>
-              <el-radio v-model="formInline.is_clear" label="1">不清零</el-radio>
-              <el-radio v-model="formInline.is_clear" label="2">会清零</el-radio>
+              <el-radio v-model="formInline.allot_reset" :label="0">不清零</el-radio>
+              <el-radio v-model="formInline.allot_reset" :label="1">会清零</el-radio>
             </el-form-item>
             <el-form-item prop="live_month">
               <span slot="label">有效周期：</span>
               <el-select v-model="formInline.live_month" placeholder="请选择有效周期">
-                <el-option v-for="(item, index) in liveMonthSelect" :key="index" :label="item.label" :value="item.value"></el-option>
+                <el-option v-for="(item, index) in liveMonthSelect" v-if="item.value >= 1" :disabled="item.value < formInline.allot_month" :key="index" :label="item.label" :value="item.value - 0"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item prop="donator_remark">
+            <el-form-item prop="gift_name">
               <span slot="label">赠者&备注：</span>
-              <el-input type="textarea" v-model="formInline.donator_remark" placeholder="请输入赠者&备注" rows="4"></el-input>
+              <el-input type="textarea" v-model="formInline.gift_name" placeholder="请输入赠者&备注" rows="4"></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+              <el-button type="primary" @click="submitForm('ruleForm')" :disabled="!pageAuthBtn.FCP_01_005_ADD01">保存</el-button>
               <el-button type="warning" @click="resetForm('ruleForm')">重置</el-button>
             </el-form-item>
           </el-form>
@@ -44,45 +51,47 @@
         <el-tab-pane>
           <span slot="label"></i>历史赠送</span>
           <el-form class="search-form" :inline="true" :model="searchForm" size="small">
-            <el-form-item label="卡ICCID">
-              <el-input v-model="searchForm.card_iccid" placeholder="请输入"></el-input>
+            <el-form-item>
+              <el-input v-model="searchForm.card_iccid" @input="searchForm.card_iccid = expNumStr(searchForm.card_iccid)" placeholder="卡ICCID" @keyup.enter.native="searchData"></el-input>
             </el-form-item>
-            <el-form-item label="机构名称">
-              <el-select v-model="searchForm.org_id" filterable placeholder="请选择">
+            <el-form-item>
+              <el-select v-model="searchForm.org_id" filterable clearable placeholder="机构名称" @change="searchData">
                 <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="添加时间">
-              <el-date-picker v-model="searchForm.date_start" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
-              <el-date-picker v-model="searchForm.date_end" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
+            <el-form-item>
+              <el-date-picker v-model="searchForm.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="添加时间开始"></el-date-picker> -
+              <el-date-picker v-model="searchForm.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="添加时间结束"></el-date-picker>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="searchData">查询</el-button>
-              <el-button type="warning" @click="resetData">重置</el-button>
+              <el-button type="primary" @click="searchData" :disabled="!pageAuthBtn.FCP_01_005_CHECK01">查询</el-button>
+              <el-button type="warning" @click="resetData" :disabled="!pageAuthBtn.FCP_01_005_CHECK01">重置</el-button>
             </el-form-item>
           </el-form>
           <el-table v-loading="loadData" ref="listTable" :data="list.data" @sort-change="handleSortChange" :max-height="maxTableHeight" border resizable size="mini">
-            <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" width="180" sortable="custom">
+            <el-table-column prop="card_iccid" fixed="left" label="卡ICCID" width="182" sortable="custom">
               <template slot-scope="scope">
-                <span class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
+                <span v-if="pageAuthBtn.FCP_01_005_LINK01" class="btn-link" @click="$router.push({ name: 'rechargeDetail', query: {card_id: scope.row.card_id}})">{{scope.row.card_iccid}}</span>
+                <span v-else>{{scope.row.card_iccid}}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="org_id" label="机构名称" min-width="140" sortable="custom">
+            <el-table-column prop="org_id" label="机构名称" :min-width="widthMap.org_id[size]" sortable="custom">
               <template slot-scope="scope">
-                <span class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
+                <span v-if="pageAuthBtn.FCP_01_005_LINK2" class="btn-link" @click="$router.push({name: 'card', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
+                <span v-else>{{scope.row.org_name}}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="gprs_amount" label="套餐流量" width="95" sortable="custom">
+            <el-table-column prop="gprs_amount" label="套餐流量" :width="widthMap.gprs_amount[size]" sortable="custom" align="right">
               <template slot-scope="scope">
                 <div v-html="formatComboFlow(scope.row.gprs_amount)"></div>
               </template>
             </el-table-column>
-            <el-table-column prop="allot_month" label="分配月数" width="95" sortable="custom">
+            <el-table-column prop="allot_month" label="分配月数" width="90" sortable="custom" align="right">
               <template slot-scope="scope">
-                <div>{{getLiveMonthAlias(scope.row.allot_month)}}</div>
+                <div>{{scope.row.allot_month}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="allot_value" label="月均流量" width="95" sortable="custom">
+            <el-table-column prop="allot_value" label="月均流量" :width="widthMap.allot_value[size]" sortable="custom" align="right">
               <template slot-scope="scope">
                 <div v-html="formatComboFlow(scope.row.allot_value)"></div>
               </template>
@@ -98,20 +107,20 @@
                 <div>{{getLiveMonthAlias(scope.row.live_month)}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="gift_name" label="赠者&备注" min-width="160" sortable="custom">
+            <el-table-column prop="gift_name" label="赠者&备注" :min-width="widthMap.gift_name[size]" sortable="custom" show-overflow-tooltip>
               <template slot-scope="scope">
                 <span v-html="scope.row.gift_name"></span>
               </template>
             </el-table-column>
-            <el-table-column prop="user_id" label="操作者" width="100" sortable="custom">
+            <el-table-column prop="user_id" label="操作者" width="widthMap.user_id[size]" sortable="custom">
               <template slot-scope="scope">
-                <span>{{scope.row.first_name}}</span>
+                <span>{{scope.row.create_by}}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="time_added" label="添加时间" width="155" sortable="custom"></el-table-column>
-            <el-table-column prop="time_expire" label="过期时间" width="210" sortable="custom">
+            <el-table-column prop="time_added" label="添加时间" :width="widthMap.time_added[size]" sortable="custom"></el-table-column>
+            <el-table-column prop="time_expire" label="过期时间" :width="widthMap.time_expire[size]" sortable="custom">
               <template slot-scope="scope">
-                <span v-html="calcLeftTime(scope.row.time_expire)"></span>
+                <span v-html="calcLeftTime(scope.row.time_expire, now)"></span>
               </template>
             </el-table-column>
           </el-table>
@@ -120,6 +129,22 @@
         </el-tab-pane>
       </el-tabs>
     </el-card>
+    <el-dialog title="赠送信息" :visible.sync="dialogGiftVisible" :close-on-click-modal="false">
+      <div slot>
+        <div id="iccid_reset" style="width:100%;overflow: auto">
+          <el-table :data="giftData" border resizable size="mini" :max-height="winHeight / 2.2">
+            <el-table-column prop="iccid" label="卡iccid" min-width="200" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="msg" label="执行结果" min-width="200">
+              <template slot-scope="scope">
+                <span class="text_danger bold" v-if="scope.row.ret === '2'">{{scope.row.msg}}</span>
+                <span class="text_warning bold" v-else-if="scope.row.ret === '1'">{{scope.row.msg}}</span>
+                <span class="text_success bold" v-else>{{scope.row.msg}}</span>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -129,36 +154,51 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
-      pageSizes: Api.STATIC.pageSizes,
-      tabIndex: '1',
-      loadData: true,
-      maxTableHeight: Api.UNITS.maxTableHeight(),
-      list: {
-        data: [],
-        pagesize: Api.STATIC.pageSizes[1],
-        currentPage: 1,
-        total: 0,
+      tabIndex: '0',
+      dialogGiftVisible: false,
+      formInline: {
+        allot_month: 1,
+        allot_reset: 1,
+        pack_mode: 0
       },
-      sort: {},
-      formInline: {},
+      size: Api.UNITS.getSize(),
+      widthMap: {
+        org_id: [140, 130],
+        gprs_amount: [100, 88],
+        allot_value: [100, 98],
+        gift_name: [160, 145],
+        user_id: [100, 88],
+        time_added: [155, 94],
+        time_expire: [210, 153],
+      },
       searchForm: {},
+      giftData: [],
+      maxTableHeight: Api.UNITS.maxTableHeight(370),
       rules: {
-        card_iccid: [{
+        iccids: [{
           required: true,
-          message: '请输入您需要重置的流量卡ICCID号',
+          message: '请输入流量卡ICCID号',
           trigger: 'blur'
+        }, {
+          validator: this.validateIccidCount,
+          trigger: ['blur']
         }],
-        model: [{
+        pack_mode: [{
           required: true,
           message: '请选择套餐模式',
           trigger: 'change'
         }],
-        tc_flow: [{
+        gprs_amount: [{
           required: true,
           message: '请输入套餐流量',
           trigger: 'blur'
         }],
-        is_clear: [{
+        allot_month: [{
+          required: true,
+          message: '请选择分配月数',
+          trigger: 'change'
+        }],
+        allot_reset: [{
           required: true,
           message: '请选择是否清零',
           trigger: 'change'
@@ -168,52 +208,34 @@ export default {
           message: '请选择有效周期',
           trigger: 'change'
         }],
-        donator_remark: [{
+        gift_name: [{
           required: true,
           message: '请输入备注',
           trigger: 'blur'
+        }, {
+          min: 2,
+          max: 255,
+          message: '长度必须2~255个字符之间',
+          trigger: ['blur']
         }]
       }
     }
   },
   mounted() {
-    this.getData()
+    this.loadData = false
   },
   methods: {
     changeTab(para) {
-      this.tabIndex = para.index
       if (this.tabIndex === '1') {
-        // 历史赠送
-        if (this.list.data.length === 0) {
-          this.getData()
-        } else {
-          this.loadData = false
-        }
+        this.getData()
       }
-    },
-    handleSizeChange(val) {
-      this.list.pagesize = val
-      this.list.currentPage = 1
-      this.getData()
-    },
-    handleCurrentChange(val) {
-      this.list.currentPage = val
-      this.getData()
-    },
-    handleSortChange(val) {
-      Api.UNITS.setSortSearch(val, this)
-      this.getData()
     },
     // 重置列表
     resetData() {
       this.list.currentPage = 1
-      this.searchForm = {} // 1、重置查询表单
-      this.sort = {} // 2、重置排序
-      this.$refs.listTable.clearSort() // 3、清空排序样式
-      this.getData()
-    },
-    searchData() {
-      this.list.currentPage = 1
+      this.searchForm = {}
+      this.sort = {}
+      this.$refs.listTable.clearSort()
       this.getData()
     },
     // 提交表单
@@ -221,15 +243,48 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           // 验证通过
+          this.formInline.iccids = this.formInline.iccids.split('\n').filter((v) => v.trim()).join('\n')
+          // 验证通过
+          _axios.send({
+            method: 'post',
+            url: _axios.ajaxAd.addGprsGift,
+            data: this.formInline,
+            done: ((res) => {
+              this.loadData = false
+              if (res.status === 400) {
+                this.formInline[res.data] = ''
+                this.$refs.ruleForm.validateField([res.data])
+              } else {
+                this.dialogGiftVisible = true
+                this.giftData = res.data
+                this.resetForm('ruleForm')
+                let count = 0
+                this.giftData.forEach((v) => {
+                  if (v.ret === '0') count++
+                })
+                setTimeout(() => {
+                  this.showMsgBox({
+                    type: 'success',
+                    message: `操作成功！本次赠送 ${count} 张卡`
+                  })
+                }, 150)
+              }
+            })
+          })
         } else {
           Api.UNITS.showMsgBox()
           return false;
         }
       });
     },
-    // 重置表单
     resetForm(formName) {
       this.$refs[formName].resetFields()
+      this.formInline = {
+        allot_month: 1,
+        allot_reset: 1,
+        pack_mode: 0
+      }
+      this.isUpdate && this.getData()
     },
     checkRechargeDetail(scope) {
       this.$router.push({ name: 'rechargeDetail', query: { card_iccid: scope.row.card_iccid } })
@@ -238,23 +293,52 @@ export default {
       Api.UNITS.getListData({
         vue: this,
         url: _axios.ajaxAd.getGift,
-        formInline: 'searchForm'
+        formInline: 'searchForm',
+        cb: ((res) => {
+          let other = res.data.other || {}
+          if (other.time) {
+            this.now = other.time
+          }
+        })
       })
+    },
+    validateIccidCount(rule, value, callback) {
+      let iccidList = value.split('\n').filter((v) => v.trim())
+      if (iccidList.length > 200) {
+        callback(new Error('一次最多处理200张iccid卡'))
+      } else if (iccidList.length === 0) {
+        callback(new Error('请输入您的流量卡ICCID号'))
+      } else {
+        callback()
+      }
+    },
+    // 当分配月数发生改变时有效周期可能要改变
+    changeAllotMonth() {
+      if (this.formInline.live_month) {
+        if (this.formInline.allot_month > this.formInline.live_month) {
+          this.formInline.live_month = this.formInline.allot_month
+        }
+      }
     },
     getLiveMonthAlias(value) {
       let item = this.liveMonthSelect.filter((v) => v.value == value)[0]
       return item ? item.label : ''
-    },
-    formatFlowUnit: Api.UNITS.formatFlowUnit,
-    limitNumber: Api.UNITS.limitNumber,
-    formatComboFlow: Api.UNITS.formatComboFlow,
-    calcLeftTime: Api.UNITS.calcLeftTime,
+    }
   },
   computed: {
-    ...mapState({
-      orgs: 'orgs',
-      liveMonthSelect: 'liveMonthSelect'
-    })
+    // 起始时间约数
+    startDatePicker() {
+      return Api.UNITS.startDatePicker(this, this.searchForm.date_end)
+    },
+    // 结束时间约数
+    endDatePicker() {
+      return Api.UNITS.endDatePicker(this, this.searchForm.date_start)
+    },
+    gprsMonth() {
+      let total = this.formInline.gprs_amount || 0
+      let month = this.formInline.allot_month || 1
+      return Api.UNITS.formatFlowUnit(total / month, 3, false)
+    }
   }
 }
 

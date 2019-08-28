@@ -1,32 +1,30 @@
 <template>
   <div class="jg_recharge">
-    <el-card style="margin-bottom: 20px" shadow="never">
+    <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-form class="search-form" :inline="true" :model="formInline" size="small">
-        <el-form-item label="机构名称">
-          <el-select v-model="formInline.org_id" filterable clearable placeholder="请选择">
+        <el-form-item>
+          <el-select v-model="formInline.org_id" filterable clearable placeholder="机构名称" @change="searchData">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="付款方式">
-          <el-select v-model="formInline.pay_method" placeholder="请选择">
+        <el-form-item>
+          <el-select v-model="formInline.pay_method" clearable placeholder="付款方式" @change="searchData">
             <el-option v-for="(item, index) in payMethodSelect" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="起止日期">
-          <el-date-picker v-model="formInline.date_start" type="date" value-format="yyyy-MM-dd" placeholder="选择开始日期"></el-date-picker> -
-          <el-date-picker v-model="formInline.date_end" type="date" value-format="yyyy-MM-dd" placeholder="选择结束日期"></el-date-picker>
+        <el-form-item>
+          <el-date-picker v-model="formInline.date_start" :picker-options="startDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="选择开始日期"></el-date-picker> -
+          <el-date-picker v-model="formInline.date_end" :picker-options="endDatePicker" type="date" value-format="yyyy-MM-dd" @change="searchData" placeholder="选择结束日期"></el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="searchData">查询</el-button>
-          <el-button type="warning" @click="resetData">重置</el-button>
+          <el-button type="primary" @click="searchData" :disabled="!pageAuthBtn.FCP_03_004_CHECK01">查询</el-button>
+          <el-button type="warning" @click="resetData" :disabled="!pageAuthBtn.FCP_03_004_CHECK01">重置</el-button>
         </el-form-item>
       </el-form>
-    </el-card>
-    <el-card class="clearfix" shadow="never" v-loading="loadData">
       <el-table ref="listTable" @sort-change="handleSortChange" :data="list.data" :max-height="maxTableHeight" border resizable size="mini">
         <el-table-column prop="org_id" label="机构名称" min-width="200" sortable="custom">
           <template slot-scope="scope">
-            <span v-if="scope.row.sums">{{scope.row.org_name}}</span>
+            <span v-if="scope.row.sums || !pageAuthBtn.FCP_03_004_LINK1">{{scope.row.org_name}}</span>
             <span v-else class="btn-link" @click="$router.push({name: 'rechargeParticulars', query: {org_id: scope.row.org_id}})">{{scope.row.org_name}}</span>
           </template>
         </el-table-column>
@@ -35,26 +33,26 @@
             <span>{{scope.row.pay_method_name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="paid_amount" label="已付次数" min-width="100" sortable="custom"></el-table-column>
-        <el-table-column prop="paid_money" label="已付金额" min-width="140" sortable="custom">
+        <el-table-column prop="paid_amount" label="已付次数" min-width="100" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="paid_money" label="已付金额" min-width="140" sortable="custom" align="right">
           <template slot-scope="scope">
             <div>￥{{scope.row.paid_money|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="已付款率" min-width="100">
+        <el-table-column label="已付款率" min-width="100" align="right">
           <template slot-scope="scope">
-            <span>{{(scope.row.paid_amount/scope.row.paid_count*100).toFixed(3)}}%</span>
+            <span>{{(scope.row.paid_amount/scope.row.paid_count*100) | sliceFloat(3)}}%</span>
           </template>
         </el-table-column>
-        <el-table-column prop="nopaid_amount" label="未付次数" min-width="100" sortable="custom"></el-table-column>
-        <el-table-column prop="nopaid_money" label="未付金额" min-width="140" sortable="custom">
+        <el-table-column prop="nopaid_amount" label="未付次数" min-width="100" sortable="custom" align="right"></el-table-column>
+        <el-table-column prop="nopaid_money" label="未付金额" min-width="140" sortable="custom" align="right">
           <template slot-scope="scope">
             <div>￥{{scope.row.nopaid_money|formatMoney}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="未付款率" min-width="100">
+        <el-table-column label="未付款率" min-width="100" align="right">
           <template slot-scope="scope">
-            <span>{{(scope.row.nopaid_amount/scope.row.paid_count*100).toFixed(3)}}%</span>
+            <span>{{(scope.row.nopaid_amount/scope.row.paid_count*100) | sliceFloat(3)}}%</span>
           </template>
         </el-table-column>
       </el-table>
@@ -70,19 +68,9 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
-      loadData: true,
-      pageSizes: Api.STATIC.pageSizes,
-      list: {
-        data: [],
-        pagesize: Api.STATIC.pageSizes[1],
-        currentPage: 1,
-        total: 0,
-      },
-      sort: {},
       formInline: {
         org_id: Api.UNITS.getQuery('org_id')
-      },
-      maxTableHeight: Api.UNITS.maxTableHeight(),
+      }
     }
   },
   mounted() {
@@ -90,23 +78,6 @@ export default {
     this.getData()
   },
   methods: {
-    handleSizeChange(val) {
-      this.list.pagesize = val
-      this.getData()
-    },
-    handleCurrentChange(val) {
-      this.list.currentPage = val
-      this.getData()
-    },
-    handleSortChange(val = {}) {
-      Api.UNITS.setSortSearch(val, this)
-      this.getData()
-    },
-    // 查询
-    searchData() {
-      this.list.currentPage = 1
-      this.getData()
-    },
     // 重置列表
     resetData() {
       this.list.currentPage = 1
@@ -137,15 +108,17 @@ export default {
           }])
         }
       })
-    },
-    formatFlowUnit: Api.UNITS.formatFlowUnit,
-    calcLeftTime: Api.UNITS.calcLeftTime
+    }
   },
   computed: {
-    ...mapState({
-      orgs: 'orgs',
-      payMethodSelect: 'payMethodSelect'
-    })
+    // 起始时间约数
+    startDatePicker() {
+      return Api.UNITS.startDatePicker(this, this.formInline.date_end)
+    },
+    // 结束时间约数
+    endDatePicker() {
+      return Api.UNITS.endDatePicker(this, this.formInline.date_start)
+    }
   }
 }
 
