@@ -23,28 +23,28 @@
         </el-form-item>
         <el-form-item prop="org_id">
           <span slot="label">机构名称：</span>
-          <el-select v-model="formInline.org_id" filterable placeholder="请选择" :disabled="isUpdate">
+          <el-select v-model="formInline.org_id" filterable placeholder="请选择" :disabled="isUpdate" @change="isClearROMandPRO">
             <el-option v-for="(item, index) in orgs" :key="index" :label="item.label" :value="item.value - 0"></el-option>
           </el-select>
         </el-form-item>
         <!-- new start -->
         <el-form-item prop="sim_type">
           <span slot="label">SIM卡类型：</span>
-          <el-radio-group v-model="formInline.sim_type" :disabled="isUpdate">
+          <el-radio-group v-model="formInline.sim_type" :disabled="isUpdate" @change="isClearROMandPRO">
             <el-radio v-for="(item, index) in simType" :key="index" :label="item.value">{{item.label}}</el-radio>
           </el-radio-group>
           <div class="annotation">贴片卡机构归属与设备ROM包机构编码&项目型号关联同步，插拔卡则固定与入库时机构配置为准</div>
         </el-form-item>
         <el-form-item prop="device_org_code" v-if="formInline.sim_type === 1">
           <span slot="label">设备ROM包机构编码：</span>
-          <el-select v-model="formInline.device_org_code" filterable placeholder="请选择" :disabled="isUpdate">
+          <el-select v-model="formInline.device_org_code" filterable placeholder="请选择" :disabled="isUpdate || formInline.org_id == 10">
             <el-option v-for="(item, index) in devOrgs" :key="index" :label="item.label" :value="item.value"></el-option>
           </el-select>
           <div class="annotation">务必确认无误后进行设置，一经确认无法编辑修改</div>
         </el-form-item>
         <el-form-item prop="pro_name" v-if="formInline.sim_type === 1">
           <span slot="label">设备项目型号：</span>
-          <el-input v-model="formInline.pro_name" placeholder="请输入" :disabled="isUpdate"></el-input>
+          <el-input v-model="formInline.pro_name" placeholder="请输入" :disabled="formInline.org_id == 10"></el-input>
         </el-form-item>
         <!-- new end -->
         <el-form-item prop="province_id">
@@ -65,11 +65,11 @@
             <el-option v-for="(item, index) in districtData" :key="index" :label="item.label" :value="item.value - 0"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item prop="clw_batch_id">
+<!--         <el-form-item prop="clw_batch_id">
           <span slot="label">车联网批次：</span>
           <el-input v-model="formInline.clw_batch_id" @input="formInline.clw_batch_id = limitNumber(formInline.clw_batch_id, 9, 0)" placeholder="请输入车联网批次" :disabled="isUpdate"></el-input>
           <div class="annotation">若需将车联网设备中的卡归属到本批次初始化信息中，需关联车联网出货批次编号</div>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item prop="card_type" v-if="!isUpdate">
           <span slot="label">流量卡商：</span>
           <el-select v-model="formInline.card_type" filterable clearable placeholder="请选择流量卡商">
@@ -137,7 +137,7 @@
             <el-option v-for="(item, index) in liveMonthSelect" v-if="item.value >= 1" :disabled="item.value < formInline.allot_month" :key="index" :label="item.label" :value="item.value - 0"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item v-if="!isUpdate">
+        <el-form-item v-if="!isUpdate && !(formInline.sim_type == 1 && formInline.org_id != 10)">
           <span slot="label">导入卡号：</span>
           <!-- 这里演示了如何在提交表单的时候再开始上传文件 -->
           <el-upload ref="upload" action="" :on-change="uploadHandleChange" :on-exceed="fileExceed" :before-remove="beforeRemove" :with-credentials="true" :limit="1" :file-list="fileList" :auto-upload="false">
@@ -246,16 +246,6 @@ export default {
           required: true,
           message: '请选择SIM卡类型',
           trigger: 'change'
-        }],
-        device_org_code: [{
-          required: true,
-          message: '请选择设备ROM包机构编码',
-          trigger: 'change'
-        }],
-        pro_name: [{
-          required: true,
-          message: '请输入设备项目型号',
-          trigger: 'blur'
         }],
         province_id: [{
           required: true,
@@ -405,6 +395,12 @@ export default {
         }
       })
     },
+    isClearROMandPRO() {
+      if (this.formInline.org_id == 10 && this.formInline.sim_type == 1) {
+        this.$delete(this.formInline, 'device_org_code')
+        this.$delete(this.formInline, 'pro_name')
+      }
+    },
     resetForm(formName) {
       this.$refs[formName].resetFields()
       this.formInline = {
@@ -454,7 +450,7 @@ export default {
         _axios.send({
           method: 'post',
           url: _axios.ajaxAd.updateBatch,
-          data: Object.assign({}, this.formInline, { clw_batch_id: this.formInline.clw_batch_id || 0 }),
+          data: this.formInline,
           done: ((res) => {
             if (res.status === 400) {
               this.$delete(this.formInline, res.data)
@@ -471,8 +467,8 @@ export default {
           })
         })
       } else { // 新增操作
-        // 如果上传的文件列表为空
-        if (this.fileList.length === 0) {
+        // 如果上传的文件列表为空(当选择贴片卡并且机构非云智易联时不支持上传操作)
+        if (this.fileList.length === 0 && !(this.formInline.sim_type == 1 && this.formInline.org_id != 10)) {
           this.showMsgBox({
             type: 'error',
             message: '请选择上传的文件'
@@ -481,7 +477,7 @@ export default {
         }
         // 验证通过先将上传的文件与formInline中数据整合
         this.formData = new FormData()
-        this.formData.append('file', this.fileList[0].raw)
+        if (this.fileList[0]) this.formData.append('file', this.fileList[0].raw)
         for (let key in this.formInline) {
           if (this.formInline[key]) {
             this.formData.append(key, this.formInline[key])

@@ -135,7 +135,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="设备ROM包机构编码">
-              <el-select v-model="formInline.device_org_code" filterable placeholder="请选择">
+              <el-select v-model="formInline.device_org_code" filterable clearable placeholder="请选择">
                 <el-option v-for="(item, index) in devOrgs" :key="index" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </el-form-item>
